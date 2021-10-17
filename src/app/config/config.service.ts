@@ -9,8 +9,12 @@ export class ConfigService {
 
   constructor(private http: HttpClient) { }
 
-  configUrl = 'assets/config.json';
-  config: Config | undefined;
+  private configUrl = 'assets/config.json';
+  private config: Config | undefined;
+
+  getConfig(): Config | undefined {
+    return this.config;
+  }
 
   load() {
     return new Promise<Config>((resolve, reject) => {

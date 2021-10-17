@@ -21,27 +21,29 @@ describe('ConfigService', () => {
   });
 
   it('undefined config, if not loaded', () => {
-    expect(service.config).toBeUndefined();
+    expect(service.getConfig()).toBeUndefined();
   })
 
   it('load config', fakeAsync(() => {
-      const mockResponse =
-      {
-        clientSecret: 'changeIt',
-        backendBaseUrl: '//localhost:8080/'
-      };
+    const mockResponse =
+    {
+      clientId: 'ape.user.ui',
+      clientSecret: 'changeIt',
+      backendBaseUrl: '//localhost:8080/'
+    };
 
-      service.load().then(() => {
-        expect(service.config?.clientSecret).toBe('changeIt');
-        expect(service.config?.backendBaseUrl).toBe('//localhost:8080/');
-      });
+    service.load().then(() => {
+      expect(service.getConfig()?.clientId).toBe(mockResponse.clientId);
+      expect(service.getConfig()?.clientSecret).toBe(mockResponse.clientSecret);
+      expect(service.getConfig()?.backendBaseUrl).toBe(mockResponse.backendBaseUrl);
+    });
 
-      const req = httpMock.expectOne('assets/config.json');
-      expect(req.request.method).toEqual("GET");
-      req.flush(mockResponse);
+    const req = httpMock.expectOne('assets/config.json');
+    expect(req.request.method).toEqual("GET");
+    req.flush(mockResponse);
 
-      tick();
+    tick();
 
-    }));
+  }));
 });
 
