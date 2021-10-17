@@ -1,0 +1,4 @@
+{
+    "clientSecret": "changeIt",
+    "backendBaseUrl": "//localhost:8080/"
+}
