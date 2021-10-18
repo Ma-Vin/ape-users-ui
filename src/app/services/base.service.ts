@@ -44,7 +44,7 @@ export abstract class BaseService implements OnInit {
     }
     return throwError(
       'Something bad happened; please try again later.');
-  };
+  }
 
   protected getHttpUrlWithClientBasicAuthOptions() {
     return {

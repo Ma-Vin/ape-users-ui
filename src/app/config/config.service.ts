@@ -26,6 +26,6 @@ export class ConfigService {
         reject(`Could not load file '${this.configUrl}': ${JSON.stringify(response)}`);
       });
     });
-  };
+  }
 
 }
