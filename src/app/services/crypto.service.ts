@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
+import { AES, enc } from 'crypto-js';
 import { ConfigService } from '../config/config.service';
-import * as CryptoJS from 'crypto-js';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,7 @@ export class CryptoService {
     if (config === undefined) {
       return null;
     }
-    let result = CryptoJS.AES.encrypt(plaintext, config.clientSecret);
+    let result = AES.encrypt(plaintext, config.clientSecret);
     return result.toString();
   }
 
@@ -23,8 +23,8 @@ export class CryptoService {
     if (config === undefined) {
       return null;
     }
-    let result = CryptoJS.AES.decrypt(encryptedText, config.clientSecret);
-    return result.toString(CryptoJS.enc.Utf8);
+    let result = AES.decrypt(encryptedText, config.clientSecret);
+    return result.toString(enc.Utf8);
   }
 
   setEncryptedAtLocalStorage(key: string, value: string): void {
