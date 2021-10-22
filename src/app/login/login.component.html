@@ -1,0 +1,22 @@
+<h2>Please Login</h2>
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+        <mat-form-field>
+            <mat-label for="username">Username</mat-label>
+            <input matInput placeholder="Identification" type="text" formControlName="username"
+                [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
+        </mat-form-field>
+    </div>
+    <div class="form-group">
+        <mat-form-field>
+            <mat-label for="password">Password</mat-label>
+            <input matInput placeholder="password" type="password" formControlName="password"
+                [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+        </mat-form-field>
+    </div>
+    <div class="form-group">
+        <button mat-raised-button color="primary">
+            Login
+        </button>
+    </div>
+</form>

@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { ConfigService } from '../config/config.service';
 import { TokenResponse } from '../model/auth/token-response.model';
 import { BaseService } from './base.service';
@@ -7,13 +7,14 @@ import { catchError, map, share } from 'rxjs/operators';
 import { CryptoService } from './crypto.service';
 import { Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
+import { LOGIN_ABS_PATH } from '../app-routing.module';
 
 
-const TOKEN_URL = "/oauth/token";
+export const TOKEN_URL = "/oauth/token";
 
-const ACCESS_TOKEN = "access_token";
-const ACCESS_TOKEN_EXPIRE = "access_token_expire";
-const REFRESH_TOKEN = "refresh_token";
+export const ACCESS_TOKEN = "access_token";
+export const ACCESS_TOKEN_EXPIRE = "access_token_expire";
+export const REFRESH_TOKEN = "refresh_token";
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +25,7 @@ export class AuthService extends BaseService {
   private refreshTokenUrl: string;
   private refreshOberserable = new Observable<boolean>();
 
-  constructor(protected http: HttpClient, protected configService: ConfigService, private cryptoService: CryptoService) {
+  constructor(protected http: HttpClient, protected configService: ConfigService, private cryptoService: CryptoService, private router: Router) {
     super('AuthService', configService);
     this.retrieveTokenUrl = '';
     this.refreshTokenUrl = '';
@@ -111,5 +112,40 @@ export class AuthService extends BaseService {
       this.cryptoService.setEncryptedAtLocalStorage(REFRESH_TOKEN, token.refresh_token);
     }
     console.debug('AuthService: save Access token');
+  }
+
+  loginAndRedirect(username: string, password: string, redirect: string): void {
+    this.retrieveToken(username, password).subscribe(data => this.router.navigate([redirect]));
+  }
+
+  hasValidUser(): Observable<boolean> {
+    this.init();
+    if (this.cryptoService.getDecryptedFromLocalStorage(ACCESS_TOKEN) === null) {
+      console.debug('AuthService: No access token');
+      return of(false);
+    }
+    if (this.cryptoService.getDecryptedFromLocalStorage(ACCESS_TOKEN_EXPIRE) === null) {
+      console.debug('AuthService: No access token expiration');
+      return of(false);
+    }
+    if (this.cryptoService.getDecryptedFromLocalStorage(REFRESH_TOKEN) === null) {
+      console.debug('AuthService: No refresh token');
+      return of(false);
+    }
+    let now = new Date();
+    let expires = Number(this.cryptoService.getDecryptedFromLocalStorage(ACCESS_TOKEN_EXPIRE));
+    if (now.getTime() >= expires) {
+      console.debug(`AuthService: Refresh Access token. expires ${new Date(expires).toISOString()} now ${now.toISOString()}`);
+      return this.refreshToken();
+    }
+    console.debug(`AuthService: Access token is valid at ${new Date().toISOString()} by access_token_expire ${new Date(expires).toISOString()}`);
+    return of(true);
+  }
+
+  clearTokensAndLogin(): void {
+    localStorage.removeItem(ACCESS_TOKEN);
+    localStorage.removeItem(ACCESS_TOKEN_EXPIRE);
+    localStorage.removeItem(REFRESH_TOKEN);
+    this.router.navigate([LOGIN_ABS_PATH]);
   }
 }
