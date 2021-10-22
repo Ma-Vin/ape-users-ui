@@ -5,7 +5,8 @@ import { TokenResponse } from '../model/auth/token-response.model';
 import { BaseService } from './base.service';
 import { catchError, map, share } from 'rxjs/operators';
 import { CryptoService } from './crypto.service';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { Router } from '@angular/router';
 
 
 const TOKEN_URL = "/oauth/token";
@@ -17,12 +18,11 @@ const REFRESH_TOKEN = "refresh_token";
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService extends BaseService implements OnInit {
-  private isInit = false;
+export class AuthService extends BaseService {
   private isRefreshing = false;
   private retrieveTokenUrl: string;
   private refreshTokenUrl: string;
-  private refreshOberserable = new Observable<void>();
+  private refreshOberserable = new Observable<boolean>();
 
   constructor(protected http: HttpClient, protected configService: ConfigService, private cryptoService: CryptoService) {
     super('AuthService', configService);
@@ -30,17 +30,18 @@ export class AuthService extends BaseService implements OnInit {
     this.refreshTokenUrl = '';
   }
 
-  ngOnInit(): void {
+  protected init(): void {
     if (this.isInit) {
       return;
     }
-    super.ngOnInit();
+    super.init();
     let config = this.configService.getConfig();
     this.retrieveTokenUrl = config != undefined ? config.backendBaseUrl.concat(TOKEN_URL) : '';
     this.refreshTokenUrl = this.retrieveTokenUrl;
   }
 
   retrieveToken(username: string, password: string): Observable<void> {
+    this.init();
     let params = new URLSearchParams();
 
     let config = this.configService.getConfig();
@@ -66,12 +67,13 @@ export class AuthService extends BaseService implements OnInit {
       );
   }
 
-  refreshToken(): Observable<void> {
+  refreshToken(): Observable<boolean> {
+    this.init();
     let params = new URLSearchParams();
     let decodedRefreshToken = this.cryptoService.getDecryptedFromLocalStorage(REFRESH_TOKEN);
     let config = this.configService.getConfig();
     if (decodedRefreshToken === null || config == undefined) {
-      return new Observable<void>();
+      return of(false);
     }
 
 
@@ -91,7 +93,8 @@ export class AuthService extends BaseService implements OnInit {
         map(
           data => {
             this.isRefreshing = false;
-            return this.saveToken(data);
+            this.saveToken(data);
+            return data.access_token != null;
           }
         ),
         share()
@@ -100,7 +103,7 @@ export class AuthService extends BaseService implements OnInit {
     return this.refreshOberserable;
   }
 
-  saveToken(token: TokenResponse): void {
+  private saveToken(token: TokenResponse): void {
     var expireDate = new Date().getTime() + (1000 * token.expires_in);
     this.cryptoService.setEncryptedAtLocalStorage(ACCESS_TOKEN, token.access_token);
     this.cryptoService.setEncryptedAtLocalStorage(ACCESS_TOKEN_EXPIRE, expireDate.toString());

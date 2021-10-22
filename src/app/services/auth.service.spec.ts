@@ -17,7 +17,7 @@ describe('AuthService', () => {
     clientSecret: 'changeIt',
     backendBaseUrl: '//localhost:8080'
   };
-  
+
   const mockResponse = {
     access_token: 'some_access_token',
     token_type: 'jwt',
@@ -68,7 +68,6 @@ describe('AuthService', () => {
 
     service = new AuthService(http, fakeConfig as ConfigService, fakeCrypto as CryptoService);
 
-    service.ngOnInit();
     service.retrieveToken(user, pwd).subscribe(() => { });
 
     const req = httpMock.expectOne('//localhost:8080/oauth/token');
@@ -89,7 +88,6 @@ describe('AuthService', () => {
 
     service = new AuthService(http, fakeConfig as ConfigService, fakeCrypto as CryptoService);
 
-    service.ngOnInit();
     service.retrieveToken(user, pwd).subscribe(() => { });
 
     httpMock.expectNone('//localhost:8080/oauth/token');;
@@ -121,7 +119,6 @@ describe('AuthService', () => {
 
     service = new AuthService(http, fakeConfig as ConfigService, fakeCrypto as CryptoService);
 
-    service.ngOnInit();
     service.refreshToken().subscribe(() => { });
 
     const req = httpMock.expectOne('//localhost:8080/oauth/token');
@@ -148,7 +145,6 @@ describe('AuthService', () => {
 
     service = new AuthService(http, fakeConfig as ConfigService, fakeCrypto as CryptoService);
 
-    service.ngOnInit();
     service.refreshToken().subscribe(() => { });
 
     httpMock.expectNone('//localhost:8080/oauth/token');
@@ -165,7 +161,6 @@ describe('AuthService', () => {
 
     service = new AuthService(http, fakeConfig as ConfigService, fakeCrypto as CryptoService);
 
-    service.ngOnInit();
     service.refreshToken().subscribe(() => { });
 
     httpMock.expectNone('//localhost:8080/oauth/token');

@@ -3,7 +3,7 @@ import { ConfigService } from '../config/config.service';
 import { BaseService } from './base.service';
 
 describe('BaseService', () => {
-  let service: BaseService;
+  let service: TestBaseService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
@@ -24,8 +24,7 @@ describe('BaseService', () => {
   });
 
   it('init should set client info', () => {
-    service.ngOnInit();
-
+    service.init()
     expect(service.clientId).toEqual('ape.user.ui');
     expect(service.clientSecret).toEqual('changeIt');
   });
@@ -33,4 +32,8 @@ describe('BaseService', () => {
 });
 
 
-class TestBaseService extends BaseService { }
+class TestBaseService extends BaseService {
+  public init(){
+    super.init();
+  }
+ }

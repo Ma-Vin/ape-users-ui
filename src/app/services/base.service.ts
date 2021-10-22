@@ -1,4 +1,4 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Inject, Injectable, OnInit } from '@angular/core';
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { ConfigService } from '../config/config.service';
 import { throwError } from 'rxjs';
@@ -16,18 +16,18 @@ export const HTTP_JSON_OPTIONS = {
   })
 };
 
-@Injectable({
-  providedIn: 'root'
-})
-export abstract class BaseService implements OnInit {
-
+export abstract class BaseService {
+  protected isInit = false;
   public clientId: string | undefined;
   public clientSecret: string | undefined;
 
-  constructor(private serviceName: string, protected configService: ConfigService) {
+  constructor(@Inject(String) private serviceName: string, protected configService: ConfigService) {
   }
 
-  ngOnInit(): void {
+  protected init(): void {
+    if (this.isInit) {
+      return;
+    }
     let config = this.configService.getConfig();
     this.clientId = config?.clientId;
     this.clientSecret = config?.clientSecret;
