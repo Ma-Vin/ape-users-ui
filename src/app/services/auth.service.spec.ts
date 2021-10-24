@@ -1,9 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { NavigationExtras, Router } from '@angular/router';
-import { of } from 'rxjs';
-import { AppRoutingModule, LOGIN_ABS_PATH } from '../app-routing.module';
+import { Router } from '@angular/router';
+import { AppRoutingModule, LOGIN_PATH } from '../app-routing.module';
 import { ConfigService } from '../config/config.service';
 import { ACCESS_TOKEN, ACCESS_TOKEN_EXPIRE, AuthService, REFRESH_TOKEN } from './auth.service';
 import { CryptoService } from './crypto.service';
@@ -286,7 +285,7 @@ describe('AuthService', () => {
 
     service.clearTokensAndLogin();
 
-    expect(spyRouter).toHaveBeenCalledOnceWith([LOGIN_ABS_PATH]);
+    expect(spyRouter).toHaveBeenCalledOnceWith([LOGIN_PATH]);
     expect(spyLocalStorage).toHaveBeenCalledWith(ACCESS_TOKEN);
     expect(spyLocalStorage).toHaveBeenCalledWith(ACCESS_TOKEN_EXPIRE);
     expect(spyLocalStorage).toHaveBeenCalledWith(REFRESH_TOKEN);

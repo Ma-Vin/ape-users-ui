@@ -7,7 +7,7 @@ import { catchError, map, share } from 'rxjs/operators';
 import { CryptoService } from './crypto.service';
 import { Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
-import { LOGIN_ABS_PATH } from '../app-routing.module';
+import { LOGIN_PATH } from '../app-routing.module';
 
 
 export const TOKEN_URL = "/oauth/token";
@@ -146,6 +146,6 @@ export class AuthService extends BaseService {
     localStorage.removeItem(ACCESS_TOKEN);
     localStorage.removeItem(ACCESS_TOKEN_EXPIRE);
     localStorage.removeItem(REFRESH_TOKEN);
-    this.router.navigate([LOGIN_ABS_PATH]);
+    this.router.navigate([LOGIN_PATH]);
   }
 }
