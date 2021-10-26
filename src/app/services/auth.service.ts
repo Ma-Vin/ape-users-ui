@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ConfigService } from '../config/config.service';
 import { TokenResponse } from '../model/auth/token-response.model';
@@ -147,5 +147,35 @@ export class AuthService extends BaseService {
     localStorage.removeItem(ACCESS_TOKEN_EXPIRE);
     localStorage.removeItem(REFRESH_TOKEN);
     this.router.navigate([LOGIN_PATH]);
+  }
+
+  public getToken() {
+    return this.cryptoService.getDecryptedFromLocalStorage(ACCESS_TOKEN);
+  }
+
+    /**
+   * @returns headers with urlencoded contenttype and bearer authentication
+   */
+  public getHttpUrlTokenAuthOptions() {
+    console.debug(`AuthService: UrlHeader Bearer ${this.getToken()}`);
+    return {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        'Authorization': `Bearer ${this.getToken()}`
+      })
+    };
+  }
+
+  /**
+   * @returns headers with json contenttype and bearer authentication
+   */
+  public getHttpJsonTokenAuthOptions() {
+    console.debug(`AuthService: JsonHeader Bearer ${this.getToken()}`);
+    return {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Authorization': `Bearer ${this.getToken()}`
+      })
+    };
   }
 }

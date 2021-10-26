@@ -2,7 +2,10 @@ import { Inject } from '@angular/core';
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { ConfigService } from '../config/config.service';
 import { throwError } from 'rxjs';
+import { Config } from '../config/config';
 
+
+export const RETRIES = 3;
 
 export const HTTP_URL_OPTIONS = {
   headers: new HttpHeaders({
@@ -18,6 +21,7 @@ export const HTTP_JSON_OPTIONS = {
 
 export abstract class BaseService {
   protected isInit = false;
+  protected config: Config | undefined;
   public clientId: string | undefined;
   public clientSecret: string | undefined;
 
@@ -28,9 +32,9 @@ export abstract class BaseService {
     if (this.isInit) {
       return;
     }
-    let config = this.configService.getConfig();
-    this.clientId = config?.clientId;
-    this.clientSecret = config?.clientSecret;
+    this.config = this.configService.getConfig();
+    this.clientId = this.config?.clientId;
+    this.clientSecret = this.config?.clientSecret;
   }
 
   public handleError(error: HttpErrorResponse) {

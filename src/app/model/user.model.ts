@@ -16,12 +16,6 @@ export interface IUser {
 
 export class User implements IUser {
 
-    constructor(identification: string, firstName: string, lastName: string) {
-        this.identification = identification;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
     identification: string;
     firstName: string;
     lastName: string;
@@ -31,5 +25,25 @@ export class User implements IUser {
     lastLogin: Date | undefined;
     validFrom: Date | undefined;
     validTo: Date | undefined;
+    isGlobalAdmin = false;
+
+    constructor(identification: string, firstName: string, lastName: string) {
+        this.identification = identification;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public static map(base: IUser): User {
+        let result = new User(base.identification, base.firstName, base.lastName);
+
+        result.mail = base.mail;
+        result.image = base.image;
+        result.smallImage = base.smallImage;
+        result.lastLogin = base.lastLogin;
+        result.validFrom = base.validFrom;
+        result.validTo = base.validTo;
+
+        return result;
+    }
 
 }
