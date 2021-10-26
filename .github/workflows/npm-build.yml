@@ -36,6 +36,9 @@ jobs:
       - name: test
         run: npm run test -- --code-coverage --watch=false
       - name: sonar analysis
+        env:
+          GITHUB_TOKEN: ${{ secrets.APE_DEPENDENCY_BUILD_PAT }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: > 
           npm run sonar --
           -Dsonar.host.url=https://sonarcloud.io
