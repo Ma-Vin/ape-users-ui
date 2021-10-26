@@ -40,7 +40,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.APE_DEPENDENCY_BUILD_PAT }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: > 
-          npm run sonar --
+          npm run sonar -- -X
           -Dsonar.branch.name=main
           -Dsonar.host.url=https://sonarcloud.io
           -Dsonar.token=${{ secrets.SONAR_TOKEN }}
