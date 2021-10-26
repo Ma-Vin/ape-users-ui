@@ -1,4 +1,4 @@
-name: Build
+name: Build and analyze
 on:
   push:
     branches:
@@ -29,8 +29,25 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: npm ci, npm run build and test
+      - name: clean install build
         run: |
           npm ci
           npm run build
-          npm run test -- --watch=false
+      - name: test
+          run: npm run test -- --code-coverage --watch=false
+      - name: sonar analysis
+          run: > 
+            npm run sonar --
+            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+            -Dsonar.organization=ma-vin
+            -Dsonar.projectKey=Ma-Vin_ape-users-ui
+            -Dsonar.projectName=ape-users-ui
+            -Dsonar.projectVersion=1.0
+            -Dsonar.sourceEncoding=UTF-8
+            -Dsonar.sources=src
+            -Dsonar.exclusions=**/node_modules/**
+            -Dsonar.tests=src
+            -Dsonar.test.inclusions=**/*.spec.ts
+            -Dsonar.typescript.lcov.reportPaths=coverage/users-ui/lcov.info
+
