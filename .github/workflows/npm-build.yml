@@ -41,6 +41,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: > 
           npm run sonar --
+          -Dsonar.branch.name=main
           -Dsonar.host.url=https://sonarcloud.io
           -Dsonar.token=${{ secrets.SONAR_TOKEN }}
           -Dsonar.organization=ma-vin
