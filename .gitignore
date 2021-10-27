@@ -26,7 +26,6 @@ chrome-profiler-events*.json
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
-!.vscode/launch.json
 !.vscode/extensions.json
 .history/*
 
@@ -46,3 +45,4 @@ Thumbs.db
 .browserslistrc
 .editorconfig
 .scannerwork/*
+sonar-project.properties
