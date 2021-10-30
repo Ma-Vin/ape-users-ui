@@ -1,13 +1,15 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ConfigService } from '../config/config.service';
 import { TokenResponse } from '../model/auth/token-response.model';
+import { JwtPayload } from '../model/auth/jwt-payload.model';
 import { BaseService } from './base.service';
 import { catchError, map, share } from 'rxjs/operators';
 import { CryptoService } from './crypto.service';
 import { Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
 import { LOGIN_PATH } from '../app-routing.module';
+import { SelectionService } from './selection.service';
 
 
 export const TOKEN_URL = "/oauth/token";
@@ -25,7 +27,9 @@ export class AuthService extends BaseService {
   private refreshTokenUrl: string;
   private refreshOberserable = new Observable<boolean>();
 
-  constructor(protected http: HttpClient, protected configService: ConfigService, private cryptoService: CryptoService, private router: Router) {
+  constructor(protected http: HttpClient, protected configService: ConfigService, private cryptoService: CryptoService
+    , private router: Router, private selectionService: SelectionService) {
+
     super('AuthService', configService);
     this.retrieveTokenUrl = '';
     this.refreshTokenUrl = '';
@@ -111,6 +115,13 @@ export class AuthService extends BaseService {
     if (token.refresh_token !== undefined) {
       this.cryptoService.setEncryptedAtLocalStorage(REFRESH_TOKEN, token.refresh_token);
     }
+    let split = token.access_token.split('.');
+    if (split.length == 3) {
+      let payloadText = atob(split[1]);
+      let parsedPayload = JSON.parse(payloadText) as JwtPayload;
+      this.selectionService.setActiveUser(parsedPayload.sub);
+    }
+
     console.debug('AuthService: save Access token');
   }
 
@@ -151,31 +162,5 @@ export class AuthService extends BaseService {
 
   public getToken() {
     return this.cryptoService.getDecryptedFromLocalStorage(ACCESS_TOKEN);
-  }
-
-    /**
-   * @returns headers with urlencoded contenttype and bearer authentication
-   */
-  public getHttpUrlTokenAuthOptions() {
-    console.debug(`AuthService: UrlHeader Bearer ${this.getToken()}`);
-    return {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-        'Authorization': `Bearer ${this.getToken()}`
-      })
-    };
-  }
-
-  /**
-   * @returns headers with json contenttype and bearer authentication
-   */
-  public getHttpJsonTokenAuthOptions() {
-    console.debug(`AuthService: JsonHeader Bearer ${this.getToken()}`);
-    return {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json;charset=UTF-8',
-        'Authorization': `Bearer ${this.getToken()}`
-      })
-    };
   }
 }
