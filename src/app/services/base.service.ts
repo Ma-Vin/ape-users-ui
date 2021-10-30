@@ -1,8 +1,10 @@
 import { Inject } from '@angular/core';
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { ConfigService } from '../config/config.service';
-import { throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { Config } from '../config/config';
+import { Message } from '../model/message';
+import { Status } from '../model/status.model';
 
 
 export const RETRIES = 3;
@@ -37,17 +39,24 @@ export abstract class BaseService {
     this.clientSecret = this.config?.clientSecret;
   }
 
-  public handleError(error: HttpErrorResponse) {
-    console.error('Error occurred at Service ' + this.serviceName);
-    if (error.error instanceof ErrorEvent) {
-      console.error('An error occurred:', error.error.message);
-    } else {
-      console.error(
-        `Backend returned code ${error.status}, ` +
-        `body was: ${error.error}`);
+  public handleError(error: any, data: Observable<any>) {
+    if (error instanceof HttpErrorResponse) {
+      if (error.error instanceof ErrorEvent) {
+        console.error(`An error occurred at service ${this.serviceName}:`, error.error.message);
+        return throwError(`An error occurred: ${error.error.message}`);
+      } else {
+        console.error(
+          `An error occurred at service ${this.serviceName}, ` +
+          `Backend returned code ${error.status}, ` +
+          `body was: ${error.error}`);
+        return throwError(`Backend returned code ${error.status},  body was: ${error.error}`);
+      }
     }
-    return throwError(
-      'Something bad happened; please try again later.');
+    if (error instanceof Error) {
+      console.error(`An error occurred at service ${this.serviceName}: ${error.message}`)
+      throw error;
+    }
+    return throwError('Something bad happened; please try again later.');
   }
 
   protected getHttpUrlWithClientBasicAuthOptions() {
@@ -57,5 +66,15 @@ export abstract class BaseService {
         'Authorization': `Basic ${btoa(this.clientId + ":" + this.clientSecret)}`
       })
     };
+  }
+
+  protected getFirstMessageText(messages: Message[], status: Status, defaultMessageText: string): string {
+    let result: Message | undefined;
+    for (let m of messages) {
+      if (m.status == status && (result == undefined || m.order < result.order)) {
+        result = m;
+      }
+    }
+    return result == undefined ? defaultMessageText : result.messageText;
   }
 }

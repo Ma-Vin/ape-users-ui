@@ -83,7 +83,7 @@ export class AdminService extends BaseService {
     }).pipe(
       map(data => {
         if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(`${data.status} occurs while getting admin group ${identification} from backend`);
+          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while getting admin group ${identification} from backend`));
         }
         return AdminGroup.map(data.response as IAdminGroup)
       }),
@@ -107,7 +107,7 @@ export class AdminService extends BaseService {
     }).pipe(
       map(data => {
         if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(`${data.status} occurs while getting admin ${identification} from backend`);
+          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while getting admin ${identification} from backend`));
         }
         let result = User.map(data.response as IUser);
         result.isGlobalAdmin = true;
@@ -139,7 +139,7 @@ export class AdminService extends BaseService {
     }).pipe(
       map(data => {
         if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(`${data.status} occurs while getting all admins at ${identification} from backend`);
+          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while getting all admins at ${identification} from backend`));
         }
         let users = data.response as IUser[];
         let result: User[] = new Array(users.length);
@@ -168,7 +168,7 @@ export class AdminService extends BaseService {
     }).pipe(
       map(data => {
         if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(`${data.status} occurs while updating admin group ${modifiedGroup.identification} at backend`);
+          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while updating admin group ${modifiedGroup.identification} at backend`));
         }
         return AdminGroup.map(data.response as IAdminGroup)
       }),
@@ -192,7 +192,7 @@ export class AdminService extends BaseService {
     }).pipe(
       map(data => {
         if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(`${data.status} occurs while updating admin ${modifiedAdmin.identification} at backend`);
+          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while updating admin ${modifiedAdmin.identification} at backend`));
         }
         return User.map(data.response as IUser)
       }),
@@ -219,7 +219,7 @@ export class AdminService extends BaseService {
     }).pipe(
       map(data => {
         if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(`${data.status} occurs while creating admin at group ${adminGroupIdentification} from backend`);
+          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while creating admin at group ${adminGroupIdentification} from backend`));
         }
         let result = User.map(data.response as IUser);
         result.isGlobalAdmin = true;
@@ -246,7 +246,7 @@ export class AdminService extends BaseService {
     }).pipe(
       map(data => {
         if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(`${data.status} occurs while deleting admin ${identification} at backend`);
+          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while deleting admin ${identification} at backend`));
         }
         return data.response as boolean;
       }),
@@ -270,7 +270,7 @@ export class AdminService extends BaseService {
     }).pipe(
       map(data => {
         if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(`${data.status} occurs while counting admins at group ${identification} at backend`);
+          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while counting admins at group ${identification} at backend`));
         }
         return data.response as number;
       }),
@@ -297,7 +297,7 @@ export class AdminService extends BaseService {
     }).pipe(
       map(data => {
         if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(`${data.status} occurs while setting password of admin ${identification} at backend`);
+          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while setting password of admin ${identification} at backend`));
         }
         return data.response as boolean;
       }),
