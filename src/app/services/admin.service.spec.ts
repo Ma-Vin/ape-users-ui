@@ -1,8 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { Router } from '@angular/router';
-import { AppRoutingModule } from '../app-routing.module';
 import { Config } from '../config/config';
 import { ConfigService } from '../config/config.service';
 import { AdminGroup, IAdminGroup } from '../model/admin-group.model';
@@ -11,16 +9,11 @@ import { Status } from '../model/status.model';
 import { IUser, User } from '../model/user.model';
 
 import { AdminService } from './admin.service';
-import { AuthService } from './auth.service';
 import { RETRIES } from './base.service';
-import { CryptoService } from './crypto.service';
 
 describe('AdminService', () => {
   let service: AdminService;
-  let authService: AuthService;
   let configService: ConfigService;
-  let cryptoService: CryptoService;
-  let router: Router;
   let httpMock: HttpTestingController;
   let http: HttpClient;
 
@@ -92,17 +85,13 @@ describe('AdminService', () => {
 
 
   beforeEach(() => {
-    TestBed.configureTestingModule({ imports: [AppRoutingModule, HttpClientTestingModule] });
-    router = TestBed.inject(Router);
+    TestBed.configureTestingModule({ imports: [HttpClientTestingModule] });
     httpMock = TestBed.inject(HttpTestingController);
     http = TestBed.inject(HttpClient);
     configService = TestBed.inject(ConfigService);
-    cryptoService = TestBed.inject(CryptoService);
-    authService = TestBed.inject(AuthService);
     service = TestBed.inject(AdminService);
 
     spyOn(configService, 'getConfig').and.returnValue(mockConfig);
-    spyOn(authService, 'getToken').and.returnValue('dummyToken');
   });
 
 

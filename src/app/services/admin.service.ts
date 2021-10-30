@@ -7,8 +7,7 @@ import { AdminGroup, IAdminGroup } from '../model/admin-group.model';
 import { ResponseWrapper } from '../model/response-wrapper';
 import { Status } from '../model/status.model';
 import { IUser, User } from '../model/user.model';
-import { AuthService } from './auth.service';
-import { BaseService, RETRIES } from './base.service';
+import { BaseService, HTTP_JSON_OPTIONS, HTTP_URL_OPTIONS, RETRIES } from './base.service';
 
 
 /**
@@ -29,7 +28,7 @@ export class AdminService extends BaseService {
   private setAdminPasswordUrl: string | undefined;
 
 
-  constructor(private http: HttpClient, configService: ConfigService, private authService: AuthService) {
+  constructor(private http: HttpClient, configService: ConfigService) {
     super('AdminService', configService);
   }
 
@@ -78,9 +77,7 @@ export class AdminService extends BaseService {
     this.init();
     let url = `${this.getAdminGroupUrl}/${identification}`;
 
-    return this.http.get<ResponseWrapper>(url, {
-      headers: this.authService.getHttpUrlTokenAuthOptions().headers,
-    }).pipe(
+    return this.http.get<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
       map(data => {
         if (data.status == Status.ERROR || data.status == Status.FATAL) {
           throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while getting admin group ${identification} from backend`));
@@ -102,9 +99,7 @@ export class AdminService extends BaseService {
     this.init();
     let url = `${this.getAdminUrl}/${identification}`;
 
-    return this.http.get<ResponseWrapper>(url, {
-      headers: this.authService.getHttpUrlTokenAuthOptions().headers,
-    }).pipe(
+    return this.http.get<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
       map(data => {
         if (data.status == Status.ERROR || data.status == Status.FATAL) {
           throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while getting admin ${identification} from backend`));
@@ -131,7 +126,7 @@ export class AdminService extends BaseService {
     let url = `${this.getAllAdminsUrl}/${identification}`;
 
     return this.http.get<ResponseWrapper>(url, {
-      headers: this.authService.getHttpUrlTokenAuthOptions().headers,
+      headers: HTTP_URL_OPTIONS.headers,
       params: page == undefined || size == undefined ? undefined : {
         page: `${page}`,
         size: `${size}`
@@ -163,9 +158,7 @@ export class AdminService extends BaseService {
     this.init();
     let url = `${this.updateAdminGroupUrl}/${modifiedGroup.identification}`;
 
-    return this.http.put<ResponseWrapper>(url, modifiedGroup as IAdminGroup, {
-      headers: this.authService.getHttpJsonTokenAuthOptions().headers
-    }).pipe(
+    return this.http.put<ResponseWrapper>(url, modifiedGroup as IAdminGroup, HTTP_URL_OPTIONS).pipe(
       map(data => {
         if (data.status == Status.ERROR || data.status == Status.FATAL) {
           throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while updating admin group ${modifiedGroup.identification} at backend`));
@@ -187,9 +180,7 @@ export class AdminService extends BaseService {
     this.init();
     let url = `${this.updateAdminUrl}/${modifiedAdmin.identification}`;
 
-    return this.http.put<ResponseWrapper>(url, modifiedAdmin as IUser, {
-      headers: this.authService.getHttpJsonTokenAuthOptions().headers
-    }).pipe(
+    return this.http.put<ResponseWrapper>(url, modifiedAdmin as IUser, HTTP_JSON_OPTIONS).pipe(
       map(data => {
         if (data.status == Status.ERROR || data.status == Status.FATAL) {
           throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while updating admin ${modifiedAdmin.identification} at backend`));
@@ -214,9 +205,7 @@ export class AdminService extends BaseService {
     let url = `${this.createAdminUrl}`;
     let body = `firstName=${firstName}&lastName=${lastName}&adminGroupIdentification=${adminGroupIdentification}`;
 
-    return this.http.post<ResponseWrapper>(url, body, {
-      headers: this.authService.getHttpUrlTokenAuthOptions().headers
-    }).pipe(
+    return this.http.post<ResponseWrapper>(url, body, HTTP_URL_OPTIONS).pipe(
       map(data => {
         if (data.status == Status.ERROR || data.status == Status.FATAL) {
           throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while creating admin at group ${adminGroupIdentification} from backend`));
@@ -241,9 +230,7 @@ export class AdminService extends BaseService {
     this.init();
     let url = `${this.deleteAdminUrl}/${identification}`;
 
-    return this.http.delete<ResponseWrapper>(url, {
-      headers: this.authService.getHttpUrlTokenAuthOptions().headers
-    }).pipe(
+    return this.http.delete<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
       map(data => {
         if (data.status == Status.ERROR || data.status == Status.FATAL) {
           throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while deleting admin ${identification} at backend`));
@@ -265,9 +252,7 @@ export class AdminService extends BaseService {
     this.init();
     let url = `${this.countAdminUrl}/${identification}`;
 
-    return this.http.get<ResponseWrapper>(url, {
-      headers: this.authService.getHttpUrlTokenAuthOptions().headers,
-    }).pipe(
+    return this.http.get<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
       map(data => {
         if (data.status == Status.ERROR || data.status == Status.FATAL) {
           throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while counting admins at group ${identification} at backend`));
@@ -292,9 +277,7 @@ export class AdminService extends BaseService {
 
     return this.http.patch<ResponseWrapper>(url, {
       rawPassword: password
-    }, {
-      headers: this.authService.getHttpJsonTokenAuthOptions().headers
-    }).pipe(
+    }, HTTP_JSON_OPTIONS).pipe(
       map(data => {
         if (data.status == Status.ERROR || data.status == Status.FATAL) {
           throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while setting password of admin ${identification} at backend`));

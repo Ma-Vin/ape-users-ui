@@ -11,13 +11,13 @@ export const RETRIES = 3;
 
 export const HTTP_URL_OPTIONS = {
   headers: new HttpHeaders({
-    'Content-Type': 'application/x-www-form-urlencoded'
+    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
   })
 };
 
 export const HTTP_JSON_OPTIONS = {
   headers: new HttpHeaders({
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json;charset=UTF-8'
   })
 };
 
