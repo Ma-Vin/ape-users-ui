@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { catchError, map, retry } from 'rxjs/operators';
 import { ConfigService } from '../config/config.service';
 import { AdminGroup, IAdminGroup } from '../model/admin-group.model';
@@ -26,6 +26,29 @@ export class AdminService extends BaseService {
   private getAllAdminsUrl: string | undefined;
   private updateAdminUrl: string | undefined;
   private setAdminPasswordUrl: string | undefined;
+
+  private adminGroupMock: AdminGroup = {
+    description: 'Group of admins',
+    groupName: 'admingroup',
+    identification: 'AGAA00001',
+    validFrom: new Date(2021, 0, 1, 12, 0),
+    validTo: undefined
+  };
+
+  private adminsMock: User[] = [{
+    identification: 'UAA00001',
+    firstName: 'Max',
+    lastName: 'Power',
+    mail: 'max.power@ma-vin.de',
+    image: undefined,
+    smallImage: undefined,
+    lastLogin: new Date(2021, 9, 25, 20, 15, 1),
+    validFrom: new Date(2021, 9, 1),
+    validTo: undefined,
+    isGlobalAdmin: true
+  } as User];
+
+  private nextAdminIdMock = 2;
 
 
   constructor(private http: HttpClient, configService: ConfigService) {
@@ -75,6 +98,9 @@ export class AdminService extends BaseService {
    */
   public getAdminGroup(identification: string): Observable<AdminGroup> {
     this.init();
+    if (this.useMock) {
+      return this.getAdminGroupMock(identification);
+    }
     let url = `${this.getAdminGroupUrl}/${identification}`;
 
     return this.http.get<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
@@ -89,6 +115,18 @@ export class AdminService extends BaseService {
     );
   }
 
+  /**
+   * Creates mock for getting an admingroup
+   * @param identification id of the admin group
+   * @returns the mocked observable of the admingroup
+   */
+  private getAdminGroupMock(identification: string): Observable<AdminGroup> {
+    if (this.adminGroupMock.identification == identification) {
+      return of(this.adminGroupMock);
+    }
+    return throwError(new Error(`${Status.ERROR} occurs while getting admin group ${identification} from backend`));
+  }
+
 
   /**
    * Get an admin from the backend
@@ -97,6 +135,9 @@ export class AdminService extends BaseService {
    */
   public getAdmin(identification: string): Observable<User> {
     this.init();
+    if (this.useMock) {
+      return this.getAdminMock(identification);
+    }
     let url = `${this.getAdminUrl}/${identification}`;
 
     return this.http.get<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
@@ -115,6 +156,21 @@ export class AdminService extends BaseService {
 
 
   /**
+   * Creates mock for getting an admin
+   * @param identification id of the admin
+   * @returns the mocked observable of the admin
+   */
+  private getAdminMock(identification: string): Observable<User> {
+    for (let a of this.adminsMock) {
+      if (a.identification == identification) {
+        return of(a);
+      }
+    }
+    return throwError(new Error(`${Status.ERROR} occurs while getting admin ${identification} from backend`));
+  }
+
+
+  /**
    * Get all admins at a group from the backend
    * @param identification id of the admin group
    * @param page zero-based page index, must not be negative.
@@ -123,6 +179,9 @@ export class AdminService extends BaseService {
    */
   public getAllAdmins(identification: string, page: number | undefined, size: number | undefined): Observable<User[]> {
     this.init();
+    if (this.useMock) {
+      return this.getAllAdminsMock();
+    }
     let url = `${this.getAllAdminsUrl}/${identification}`;
 
     return this.http.get<ResponseWrapper>(url, {
@@ -150,12 +209,24 @@ export class AdminService extends BaseService {
 
 
   /**
+   * Creates mock for getting all admins
+   * @returns the mocked observable of all admins
+   */
+  private getAllAdminsMock(): Observable<User[]> {
+    return of(this.adminsMock);
+  }
+
+
+  /**
    * Updates an admingroup in the backend
    * @param modifiedGroup the modefied group to put in the backend
    * @returns the stored group
    */
   public updateAdminGroup(modifiedGroup: AdminGroup): Observable<AdminGroup> {
     this.init();
+    if (this.useMock) {
+      return this.updateAdminGroupMock(modifiedGroup);
+    }
     let url = `${this.updateAdminGroupUrl}/${modifiedGroup.identification}`;
 
     return this.http.put<ResponseWrapper>(url, modifiedGroup as IAdminGroup, HTTP_URL_OPTIONS).pipe(
@@ -172,12 +243,31 @@ export class AdminService extends BaseService {
 
 
   /**
+   * Creates mock for updating an admin group
+   * @param modifiedAdmin the modified group
+   * @returns the mocked observable of the admin group
+   */
+  private updateAdminGroupMock(modifiedGroup: AdminGroup): Observable<AdminGroup> {
+    if (this.adminGroupMock.identification == modifiedGroup.identification) {
+      this.adminGroupMock = modifiedGroup;
+      return of(modifiedGroup);
+    }
+
+    return throwError(new Error(`${Status.ERROR} occurs while updating admin group ${modifiedGroup.identification} at backend`));
+  }
+
+
+
+  /**
    * Updates an admin in the backend
    * @param modifiedGroup the modefied user to put in the backend
    * @returns the stored user
    */
   public updateAdmin(modifiedAdmin: User): Observable<User> {
     this.init();
+    if (this.useMock) {
+      return this.updateAdminMock(modifiedAdmin);
+    }
     let url = `${this.updateAdminUrl}/${modifiedAdmin.identification}`;
 
     return this.http.put<ResponseWrapper>(url, modifiedAdmin as IUser, HTTP_JSON_OPTIONS).pipe(
@@ -194,6 +284,22 @@ export class AdminService extends BaseService {
 
 
   /**
+   * Creates mock for updating an admin
+   * @param modifiedAdmin the modified user
+   * @returns the mocked observable of the admin
+   */
+  private updateAdminMock(modifiedAdmin: User): Observable<User> {
+    for (let i = 0; i < this.adminsMock.length; i++) {
+      if (this.adminsMock[i].identification == modifiedAdmin.identification) {
+        this.adminsMock[i] = modifiedAdmin;
+        return of(modifiedAdmin);
+      }
+    }
+    return throwError(new Error(`${Status.ERROR} occurs while updating admin ${modifiedAdmin.identification} at backend`));
+  }
+
+
+  /**
    * Creates an admin at the admingroup
    * @param adminGroupIdentification id of the group where to create user at
    * @param firstName the first name of then user
@@ -202,6 +308,10 @@ export class AdminService extends BaseService {
    */
   createAdmin(adminGroupIdentification: string, firstName: string, lastName: string): Observable<User> {
     this.init();
+    if (this.useMock) {
+      return this.createAdminMock(firstName, lastName);
+    }
+
     let url = `${this.createAdminUrl}`;
     let body = `firstName=${firstName}&lastName=${lastName}&adminGroupIdentification=${adminGroupIdentification}`;
 
@@ -219,6 +329,37 @@ export class AdminService extends BaseService {
     );
   }
 
+  /**
+   * creates a new admin at mock
+   * @param firstName first name of the new admin
+   * @param lastName last name of the new admin
+   * @returns the mocked observable of the new admin
+   */
+  private createAdminMock(firstName: string, lastName: string): Observable<User> {
+    let idBase = 'UAA';
+    let idExtend = `${this.nextAdminIdMock}`;
+    while (idExtend.length < 5) {
+      idExtend = '0'.concat(idExtend);
+    }
+    this.nextAdminIdMock++;
+
+    let addedAdmin: User = {
+      identification: idBase.concat(idExtend),
+      firstName: firstName,
+      lastName: lastName,
+      mail: undefined,
+      image: undefined,
+      smallImage: undefined,
+      lastLogin: undefined,
+      validFrom: new Date(),
+      validTo: undefined,
+      isGlobalAdmin: true
+    };
+
+    this.adminsMock.push(addedAdmin);
+
+    return of(addedAdmin);
+  }
 
 
   /**
@@ -228,6 +369,9 @@ export class AdminService extends BaseService {
    */
   deleteAdmin(identification: string): Observable<boolean> {
     this.init();
+    if (this.useMock) {
+      return this.deleteAdminMock(identification);
+    }
     let url = `${this.deleteAdminUrl}/${identification}`;
 
     return this.http.delete<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
@@ -242,6 +386,21 @@ export class AdminService extends BaseService {
     );
   }
 
+  /**
+   * deletes an admin at mock
+   * @param identification id of the admin to delete
+   * @returns the mocked observable of succesfull deletion
+   */
+  private deleteAdminMock(identification: string): Observable<boolean> {
+    for (let i = 0; i < this.adminsMock.length; i++) {
+      if (this.adminsMock[i].identification == identification) {
+        this.adminsMock.splice(i, 1);
+        return of(true);
+      }
+    }
+    return of(false);
+  }
+
 
   /**
    * Counts the admins at an admin group in the backend
@@ -250,6 +409,9 @@ export class AdminService extends BaseService {
    */
   countAdmins(identification: string): Observable<number> {
     this.init();
+    if (this.useMock) {
+      return this.countAdminsMock();
+    }
     let url = `${this.countAdminUrl}/${identification}`;
 
     return this.http.get<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
@@ -264,6 +426,14 @@ export class AdminService extends BaseService {
     );
   }
 
+  /**
+   * Counts aminds at mock
+   * @returns the number of admins at mock
+   */
+  private countAdminsMock(): Observable<number> {
+    return of(this.adminsMock.length);
+  }
+
 
   /**
    * sets an password of an admin in the backend
@@ -273,6 +443,9 @@ export class AdminService extends BaseService {
    */
   setPassword(identification: string, password: string): Observable<boolean> {
     this.init();
+    if (this.useMock) {
+      return this.setPasswordMock(identification);
+    }
     let url = `${this.setAdminPasswordUrl}/${identification}`;
 
     return this.http.patch<ResponseWrapper>(url, {
@@ -287,5 +460,20 @@ export class AdminService extends BaseService {
       retry(RETRIES),
       catchError(this.handleError)
     );
+  }
+
+
+  /**
+   * sets an password of an admin at mock
+   * @param identification id of the user
+   * @returns mocked reponse of updating password
+   */
+  private setPasswordMock(identification: string): Observable<boolean> {
+    for (let a of this.adminsMock) {
+      if (a.identification == identification) {
+        return of(true);
+      }
+    }
+    return throwError(new Error(`${Status.ERROR} occurs while setting password of admin ${identification} at backend`));
   }
 }

@@ -5,6 +5,7 @@ import { Observable, throwError } from 'rxjs';
 import { Config } from '../config/config';
 import { Message } from '../model/message';
 import { Status } from '../model/status.model';
+import { environment } from 'src/environments/environment';
 
 
 export const RETRIES = 3;
@@ -23,11 +24,13 @@ export const HTTP_JSON_OPTIONS = {
 
 export abstract class BaseService {
   protected isInit = false;
+  public useMock;
   protected config: Config | undefined;
   public clientId: string | undefined;
   public clientSecret: string | undefined;
 
   constructor(@Inject(String) private serviceName: string, protected configService: ConfigService) {
+    this.useMock = environment.useMock;
   }
 
   protected init(): void {
