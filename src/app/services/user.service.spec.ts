@@ -25,7 +25,8 @@ describe('UserService', () => {
   {
     clientId: 'ape.user.ui',
     clientSecret: 'changeIt',
-    backendBaseUrl: '//localhost:8080'
+    backendBaseUrl: '//localhost:8080',
+    adminGroupId: 'AGAA00001'
   };
 
   const mockIUser: IUser = {

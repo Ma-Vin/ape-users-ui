@@ -33,7 +33,8 @@ describe('AuthService', () => {
   {
     clientId: 'ape.user.ui',
     clientSecret: 'changeIt',
-    backendBaseUrl: '//localhost:8080'
+    backendBaseUrl: '//localhost:8080',
+    adminGroupId: 'AGAA00001'
   };
 
   const mockResponse = {

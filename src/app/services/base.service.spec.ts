@@ -12,7 +12,8 @@ describe('BaseService', () => {
     {
       clientId: 'ape.user.ui',
       clientSecret: 'changeIt',
-      backendBaseUrl: '//localhost:8080/'
+      backendBaseUrl: '//localhost:8080/',
+      adminGroupId: 'AGAA00001'
     };
     const fake = { getConfig: () => mockConfig };
 
@@ -33,7 +34,7 @@ describe('BaseService', () => {
 
 
 class TestBaseService extends BaseService {
-  public init(){
+  public init() {
     super.init();
   }
- }
+}
