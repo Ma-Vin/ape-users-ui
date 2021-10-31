@@ -3,9 +3,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
-import { AppRoutingModule } from '../app-routing.module';
-import { MaterialModule } from '../material/material.module';
-import { AuthService } from '../services/auth.service';
+import { AppRoutingModule } from '../../app-routing.module';
+import { MaterialModule } from '../../material/material.module';
+import { AuthService } from '../../services/auth.service';
 
 import { LoginComponent } from './login.component';
 
