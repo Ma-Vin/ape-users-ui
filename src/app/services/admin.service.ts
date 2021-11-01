@@ -7,8 +7,8 @@ import { AdminGroup, IAdminGroup } from '../model/admin-group.model';
 import { ResponseWrapper } from '../model/response-wrapper';
 import { Status } from '../model/status.model';
 import { IUser, User } from '../model/user.model';
-import { BaseService, HTTP_JSON_OPTIONS, HTTP_URL_OPTIONS, RETRIES } from './base.service';
-import { ALL_USERS_MOCK_KEY, NEXT_USER_ID_MOCK_KEY } from './user.service';
+import { ALL_USERS_MOCK_KEY, BaseBackendService, NEXT_USER_ID_MOCK_KEY } from './base-backend.service';
+import { HTTP_JSON_OPTIONS, HTTP_URL_OPTIONS, RETRIES } from './base.service';
 
 
 /**
@@ -17,7 +17,7 @@ import { ALL_USERS_MOCK_KEY, NEXT_USER_ID_MOCK_KEY } from './user.service';
 @Injectable({
   providedIn: 'root'
 })
-export class AdminService extends BaseService {
+export class AdminService extends BaseBackendService {
   private getAdminGroupUrl: string | undefined;
   private updateAdminGroupUrl: string | undefined;
   private createAdminUrl: string | undefined;
@@ -39,20 +39,30 @@ export class AdminService extends BaseService {
 
   constructor(private http: HttpClient, configService: ConfigService) {
     super('AdminService', configService);
-    this.initMocks();
   }
 
-  /**
-   * Initialize the data at mock
-   */
-  private initMocks(): void {
-    if (!this.useMock || BaseService.mockData.has('AdminService.initMocks')) {
-      return
+
+  protected initServiceUrls(): boolean {
+    if (this.config == undefined) {
+      return false;
     }
-    if (!BaseService.mockData.has(ALL_USERS_MOCK_KEY)) {
-      BaseService.mockData.set(ALL_USERS_MOCK_KEY, [] as User[]);
-    }
-    (BaseService.mockData.get(ALL_USERS_MOCK_KEY) as User[]).push({
+
+    let adminControllerUrl = this.config.backendBaseUrl.concat('/admin');
+
+    this.getAdminGroupUrl = adminControllerUrl.concat('/getAdminGroup');
+    this.updateAdminGroupUrl = adminControllerUrl.concat('/updateAdminGroup');
+    this.createAdminUrl = adminControllerUrl.concat('/createAdmin');
+    this.deleteAdminUrl = adminControllerUrl.concat('/deleteAdmin');
+    this.getAdminUrl = adminControllerUrl.concat('/getAdmin');
+    this.countAdminUrl = adminControllerUrl.concat('/countAdmins');
+    this.getAllAdminsUrl = adminControllerUrl.concat('/getAllAdmins');
+    this.updateAdminUrl = adminControllerUrl.concat('/updateAdmin');
+    this.setAdminPasswordUrl = adminControllerUrl.concat('/setAdminPassword');
+    return true;
+  }
+
+  protected initServiceMocks(): void {
+    (BaseBackendService.mockData.get(ALL_USERS_MOCK_KEY) as User[]).push({
       identification: 'UAA00001',
       firstName: 'Max',
       lastName: 'Power',
@@ -64,7 +74,6 @@ export class AdminService extends BaseService {
       validTo: undefined,
       isGlobalAdmin: true
     } as User);
-    BaseService.mockData.set('AdminService.initMocks', true);
   }
 
   /**
@@ -86,45 +95,8 @@ export class AdminService extends BaseService {
    * @returns array of all users
    */
   private getAllUsersFromMock(): User[] {
-    if (!BaseService.mockData.has(ALL_USERS_MOCK_KEY)) {
-      this.initMocks();
-    }
-    return (BaseService.mockData.get(ALL_USERS_MOCK_KEY) as User[]);
-  }
-
-
-  /**
-   * initilize the service
-   */
-  protected init() {
-    if (this.isInit) {
-      return;
-    }
-    super.init();
-    this.isInit = true;
-    this.initUrls();
-  }
-
-  /**
-   * initilize the urls of the service
-   */
-  private initUrls() {
-    if (this.config == undefined) {
-      this.isInit = false;
-      return;
-    }
-
-    let adminControllerUrl = this.config.backendBaseUrl.concat('/admin');
-
-    this.getAdminGroupUrl = adminControllerUrl.concat('/getAdminGroup');
-    this.updateAdminGroupUrl = adminControllerUrl.concat('/updateAdminGroup');
-    this.createAdminUrl = adminControllerUrl.concat('/createAdmin');
-    this.deleteAdminUrl = adminControllerUrl.concat('/deleteAdmin');
-    this.getAdminUrl = adminControllerUrl.concat('/getAdmin');
-    this.countAdminUrl = adminControllerUrl.concat('/countAdmins');
-    this.getAllAdminsUrl = adminControllerUrl.concat('/getAllAdmins');
-    this.updateAdminUrl = adminControllerUrl.concat('/updateAdmin');
-    this.setAdminPasswordUrl = adminControllerUrl.concat('/setAdminPassword');
+    this.initMocks();
+    return (BaseBackendService.mockData.get(ALL_USERS_MOCK_KEY) as User[]);
   }
 
 
@@ -375,13 +347,15 @@ export class AdminService extends BaseService {
    */
   private createAdminMock(firstName: string, lastName: string): Observable<User> {
     let idBase = 'UAA';
-    let nextUserIdMock = BaseService.mockData.has(NEXT_USER_ID_MOCK_KEY) ? BaseService.mockData.get(NEXT_USER_ID_MOCK_KEY) : 3;
+
+    this.initMocks();
+    let nextUserIdMock = BaseBackendService.mockData.get(NEXT_USER_ID_MOCK_KEY);
 
     let idExtend = `${nextUserIdMock}`;
     while (idExtend.length < 5) {
       idExtend = '0'.concat(idExtend);
     }
-    BaseService.mockData.set(NEXT_USER_ID_MOCK_KEY, nextUserIdMock + 1);
+    BaseBackendService.mockData.set(NEXT_USER_ID_MOCK_KEY, nextUserIdMock + 1);
 
     let addedAdmin: User = {
       identification: idBase.concat(idExtend),

@@ -32,9 +32,16 @@ describe('BaseService', () => {
 
 });
 
-
+/**
+ * Dummy extension to be able to test the abstract class
+ */
 class TestBaseService extends BaseService {
+
   public init() {
     super.init();
+  }
+
+  protected initService(): boolean {
+    return true;
   }
 }

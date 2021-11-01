@@ -3,13 +3,13 @@ import { Injectable } from '@angular/core';
 import { ConfigService } from '../config/config.service';
 import { TokenResponse } from '../model/auth/token-response.model';
 import { JwtPayload } from '../model/auth/jwt-payload.model';
-import { BaseService } from './base.service';
 import { catchError, map, share } from 'rxjs/operators';
 import { CryptoService } from './crypto.service';
 import { Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
 import { LOGIN_PATH } from '../app-routing.module';
 import { SelectionService } from './selection.service';
+import { BaseBackendService } from './base-backend.service';
 
 
 export const TOKEN_URL = "/oauth/token";
@@ -21,7 +21,7 @@ export const REFRESH_TOKEN = "refresh_token";
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService extends BaseService {
+export class AuthService extends BaseBackendService {
   private isRefreshing = false;
   private retrieveTokenUrl: string;
   private refreshTokenUrl: string;
@@ -35,14 +35,17 @@ export class AuthService extends BaseService {
     this.refreshTokenUrl = '';
   }
 
-  protected init(): void {
-    if (this.isInit) {
-      return;
+  protected initServiceUrls(): boolean {
+    if (this.config == undefined) {
+      return false;
     }
-    super.init();
-    let config = this.configService.getConfig();
-    this.retrieveTokenUrl = config != undefined ? config.backendBaseUrl.concat(TOKEN_URL) : '';
+    this.retrieveTokenUrl = this.config.backendBaseUrl.concat(TOKEN_URL);
     this.refreshTokenUrl = this.retrieveTokenUrl;
+    return true;
+  }
+
+  protected initServiceMocks(): void {
+    // Nothing to do here yet
   }
 
   retrieveToken(username: string, password: string): Observable<void> {

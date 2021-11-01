@@ -6,33 +6,32 @@ import { ConfigService } from '../config/config.service';
 import { ResponseWrapper } from '../model/response-wrapper';
 import { Status } from '../model/status.model';
 import { IUser, User } from '../model/user.model';
-import { BaseService, HTTP_URL_OPTIONS, RETRIES } from './base.service';
-
-export const ALL_USERS_MOCK_KEY = 'users';
-export const NEXT_USER_ID_MOCK_KEY = 'nextUserId';
+import { ALL_USERS_MOCK_KEY, BaseBackendService } from './base-backend.service';
+import { HTTP_URL_OPTIONS, RETRIES } from './base.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class UserService extends BaseService {
+export class UserService extends BaseBackendService {
   private getUserUrl: string | undefined;
 
   constructor(private http: HttpClient, configService: ConfigService) {
     super('UserService', configService);
-    this.initMocks();
   }
 
-  /**
-   * Initialize the data at mock
-   */
-  private initMocks(): void {
-    if (!this.useMock || BaseService.mockData.has('UserService.initMocks')) {
-      return
+  protected initServiceUrls(): boolean {
+    if (this.config == undefined) {
+      return false;
     }
-    if (!BaseService.mockData.has(ALL_USERS_MOCK_KEY)) {
-      BaseService.mockData.set(ALL_USERS_MOCK_KEY, [] as User[]);
-    }
-    (BaseService.mockData.get(ALL_USERS_MOCK_KEY) as User[]).push({
+
+    let adminControllerUrl = this.config.backendBaseUrl.concat('/user');
+
+    this.getUserUrl = adminControllerUrl.concat('/getUser');
+    return true;
+  }
+
+  protected initServiceMocks(): void {
+    (BaseBackendService.mockData.get(ALL_USERS_MOCK_KEY) as User[]).push({
       identification: 'UAA00002',
       firstName: 'Lower',
       lastName: 'Power',
@@ -44,7 +43,6 @@ export class UserService extends BaseService {
       validTo: undefined,
       isGlobalAdmin: false
     } as User);
-    BaseService.mockData.set('UserService.initMocks', true);
   }
 
   /**
@@ -66,37 +64,8 @@ export class UserService extends BaseService {
    * @returns array of all users
    */
   private getAllUsersFromMock(): User[] {
-    if (!BaseService.mockData.has(ALL_USERS_MOCK_KEY)) {
-      this.initMocks();
-    }
-    return (BaseService.mockData.get(ALL_USERS_MOCK_KEY) as User[]);
-  }
-
-  /**
-   * initilize the service
-   */
-  protected init() {
-    if (this.isInit) {
-      return;
-    }
-    super.init();
-    this.isInit = true;
-    this.initUrls();
-  }
-
-
-  /**
- * initilize the urls of the service
- */
-  private initUrls() {
-    if (this.config == undefined) {
-      this.isInit = false;
-      return;
-    }
-
-    let adminControllerUrl = this.config.backendBaseUrl.concat('/user');
-
-    this.getUserUrl = adminControllerUrl.concat('/getUser');
+    this.initMocks();
+    return (BaseBackendService.mockData.get(ALL_USERS_MOCK_KEY) as User[]);
   }
 
   /**

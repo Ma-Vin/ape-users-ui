@@ -1,11 +1,9 @@
-import { Inject } from '@angular/core';
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { ConfigService } from '../config/config.service';
 import { Observable, throwError } from 'rxjs';
 import { Config } from '../config/config';
 import { Message } from '../model/message';
 import { Status } from '../model/status.model';
-import { environment } from 'src/environments/environment';
 
 
 export const RETRIES = 3;
@@ -23,21 +21,13 @@ export const HTTP_JSON_OPTIONS = {
 };
 
 export abstract class BaseService {
-  protected static mockData: Map<string, any> = new Map();
 
   protected isInit = false;
-  public useMock;
   protected config: Config | undefined;
   public clientId: string | undefined;
   public clientSecret: string | undefined;
 
-  constructor(@Inject(String) private serviceName: string, protected configService: ConfigService) {
-    this.useMock = environment.useMock;
-  }
-
-  public static clearMockData(): void {
-    BaseService.mockData.clear();
-  }
+  constructor(protected serviceName: string, protected configService: ConfigService) { }
 
   protected init(): void {
     if (this.isInit) {
@@ -46,7 +36,14 @@ export abstract class BaseService {
     this.config = this.configService.getConfig();
     this.clientId = this.config?.clientId;
     this.clientSecret = this.config?.clientSecret;
+    this.isInit = this.initService();
   }
+
+  /**
+   * Initialize service specific values
+   * @returns true if initialization was successfull. Otherwise false
+   */
+  protected abstract initService(): boolean;
 
   public handleError(error: any, data: Observable<any>) {
     if (error instanceof HttpErrorResponse) {

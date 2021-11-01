@@ -9,7 +9,8 @@ import { Status } from '../model/status.model';
 import { IUser, User } from '../model/user.model';
 
 import { AdminService } from './admin.service';
-import { BaseService, RETRIES } from './base.service';
+import { BaseBackendService } from './base-backend.service';
+import { RETRIES } from './base.service';
 
 describe('AdminService', () => {
   let service: AdminService;
@@ -92,7 +93,7 @@ describe('AdminService', () => {
     configService = TestBed.inject(ConfigService);
     service = TestBed.inject(AdminService);
     
-    BaseService.clearMockData();
+    BaseBackendService.clearMockData();
 
     spyOn(configService, 'getConfig').and.returnValue(mockConfig);
   });

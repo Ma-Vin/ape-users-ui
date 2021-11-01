@@ -6,7 +6,8 @@ import { ConfigService } from '../config/config.service';
 import { ResponseWrapper } from '../model/response-wrapper';
 import { Status } from '../model/status.model';
 import { IUser } from '../model/user.model';
-import { BaseService, RETRIES } from './base.service';
+import { BaseBackendService } from './base-backend.service';
+import { RETRIES } from './base.service';
 
 import { UserService } from './user.service';
 
@@ -62,7 +63,7 @@ describe('UserService', () => {
     configService = TestBed.inject(ConfigService);
     service = TestBed.inject(UserService);
 
-    BaseService.clearMockData();
+    BaseBackendService.clearMockData();
 
     spyOn(configService, 'getConfig').and.returnValue(mockConfig);
   });
