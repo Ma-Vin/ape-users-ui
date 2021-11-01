@@ -9,7 +9,7 @@ import { Status } from '../model/status.model';
 import { IUser, User } from '../model/user.model';
 
 import { AdminService } from './admin.service';
-import { RETRIES } from './base.service';
+import { BaseService, RETRIES } from './base.service';
 
 describe('AdminService', () => {
   let service: AdminService;
@@ -91,6 +91,8 @@ describe('AdminService', () => {
     http = TestBed.inject(HttpClient);
     configService = TestBed.inject(ConfigService);
     service = TestBed.inject(AdminService);
+    
+    BaseService.clearMockData();
 
     spyOn(configService, 'getConfig').and.returnValue(mockConfig);
   });
@@ -722,7 +724,7 @@ describe('AdminService', () => {
     service.useMock = true;
     service.createAdmin(adminGroupId, firstName, lastName).subscribe(data => {
       expect(data).toBeTruthy();
-      expect(data.identification).toEqual('UAA00002');
+      expect(data.identification).toEqual('UAA00003');
       expect(data.firstName).toEqual(firstName);
       expect(data.lastName).toEqual(lastName);
     });

@@ -23,6 +23,8 @@ export const HTTP_JSON_OPTIONS = {
 };
 
 export abstract class BaseService {
+  protected static mockData: Map<string, any> = new Map();
+
   protected isInit = false;
   public useMock;
   protected config: Config | undefined;
@@ -31,6 +33,10 @@ export abstract class BaseService {
 
   constructor(@Inject(String) private serviceName: string, protected configService: ConfigService) {
     this.useMock = environment.useMock;
+  }
+
+  public static clearMockData(): void {
+    BaseService.mockData.clear();
   }
 
   protected init(): void {

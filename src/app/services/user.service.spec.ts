@@ -6,7 +6,7 @@ import { ConfigService } from '../config/config.service';
 import { ResponseWrapper } from '../model/response-wrapper';
 import { Status } from '../model/status.model';
 import { IUser } from '../model/user.model';
-import { RETRIES } from './base.service';
+import { BaseService, RETRIES } from './base.service';
 
 import { UserService } from './user.service';
 
@@ -17,8 +17,8 @@ describe('UserService', () => {
   let http: HttpClient;
 
 
-  const userId = 'UAA00001';
-  const firstName = 'Max';
+  const userId = 'UAA00002';
+  const firstName = 'Lower';
   const lastName = 'Power';
 
   const mockConfig: Config =
@@ -33,7 +33,7 @@ describe('UserService', () => {
     identification: userId,
     firstName: firstName,
     lastName: lastName,
-    mail: 'max.power@ma-vin.de',
+    mail: `${firstName.toLocaleLowerCase()}.${lastName.toLocaleLowerCase()}@ma-vin.de`,
     image: undefined,
     smallImage: undefined,
     lastLogin: new Date(2021, 9, 25, 20, 15, 1),
@@ -61,6 +61,8 @@ describe('UserService', () => {
     http = TestBed.inject(HttpClient);
     configService = TestBed.inject(ConfigService);
     service = TestBed.inject(UserService);
+
+    BaseService.clearMockData();
 
     spyOn(configService, 'getConfig').and.returnValue(mockConfig);
   });
@@ -138,6 +140,36 @@ describe('UserService', () => {
 
     // No retry anymore
     httpMock.expectNone(`//localhost:8080/user/getUser/${userId}`);
+
+    tick();
+  }));
+
+
+  it('getUser - mock', fakeAsync(() => {
+    service.useMock = true;
+    service.getUser(userId).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.identification).toEqual(userId);
+    });
+
+    httpMock.expectNone(`//localhost:8080/user/getUser/${userId}`);
+
+    tick();
+  }));
+
+
+  it('getUser - mock with error', fakeAsync(() => {
+    service.useMock = true;
+    service.getUser('someId').subscribe(
+      data => {
+        expect(data).toBeFalsy();
+      },
+      e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual(`${Status.ERROR} occurs while getting user someId from backend`);
+      });
+
+    httpMock.expectNone(`//localhost:8080/user/getUser/someId`);
 
     tick();
   }));

@@ -8,6 +8,7 @@ import { ResponseWrapper } from '../model/response-wrapper';
 import { Status } from '../model/status.model';
 import { IUser, User } from '../model/user.model';
 import { BaseService, HTTP_JSON_OPTIONS, HTTP_URL_OPTIONS, RETRIES } from './base.service';
+import { ALL_USERS_MOCK_KEY, NEXT_USER_ID_MOCK_KEY } from './user.service';
 
 
 /**
@@ -35,24 +36,60 @@ export class AdminService extends BaseService {
     validTo: undefined
   };
 
-  private adminsMock: User[] = [{
-    identification: 'UAA00001',
-    firstName: 'Max',
-    lastName: 'Power',
-    mail: 'max.power@ma-vin.de',
-    image: undefined,
-    smallImage: undefined,
-    lastLogin: new Date(2021, 9, 25, 20, 15, 1),
-    validFrom: new Date(2021, 9, 1),
-    validTo: undefined,
-    isGlobalAdmin: true
-  } as User];
-
-  private nextAdminIdMock = 2;
-
 
   constructor(private http: HttpClient, configService: ConfigService) {
     super('AdminService', configService);
+    this.initMocks();
+  }
+
+  /**
+   * Initialize the data at mock
+   */
+  private initMocks(): void {
+    if (!this.useMock || BaseService.mockData.has('AdminService.initMocks')) {
+      return
+    }
+    if (!BaseService.mockData.has(ALL_USERS_MOCK_KEY)) {
+      BaseService.mockData.set(ALL_USERS_MOCK_KEY, [] as User[]);
+    }
+    (BaseService.mockData.get(ALL_USERS_MOCK_KEY) as User[]).push({
+      identification: 'UAA00001',
+      firstName: 'Max',
+      lastName: 'Power',
+      mail: 'max.power@ma-vin.de',
+      image: undefined,
+      smallImage: undefined,
+      lastLogin: new Date(2021, 9, 25, 20, 15, 1),
+      validFrom: new Date(2021, 9, 1),
+      validTo: undefined,
+      isGlobalAdmin: true
+    } as User);
+    BaseService.mockData.set('AdminService.initMocks', true);
+  }
+
+  /**
+   * Determines all admins at mock data
+   * @returns array of all admins
+   */
+  private getAllAdminsFromMock(): User[] {
+    let result: User[] = [];
+    for (let u of this.getAllUsersFromMock()) {
+      if (u.isGlobalAdmin) {
+        result.push(u);
+      }
+    }
+    return result;
+  }
+
+  /**
+   * Determines all users at mock data
+   * @returns array of all users
+   */
+  private getAllUsersFromMock(): User[] {
+    if (!BaseService.mockData.has(ALL_USERS_MOCK_KEY)) {
+      this.initMocks();
+    }
+    return (BaseService.mockData.get(ALL_USERS_MOCK_KEY) as User[]);
   }
 
 
@@ -161,7 +198,7 @@ export class AdminService extends BaseService {
    * @returns the mocked observable of the admin
    */
   private getAdminMock(identification: string): Observable<User> {
-    for (let a of this.adminsMock) {
+    for (let a of this.getAllAdminsFromMock()) {
       if (a.identification == identification) {
         return of(a);
       }
@@ -213,7 +250,7 @@ export class AdminService extends BaseService {
    * @returns the mocked observable of all admins
    */
   private getAllAdminsMock(): Observable<User[]> {
-    return of(this.adminsMock);
+    return of(this.getAllAdminsFromMock());
   }
 
 
@@ -289,9 +326,10 @@ export class AdminService extends BaseService {
    * @returns the mocked observable of the admin
    */
   private updateAdminMock(modifiedAdmin: User): Observable<User> {
-    for (let i = 0; i < this.adminsMock.length; i++) {
-      if (this.adminsMock[i].identification == modifiedAdmin.identification) {
-        this.adminsMock[i] = modifiedAdmin;
+    let users = this.getAllUsersFromMock();
+    for (let i = 0; i < users.length; i++) {
+      if (users[i].identification == modifiedAdmin.identification) {
+        users[i] = modifiedAdmin;
         return of(modifiedAdmin);
       }
     }
@@ -337,11 +375,13 @@ export class AdminService extends BaseService {
    */
   private createAdminMock(firstName: string, lastName: string): Observable<User> {
     let idBase = 'UAA';
-    let idExtend = `${this.nextAdminIdMock}`;
+    let nextUserIdMock = BaseService.mockData.has(NEXT_USER_ID_MOCK_KEY) ? BaseService.mockData.get(NEXT_USER_ID_MOCK_KEY) : 3;
+
+    let idExtend = `${nextUserIdMock}`;
     while (idExtend.length < 5) {
       idExtend = '0'.concat(idExtend);
     }
-    this.nextAdminIdMock++;
+    BaseService.mockData.set(NEXT_USER_ID_MOCK_KEY, nextUserIdMock + 1);
 
     let addedAdmin: User = {
       identification: idBase.concat(idExtend),
@@ -356,7 +396,7 @@ export class AdminService extends BaseService {
       isGlobalAdmin: true
     };
 
-    this.adminsMock.push(addedAdmin);
+    this.getAllUsersFromMock().push(addedAdmin);
 
     return of(addedAdmin);
   }
@@ -392,9 +432,10 @@ export class AdminService extends BaseService {
    * @returns the mocked observable of succesfull deletion
    */
   private deleteAdminMock(identification: string): Observable<boolean> {
-    for (let i = 0; i < this.adminsMock.length; i++) {
-      if (this.adminsMock[i].identification == identification) {
-        this.adminsMock.splice(i, 1);
+    let users = this.getAllUsersFromMock();
+    for (let i = 0; i < users.length; i++) {
+      if (users[i].identification == identification) {
+        users.splice(i, 1);
         return of(true);
       }
     }
@@ -431,7 +472,7 @@ export class AdminService extends BaseService {
    * @returns the number of admins at mock
    */
   private countAdminsMock(): Observable<number> {
-    return of(this.adminsMock.length);
+    return of(this.getAllAdminsFromMock().length);
   }
 
 
@@ -469,7 +510,7 @@ export class AdminService extends BaseService {
    * @returns mocked reponse of updating password
    */
   private setPasswordMock(identification: string): Observable<boolean> {
-    for (let a of this.adminsMock) {
+    for (let a of this.getAllAdminsFromMock()) {
       if (a.identification == identification) {
         return of(true);
       }
