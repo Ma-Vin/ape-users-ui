@@ -54,8 +54,9 @@ export abstract class BaseService {
         console.error(
           `An error occurred at service ${this.serviceName}, ` +
           `Backend returned code ${error.status}, ` +
-          `body was: ${error.error}`);
-        return throwError(`Backend returned code ${error.status},  body was: ${error.error}`);
+          `error was: ${error.error}` +
+          `message was: ${error.message}`);
+        return throwError(`Backend returned code ${error.status}, error was: ${error.error}, message was: ${error.message}`);
       }
     }
     if (error instanceof Error) {

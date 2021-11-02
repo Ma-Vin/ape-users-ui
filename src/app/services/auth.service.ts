@@ -3,13 +3,14 @@ import { Injectable } from '@angular/core';
 import { ConfigService } from '../config/config.service';
 import { TokenResponse } from '../model/auth/token-response.model';
 import { JwtPayload } from '../model/auth/jwt-payload.model';
-import { catchError, map, share } from 'rxjs/operators';
+import { catchError, map, share, switchMap } from 'rxjs/operators';
 import { CryptoService } from './crypto.service';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { LOGIN_PATH } from '../app-routing.module';
 import { SelectionService } from './selection.service';
-import { BaseBackendService } from './base-backend.service';
+import { ALL_USERS_MOCK_KEY, BaseBackendService } from './base-backend.service';
+import { User } from '../model/user.model';
 
 
 export const TOKEN_URL = "/oauth/token";
@@ -17,6 +18,8 @@ export const TOKEN_URL = "/oauth/token";
 export const ACCESS_TOKEN = "access_token";
 export const ACCESS_TOKEN_EXPIRE = "access_token_expire";
 export const REFRESH_TOKEN = "refresh_token";
+
+export const REFRESH_TOKENS_MOCK_KEY = 'refreshTokens'
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +29,18 @@ export class AuthService extends BaseBackendService {
   private retrieveTokenUrl: string;
   private refreshTokenUrl: string;
   private refreshOberserable = new Observable<boolean>();
+
+  private tokenResponseMock: TokenResponse = {
+    access_token: 'toReplace',
+    token_type: 'jwt',
+    expires_in: 3600,
+    refresh_token: 'toReplace',
+    scope: 'READ|WRITE'
+  }
+  private jwtHeaderUrlEncodedMock = 'eyJ0eXAiOiJKV1QiLCJjdHkiOm51bGwsImFsZyI6IkhTMjU2In0';
+  // private jwtPayloadUrlEncodedMock = 'eyJpc3MiOiJVQUEwMDAwMSIsInN1YiI6IlVBQTAwMDAxIiwiYXVkIjpudWxsLCJleHAiOjE2MjUxNzY4MDAsIm5iZiI6bnVsbCwiaWF0IjoxNjI1MDkwNDAwLCJqdGkiOiJhYmMiLCJ0aW1lWm9uZSI6IkV1cm9wZS9CZXJsaW4ifQ';
+  // Signature Secret: SomeDummySecret
+  private jwtSignatureUrlEncodedMock = 'bJ-OOeN4NUJdk4dD0VpNRYBv09Tn-RK4nhrvWXzgcxY';
 
   constructor(protected http: HttpClient, protected configService: ConfigService, private cryptoService: CryptoService
     , private router: Router, private selectionService: SelectionService) {
@@ -45,11 +60,16 @@ export class AuthService extends BaseBackendService {
   }
 
   protected initServiceMocks(): void {
-    // Nothing to do here yet
+    if (!BaseBackendService.mockData.has(REFRESH_TOKENS_MOCK_KEY)) {
+      BaseBackendService.mockData.set(REFRESH_TOKENS_MOCK_KEY, [] as string[]);
+    }
   }
 
   retrieveToken(username: string, password: string): Observable<void> {
     this.init();
+    if (this.useMock) {
+      return this.retrieveTokenMock(username);
+    }
     let params = new URLSearchParams();
 
     let config = this.configService.getConfig();
@@ -75,12 +95,56 @@ export class AuthService extends BaseBackendService {
       );
   }
 
+  private retrieveTokenMock(username: string): Observable<void> {
+    this.initMocks();
+    let user: User | undefined;
+    for (let u of (BaseBackendService.mockData.get(ALL_USERS_MOCK_KEY) as User[])) {
+      if (u.identification == username) {
+        user = u;
+        break;
+      }
+    }
+    if (user == undefined) {
+      return throwError('Backend returned code 401, error was: Unauthorized, message was: Bad credentials');
+    }
+
+    let tokenToSave = Object.assign({}, this.tokenResponseMock);
+    let actualTime = new Date().getTime() * 1000;
+    let tokenPayload: JwtPayload = {
+      iss: username,
+      sub: username,
+      aud: 'ape.user.ui',
+      exp: actualTime + 3600,
+      nbf: actualTime,
+      iat: actualTime,
+      jti: `token.${username}.${actualTime}`,
+      timeZone: 'ECT'
+    };
+    let refreshPayload: JwtPayload = {
+      iss: username,
+      sub: username,
+      aud: 'ape.user.ui',
+      exp: actualTime + 7200,
+      nbf: actualTime,
+      iat: actualTime,
+      jti: `refresh.${username}.${actualTime}`,
+      timeZone: 'ECT'
+    };
+    tokenToSave.access_token = `${this.jwtHeaderUrlEncodedMock}.${btoa(JSON.stringify(tokenPayload))}.${this.jwtSignatureUrlEncodedMock}`;
+    tokenToSave.refresh_token = `${this.jwtHeaderUrlEncodedMock}.${btoa(JSON.stringify(refreshPayload))}.${this.jwtSignatureUrlEncodedMock}`;
+    (BaseBackendService.mockData.get(REFRESH_TOKENS_MOCK_KEY) as string[]).push(tokenToSave.refresh_token);
+    return of(this.saveToken(tokenToSave));
+  }
+
   refreshToken(): Observable<boolean> {
     this.init();
+    if (this.useMock) {
+      return this.refreshTokenMock();
+    }
     let params = new URLSearchParams();
     let decodedRefreshToken = this.cryptoService.getDecryptedFromLocalStorage(REFRESH_TOKEN);
     let config = this.configService.getConfig();
-    if (decodedRefreshToken === null || config == undefined) {
+    if (decodedRefreshToken === undefined || config == undefined) {
       return of(false);
     }
 
@@ -111,6 +175,23 @@ export class AuthService extends BaseBackendService {
     return this.refreshOberserable;
   }
 
+  private refreshTokenMock(): Observable<boolean> {
+    this.initMocks();
+    let decodedRefreshToken = this.cryptoService.getDecryptedFromLocalStorage(REFRESH_TOKEN);
+    let user = this.selectionService.getActiveUser();
+
+    if (user == undefined || decodedRefreshToken == undefined
+      || !(BaseBackendService.mockData.get(REFRESH_TOKENS_MOCK_KEY) as string[]).includes(decodedRefreshToken)) {
+
+      return of(false);
+    }
+
+    let indexToRemove = (BaseBackendService.mockData.get(REFRESH_TOKENS_MOCK_KEY) as string[]).indexOf(decodedRefreshToken);
+    (BaseBackendService.mockData.get(REFRESH_TOKENS_MOCK_KEY) as string[]).splice(indexToRemove, 1);
+
+    return this.retrieveTokenMock(user.identification).pipe(switchMap(() => of(true)));
+  }
+
   private saveToken(token: TokenResponse): void {
     var expireDate = new Date().getTime() + (1000 * token.expires_in);
     this.cryptoService.setEncryptedAtLocalStorage(ACCESS_TOKEN, token.access_token);
@@ -134,15 +215,15 @@ export class AuthService extends BaseBackendService {
 
   hasValidUser(): Observable<boolean> {
     this.init();
-    if (this.cryptoService.getDecryptedFromLocalStorage(ACCESS_TOKEN) === null) {
+    if (this.cryptoService.getDecryptedFromLocalStorage(ACCESS_TOKEN) == undefined) {
       console.debug('AuthService: No access token');
       return of(false);
     }
-    if (this.cryptoService.getDecryptedFromLocalStorage(ACCESS_TOKEN_EXPIRE) === null) {
+    if (this.cryptoService.getDecryptedFromLocalStorage(ACCESS_TOKEN_EXPIRE) == undefined) {
       console.debug('AuthService: No access token expiration');
       return of(false);
     }
-    if (this.cryptoService.getDecryptedFromLocalStorage(REFRESH_TOKEN) === null) {
+    if (this.cryptoService.getDecryptedFromLocalStorage(REFRESH_TOKEN) == undefined) {
       console.debug('AuthService: No refresh token');
       return of(false);
     }

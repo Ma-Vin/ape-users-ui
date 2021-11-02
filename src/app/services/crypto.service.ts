@@ -18,10 +18,10 @@ export class CryptoService {
     return result.toString();
   }
 
-  decrypt(encryptedText: string): string | null {
+  decrypt(encryptedText: string): string | undefined {
     let config = this.configService.getConfig();
     if (config === undefined) {
-      return null;
+      return undefined;
     }
     let result = AES.decrypt(encryptedText, config.clientSecret);
     return result.toString(enc.Utf8);
@@ -37,10 +37,10 @@ export class CryptoService {
     localStorage.setItem(key, encrypted);
   }
 
-  getDecryptedFromLocalStorage(key: string): string | null {
+  getDecryptedFromLocalStorage(key: string): string | undefined {
     let keyValue = localStorage.getItem(key);
     if (keyValue === null || keyValue === undefined) {
-      return null;
+      return undefined;
     }
     let result = this.decrypt(keyValue);
     console.debug(`getDecryptedFromLocalStorage ${key}`);

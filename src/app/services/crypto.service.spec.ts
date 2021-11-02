@@ -42,6 +42,6 @@ describe('CryptoService', () => {
     expect(decrypted).toBeDefined();
     expect(decrypted).toEqual(toEncrypt);
     let decryptedOtherKey = service.getDecryptedFromLocalStorage('otherKey');
-    expect(decryptedOtherKey).toBeNull();
+    expect(decryptedOtherKey).not.toBeDefined();
   });
 });

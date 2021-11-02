@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { not } from '@angular/compiler/src/output/output_ast';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { AppRoutingModule, LOGIN_PATH } from '../app-routing.module';
 import { ConfigService } from '../config/config.service';
-import { ACCESS_TOKEN, ACCESS_TOKEN_EXPIRE, AuthService, REFRESH_TOKEN } from './auth.service';
+import { User } from '../model/user.model';
+import { ACCESS_TOKEN, ACCESS_TOKEN_EXPIRE, AuthService, REFRESH_TOKEN, REFRESH_TOKENS_MOCK_KEY } from './auth.service';
+import { ALL_USERS_MOCK_KEY, BaseBackendService } from './base-backend.service';
 import { CryptoService } from './crypto.service';
 import { SelectionService } from './selection.service';
 
@@ -47,11 +48,20 @@ describe('AuthService', () => {
 
   const fakeConfig = { getConfig: () => mockConfig };
 
+  let encryptedMap = new Map<string, string>();
+
   let fakeCrypto = {
     encrypt: (plaintext: string) => { `encrypted: ${plaintext}` },
     decrypt: (encryptedText: string) => { `decrypted: ${encryptedText}` },
-    setEncryptedAtLocalStorage: (key: string, value: string) => { },
-    getDecryptedFromLocalStorage: (key: string) => { `decrypted key: ${key}` }
+    setEncryptedAtLocalStorage: (key: string, value: string) => { encryptedMap.set(key, value) },
+    getDecryptedFromLocalStorage: (key: string) => encryptedMap.has(key) ? encryptedMap.get(key) : `decrypted key: ${key}`
+  };
+
+  let fakeCryptoModifiable = {
+    encrypt: (plaintext: string) => { `encrypted: ${plaintext}` },
+    decrypt: (encryptedText: string) => { `decrypted: ${encryptedText}` },
+    setEncryptedAtLocalStorage: (key: string, value: string) => { encryptedMap.set(key, value) },
+    getDecryptedFromLocalStorage: (key: string) => encryptedMap.has(key) ? encryptedMap.get(key) : `decrypted key: ${key}`
   };
 
 
@@ -66,6 +76,9 @@ describe('AuthService', () => {
     selectionServiceSetActiveUserSpy = spyOn(selectionService, 'setActiveUser').and.callFake(() => { });
 
     service = new AuthService(http, fakeConfig as ConfigService, fakeCrypto as CryptoService, router, selectionService);
+
+    BaseBackendService.clearMockData();
+    encryptedMap.clear();
   });
 
 
@@ -116,8 +129,47 @@ describe('AuthService', () => {
 
     service.retrieveToken(user, pwd).subscribe(() => { });
 
-    httpMock.expectNone('//localhost:8080/oauth/token');;
+    httpMock.expectNone('//localhost:8080/oauth/token');
 
+    expect(selectionServiceSetActiveUserSpy).not.toHaveBeenCalled();
+
+    tick();
+  }));
+
+
+  it('retrieveToken - mock', fakeAsync(() => {
+    service.useMock = true;
+    let user = 'username';
+    let pwd = 'pwd';
+    addMockUser(user);
+
+    service.retrieveToken(user, pwd).subscribe(() => {
+      expect(encryptedMap.has(ACCESS_TOKEN)).toBeTrue();
+      expect(encryptedMap.has(ACCESS_TOKEN_EXPIRE)).toBeTrue();
+      expect(encryptedMap.has(REFRESH_TOKEN)).toBeTrue();
+    });
+
+    httpMock.expectNone('//localhost:8080/oauth/token');
+    expect(selectionServiceSetActiveUserSpy).toHaveBeenCalled();
+
+    tick();
+  }));
+
+
+  it('retrieveToken - mock with unknown user', fakeAsync(() => {
+    service.useMock = true;
+    let user = 'username';
+    let pwd = 'pwd';
+
+    service.retrieveToken(user, pwd).subscribe(() => {
+      expect(encryptedMap.has(ACCESS_TOKEN)).toBeFalse();
+      expect(encryptedMap.has(ACCESS_TOKEN_EXPIRE)).toBeFalse();
+      expect(encryptedMap.has(REFRESH_TOKEN)).toBeFalse();
+    }, e => {
+      expect(e).toEqual('Backend returned code 401, error was: Unauthorized, message was: Bad credentials');
+    });
+
+    httpMock.expectNone('//localhost:8080/oauth/token');
     expect(selectionServiceSetActiveUserSpy).not.toHaveBeenCalled();
 
     tick();
@@ -166,7 +218,7 @@ describe('AuthService', () => {
       },
       getDecryptedFromLocalStorage: (key: string) => {
         expect(['refresh_token']).toContain(key);
-        return null;
+        return undefined;
       }
     };
     spyOn(fakeCrypto, "setEncryptedAtLocalStorage").and.callThrough();
@@ -202,6 +254,81 @@ describe('AuthService', () => {
   }));
 
 
+  it('refreshToken - mock', fakeAsync(() => {
+    service.useMock = true;
+    let userId = 'username';
+    let user = addMockUser(userId);
+    spyOn(selectionService, 'getActiveUser').and.returnValue(user);
+
+    addRefrehToken(refreshToken);
+    encryptedMap.set(REFRESH_TOKEN, refreshToken);
+
+    service.refreshToken().subscribe(data => {
+      expect(data).toBeTrue();
+      expect(encryptedMap.has(REFRESH_TOKEN)).toBeTrue();
+      expect(encryptedMap.get(REFRESH_TOKEN)).not.toEqual(refreshToken);
+    });
+
+    httpMock.expectNone('//localhost:8080/oauth/token');
+
+    tick();
+  }));
+
+
+  it('refreshToken - mock but missing active user', fakeAsync(() => {
+    service.useMock = true;
+    spyOn(selectionService, 'getActiveUser').and.returnValue(undefined);
+
+    addRefrehToken(refreshToken);
+    encryptedMap.set(REFRESH_TOKEN, refreshToken);
+
+    service.refreshToken().subscribe(data => {
+      expect(data).toBeFalse();
+      expect(encryptedMap.get(REFRESH_TOKEN)).toEqual(refreshToken);
+    });
+
+    httpMock.expectNone('//localhost:8080/oauth/token');
+
+    tick();
+  }));
+
+
+  it('refreshToken - mock but missing refresh token', fakeAsync(() => {
+    service.useMock = true;
+    let userId = 'username';
+    let user = addMockUser(userId);
+    spyOn(selectionService, 'getActiveUser').and.returnValue(user);
+
+    addRefrehToken(refreshToken);
+
+    service.refreshToken().subscribe(data => {
+      expect(data).toBeFalse();
+    });
+
+    httpMock.expectNone('//localhost:8080/oauth/token');
+
+    tick();
+  }));
+
+
+  it('refreshToken - mock but unkown refresh token', fakeAsync(() => {
+    service.useMock = true;
+    let userId = 'username';
+    let user = addMockUser(userId);
+    spyOn(selectionService, 'getActiveUser').and.returnValue(user);
+
+    encryptedMap.set(REFRESH_TOKEN, refreshToken);
+
+    service.refreshToken().subscribe(data => {
+      expect(data).toBeFalse();
+    });
+
+    httpMock.expectNone('//localhost:8080/oauth/token');
+
+    tick();
+  }));
+
+
   it('loginAndRedirect - all ok', fakeAsync(() => {
     let user = 'username';
     let pwd = 'pwd';
@@ -226,7 +353,7 @@ describe('AuthService', () => {
   it('hasValidUser - all ok', fakeAsync(() => {
     createFakeCryptoServiceGetDecrypted(undefined, [ACCESS_TOKEN, ACCESS_TOKEN_EXPIRE, REFRESH_TOKEN], [accessToken, `${baseTime.getTime() + 50}`, refreshToken]);
 
-    service = new AuthService(http, fakeConfig as ConfigService, fakeCrypto as CryptoService, router, selectionService);
+    service = new AuthService(http, fakeConfig as ConfigService, fakeCryptoModifiable as CryptoService, router, selectionService);
 
     jasmine.clock().withMock(() => {
       jasmine.clock().mockDate(baseTime);
@@ -242,7 +369,7 @@ describe('AuthService', () => {
   it('hasValidUser - missing token', fakeAsync(() => {
     createFakeCryptoServiceGetDecrypted([ACCESS_TOKEN], [ACCESS_TOKEN_EXPIRE, REFRESH_TOKEN], [`${baseTime.getTime() + 50}`, refreshToken]);
 
-    service = new AuthService(http, fakeConfig as ConfigService, fakeCrypto as CryptoService, router, selectionService);
+    service = new AuthService(http, fakeConfig as ConfigService, fakeCryptoModifiable as CryptoService, router, selectionService);
 
     jasmine.clock().withMock(() => {
       jasmine.clock().mockDate(baseTime);
@@ -258,7 +385,7 @@ describe('AuthService', () => {
   it('hasValidUser - missing expiration', fakeAsync(() => {
     createFakeCryptoServiceGetDecrypted([ACCESS_TOKEN_EXPIRE], [ACCESS_TOKEN, REFRESH_TOKEN], [accessToken, refreshToken]);
 
-    service = new AuthService(http, fakeConfig as ConfigService, fakeCrypto as CryptoService, router, selectionService);
+    service = new AuthService(http, fakeConfig as ConfigService, fakeCryptoModifiable as CryptoService, router, selectionService);
 
     jasmine.clock().withMock(() => {
       jasmine.clock().mockDate(baseTime);
@@ -274,7 +401,7 @@ describe('AuthService', () => {
   it('hasValidUser - missing refresh token', fakeAsync(() => {
     createFakeCryptoServiceGetDecrypted([REFRESH_TOKEN], [ACCESS_TOKEN, ACCESS_TOKEN_EXPIRE], [accessToken, `${baseTime.getTime() + 50}`]);
 
-    service = new AuthService(http, fakeConfig as ConfigService, fakeCrypto as CryptoService, router, selectionService);
+    service = new AuthService(http, fakeConfig as ConfigService, fakeCryptoModifiable as CryptoService, router, selectionService);
 
     jasmine.clock().withMock(() => {
       jasmine.clock().mockDate(baseTime);
@@ -291,7 +418,7 @@ describe('AuthService', () => {
   it('hasValidUser - expired token', fakeAsync(() => {
     createFakeCryptoServiceGetDecrypted(undefined, [ACCESS_TOKEN, ACCESS_TOKEN_EXPIRE, REFRESH_TOKEN], [accessToken, `${baseTime.getTime() - 50}`, refreshToken]);
 
-    service = new AuthService(http, fakeConfig as ConfigService, fakeCrypto as CryptoService, router, selectionService);
+    service = new AuthService(http, fakeConfig as ConfigService, fakeCryptoModifiable as CryptoService, router, selectionService);
 
     jasmine.clock().withMock(() => {
       jasmine.clock().mockDate(baseTime);
@@ -321,20 +448,63 @@ describe('AuthService', () => {
 
 
   function createFakeCryptoServiceGetDecrypted(keysEmptyReturn: string[] | undefined, keys: string[] | undefined, values: string[] | undefined) {
-    fakeCrypto = {
-      encrypt: (plaintext: string) => { `encrypted: ${plaintext}` },
-      decrypt: (encryptedText: string) => { `decrypted: ${encryptedText}` },
-      setEncryptedAtLocalStorage: (key: string, value: string) => { },
+    if (keys != undefined && values != undefined) {
+      for (let i = 0; i < keys.length && i < values.length; i++) {
+        encryptedMap.set(keys[i], values[i]);
+      }
+    }
+    fakeCryptoModifiable = {
+      encrypt: (plaintext: string) => `encrypted: ${plaintext}`,
+      decrypt: (encryptedText: string) => `decrypted: ${encryptedText}`,
+      setEncryptedAtLocalStorage: (key: string, value: string) => { encryptedMap.set(key, value) },
       getDecryptedFromLocalStorage: (key: string) => {
         if (keysEmptyReturn != undefined && keysEmptyReturn.includes(key)) {
-          return null;
+          return undefined;
         }
-        if (keys != undefined && keys.includes(key) && values != undefined) {
-          return values[keys.indexOf(key)];
-        }
-        return `decrypted key: ${key}`
+        return encryptedMap.has(key) ? encryptedMap.get(key) : `decrypted key: ${key}`
       }
     };
   }
 
+
+  function addMockUser(userid: string): User {
+    let user = {
+      identification: userid,
+      firstName: 'Max',
+      lastName: 'Power',
+      mail: 'max.power@ma-vin.de',
+      image: undefined,
+      smallImage: undefined,
+      lastLogin: new Date(2021, 9, 25, 20, 15, 1),
+      validFrom: new Date(2021, 9, 1),
+      validTo: undefined,
+      isGlobalAdmin: true
+    } as User;
+    TestAuthService.addMockUser(user);
+    return user;
+  }
+
+  function addRefrehToken(refreshToken: string) {
+    TestAuthService.addRefrehToken(refreshToken);
+  }
 });
+
+/**
+ * Dummy extension to be able to call protected methods the abstract class
+ */
+class TestAuthService extends AuthService {
+
+  static addMockUser(user: User): void {
+    if (!BaseBackendService.mockData.has(ALL_USERS_MOCK_KEY)) {
+      BaseBackendService.mockData.set(ALL_USERS_MOCK_KEY, [] as User[]);
+    }
+    (BaseBackendService.mockData.get(ALL_USERS_MOCK_KEY) as User[]).push(user);
+  }
+
+  static addRefrehToken(refreshToken: string): void {
+    if (!BaseBackendService.mockData.has(REFRESH_TOKENS_MOCK_KEY)) {
+      BaseBackendService.mockData.set(REFRESH_TOKENS_MOCK_KEY, [] as string[]);
+    }
+    (BaseBackendService.mockData.get(REFRESH_TOKENS_MOCK_KEY) as string[]).push(refreshToken);
+  }
+}
