@@ -175,7 +175,7 @@ export class AdminService extends BaseBackendService {
         return of(a);
       }
     }
-    return throwError(new Error(`${Status.ERROR} occurs while getting admin ${identification} from backend`));
+    return throwError(new Error(`There is not any User with identification "${identification}"`));
   }
 
 

@@ -297,7 +297,7 @@ describe('AdminService', () => {
       },
       e => {
         expect(e).toBeTruthy();
-        expect(e.message).toEqual(`${Status.ERROR} occurs while getting admin someId from backend`);
+        expect(e.message).toEqual(`There is not any User with identification "someId"`);
       });
 
     httpMock.expectNone(`//localhost:8080/admin/getAdmin/someId`);

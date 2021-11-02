@@ -167,7 +167,7 @@ describe('UserService', () => {
       },
       e => {
         expect(e).toBeTruthy();
-        expect(e.message).toEqual(`${Status.ERROR} occurs while getting user someId from backend`);
+        expect(e.message).toEqual(`There is not any User with identification "someId"`);
       });
 
     httpMock.expectNone(`//localhost:8080/user/getUser/someId`);
