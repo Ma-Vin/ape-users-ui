@@ -62,7 +62,7 @@ export class AdminService extends BaseBackendService {
   }
 
   protected initServiceMocks(): void {
-    (BaseBackendService.mockData.get(ALL_USERS_MOCK_KEY) as User[]).push({
+    (BaseBackendService.mockData.get(ALL_USERS_MOCK_KEY) as User[]).push(User.map({
       identification: 'UAA00001',
       firstName: 'Max',
       lastName: 'Power',
@@ -73,7 +73,7 @@ export class AdminService extends BaseBackendService {
       validFrom: new Date(2021, 9, 1),
       validTo: undefined,
       isGlobalAdmin: true
-    } as User);
+    } as User));
   }
 
   /**
@@ -357,18 +357,19 @@ export class AdminService extends BaseBackendService {
     }
     BaseBackendService.mockData.set(NEXT_USER_ID_MOCK_KEY, nextUserIdMock + 1);
 
-    let addedAdmin: User = {
-      identification: idBase.concat(idExtend),
-      firstName: firstName,
-      lastName: lastName,
-      mail: undefined,
-      image: undefined,
-      smallImage: undefined,
-      lastLogin: undefined,
-      validFrom: new Date(),
-      validTo: undefined,
-      isGlobalAdmin: true
-    };
+    let addedAdmin: User = User.map(
+      {
+        identification: idBase.concat(idExtend),
+        firstName: firstName,
+        lastName: lastName,
+        mail: undefined,
+        image: undefined,
+        smallImage: undefined,
+        lastLogin: undefined,
+        validFrom: new Date(),
+        validTo: undefined,
+        isGlobalAdmin: true
+      } as IUser);
 
     this.getAllUsersFromMock().push(addedAdmin);
 

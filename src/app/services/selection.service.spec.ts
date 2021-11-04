@@ -26,7 +26,7 @@ describe('SelectionService', () => {
   const firstName = 'Max';
   const lastName = 'Power';
 
-  const admin: User = {
+  const admin = User.map({
     identification: adminId,
     firstName: firstName,
     lastName: lastName,
@@ -37,9 +37,9 @@ describe('SelectionService', () => {
     validFrom: new Date(2021, 9, 1),
     validTo: undefined,
     isGlobalAdmin: true
-  }
+  } as User);
 
-  const user: User = {
+  const user = User.map({
     identification: userId,
     firstName: firstName,
     lastName: lastName,
@@ -50,7 +50,7 @@ describe('SelectionService', () => {
     validFrom: new Date(2021, 9, 1),
     validTo: undefined,
     isGlobalAdmin: true
-  }
+  } as User);
 
   const adminGroup: AdminGroup = {
     description: 'description of admin group',

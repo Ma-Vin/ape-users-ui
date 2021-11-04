@@ -31,7 +31,7 @@ export class UserService extends BaseBackendService {
   }
 
   protected initServiceMocks(): void {
-    (BaseBackendService.mockData.get(ALL_USERS_MOCK_KEY) as User[]).push({
+    (BaseBackendService.mockData.get(ALL_USERS_MOCK_KEY) as User[]).push(User.map({
       identification: 'UAA00002',
       firstName: 'Lower',
       lastName: 'Power',
@@ -42,7 +42,7 @@ export class UserService extends BaseBackendService {
       validFrom: new Date(2021, 9, 1),
       validTo: undefined,
       isGlobalAdmin: false
-    } as User);
+    } as User));
   }
 
   /**

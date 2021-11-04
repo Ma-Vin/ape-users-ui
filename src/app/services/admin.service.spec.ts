@@ -60,7 +60,7 @@ describe('AdminService', () => {
     validTo: undefined
   }
 
-  const modifiedUserAdmin: User = {
+  const modifiedUserAdmin = User.map({
     identification: adminId,
     firstName: firstName,
     lastName: lastName,
@@ -71,7 +71,7 @@ describe('AdminService', () => {
     validFrom: new Date(2021, 9, 1),
     validTo: undefined,
     isGlobalAdmin: true
-  }
+  } as User)
 
   const mockErrorResponseWrapper: ResponseWrapper = {
     response: undefined,
@@ -92,7 +92,7 @@ describe('AdminService', () => {
     http = TestBed.inject(HttpClient);
     configService = TestBed.inject(ConfigService);
     service = TestBed.inject(AdminService);
-    
+
     BaseBackendService.clearMockData();
 
     spyOn(configService, 'getConfig').and.returnValue(mockConfig);
