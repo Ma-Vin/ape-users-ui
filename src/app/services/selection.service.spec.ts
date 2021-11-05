@@ -134,6 +134,21 @@ describe('SelectionService', () => {
     expect(service.getActiveUser()).toBeFalsy();
   }));
 
+  
+  it('removeActiveUser - user', fakeAsync(() => {
+    let userServiceSpy = spyOn(userService, 'getUser').and.callFake(userId => of(user));
+
+    service.setActiveUser(userId);
+
+    expect(userServiceSpy).toHaveBeenCalled();
+
+    tick();
+
+    service.removeActiveUser();
+    expect(service.getActiveUser()).not.toBeDefined();
+  }));
+
+
 
   it('get-/setSelectedAdminGroup', () => {
     service.setSelectedAdminGroup(adminGroup);

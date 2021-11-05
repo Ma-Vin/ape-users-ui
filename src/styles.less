@@ -1,6 +1,16 @@
 @import '@angular/material/prebuilt-themes/purple-green.css';
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+@base-margin: 8px;
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin     : 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 
 h1,
 h2,
@@ -8,7 +18,7 @@ h3,
 h4,
 h5,
 h6 {
-    margin    : 8px 0;
+    margin    : @base-margin 0;
     width     : 100%;
     text-align: center;
 }

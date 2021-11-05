@@ -11,11 +11,18 @@ import { MaterialModule } from './material/material.module';
 import { ConfigService } from './config/config.service';
 import { AuthService } from './services/auth.service';
 import { BearerTokenInterceptor } from './intercept/bearer-token-interceptor';
+import { AdminGroupComponent } from './components/admin-group/admin-group.component';
+import { registerLocaleData } from '@angular/common';
+import localeDE from '@angular/common/locales/de';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
+
+registerLocaleData(localeDE);
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent
+    LoginComponent,
+    AdminGroupComponent
   ],
   imports: [
     BrowserModule,
@@ -35,6 +42,8 @@ import { BearerTokenInterceptor } from './intercept/bearer-token-interceptor';
     useClass: BearerTokenInterceptor,
     deps: [AuthService],
     multi: true
+  }, {
+    provide: MAT_DATE_LOCALE, useValue: 'de'
   }],
   bootstrap: [AppComponent]
 })

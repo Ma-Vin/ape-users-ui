@@ -362,6 +362,8 @@ describe('AuthService', () => {
 
     httpMock.expectNone('//localhost:8080/oauth/token');
 
+    expect(selectionServiceSetActiveUserSpy).toHaveBeenCalled();
+
     tick();
   }));
 
@@ -428,6 +430,8 @@ describe('AuthService', () => {
     const req = httpMock.expectOne('//localhost:8080/oauth/token');
     expect(req.request.method).toEqual("POST");
     req.flush(mockResponse);
+
+    expect(selectionServiceSetActiveUserSpy).toHaveBeenCalled();
 
     tick();
   }));

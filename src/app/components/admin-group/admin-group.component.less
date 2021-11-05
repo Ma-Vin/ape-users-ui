@@ -1,0 +1,61 @@
+@base-margin : 8px;
+
+.admin-groups {
+    display              : grid;
+    width                : 100%;
+    grid-template-columns: 1fr 4fr 1fr;
+}
+
+.all-admins,
+.admin-detail {
+    margin  : 5px;
+    overflow: auto;
+
+    .mat-table,
+    .mat-form-field {
+        width: 100%;
+    }
+
+    .element-detail-short {
+        width: 150px;
+    }
+
+    .element-detail-mid {
+        width: calc(300px + 2 * @base-margin);
+    }
+
+    .element-detail-long {
+        width: calc(600px + 4 * @base-margin);
+    }
+
+    .element-detail-short,
+    .element-detail-mid,
+    .element-detail-long {
+        &:not(:first-child) {
+            margin-left: @base-margin;
+        }
+
+        margin-right: @base-margin;
+    }
+
+    .button-row {
+        display        : flex;
+        flex-wrap      : wrap;
+        justify-content: center;
+
+        .mat-button-base {
+            margin: @base-margin;
+        }
+    }
+
+    .mat-row {
+        &:hover {
+            font-style : italic;
+            font-weight: bold;
+        }
+
+        &.selected {
+            font-weight: bold;
+        }
+    }
+}

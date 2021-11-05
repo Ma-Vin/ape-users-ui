@@ -199,14 +199,21 @@ export class AuthService extends BaseBackendService {
     if (token.refresh_token !== undefined) {
       this.cryptoService.setEncryptedAtLocalStorage(REFRESH_TOKEN, token.refresh_token);
     }
-    let split = token.access_token.split('.');
+    this.setActiveUser(token.access_token);
+
+    console.debug('AuthService: save Access token');
+  }
+
+  private setActiveUser(accessToken: string): void {
+    if (this.selectionService.getActiveUser() != undefined) {
+      return;
+    }
+    let split = accessToken.split('.');
     if (split.length == 3) {
       let payloadText = atob(split[1]);
       let parsedPayload = JSON.parse(payloadText) as JwtPayload;
       this.selectionService.setActiveUser(parsedPayload.sub);
     }
-
-    console.debug('AuthService: save Access token');
   }
 
   loginAndRedirect(username: string, password: string, redirect: string): void {
@@ -215,7 +222,8 @@ export class AuthService extends BaseBackendService {
 
   hasValidUser(): Observable<boolean> {
     this.init();
-    if (this.cryptoService.getDecryptedFromLocalStorage(ACCESS_TOKEN) == undefined) {
+    let accessToken = this.getToken();
+    if (accessToken == undefined) {
       console.debug('AuthService: No access token');
       return of(false);
     }
@@ -233,6 +241,7 @@ export class AuthService extends BaseBackendService {
       console.debug(`AuthService: Refresh Access token. expires ${new Date(expires).toISOString()} now ${now.toISOString()}`);
       return this.refreshToken();
     }
+    this.setActiveUser(accessToken);
     console.debug(`AuthService: Access token is valid at ${new Date().toISOString()} by access_token_expire ${new Date(expires).toISOString()}`);
     return of(true);
   }
@@ -241,6 +250,7 @@ export class AuthService extends BaseBackendService {
     localStorage.removeItem(ACCESS_TOKEN);
     localStorage.removeItem(ACCESS_TOKEN_EXPIRE);
     localStorage.removeItem(REFRESH_TOKEN);
+    this.selectionService.removeActiveUser();
     this.router.navigate([LOGIN_PATH]);
   }
 

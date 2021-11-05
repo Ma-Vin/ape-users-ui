@@ -38,6 +38,10 @@ export class SelectionService {
     ).subscribe(data => this.activeUser = data);
   }
 
+  public removeActiveUser(): void {
+    this.activeUser = undefined;
+  }
+
   public getSelectedAdminGroup(): AdminGroup | undefined {
     return this.selectedAdminGroup;
   }
