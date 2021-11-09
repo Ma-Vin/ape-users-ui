@@ -4,7 +4,7 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { ConfigService } from '../config/config.service';
 import { AdminGroup } from '../model/admin-group.model';
-import { CommonGroup } from '../model/common-group.model';
+import { CommonGroup, ICommonGroup } from '../model/common-group.model';
 import { Role } from '../model/role.model';
 import { User } from '../model/user.model';
 import { AdminService } from './admin.service';
@@ -60,14 +60,14 @@ describe('SelectionService', () => {
     validTo: undefined
   }
 
-  const commonGroup: CommonGroup = {
+  const commonGroup = CommonGroup.map({
     defaultRole: Role.VISITOR,
     description: 'description of common group',
     groupName: 'Common',
     identification: 'CGAA00001',
     validFrom: new Date(2021, 1, 1),
     validTo: undefined
-  };
+  } as ICommonGroup);
 
 
 
@@ -134,7 +134,7 @@ describe('SelectionService', () => {
     expect(service.getActiveUser()).toBeFalsy();
   }));
 
-  
+
   it('removeActiveUser - user', fakeAsync(() => {
     let userServiceSpy = spyOn(userService, 'getUser').and.callFake(userId => of(user));
 
