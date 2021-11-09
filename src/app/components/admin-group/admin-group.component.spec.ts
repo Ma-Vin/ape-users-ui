@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { MatSnackBar, MatSnackBarConfig, MatSnackBarRef, TextOnlySnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarRef, TextOnlySnackBar } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -122,10 +122,10 @@ describe('AdminGroupComponent', () => {
 
     expect(getAllAdminsSpy).toHaveBeenCalled();
     expect(setSelectedAdminGroupSpy).toHaveBeenCalled();
-    expect(component.selectedAdmin.identification).toEqual('NotValidIdentification');
-    expect(component.allAdminsfilterDataSource.data.length).toEqual(2);
-    expect(component.allAdminsfilterDataSource.data.includes(admin)).toBeTrue();
-    expect(component.allAdminsfilterDataSource.data.includes(otherAdmin)).toBeTrue();
+    expect(component.selectedObject.identification).toEqual('');
+    expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
+    expect(component.allObjectsfilterDataSource.data.includes(admin)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.includes(otherAdmin)).toBeTrue();
   }));
 
   it('ngOnInit - with id at route', fakeAsync(() => {
@@ -143,10 +143,10 @@ describe('AdminGroupComponent', () => {
 
     expect(getAllAdminsSpy).toHaveBeenCalled();
     expect(setSelectedAdminGroupSpy).toHaveBeenCalled();
-    expect(component.selectedAdmin.equals(admin)).toBeTrue();
-    expect(component.allAdminsfilterDataSource.data.length).toEqual(2);
-    expect(component.allAdminsfilterDataSource.data.includes(admin)).toBeTrue();
-    expect(component.allAdminsfilterDataSource.data.includes(otherAdmin)).toBeTrue();
+    expect(component.selectedObject.equals(admin)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
+    expect(component.allObjectsfilterDataSource.data.includes(admin)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.includes(otherAdmin)).toBeTrue();
   }));
 
   it('ngOnInit - missing config', fakeAsync(() => {
@@ -162,79 +162,79 @@ describe('AdminGroupComponent', () => {
 
     expect(getAllAdminsSpy).toHaveBeenCalled();
     expect(setSelectedAdminGroupSpy).not.toHaveBeenCalled();
-    expect(component.selectedAdmin.identification).toEqual('NotValidIdentification');
+    expect(component.selectedObject.identification).toEqual('');
   }));
 
 
   /**
-   * applyAllAdminsFilter
+   * applyAllObjectsFilter
    */
-  it('applyAllAdminsFilter', () => {
+  it('applyAllObjectsFilter', () => {
     let filterValue = 'SomeValue';
     let eventTarget = { value: filterValue } as HTMLInputElement;
     let event = { target: eventTarget as EventTarget } as Event;
-    component.applyAllAdminsFilter(event);
+    component.applyAllObjectsFilter(event);
 
-    expect(component.allAdminsfilterDataSource.filter).toEqual(filterValue.toLocaleLowerCase());
+    expect(component.allObjectsfilterDataSource.filter).toEqual(filterValue.toLocaleLowerCase());
   });
 
 
   /**
-   * onSelectAdmin
+   * onSelectObject
    */
-  it('onSelectAdmin - non selected before', () => {
+  it('onSelectObject - non selected before', () => {
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
 
-    component.onSelectAdmin(admin);
+    component.onSelectObject(admin);
 
     expect(loactionSpy).toHaveBeenCalledOnceWith(`${ADMIN_GROUP_PATH}/${admin.identification}`);
 
-    expect(component.isNewAdmin).toBeFalse();
-    expect(component.showAdminDetail).toBeTrue();
-    expect(component.selectedAdmin === admin).toBeFalse();
-    expect(component.selectedAdmin.equals(admin)).toBeTrue();
+    expect(component.isNewObject).toBeFalse();
+    expect(component.showObjectDetail).toBeTrue();
+    expect(component.selectedObject === admin).toBeFalse();
+    expect(component.selectedObject.equals(admin)).toBeTrue();
   });
 
-  it('onSelectAdmin - same selected before', () => {
+  it('onSelectObject - same selected before', () => {
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
-    component.selectedAdmin = admin;
+    component.selectedObject = admin;
 
-    component.onSelectAdmin(admin);
+    component.onSelectObject(admin);
 
     expect(loactionSpy).not.toHaveBeenCalledOnceWith(`${ADMIN_GROUP_PATH}/${admin.identification}`);
 
-    expect(component.isNewAdmin).toBeFalse();
-    expect(component.showAdminDetail).toBeTrue();
-    expect(component.selectedAdmin === admin).toBeFalse();
-    expect(component.selectedAdmin.equals(admin)).toBeTrue();
+    expect(component.isNewObject).toBeFalse();
+    expect(component.showObjectDetail).toBeTrue();
+    expect(component.selectedObject === admin).toBeFalse();
+    expect(component.selectedObject.equals(admin)).toBeTrue();
   });
 
-  it('onSelectAdmin - other selected before', () => {
+  it('onSelectObject - other selected before', () => {
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
-    component.selectedAdmin = otherAdmin;
+    component.selectedObject = otherAdmin;
 
-    component.onSelectAdmin(admin);
+    component.onSelectObject(admin);
 
     expect(loactionSpy).toHaveBeenCalledOnceWith(`${ADMIN_GROUP_PATH}/${admin.identification}`);
 
-    expect(component.isNewAdmin).toBeFalse();
-    expect(component.showAdminDetail).toBeTrue();
-    expect(component.selectedAdmin === admin).toBeFalse();
-    expect(component.selectedAdmin.equals(admin)).toBeTrue();
+    expect(component.isNewObject).toBeFalse();
+    expect(component.showObjectDetail).toBeTrue();
+    expect(component.selectedObject === admin).toBeFalse();
+    expect(component.selectedObject.equals(admin)).toBeTrue();
   });
 
 
   /**
-   * onSelectAdmin
+   * isObjectSelected
    */
-  it('isAdminSelected - same admin', () => {
-    component.selectedAdmin = admin;
-    expect(component.isAdminSelected(admin)).toBeTrue();
+  it('isObjectSelected - same admin', () => {
+    component.selectedObject = admin;
+    expect(component.isObjectSelected(admin)).toBeTrue();
   });
 
-  it('isAdminSelected - other admin', () => {
-    component.selectedAdmin = otherAdmin;
-    expect(component.isAdminSelected(admin)).toBeFalse();
+  it('isObjectSelected - other admin', () => {
+    component.selectedObject = otherAdmin;
+    expect(component.isObjectSelected(admin)).toBeFalse();
   });
 
 
@@ -252,7 +252,7 @@ describe('AdminGroupComponent', () => {
   });
 
   it('lastLogin - get', () => {
-    component.selectedAdmin = admin;
+    component.selectedObject = admin;
     expect(component.lastLogin).toEqual('25.10.21, 20:15');
   });
 
@@ -262,15 +262,15 @@ describe('AdminGroupComponent', () => {
 
 
   /**
-   * onCreateAdmin
+   * onCreateObject
    */
-  it('onCreateAdmin', () => {
-    component.onCreateAdmin();
+  it('onCreateObject', () => {
+    component.onCreateObject();
 
-    expect(component.showAdminDetail).toBeTrue();
-    expect(component.isNewAdmin).toBeTrue();
-    expect(component.selectedAdmin).toBeTruthy();
-    expect(component.selectedAdmin.identification).not.toBeDefined();
+    expect(component.showObjectDetail).toBeTrue();
+    expect(component.isNewObject).toBeTrue();
+    expect(component.selectedObject).toBeTruthy();
+    expect(component.selectedObject.identification).toEqual('');
   });
 
 
@@ -278,10 +278,10 @@ describe('AdminGroupComponent', () => {
    * onAccept
    */
   it('onAccept - create new admin', fakeAsync(() => {
-    component.showAdminDetail = true;
-    component.isNewAdmin = true;
-    component.selectedAdmin = otherAdmin;
-    component.allAdminsfilterDataSource.data = [admin];
+    component.showObjectDetail = true;
+    component.isNewObject = true;
+    component.selectedObject = otherAdmin;
+    component.allObjectsfilterDataSource.data = [admin];
 
     spyOn(selectionService, 'getSelectedAdminGroup').and.returnValue({ identification: adminGroupId } as AdminGroup);
     let createAdminSpy = spyOn(adminService, 'createAdmin').and.returnValue(of(otherAdmin));
@@ -293,18 +293,18 @@ describe('AdminGroupComponent', () => {
 
     expect(createAdminSpy).toHaveBeenCalled;
     expect(updateCreatedAdminSpy).toHaveBeenCalled;
-    expect(component.selectedAdmin === otherAdmin).toBeFalse();
-    expect(component.selectedAdmin.equals(otherAdmin)).toBeTrue();
-    expect(component.allAdminsfilterDataSource.data.length).toEqual(2);
-    expect(component.allAdminsfilterDataSource.data.includes(admin)).toBeTrue();
-    expect(component.allAdminsfilterDataSource.data.includes(otherAdmin)).toBeTrue();
+    expect(component.selectedObject === otherAdmin).toBeFalse();
+    expect(component.selectedObject.equals(otherAdmin)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
+    expect(component.allObjectsfilterDataSource.data.includes(admin)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.includes(otherAdmin)).toBeTrue();
   }));
 
   it('onAccept - create new admin, but missing admin group', fakeAsync(() => {
-    component.showAdminDetail = true;
-    component.isNewAdmin = true;
-    component.selectedAdmin = otherAdmin;
-    component.allAdminsfilterDataSource.data = [admin];
+    component.showObjectDetail = true;
+    component.isNewObject = true;
+    component.selectedObject = otherAdmin;
+    component.allObjectsfilterDataSource.data = [admin];
 
     spyOn(selectionService, 'getSelectedAdminGroup').and.returnValue(undefined);
     let createAdminSpy = spyOn(adminService, 'createAdmin').and.returnValue(of(otherAdmin));
@@ -319,17 +319,17 @@ describe('AdminGroupComponent', () => {
 
     expect(createAdminSpy).not.toHaveBeenCalled;
     expect(updateCreatedAdminSpy).not.toHaveBeenCalled;
-    expect(component.allAdminsfilterDataSource.data.length).toEqual(1);
-    expect(component.allAdminsfilterDataSource.data.includes(admin)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.length).toEqual(1);
+    expect(component.allObjectsfilterDataSource.data.includes(admin)).toBeTrue();
   }));
 
   it('onAccept - update existing admin', fakeAsync(() => {
-    component.showAdminDetail = true;
-    component.isNewAdmin = false;
+    component.showObjectDetail = true;
+    component.isNewObject = false;
     let modfiedUser = User.map(otherAdmin);
     modfiedUser.firstName = modfiedUser.firstName.concat('_');
-    component.selectedAdmin = modfiedUser;
-    component.allAdminsfilterDataSource.data = [admin, otherAdmin];
+    component.selectedObject = modfiedUser;
+    component.allObjectsfilterDataSource.data = [admin, otherAdmin];
 
     spyOn(selectionService, 'getSelectedAdminGroup').and.returnValue({ identification: adminGroupId } as AdminGroup);
     let updateAdminSpy = spyOn(adminService, 'updateAdmin').and.returnValue(of(modfiedUser));
@@ -339,20 +339,20 @@ describe('AdminGroupComponent', () => {
     tick();
 
     expect(updateAdminSpy).toHaveBeenCalled;
-    expect(component.selectedAdmin === modfiedUser).toBeFalse();
-    expect(component.selectedAdmin.equals(modfiedUser)).toBeTrue();
-    expect(component.allAdminsfilterDataSource.data.length).toEqual(2);
-    expect(component.allAdminsfilterDataSource.data.includes(admin)).toBeTrue();
-    expect(component.allAdminsfilterDataSource.data.includes(modfiedUser)).toBeTrue();
+    expect(component.selectedObject === modfiedUser).toBeFalse();
+    expect(component.selectedObject.equals(modfiedUser)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
+    expect(component.allObjectsfilterDataSource.data.includes(admin)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.includes(modfiedUser)).toBeTrue();
   }));
 
   it('onAccept - accept disabled', fakeAsync(() => {
-    component.showAdminDetail = true;
-    component.isNewAdmin = false;
+    component.showObjectDetail = true;
+    component.isNewObject = false;
     let modfiedUser = User.map(otherAdmin);
     modfiedUser.firstName = '';
-    component.selectedAdmin = modfiedUser;
-    component.allAdminsfilterDataSource.data = [admin, otherAdmin];
+    component.selectedObject = modfiedUser;
+    component.allObjectsfilterDataSource.data = [admin, otherAdmin];
 
     spyOn(selectionService, 'getSelectedAdminGroup').and.returnValue({ identification: adminGroupId } as AdminGroup);
     let updateAdminSpy = spyOn(adminService, 'updateAdmin').and.returnValue(of(modfiedUser));
@@ -365,9 +365,9 @@ describe('AdminGroupComponent', () => {
     expect(updateAdminSpy).not.toHaveBeenCalled;
     expect(openMessage).toHaveBeenCalled();
 
-    expect(component.selectedAdmin.identification).toEqual('NotValidIdentification');
-    expect(component.showAdminDetail).toBeFalse();
-    expect(component.isNewAdmin).toBeFalse();
+    expect(component.selectedObject.identification).toEqual('');
+    expect(component.showObjectDetail).toBeFalse();
+    expect(component.isNewObject).toBeFalse();
   }));
 
 
@@ -377,10 +377,10 @@ describe('AdminGroupComponent', () => {
   it('onCancel', () => {
     component.onCancel();
 
-    expect(component.showAdminDetail).toBeFalse();
-    expect(component.isNewAdmin).toBeFalse();
-    expect(component.selectedAdmin).toBeTruthy();
-    expect(component.selectedAdmin.identification).toEqual('NotValidIdentification');
+    expect(component.showObjectDetail).toBeFalse();
+    expect(component.isNewObject).toBeFalse();
+    expect(component.selectedObject).toBeTruthy();
+    expect(component.selectedObject.identification).toEqual('');
   });
 
 
@@ -388,14 +388,14 @@ describe('AdminGroupComponent', () => {
    * onDelete
    */
   it('onDelete - delete successful', fakeAsync(() => {
-    component.allAdminsfilterDataSource.data = [admin, otherAdmin];
+    component.allObjectsfilterDataSource.data = [admin, otherAdmin];
     spyOn(selectionService, 'getActiveUser').and.returnValue(admin);
     let deleteAdminSpy = spyOn(adminService, 'deleteAdmin').and.returnValue(of(true));
     let openMessage = spyOn(snackBar, 'open').and.returnValue({} as MatSnackBarRef<TextOnlySnackBar>);
 
-    component.selectedAdmin = otherAdmin;
-    component.showAdminDetail = true;
-    component.isNewAdmin = false;
+    component.selectedObject = otherAdmin;
+    component.showObjectDetail = true;
+    component.isNewObject = false;
     component.onDelete();
 
     tick();
@@ -404,19 +404,19 @@ describe('AdminGroupComponent', () => {
     expect(openMessage).not.toHaveBeenCalled();
 
 
-    expect(component.allAdminsfilterDataSource.data.length).toEqual(1);
-    expect(component.allAdminsfilterDataSource.data.includes(admin)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.length).toEqual(1);
+    expect(component.allObjectsfilterDataSource.data.includes(admin)).toBeTrue();
   }));
 
   it('onDelete - delete unsuccessful', fakeAsync(() => {
-    component.allAdminsfilterDataSource.data = [admin, otherAdmin];
+    component.allObjectsfilterDataSource.data = [admin, otherAdmin];
     spyOn(selectionService, 'getActiveUser').and.returnValue(admin);
     let deleteAdminSpy = spyOn(adminService, 'deleteAdmin').and.returnValue(of(false));
     let openMessage = spyOn(snackBar, 'open').and.returnValue({} as MatSnackBarRef<TextOnlySnackBar>);
 
-    component.selectedAdmin = otherAdmin;
-    component.showAdminDetail = true;
-    component.isNewAdmin = false;
+    component.selectedObject = otherAdmin;
+    component.showObjectDetail = true;
+    component.isNewObject = false;
     component.onDelete();
 
     tick();
@@ -424,21 +424,21 @@ describe('AdminGroupComponent', () => {
     expect(deleteAdminSpy).toHaveBeenCalled();
     expect(openMessage).toHaveBeenCalled();
 
-    expect(component.allAdminsfilterDataSource.data.length).toEqual(2);
+    expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
 
-    expect(component.allAdminsfilterDataSource.data.includes(admin)).toBeTrue();
-    expect(component.allAdminsfilterDataSource.data.includes(otherAdmin)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.includes(admin)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.includes(otherAdmin)).toBeTrue();
   }));
 
   it('onDelete - delete disabled', fakeAsync(() => {
-    component.allAdminsfilterDataSource.data = [admin, otherAdmin];
+    component.allObjectsfilterDataSource.data = [admin, otherAdmin];
     spyOn(selectionService, 'getActiveUser').and.returnValue(admin);
     let deleteAdminSpy = spyOn(adminService, 'deleteAdmin').and.returnValue(of(false));
     let openMessage = spyOn(snackBar, 'open').and.callFake((message, action, config) => { return {} as MatSnackBarRef<TextOnlySnackBar> });
 
-    component.selectedAdmin = admin;
-    component.showAdminDetail = true;
-    component.isNewAdmin = false;
+    component.selectedObject = admin;
+    component.showObjectDetail = true;
+    component.isNewObject = false;
     component.onDelete();
 
     tick();
@@ -446,13 +446,13 @@ describe('AdminGroupComponent', () => {
     expect(deleteAdminSpy).not.toHaveBeenCalled();
     expect(openMessage).toHaveBeenCalled();
 
-    expect(component.allAdminsfilterDataSource.data.length).toEqual(2);
-    expect(component.allAdminsfilterDataSource.data.includes(admin)).toBeTrue();
-    expect(component.allAdminsfilterDataSource.data.includes(otherAdmin)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
+    expect(component.allObjectsfilterDataSource.data.includes(admin)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.includes(otherAdmin)).toBeTrue();
 
-    expect(component.selectedAdmin.identification).toEqual('NotValidIdentification');
-    expect(component.showAdminDetail).toBeFalse();
-    expect(component.isNewAdmin).toBeFalse();
+    expect(component.selectedObject.identification).toEqual('');
+    expect(component.showObjectDetail).toBeFalse();
+    expect(component.isNewObject).toBeFalse();
   }));
 
 
@@ -460,15 +460,15 @@ describe('AdminGroupComponent', () => {
    * disableAccept
    */
   it('disableAccept - new admin', () => {
-    component.isNewAdmin = true;
-    component.selectedAdmin = admin;
+    component.isNewObject = true;
+    component.selectedObject = admin;
 
     expect(component.disableAccept()).toBeFalse();
   });
 
   it('disableAccept - new admin, but missing firstName', () => {
-    component.isNewAdmin = true;
-    component.selectedAdmin = {
+    component.isNewObject = true;
+    component.selectedObject = {
       identification: adminId,
       lastName: lastName
     } as User
@@ -477,8 +477,8 @@ describe('AdminGroupComponent', () => {
   });
 
   it('disableAccept - new admin, but empty firstName', () => {
-    component.isNewAdmin = true;
-    component.selectedAdmin = {
+    component.isNewObject = true;
+    component.selectedObject = {
       identification: adminId,
       firstName: '',
       lastName: lastName
@@ -488,8 +488,8 @@ describe('AdminGroupComponent', () => {
   });
 
   it('disableAccept - new admin, but missing lastName', () => {
-    component.isNewAdmin = true;
-    component.selectedAdmin = {
+    component.isNewObject = true;
+    component.selectedObject = {
       identification: adminId,
       firstName: firstName
     } as User
@@ -498,8 +498,8 @@ describe('AdminGroupComponent', () => {
   });
 
   it('disableAccept - new admin, but empty lastName', () => {
-    component.isNewAdmin = true;
-    component.selectedAdmin = {
+    component.isNewObject = true;
+    component.selectedObject = {
       identification: adminId,
       firstName: firstName,
       lastName: ''
@@ -509,20 +509,20 @@ describe('AdminGroupComponent', () => {
   });
 
   it('disableAccept - existing admin', () => {
-    component.isNewAdmin = false;
-    component.selectedAdmin = admin;
+    component.isNewObject = false;
+    component.selectedObject = admin;
 
     expect(component.disableAccept()).toBeFalse();
   });
 
   it('disableAccept - existing admin, but not modified', () => {
-    component.onSelectAdmin(admin);
+    component.onSelectObject(admin);
     expect(component.disableAccept()).toBeTrue();
   });
 
   it('disableAccept - existing admin, but missing firstName', () => {
-    component.isNewAdmin = false;
-    component.selectedAdmin = {
+    component.isNewObject = false;
+    component.selectedObject = {
       identification: adminId,
       lastName: lastName
     } as User
@@ -531,8 +531,8 @@ describe('AdminGroupComponent', () => {
   });
 
   it('disableAccept - existing admin, but empty firstName', () => {
-    component.isNewAdmin = false;
-    component.selectedAdmin = {
+    component.isNewObject = false;
+    component.selectedObject = {
       identification: adminId,
       firstName: '',
       lastName: lastName
@@ -542,8 +542,8 @@ describe('AdminGroupComponent', () => {
   });
 
   it('disableAccept - existing admin, but missing lastName', () => {
-    component.isNewAdmin = false;
-    component.selectedAdmin = {
+    component.isNewObject = false;
+    component.selectedObject = {
       identification: adminId,
       firstName: firstName
     } as User
@@ -552,8 +552,8 @@ describe('AdminGroupComponent', () => {
   });
 
   it('disableAccept - existing admin, but empty lastName', () => {
-    component.isNewAdmin = false;
-    component.selectedAdmin = {
+    component.isNewObject = false;
+    component.selectedObject = {
       identification: adminId,
       firstName: firstName,
       lastName: ''
@@ -567,32 +567,32 @@ describe('AdminGroupComponent', () => {
    * disableDelete
    */
   it('disableDelete - not new and other', () => {
-    component.isNewAdmin = false;
-    component.selectedAdmin = admin;
+    component.isNewObject = false;
+    component.selectedObject = admin;
     spyOn(selectionService, 'getActiveUser').and.returnValue(otherAdmin);
 
     expect(component.disableDelete()).toBeFalse();
   });
 
   it('disableDelete - undefined active user', () => {
-    component.isNewAdmin = false;
-    component.selectedAdmin = admin;
+    component.isNewObject = false;
+    component.selectedObject = admin;
     spyOn(selectionService, 'getActiveUser').and.returnValue(undefined);
 
     expect(component.disableDelete()).toBeTrue();
   });
 
   it('disableDelete - new admin', () => {
-    component.isNewAdmin = true;
-    component.selectedAdmin = admin;
+    component.isNewObject = true;
+    component.selectedObject = admin;
     spyOn(selectionService, 'getActiveUser').and.returnValue(otherAdmin);
 
     expect(component.disableDelete()).toBeTrue();
   });
 
   it('disableDelete - active user', () => {
-    component.isNewAdmin = false;
-    component.selectedAdmin = admin;
+    component.isNewObject = false;
+    component.selectedObject = admin;
     spyOn(selectionService, 'getActiveUser').and.returnValue(admin);
 
     expect(component.disableDelete()).toBeTrue();

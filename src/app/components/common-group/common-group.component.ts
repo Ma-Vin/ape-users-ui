@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
@@ -86,11 +86,8 @@ export class CommonGroupComponent extends ListDetailComponent<CommonGroup>{
       .subscribe(createdCommonGroup => {
         this.selectedObject.identification = createdCommonGroup.identification
         this.commonGroupService.updateCommonGroup(this.selectedObject)
-          .subscribe(addedCommonGroup => {
-            this.allObjectsfilterDataSource.data.push(addedCommonGroup);
-            this.allObjectsfilterDataSource.sort = this.sort;
-            this.table?.renderRows();
-            this.onSelectObject(addedCommonGroup);
+          .subscribe(updatedCreatedommonGroup => {
+            this.takeOverNewObject(updatedCreatedommonGroup);
           });
       });
   }
@@ -98,34 +95,14 @@ export class CommonGroupComponent extends ListDetailComponent<CommonGroup>{
 
   protected onAcceptExistingObject(): void {
     this.commonGroupService.updateCommonGroup(this.selectedObject).subscribe(storedCommonGroup => {
-      for (let i = 0; i < this.allObjectsfilterDataSource.data.length; i++) {
-        if (this.allObjectsfilterDataSource.data[i].identification == this.selectedObject.identification) {
-          this.allObjectsfilterDataSource.data[i] = storedCommonGroup;
-          this.allObjectsfilterDataSource.sort = this.sort;
-          this.table?.renderRows();
-          this.onSelectObject(storedCommonGroup);
-          break;
-        }
-      }
+      this.takeOverUpdatedObject(storedCommonGroup);
     });
   }
 
 
   protected onDeleteExistingObject(): void {
     this.commonGroupService.deleteCommonGroup(this.selectedObject.identification).subscribe(deleted => {
-      if (deleted) {
-        for (let i = 0; i < this.allObjectsfilterDataSource.data.length; i++) {
-          if (this.allObjectsfilterDataSource.data[i].identification == this.selectedObject.identification) {
-            this.allObjectsfilterDataSource.data.splice(i, 1);
-            this.allObjectsfilterDataSource.sort = this.sort;
-            this.table?.renderRows();
-            this.onCancel();
-            break;
-          }
-        }
-      } else {
-        this.openSnackBar(`The common group ${this.selectedObject.identification} was not deleted`, 'Error');
-      }
+      this.removeDeltedObject(deleted);
     });
   }
 

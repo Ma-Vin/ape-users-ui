@@ -172,7 +172,7 @@ export class AdminService extends BaseBackendService {
   private getAdminMock(identification: string): Observable<User> {
     for (let a of this.getAllAdminsFromMock()) {
       if (a.identification == identification) {
-        return of(a);
+        return of(User.map(a));
       }
     }
     return throwError(new Error(`There is not any User with identification "${identification}"`));
@@ -301,8 +301,8 @@ export class AdminService extends BaseBackendService {
     let users = this.getAllUsersFromMock();
     for (let i = 0; i < users.length; i++) {
       if (users[i].identification == modifiedAdmin.identification) {
-        users[i] = modifiedAdmin;
-        return of(modifiedAdmin);
+        users[i] = User.map(modifiedAdmin);
+        return of(User.map(modifiedAdmin));
       }
     }
     return throwError(new Error(`${Status.ERROR} occurs while updating admin ${modifiedAdmin.identification} at backend`));

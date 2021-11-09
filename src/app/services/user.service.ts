@@ -103,7 +103,7 @@ export class UserService extends BaseBackendService {
   private getUserMock(identification: string): Observable<User> {
     for (let a of this.getAllNonAdminsFromMock()) {
       if (a.identification == identification) {
-        return of(a);
+        return of(User.map(a));
       }
     }
     return throwError(new Error(`There is not any User with identification "${identification}"`));

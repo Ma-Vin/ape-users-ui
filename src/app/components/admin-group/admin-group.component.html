@@ -1,19 +1,19 @@
 <mat-toolbar color="primary">
     <mat-toolbar-row>
-        <button mat-raised-button color="primary" (click)="onCreateAdmin()">
+        <button mat-raised-button color="primary" (click)="onCreateObject()">
             <mat-icon>add_box</mat-icon>
             Create new Admin
         </button>
     </mat-toolbar-row>
 </mat-toolbar>
-<div class="admin-groups">
-    <div class="all-admins">
+<div class="object-container">
+    <div class="all-objects">
         <mat-form-field>
             <mat-label>Filter</mat-label>
-            <input matInput (keyup)="applyAllAdminsFilter($event)" placeholder="Admin Id, First- or Lastname">
+            <input matInput (keyup)="applyAllObjectsFilter($event)" placeholder="Admin Id, First- or Lastname">
         </mat-form-field>
-        <table mat-table #tableAllAdminsTable="matTable" #tableAllAdminsSort="matSort"
-            [dataSource]="allAdminsfilterDataSource" matSort matSortActive="identification" matSortDirection="asc">
+        <table mat-table #tableAllObjectsTable="matTable" #tableAllObjectsSort="matSort"
+            [dataSource]="allObjectsfilterDataSource" matSort matSortActive="identification" matSortDirection="asc">
             <details>all available admins</details>
             <ng-container matColumnDef="identification">
                 <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header> Id </th>
@@ -27,44 +27,44 @@
                 <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header> Last Name </th>
                 <td mat-cell *matCellDef="let element"> {{element.lastName}} </td>
             </ng-container>
-            <tr mat-header-row *matHeaderRowDef="allAdminsDisplayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: allAdminsDisplayedColumns;" (click)="onSelectAdmin(row)"
-                [class.selected]="isAdminSelected(row)"></tr>
+            <tr mat-header-row *matHeaderRowDef="allObjectsDisplayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: allObjectsDisplayedColumns;" (click)="onSelectObject(row)"
+                [class.selected]="isObjectSelected(row)"></tr>
         </table>
     </div>
-    <div class="admin-detail">
-        <div *ngIf="showAdminDetail; then adminSelectedBlock else adminNotSelectedBlock"></div>
+    <div class="object-detail">
+        <div *ngIf="showObjectDetail; then adminSelectedBlock else adminNotSelectedBlock"></div>
         <ng-template #adminSelectedBlock>
             <div class="element-data-row">
                 <mat-form-field class="element-detail-short">
                     <mat-label>Id</mat-label>
-                    <input matInput placeholder="Identification" [(ngModel)]="selectedAdmin.identification" disabled />
+                    <input matInput placeholder="Identification" [(ngModel)]="selectedObject.identification" disabled />
                 </mat-form-field>
             </div>
             <div class="element-data-row">
                 <mat-form-field class="element-detail-mid">
                     <mat-label>Last Name</mat-label>
-                    <input matInput placeholder="Last Name" [(ngModel)]="selectedAdmin.lastName" required />
+                    <input matInput placeholder="Last Name" [(ngModel)]="selectedObject.lastName" required />
                 </mat-form-field>
                 <mat-form-field class="element-detail-mid">
                     <mat-label>First Name</mat-label>
-                    <input matInput placeholder="First Name" [(ngModel)]="selectedAdmin.firstName" required />
+                    <input matInput placeholder="First Name" [(ngModel)]="selectedObject.firstName" required />
                 </mat-form-field>
                 <mat-form-field class="element-detail-mid">
                     <mat-label>Email</mat-label>
-                    <input matInput placeholder="Email" [(ngModel)]="selectedAdmin.mail" />
+                    <input matInput placeholder="Email" [(ngModel)]="selectedObject.mail" />
                 </mat-form-field>
             </div>
             <div class="element-data-row">
                 <mat-form-field class="element-detail-mid" appearance="fill">
                     <mat-label>Valid from</mat-label>
-                    <input matInput [matDatepicker]="pickerValidFrom" [(ngModel)]="selectedAdmin.validFrom">
+                    <input matInput [matDatepicker]="pickerValidFrom" [(ngModel)]="selectedObject.validFrom">
                     <mat-datepicker-toggle matSuffix [for]="pickerValidFrom"></mat-datepicker-toggle>
                     <mat-datepicker #pickerValidFrom></mat-datepicker>
                 </mat-form-field>
                 <mat-form-field class="element-detail-mid" appearance="fill">
                     <mat-label>Valid to</mat-label>
-                    <input matInput [matDatepicker]="pickerValidTo" [(ngModel)]="selectedAdmin.validTo">
+                    <input matInput [matDatepicker]="pickerValidTo" [(ngModel)]="selectedObject.validTo">
                     <mat-datepicker-toggle matSuffix [for]="pickerValidTo"></mat-datepicker-toggle>
                     <mat-datepicker #pickerValidTo></mat-datepicker>
                 </mat-form-field>
@@ -75,7 +75,7 @@
             </div>
             <div class="button-row">
                 <button mat-raised-button color="primary" (click)="onAccept()" [disabled]="disableAccept()">
-                    <div *ngIf="isNewAdmin; then newBlock else changeBlock"></div>
+                    <div *ngIf="isNewObject; then newBlock else changeBlock"></div>
                     <ng-template #newBlock>
                         <mat-icon>add_box</mat-icon>
                         Create

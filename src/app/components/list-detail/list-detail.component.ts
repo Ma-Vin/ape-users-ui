@@ -184,6 +184,55 @@ export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> impl
         }
     }
 
+
+    /**
+     * Take over a new created object to list of all objects, rerenders rows
+     * @param newObject the object to add
+     */
+    protected takeOverNewObject(newObject: T): void {
+        this.allObjectsfilterDataSource.data.push(newObject);
+        this.allObjectsfilterDataSource.sort = this.sort;
+        this.table?.renderRows();
+        this.onSelectObject(newObject);
+    }
+
+
+    /**
+     * Take over an updated object to list of all objects, rerenders rows
+     * @param updatedObject the object to add
+     */
+    protected takeOverUpdatedObject(updatedObject: T): void {
+        for (let i = 0; i < this.allObjectsfilterDataSource.data.length; i++) {
+            if (this.allObjectsfilterDataSource.data[i].getIdentification() == this.selectedObject.getIdentification()) {
+                this.allObjectsfilterDataSource.data[i] = updatedObject;
+                this.allObjectsfilterDataSource.sort = this.sort;
+                this.table?.renderRows();
+                this.onSelectObject(updatedObject);
+                break;
+            }
+        }
+    }
+
+    /**
+     * Removes a delted object from the list of all obejects, rerenders rows
+     * @param deleted true if the selected object was deleted
+     */
+    protected removeDeltedObject(deleted: boolean): void {
+        if (deleted) {
+            for (let i = 0; i < this.allObjectsfilterDataSource.data.length; i++) {
+                if (this.allObjectsfilterDataSource.data[i].getIdentification() == this.selectedObject.getIdentification()) {
+                    this.allObjectsfilterDataSource.data.splice(i, 1);
+                    this.allObjectsfilterDataSource.sort = this.sort;
+                    this.table?.renderRows();
+                    this.onCancel();
+                    break;
+                }
+            }
+        } else {
+            this.openSnackBar(`${this.selectedObject.getIdentification()} was not deleted`, 'Error');
+        }
+    }
+
     /**
      * Creates a new object at backend
      */

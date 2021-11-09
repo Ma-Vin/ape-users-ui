@@ -299,7 +299,7 @@ export class CommonGroupService extends BaseBackendService {
     for (let i = 0; i < users.length; i++) {
       if (users[i].identification == modifiedCommonGroup.identification) {
         users[i] = CommonGroup.map(modifiedCommonGroup);
-        return of(users[i]);
+        return of(CommonGroup.map(modifiedCommonGroup));
       }
     }
     return throwError(new Error(`${Status.ERROR} occurs while updating common group ${modifiedCommonGroup.identification} at backend`));
