@@ -5,7 +5,7 @@ import { SelectionService } from 'src/app/services/selection.service';
 @Injectable({
   providedIn: 'root'
 })
-export class AdminGroupGuardService {
+export class AdminGuardService {
 
   constructor(private selectionService: SelectionService) { }
 

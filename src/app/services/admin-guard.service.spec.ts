@@ -7,10 +7,10 @@ import { AdminService } from 'src/app/services/admin.service';
 import { SelectionService } from 'src/app/services/selection.service';
 import { UserService } from 'src/app/services/user.service';
 
-import { AdminGroupGuardService } from './admin-group-guard.service';
+import { AdminGuardService } from './admin-guard.service';
 
-describe('AdminGroupGuardService', () => {
-  let service: AdminGroupGuardService;
+describe('AdminGuardService', () => {
+  let service: AdminGuardService;
   let adminService: AdminService;
   let userService: UserService;
   let selectionService: SelectionService;
@@ -34,7 +34,7 @@ describe('AdminGroupGuardService', () => {
     userService = TestBed.inject(UserService);
     selectionService = TestBed.inject(SelectionService);
 
-    service = TestBed.inject(AdminGroupGuardService);
+    service = TestBed.inject(AdminGuardService);
 
     selectionServiceSpy = spyOn(selectionService, 'getActiveUser');
   });
