@@ -1,0 +1,137 @@
+import { Component, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTableDataSource } from '@angular/material/table';
+import { ActivatedRoute } from '@angular/router';
+import { CommonGroup } from 'src/app/model/common-group.model';
+import { Role } from 'src/app/model/role.model';
+import { Location } from '@angular/common';
+import { CommonGroupService } from 'src/app/services/common-group.service';
+import { SelectionService } from 'src/app/services/selection.service';
+import { COMMON_GROUPS_PATH } from 'src/app/app-routing.module';
+import { ListDetailComponent } from '../list-detail/list-detail.component';
+
+
+interface RoleWithText {
+  value: Role;
+  text: string;
+}
+
+
+@Component({
+  selector: 'app-common-group',
+  templateUrl: './common-group.component.html',
+  styleUrls: ['../list-detail/list-detail.component.less']
+})
+export class CommonGroupComponent extends ListDetailComponent<CommonGroup>{
+  allowedRoles: Role[] = [Role.ADMIN, Role.MANAGER, Role.CONTRIBUTOR, Role.VISITOR, Role.BLOCKED];
+  roles: RoleWithText[] = [];
+
+
+  constructor(private selectionService: SelectionService, private commonGroupService: CommonGroupService
+    , route: ActivatedRoute, location: Location, snackBar: MatSnackBar) {
+
+    super(route, location, snackBar);
+    for (let r of this.allowedRoles) {
+      this.roles.push({ value: r, text: `${r}` } as RoleWithText);
+    }
+  }
+
+
+  createNewEmptyObject(): CommonGroup {
+    return {
+      identification: '',
+      equals: (other) => other == undefined,
+      getIdentification: () => ''
+    } as CommonGroup;
+  }
+
+
+  createDisplayedColumns(): string[] {
+    return ['identification', 'groupName']
+  }
+
+
+  mapObject(source: CommonGroup): CommonGroup {
+    return CommonGroup.map(source);
+  }
+
+
+
+  protected loadAllObjects(): void {
+    console.debug("CommonGroupComponent: get all common groups from service");
+    this.commonGroupService.getAllCommonGroups(undefined, undefined).subscribe(
+      allCommonGroups => {
+        console.debug("CommonGroupComponent: store all common groups from service");
+        this.allObjectsfilterDataSource = new MatTableDataSource(allCommonGroups);
+        this.allObjectsfilterDataSource.sort = this.sort;
+        this.checkUrlId();
+      }
+    );
+  }
+
+
+  protected getBaseRoute(): string {
+    return COMMON_GROUPS_PATH;
+  }
+
+
+  onSelectObject(objectToSelect: CommonGroup): void {
+    super.onSelectObject(objectToSelect);
+    this.selectionService.setSelectedCommonGroup(objectToSelect);
+  }
+
+
+  protected onAcceptNewObject(): void {
+    this.commonGroupService.createCommonGroup(this.selectedObject.groupName)
+      .subscribe(createdCommonGroup => {
+        this.selectedObject.identification = createdCommonGroup.identification
+        this.commonGroupService.updateCommonGroup(this.selectedObject)
+          .subscribe(addedCommonGroup => {
+            this.allObjectsfilterDataSource.data.push(addedCommonGroup);
+            this.allObjectsfilterDataSource.sort = this.sort;
+            this.table?.renderRows();
+            this.onSelectObject(addedCommonGroup);
+          });
+      });
+  }
+
+
+  protected onAcceptExistingObject(): void {
+    this.commonGroupService.updateCommonGroup(this.selectedObject).subscribe(storedCommonGroup => {
+      for (let i = 0; i < this.allObjectsfilterDataSource.data.length; i++) {
+        if (this.allObjectsfilterDataSource.data[i].identification == this.selectedObject.identification) {
+          this.allObjectsfilterDataSource.data[i] = storedCommonGroup;
+          this.allObjectsfilterDataSource.sort = this.sort;
+          this.table?.renderRows();
+          this.onSelectObject(storedCommonGroup);
+          break;
+        }
+      }
+    });
+  }
+
+
+  protected onDeleteExistingObject(): void {
+    this.commonGroupService.deleteCommonGroup(this.selectedObject.identification).subscribe(deleted => {
+      if (deleted) {
+        for (let i = 0; i < this.allObjectsfilterDataSource.data.length; i++) {
+          if (this.allObjectsfilterDataSource.data[i].identification == this.selectedObject.identification) {
+            this.allObjectsfilterDataSource.data.splice(i, 1);
+            this.allObjectsfilterDataSource.sort = this.sort;
+            this.table?.renderRows();
+            this.onCancel();
+            break;
+          }
+        }
+      } else {
+        this.openSnackBar(`The common group ${this.selectedObject.identification} was not deleted`, 'Error');
+      }
+    });
+  }
+
+
+  protected checkRequiredFields(): boolean {
+    return this.selectedObject.groupName != undefined && this.selectedObject.groupName.length > 0
+      && this.selectedObject.defaultRole != undefined && this.allowedRoles.includes(this.selectedObject.defaultRole);
+  }
+}

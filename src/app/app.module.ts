@@ -15,6 +15,7 @@ import { AdminGroupComponent } from './components/admin-group/admin-group.compon
 import { registerLocaleData } from '@angular/common';
 import localeDE from '@angular/common/locales/de';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { CommonGroupComponent } from './components/common-group/common-group.component';
 
 registerLocaleData(localeDE);
 
@@ -22,7 +23,8 @@ registerLocaleData(localeDE);
   declarations: [
     AppComponent,
     LoginComponent,
-    AdminGroupComponent
+    AdminGroupComponent,
+    CommonGroupComponent
   ],
   imports: [
     BrowserModule,
