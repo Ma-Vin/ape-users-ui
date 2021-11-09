@@ -153,7 +153,11 @@ export class CommonGroupService extends BaseBackendService {
    * @returns the mocked observable of all common groups
    */
   private getAllCommonGroupsMock(): Observable<CommonGroup[]> {
-    return of(this.getAllCommonGroupsFromMock());
+    let copy: CommonGroup[] = [];
+    for (let cg of this.getAllCommonGroupsFromMock()) {
+      copy.push(cg)
+    }
+    return of(copy);
   }
 
 
