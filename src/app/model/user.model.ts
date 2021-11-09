@@ -1,3 +1,4 @@
+import { IEqualsAndIdentifiable } from "./equals-identifiable";
 import { IUserResource, UserResource } from "./user-resource.model";
 
 export interface IUser {
@@ -14,7 +15,7 @@ export interface IUser {
 
 }
 
-export class User implements IUser {
+export class User implements IUser, IEqualsAndIdentifiable {
 
     identification: string;
     firstName: string;
@@ -52,11 +53,7 @@ export class User implements IUser {
         return result;
     }
 
-    /**
-     * Checks whether an other object is equal to the actual one
-     * @param other the other object
-     * @returns true if the object eqauls the actual one (It has to be an instance of User). Otherwise false
-     */
+
     public equals(other: any): boolean {
         if (other == undefined) {
             return false;
@@ -79,6 +76,11 @@ export class User implements IUser {
             && ((this.image != undefined && this.image.equals(other.image)) || (this.image == undefined && other.image == undefined))
             && ((this.smallImage != undefined && this.smallImage.equals(other.smallImage)) || (this.smallImage == undefined && other.smallImage == undefined))
             && this.isGlobalAdmin == other.isGlobalAdmin;
+    }
+
+    
+    getIdentification(): string {
+        return this.identification;
     }
 
 }

@@ -1,11 +1,12 @@
 import { IAbstractGroup } from "./abstract-group.model";
+import { IEqualsAndIdentifiable } from "./equals-identifiable";
 import { Role } from "./role.model";
 
 export interface ICommonGroup extends IAbstractGroup {
     defaultRole: Role
 }
 
-export class CommonGroup implements ICommonGroup {
+export class CommonGroup implements ICommonGroup, IEqualsAndIdentifiable {
 
     constructor(groupName: string, identification: string) {
         this.groupName = groupName;
@@ -35,11 +36,6 @@ export class CommonGroup implements ICommonGroup {
         return result;
     }
 
-    /**
-     * Checks whether an other object is equal to the actual one
-     * @param other the other object
-     * @returns true if the object eqauls the actual one (It has to be an instance of CommonGroup). Otherwise false
-     */
     public equals(other: any): boolean {
         if (other == undefined) {
             return false;
@@ -57,4 +53,9 @@ export class CommonGroup implements ICommonGroup {
             && this.validTo?.getTime() == other.validTo?.getTime()
             && this.defaultRole == other.defaultRole
     }
+
+    getIdentification(): string {
+        return this.identification;
+    }
+
 }

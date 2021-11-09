@@ -28,13 +28,13 @@ export class AdminService extends BaseBackendService {
   private updateAdminUrl: string | undefined;
   private setAdminPasswordUrl: string | undefined;
 
-  private adminGroupMock: AdminGroup = {
+  private adminGroupMock = AdminGroup.map({
     description: 'Group of admins',
     groupName: 'admingroup',
     identification: 'AGAA00001',
     validFrom: new Date(2021, 0, 1, 12, 0),
     validTo: undefined
-  };
+  } as IAdminGroup);
 
 
   constructor(private http: HttpClient, configService: ConfigService) {

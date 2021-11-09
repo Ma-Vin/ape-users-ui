@@ -1,9 +1,11 @@
+import { IEqualsAndIdentifiable } from "./equals-identifiable";
+
 export interface IUserResource {
     identification: string;
     data: string | ArrayBuffer | undefined;
 }
 
-export class UserResource implements IUserResource {
+export class UserResource implements IUserResource, IEqualsAndIdentifiable {
 
     constructor(identification: string) {
         this.identification = identification;
@@ -26,11 +28,7 @@ export class UserResource implements IUserResource {
         return result;
     }
 
-    /**
-     * Checks whether an other object is equal to the actual one
-     * @param other the other object
-     * @returns true if the object eqauls the actual one (It has to be an instance of UserResource). Otherwise false
-     */
+
     public equals(other: any): boolean {
         if (other == undefined) {
             return false;
@@ -44,6 +42,10 @@ export class UserResource implements IUserResource {
 
         return this.identification == other.identification
             && this.data == other.data;
+    }
+
+    getIdentification(): string {
+        return this.identification;
     }
 
 }

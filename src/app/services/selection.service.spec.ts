@@ -3,7 +3,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { ConfigService } from '../config/config.service';
-import { AdminGroup } from '../model/admin-group.model';
+import { AdminGroup, IAdminGroup } from '../model/admin-group.model';
 import { CommonGroup, ICommonGroup } from '../model/common-group.model';
 import { Role } from '../model/role.model';
 import { User } from '../model/user.model';
@@ -52,13 +52,13 @@ describe('SelectionService', () => {
     isGlobalAdmin: true
   } as User);
 
-  const adminGroup: AdminGroup = {
+  const adminGroup = AdminGroup.map({
     description: 'description of admin group',
     groupName: 'Admins',
     identification: 'AGAA00001',
     validFrom: new Date(2021, 1, 1),
     validTo: undefined
-  }
+  } as IAdminGroup)
 
   const commonGroup = CommonGroup.map({
     defaultRole: Role.VISITOR,

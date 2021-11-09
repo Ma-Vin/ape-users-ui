@@ -40,13 +40,13 @@ describe('AdminService', () => {
     validTo: undefined
   }
 
-  const modifiedAdminGroup: AdminGroup = {
+  const modifiedAdminGroup = AdminGroup.map({
     description: 'some description',
     groupName: 'Name of the group',
     identification: adminGroupId,
     validFrom: new Date(2021, 9, 1),
     validTo: undefined
-  }
+  } as IAdminGroup)
 
   const mockIUserAdmin: IUser = {
     identification: adminId,
