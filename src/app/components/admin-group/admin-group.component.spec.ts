@@ -285,12 +285,14 @@ describe('AdminGroupComponent', () => {
 
     spyOn(selectionService, 'getSelectedAdminGroup').and.returnValue({ identification: adminGroupId } as AdminGroup);
     let createAdminSpy = spyOn(adminService, 'createAdmin').and.returnValue(of(otherAdmin));
+    let updateCreatedAdminSpy = spyOn(adminService, 'updateAdmin').and.returnValue(of(otherAdmin));
 
     component.onAccept();
 
     tick();
 
     expect(createAdminSpy).toHaveBeenCalled;
+    expect(updateCreatedAdminSpy).toHaveBeenCalled;
     expect(component.selectedAdmin === otherAdmin).toBeFalse();
     expect(component.selectedAdmin.equals(otherAdmin)).toBeTrue();
     expect(component.allAdminsfilterDataSource.data.length).toEqual(2);
@@ -306,6 +308,7 @@ describe('AdminGroupComponent', () => {
 
     spyOn(selectionService, 'getSelectedAdminGroup').and.returnValue(undefined);
     let createAdminSpy = spyOn(adminService, 'createAdmin').and.returnValue(of(otherAdmin));
+    let updateCreatedAdminSpy = spyOn(adminService, 'updateAdmin').and.returnValue(of(otherAdmin));
     try {
       component.onAccept();
     } catch (error) {
@@ -315,6 +318,7 @@ describe('AdminGroupComponent', () => {
     tick();
 
     expect(createAdminSpy).not.toHaveBeenCalled;
+    expect(updateCreatedAdminSpy).not.toHaveBeenCalled;
     expect(component.allAdminsfilterDataSource.data.length).toEqual(1);
     expect(component.allAdminsfilterDataSource.data.includes(admin)).toBeTrue();
   }));

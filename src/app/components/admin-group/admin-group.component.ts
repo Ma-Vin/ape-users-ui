@@ -185,11 +185,15 @@ export class AdminGroupComponent implements OnInit {
       throw new Error('There should be any admin group where to add new admin');
     }
     this.adminService.createAdmin(adminGroup.identification, this.selectedAdmin.firstName, this.selectedAdmin.lastName)
-      .subscribe(addedAdmin => {
-        this.allAdminsfilterDataSource.data.push(addedAdmin);
-        this.allAdminsfilterDataSource.sort = this.sort;
-        this.table?.renderRows();
-        this.onSelectAdmin(addedAdmin);
+      .subscribe(createdAdmin => {
+        this.selectedAdmin.identification = createdAdmin.identification;
+        this.adminService.updateAdmin(this.selectedAdmin)
+          .subscribe(updatedCreatedAdmin => {
+            this.allAdminsfilterDataSource.data.push(updatedCreatedAdmin);
+            this.allAdminsfilterDataSource.sort = this.sort;
+            this.table?.renderRows();
+            this.onSelectAdmin(updatedCreatedAdmin);
+          });
       });
   }
 
