@@ -298,8 +298,8 @@ export class CommonGroupService extends BaseBackendService {
     let users = this.getAllCommonGroupsFromMock();
     for (let i = 0; i < users.length; i++) {
       if (users[i].identification == modifiedCommonGroup.identification) {
-        users[i] = modifiedCommonGroup;
-        return of(modifiedCommonGroup);
+        users[i] = CommonGroup.map(modifiedCommonGroup);
+        return of(users[i]);
       }
     }
     return throwError(new Error(`${Status.ERROR} occurs while updating common group ${modifiedCommonGroup.identification} at backend`));
