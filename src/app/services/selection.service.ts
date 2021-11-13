@@ -5,6 +5,7 @@ import { AdminGroup } from '../model/admin-group.model';
 import { CommonGroup } from '../model/common-group.model';
 import { User } from '../model/user.model';
 import { AdminService } from './admin.service';
+import { CommonGroupService } from './common-group.service';
 import { UserService } from './user.service';
 
 @Injectable({
@@ -15,7 +16,7 @@ export class SelectionService {
   private selectedAdminGroup: AdminGroup | undefined;
   private selectedCommonGroup: CommonGroup | undefined;
 
-  constructor(private adminService: AdminService, private userService: UserService) { }
+  constructor(private adminService: AdminService, private userService: UserService, private commonGroupService: CommonGroupService) { }
 
   public getActiveUser(): User | undefined {
     return this.activeUser;
@@ -35,7 +36,21 @@ export class SelectionService {
         this.activeUser = undefined;
         return NEVER;
       })
-    ).subscribe(data => this.activeUser = data);
+    ).subscribe(data => {
+      this.activeUser = data;
+      this.determineCommonGroup();
+    });
+  }
+
+  /**
+   * Determines the parent common group of the active user, if the user is defined and not a global admin
+   */
+  private determineCommonGroup(): void {
+    if (this.activeUser == undefined || this.activeUser.isGlobalAdmin) {
+      return;
+    }
+    this.commonGroupService.getParentCommonGroupOfUser(this.activeUser.identification)
+      .subscribe(data => this.selectedCommonGroup = data);
   }
 
   public removeActiveUser(): void {
