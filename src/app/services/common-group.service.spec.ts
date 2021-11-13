@@ -11,6 +11,7 @@ import { BaseBackendService } from './base-backend.service';
 import { RETRIES } from './base.service';
 
 import { CommonGroupService } from './common-group.service';
+import { INITIAL_USER_ID_AT_MOCK } from './user.service';
 
 describe('CommonGroupService', () => {
   let service: CommonGroupService;
@@ -21,6 +22,7 @@ describe('CommonGroupService', () => {
 
   const commonGroupId = 'CGAA00001';
   const commonGroupName = 'Name of the group';
+  const userId = INITIAL_USER_ID_AT_MOCK;
 
   const mockConfig: Config =
   {
@@ -295,6 +297,108 @@ describe('CommonGroupService', () => {
 
     tick();
   }));
+
+
+
+  /**
+   * getParentCommonGroupOfUser
+   */
+   it('getParentCommonGroupOfUser - all ok', fakeAsync(() => {
+    let mockResponseWrapper: ResponseWrapper = {
+      response: mockICommonGroup,
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getParentCommonGroupOfUser(userId).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.description).toEqual(mockICommonGroup.description);
+      expect(data.groupName).toEqual(mockICommonGroup.groupName);
+      expect(data.identification).toEqual(mockICommonGroup.identification);
+      expect(data.validFrom).toEqual(mockICommonGroup.validFrom);
+      expect(data.validTo).toBeUndefined();
+      expect(data.defaultRole).toEqual(mockICommonGroup.defaultRole);
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/group/common/getParentCommonGroupOfUser/${userId}`);
+    expect(req.request.method).toEqual("GET");
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/group/common/getParentCommonGroupOfUser/${userId}`);
+
+    tick();
+  }));
+
+  it('getParentCommonGroupOfUser - with error status', fakeAsync(() => {
+    service.getParentCommonGroupOfUser(userId).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/group/common/getParentCommonGroupOfUser/${userId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockErrorResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/group/common/getParentCommonGroupOfUser/${userId}`);
+
+    tick();
+  }));
+
+  it('getParentCommonGroupOfUser - with fatal status', fakeAsync(() => {
+    service.getParentCommonGroupOfUser(userId).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/group/common/getParentCommonGroupOfUser/${userId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockFatalResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/group/common/getParentCommonGroupOfUser/${userId}`);
+
+    tick();
+  }));
+
+  it('getParentCommonGroupOfUser - mock', fakeAsync(() => {
+    service.useMock = true;
+    service.getParentCommonGroupOfUser(userId).subscribe(
+      data => {
+        expect(data).toBeTruthy();
+        expect(data.identification).toEqual(commonGroupId);
+      });
+
+    httpMock.expectNone(`//localhost:8080/group/common/getParentCommonGroupOfUser/${userId}`);
+
+    tick();
+  }));
+
+  it('getParentCommonGroupOfUser - mock with error', fakeAsync(() => {
+    service.useMock = true;
+    service.getParentCommonGroupOfUser('someId').subscribe(
+      data => {
+        expect(data).toBeFalsy();
+      },
+      e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual(`${Status.ERROR} occurs while getting parent common group of user someId from backend`);
+      });
+
+    httpMock.expectNone(`//localhost:8080/group/common/getParentCommonGroupOfUser/someId`);
+
+    tick();
+  }));
+
 
 
 

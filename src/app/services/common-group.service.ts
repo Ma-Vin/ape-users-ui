@@ -9,9 +9,11 @@ import { Role } from '../model/role.model';
 import { Status } from '../model/status.model';
 import { BaseBackendService } from './base-backend.service';
 import { HTTP_JSON_OPTIONS, HTTP_URL_OPTIONS, RETRIES } from './base.service';
+import { INITIAL_USER_ID_AT_MOCK } from './user.service';
 
 const ALL_COMMON_GOUP_MOCK_KEY = 'commonGroups'
 const NEXT_COMMON_GOUP_ID_MOCK_KEY = 'nextCommonGroupId'
+const USERS_AT_COMMON_GROUP = 'usersAtCommonGroup'
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +22,7 @@ export class CommonGroupService extends BaseBackendService {
   private createCommonGroupUrl: string | undefined;
   private deleteCommonGroupUrl: string | undefined;
   private getCommonGroupUrl: string | undefined;
+  private getParentCommonGroupOfUserUrl: string | undefined;
   private getAllCommonGroupUrl: string | undefined;
   private updateCommonGroupUrl: string | undefined;
 
@@ -38,6 +41,7 @@ export class CommonGroupService extends BaseBackendService {
     this.createCommonGroupUrl = commonGroupControllerUrl.concat('/createCommonGroup');
     this.deleteCommonGroupUrl = commonGroupControllerUrl.concat('/deleteCommonGroup');
     this.getCommonGroupUrl = commonGroupControllerUrl.concat('/getCommonGroup');
+    this.getParentCommonGroupOfUserUrl = commonGroupControllerUrl.concat('/getParentCommonGroupOfUser');
     this.getAllCommonGroupUrl = commonGroupControllerUrl.concat('/getAllCommonGroups');
     this.updateCommonGroupUrl = commonGroupControllerUrl.concat('/updateCommonGroup');
 
@@ -59,6 +63,10 @@ export class CommonGroupService extends BaseBackendService {
     if (!BaseBackendService.mockData.has(NEXT_COMMON_GOUP_ID_MOCK_KEY)) {
       BaseBackendService.mockData.set(NEXT_COMMON_GOUP_ID_MOCK_KEY, 2);
     }
+    if (!BaseBackendService.mockData.has(USERS_AT_COMMON_GROUP)) {
+      BaseBackendService.mockData.set(USERS_AT_COMMON_GROUP, new Map<string, string[]>());
+    }
+    (BaseBackendService.mockData.get(USERS_AT_COMMON_GROUP) as Map<string, string[]>).set('CGAA00001', [INITIAL_USER_ID_AT_MOCK]);
   }
 
 
@@ -160,6 +168,51 @@ export class CommonGroupService extends BaseBackendService {
     return of(copy);
   }
 
+
+  /**
+   * Gets the common groupe that  a given user is a member of
+   * @param userIdentification identification of user who should be a member
+   * @returns The observable of the found common group.
+   */
+  public getParentCommonGroupOfUser(userIdentification: string): Observable<CommonGroup> {
+    this.init();
+    if (this.useMock) {
+      return this.getParentCommonGroupOfUserMock(userIdentification);
+    }
+    let url = `${this.getParentCommonGroupOfUserUrl}/${userIdentification}`;
+
+    return this.http.get<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
+      map(data => {
+        if (data.status == Status.ERROR || data.status == Status.FATAL) {
+          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while getting parent common group of user ${userIdentification} from backend`));
+        }
+        return CommonGroup.map(data.response as ICommonGroup)
+      }),
+      retry(RETRIES),
+      catchError(this.handleError)
+    );
+  }
+
+
+  /**
+   * Creates mock for getting parent common group of an user
+   * @param userIdentification user whose parent is searched for
+   * @returns  the mocked observable of the parent common group
+   */
+  private getParentCommonGroupOfUserMock(userIdentification: string): Observable<CommonGroup> {
+    this.initMocks();
+    for (let entry of (BaseBackendService.mockData.get(USERS_AT_COMMON_GROUP) as Map<string, string[]>).entries()) {
+      if (entry[1].includes(userIdentification)) {
+        for (let c of this.getAllCommonGroupsFromMock()) {
+          if (c.identification == entry[0]) {
+            return of(CommonGroup.map(c));
+          }
+        }
+        break;
+      }
+    }
+    return throwError(new Error(`${Status.ERROR} occurs while getting parent common group of user ${userIdentification} from backend`));
+  }
 
 
   /**

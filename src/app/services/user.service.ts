@@ -9,6 +9,9 @@ import { IUser, User } from '../model/user.model';
 import { ALL_USERS_MOCK_KEY, BaseBackendService } from './base-backend.service';
 import { HTTP_URL_OPTIONS, RETRIES } from './base.service';
 
+
+export const INITIAL_USER_ID_AT_MOCK = 'UAA00002';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -32,7 +35,7 @@ export class UserService extends BaseBackendService {
 
   protected initServiceMocks(): void {
     (BaseBackendService.mockData.get(ALL_USERS_MOCK_KEY) as User[]).push(User.map({
-      identification: 'UAA00002',
+      identification: INITIAL_USER_ID_AT_MOCK,
       firstName: 'Lower',
       lastName: 'Power',
       mail: 'lower.power@ma-vin.de',
