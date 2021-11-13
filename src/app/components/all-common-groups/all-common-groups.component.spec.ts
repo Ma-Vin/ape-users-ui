@@ -11,15 +11,15 @@ import { ConfigService } from 'src/app/config/config.service';
 import { MaterialModule } from 'src/app/material/material.module';
 import { SelectionService } from 'src/app/services/selection.service';
 
-import { CommonGroupComponent } from './common-group.component';
+import { AllCommonGroupsComponent } from './all-common-groups.component';
 import { CommonGroupService } from 'src/app/services/common-group.service';
 import { CommonGroup, ICommonGroup } from 'src/app/model/common-group.model';
 import { Role } from 'src/app/model/role.model';
 import { of } from 'rxjs';
 
 describe('CommonGroupComponent', () => {
-  let component: CommonGroupComponent;
-  let fixture: ComponentFixture<CommonGroupComponent>;
+  let component: AllCommonGroupsComponent;
+  let fixture: ComponentFixture<AllCommonGroupsComponent>;
 
   let httpMock: HttpTestingController;
   let http: HttpClient;
@@ -56,8 +56,8 @@ describe('CommonGroupComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([{ path: COMMON_GROUPS_PATH, component: CommonGroupComponent }]), MaterialModule, BrowserAnimationsModule],
-      declarations: [CommonGroupComponent]
+      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([{ path: COMMON_GROUPS_PATH, component: AllCommonGroupsComponent }]), MaterialModule, BrowserAnimationsModule],
+      declarations: [AllCommonGroupsComponent]
     })
       .compileComponents();
   });
@@ -72,7 +72,7 @@ describe('CommonGroupComponent', () => {
     snackBar = TestBed.inject(MatSnackBar);
     commonGroupService = TestBed.inject(CommonGroupService);
 
-    fixture = TestBed.createComponent(CommonGroupComponent);
+    fixture = TestBed.createComponent(AllCommonGroupsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

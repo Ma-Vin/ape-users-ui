@@ -18,11 +18,11 @@ interface RoleWithText {
 
 
 @Component({
-  selector: 'app-common-group',
-  templateUrl: './common-group.component.html',
+  selector: 'app-all-common-groups',
+  templateUrl: './all-common-groups.component.html',
   styleUrls: ['../list-detail/list-detail.component.less']
 })
-export class CommonGroupComponent extends ListDetailComponent<CommonGroup>{
+export class AllCommonGroupsComponent extends ListDetailComponent<CommonGroup>{
   allowedRoles: Role[] = [Role.ADMIN, Role.MANAGER, Role.CONTRIBUTOR, Role.VISITOR, Role.BLOCKED];
   roles: RoleWithText[] = [];
 
