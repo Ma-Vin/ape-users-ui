@@ -57,7 +57,8 @@ export class CommonGroupService extends BaseBackendService {
       CommonGroup.map({
         groupName: 'Mocked',
         identification: 'CGAA00001',
-        description: 'A common group from the mock'
+        description: 'A common group from the mock',
+        defaultRole: Role.VISITOR
       } as CommonGroup)
     );
     if (!BaseBackendService.mockData.has(NEXT_COMMON_GOUP_ID_MOCK_KEY)) {
