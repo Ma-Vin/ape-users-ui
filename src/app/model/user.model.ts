@@ -1,4 +1,5 @@
 import { IEqualsAndIdentifiable } from "./equals-identifiable";
+import { Role } from "./role.model";
 import { IUserResource, UserResource } from "./user-resource.model";
 
 export interface IUser {
@@ -27,6 +28,7 @@ export class User implements IUser, IEqualsAndIdentifiable {
     validFrom: Date | undefined;
     validTo: Date | undefined;
     isGlobalAdmin = false;
+    role: Role | undefined;
 
     constructor(identification: string, firstName: string, lastName: string) {
         this.identification = identification;
@@ -49,6 +51,7 @@ export class User implements IUser, IEqualsAndIdentifiable {
         result.validFrom = base.validFrom;
         result.validTo = base.validTo;
         result.isGlobalAdmin = (base as User).isGlobalAdmin != undefined && (base as User).isGlobalAdmin;
+        result.role = (base as User).role;
 
         return result;
     }
@@ -75,10 +78,11 @@ export class User implements IUser, IEqualsAndIdentifiable {
             && this.validTo?.getTime() == other.validTo?.getTime()
             && ((this.image != undefined && this.image.equals(other.image)) || (this.image == undefined && other.image == undefined))
             && ((this.smallImage != undefined && this.smallImage.equals(other.smallImage)) || (this.smallImage == undefined && other.smallImage == undefined))
-            && this.isGlobalAdmin == other.isGlobalAdmin;
+            && this.isGlobalAdmin == other.isGlobalAdmin
+            && this.role == other.role;
     }
 
-    
+
     getIdentification(): string {
         return this.identification;
     }
