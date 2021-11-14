@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { SelectionService } from 'src/app/services/selection.service';
+import { ToolbarSite } from './toolbar-site';
 
 @Component({
   selector: 'app-toolbar',
@@ -9,6 +10,8 @@ import { SelectionService } from 'src/app/services/selection.service';
 export class ToolbarComponent implements OnInit {
   @Output() onCreateObjectEventEmitter = new EventEmitter<string>();
   @Input() public createObjectName!: string;
+  @Input() public activeSite!: ToolbarSite
+  public iconName = 'add_box';
 
   public showAdminItems!: boolean;
 
@@ -17,6 +20,16 @@ export class ToolbarComponent implements OnInit {
 
   public ngOnInit(): void {
     this.determineShowAdminItems();
+    switch (this.activeSite) {
+      case ToolbarSite.ADMINS:
+        this.iconName = 'add_moderator';
+        break;
+      case ToolbarSite.COMMON_GROUPS:
+        this.iconName = 'domain_add';
+        break;
+      default:
+        this.iconName = 'add_box';
+    }
   }
 
   private determineShowAdminItems(): void {
@@ -24,8 +37,7 @@ export class ToolbarComponent implements OnInit {
     this.showAdminItems = activeUser != undefined && activeUser.isGlobalAdmin;
   }
 
-  public onCreateObject():void{
+  public onCreateObject(): void {
     this.onCreateObjectEventEmitter.emit(this.createObjectName);
   }
-
 }

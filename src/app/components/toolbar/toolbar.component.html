@@ -5,12 +5,13 @@
                 <mat-icon>admin_panel_settings</mat-icon> Admins
             </button>
             <button *ngIf="showAdminItems" mat-raised-button color="primary" routerLink="/commongroups">
-                <mat-icon>admin_panel_settings</mat-icon> Commongroups
+                <mat-icon>domain</mat-icon> Common Groups
             </button>
         </nav>
         <button mat-raised-button color="primary" (click)="onCreateObject()">
-            <mat-icon>add_box</mat-icon>
+            <mat-icon>{{iconName}}</mat-icon>
             Create new {{createObjectName}}
         </button>
     </mat-toolbar-row>
 </mat-toolbar>
+<h3>{{activeSite}}</h3>

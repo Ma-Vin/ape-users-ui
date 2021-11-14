@@ -9,6 +9,7 @@ import { CommonGroupService } from 'src/app/services/common-group.service';
 import { SelectionService } from 'src/app/services/selection.service';
 import { COMMON_GROUPS_PATH } from 'src/app/app-routing.module';
 import { ListDetailComponent } from '../list-detail/list-detail.component';
+import { ToolbarSite } from '../toolbar/toolbar-site';
 
 
 interface RoleWithText {
@@ -25,6 +26,7 @@ interface RoleWithText {
 export class AllCommonGroupsComponent extends ListDetailComponent<CommonGroup>{
   allowedRoles: Role[] = [Role.ADMIN, Role.MANAGER, Role.CONTRIBUTOR, Role.VISITOR, Role.BLOCKED];
   roles: RoleWithText[] = [];
+  public toolbarSite= ToolbarSite.COMMON_GROUPS;
 
 
   constructor(private selectionService: SelectionService, private commonGroupService: CommonGroupService

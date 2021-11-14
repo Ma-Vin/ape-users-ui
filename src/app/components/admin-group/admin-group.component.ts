@@ -9,6 +9,7 @@ import { AdminService } from 'src/app/services/admin.service';
 import { SelectionService } from 'src/app/services/selection.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ListDetailComponent } from '../list-detail/list-detail.component';
+import { ToolbarSite } from '../toolbar/toolbar-site';
 
 
 const placeHolderAdmin = {
@@ -23,6 +24,7 @@ const placeHolderAdmin = {
 })
 export class AdminGroupComponent extends ListDetailComponent<User> {
   private adminGroupId = '';
+  public toolbarSite= ToolbarSite.ADMINS;
 
   constructor(private configService: ConfigService, private selectionService: SelectionService, private adminService: AdminService
     , route: ActivatedRoute, location: Location, snackBar: MatSnackBar) {
