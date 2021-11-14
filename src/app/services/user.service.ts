@@ -4,10 +4,11 @@ import { Observable, of, throwError } from 'rxjs';
 import { catchError, map, retry } from 'rxjs/operators';
 import { ConfigService } from '../config/config.service';
 import { ResponseWrapper } from '../model/response-wrapper';
+import { Role } from '../model/role.model';
 import { Status } from '../model/status.model';
 import { IUser, User } from '../model/user.model';
-import { ALL_USERS_MOCK_KEY, BaseBackendService } from './base-backend.service';
-import { HTTP_URL_OPTIONS, RETRIES } from './base.service';
+import { ALL_USERS_MOCK_KEY, BaseBackendService, NEXT_USER_ID_MOCK_KEY } from './base-backend.service';
+import { HTTP_JSON_OPTIONS, HTTP_URL_OPTIONS, RETRIES } from './base.service';
 
 
 export const INITIAL_USER_ID_AT_MOCK = 'UAA00002';
@@ -17,6 +18,12 @@ export const INITIAL_USER_ID_AT_MOCK = 'UAA00002';
 })
 export class UserService extends BaseBackendService {
   private getUserUrl: string | undefined;
+  private getAllUsersUrl: string | undefined;
+  private updateUserUrl: string | undefined;
+  private createUserUrl: string | undefined;
+  private deleteUserUrl: string | undefined;
+  private countUsersUrl: string | undefined;
+  private setUserPasswordUrl: string | undefined;
 
   constructor(private http: HttpClient, configService: ConfigService) {
     super('UserService', configService);
@@ -30,6 +37,13 @@ export class UserService extends BaseBackendService {
     let adminControllerUrl = this.config.backendBaseUrl.concat('/user');
 
     this.getUserUrl = adminControllerUrl.concat('/getUser');
+    this.getAllUsersUrl = adminControllerUrl.concat('/getAllUsers');
+    this.updateUserUrl = adminControllerUrl.concat('/updateUser');
+    this.createUserUrl = adminControllerUrl.concat('/createUser');
+    this.deleteUserUrl = adminControllerUrl.concat('/deleteUser');
+    this.countUsersUrl = adminControllerUrl.concat('/countUsers');
+    this.setUserPasswordUrl = adminControllerUrl.concat('/setUserPassword');
+
     return true;
   }
 
@@ -44,7 +58,8 @@ export class UserService extends BaseBackendService {
       lastLogin: new Date(2021, 9, 25, 20, 15, 1),
       validFrom: new Date(2021, 9, 1),
       validTo: undefined,
-      isGlobalAdmin: false
+      isGlobalAdmin: false,
+      role: Role.ADMIN
     } as User));
   }
 
@@ -110,5 +125,278 @@ export class UserService extends BaseBackendService {
       }
     }
     return throwError(new Error(`There is not any User with identification "${identification}"`));
+  }
+
+
+  /**
+   * Get all users at a common group from the backend
+   * @param commonGroupIdentification id of the common group
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @returns the users
+   */
+  public getAllUsers(commonGroupIdentification: string, page: number | undefined, size: number | undefined): Observable<User[]> {
+    this.init();
+    if (this.useMock) {
+      return this.getAllUsersMock();
+    }
+    let url = `${this.getAllUsersUrl}/${commonGroupIdentification}`;
+
+    return this.http.get<ResponseWrapper>(url, {
+      headers: HTTP_URL_OPTIONS.headers,
+      params: page == undefined || size == undefined ? undefined : {
+        page: `${page}`,
+        size: `${size}`
+      }
+    }).pipe(
+      map(data => {
+        if (data.status == Status.ERROR || data.status == Status.FATAL) {
+          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while getting all users at ${commonGroupIdentification} from backend`));
+        }
+        let users = data.response as IUser[];
+        let result: User[] = new Array(users.length);
+        for (let i = 0; i < users.length; i++) {
+          result[i] = User.map(users[i]);
+        }
+        return result;
+      }),
+      retry(RETRIES),
+      catchError(this.handleError)
+    );
+  }
+
+  /**
+   * Creates mock for getting all users
+   * @returns the mocked observable of all users
+   */
+  private getAllUsersMock(): Observable<User[]> {
+    return of(this.getAllNonAdminsFromMock());
+  }
+
+
+  /**
+   * Updates an user in the backend
+   * @param modifiedGroup the modefied user to put in the backend
+   * @returns the stored user
+   */
+  public updateUser(modifiedUser: User): Observable<User> {
+    this.init();
+    if (this.useMock) {
+      return this.updateUserMock(modifiedUser);
+    }
+    let url = `${this.updateUserUrl}/${modifiedUser.identification}`;
+
+    return this.http.put<ResponseWrapper>(url, modifiedUser as IUser, HTTP_JSON_OPTIONS).pipe(
+      map(data => {
+        if (data.status == Status.ERROR || data.status == Status.FATAL) {
+          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while updating user ${modifiedUser.identification} at backend`));
+        }
+        return User.map(data.response as IUser)
+      }),
+      retry(RETRIES),
+      catchError(this.handleError)
+    );
+  }
+
+
+  /**
+   * Creates mock for updating an user
+   * @param modifiedUser the modified user
+   * @returns the mocked observable of the user
+   */
+  private updateUserMock(modifiedUser: User): Observable<User> {
+    let users = this.getAllUsersFromMock();
+    for (let i = 0; i < users.length; i++) {
+      if (users[i].identification == modifiedUser.identification) {
+        users[i] = User.map(modifiedUser);
+        return of(User.map(modifiedUser));
+      }
+    }
+    return throwError(new Error(`${Status.ERROR} occurs while updating user ${modifiedUser.identification} at backend`));
+  }
+
+
+  /**
+   * Creates an user at a given common group
+   * @param commonGroupIdentification id of the group where to create user at
+   * @param firstName the first name of then user
+   * @param lastName the last name of the user
+   * @returns the new created user
+   */
+  createUser(commonGroupIdentification: string, firstName: string, lastName: string): Observable<User> {
+    this.init();
+    if (this.useMock) {
+      return this.createUserMock(firstName, lastName);
+    }
+
+    let url = `${this.createUserUrl}`;
+    let body = `firstName=${firstName}&lastName=${lastName}&commonGroupIdentification=${commonGroupIdentification}`;
+
+    return this.http.post<ResponseWrapper>(url, body, HTTP_URL_OPTIONS).pipe(
+      map(data => {
+        if (data.status == Status.ERROR || data.status == Status.FATAL) {
+          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while creating common at group ${commonGroupIdentification} from backend`));
+        }
+        let result = User.map(data.response as IUser);
+        result.isGlobalAdmin = false;
+        return result;
+      }),
+      retry(RETRIES),
+      catchError(this.handleError)
+    );
+  }
+
+  /**
+   * creates an new user at mock
+   * @param firstName first name of the new user
+   * @param lastName last name of the new user
+   * @returns the mocked observable of the new user
+   */
+  private createUserMock(firstName: string, lastName: string): Observable<User> {
+    let idBase = 'UAA';
+
+    this.initMocks();
+    let nextUserIdMock = BaseBackendService.mockData.get(NEXT_USER_ID_MOCK_KEY);
+
+    let idExtend = `${nextUserIdMock}`;
+    while (idExtend.length < 5) {
+      idExtend = '0'.concat(idExtend);
+    }
+    BaseBackendService.mockData.set(NEXT_USER_ID_MOCK_KEY, nextUserIdMock + 1);
+
+    let addedUser: User = User.map(
+      {
+        identification: idBase.concat(idExtend),
+        firstName: firstName,
+        lastName: lastName,
+        mail: undefined,
+        image: undefined,
+        smallImage: undefined,
+        lastLogin: undefined,
+        validFrom: new Date(),
+        validTo: undefined,
+        isGlobalAdmin: false
+      } as IUser);
+
+    this.getAllUsersFromMock().push(addedUser);
+
+    return of(addedUser);
+  }
+
+
+  /**
+   * Deletes an user in the backend
+   * @param identification id of the user to delete
+   * @returns true if the user was deleted. Otherwise false
+   */
+  deleteUser(identification: string): Observable<boolean> {
+    this.init();
+    if (this.useMock) {
+      return this.deleteUserMock(identification);
+    }
+    let url = `${this.deleteUserUrl}/${identification}`;
+
+    return this.http.delete<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
+      map(data => {
+        if (data.status == Status.ERROR || data.status == Status.FATAL) {
+          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while deleting user ${identification} at backend`));
+        }
+        return data.response as boolean;
+      }),
+      retry(RETRIES),
+      catchError(this.handleError)
+    );
+  }
+
+  /**
+   * deletes an user at mock
+   * @param identification id of the user to delete
+   * @returns the mocked observable of succesfull deletion
+   */
+  private deleteUserMock(identification: string): Observable<boolean> {
+    let users = this.getAllUsersFromMock();
+    for (let i = 0; i < users.length; i++) {
+      if (users[i].identification == identification) {
+        users.splice(i, 1);
+        return of(true);
+      }
+    }
+    return of(false);
+  }
+
+
+  /**
+   * Counts the users at a common group in the backend
+   * @param identification id of group where to count at
+   * @returns the number of users
+   */
+  countUsers(identification: string): Observable<number> {
+    this.init();
+    if (this.useMock) {
+      return this.countUsersMock();
+    }
+    let url = `${this.countUsersUrl}/${identification}`;
+
+    return this.http.get<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
+      map(data => {
+        if (data.status == Status.ERROR || data.status == Status.FATAL) {
+          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while counting users at group ${identification} at backend`));
+        }
+        return data.response as number;
+      }),
+      retry(RETRIES),
+      catchError(this.handleError)
+    );
+  }
+
+  /**
+   * Counts users at mock
+   * @returns the number of users at mock
+   */
+  private countUsersMock(): Observable<number> {
+    return of(this.getAllNonAdminsFromMock().length);
+  }
+
+
+  /**
+   * sets an password of an user in the backend
+   * @param identification id of the user
+   * @param password password to set
+   * @returns true if the password was updated. Otherwise false
+   */
+  setPassword(identification: string, password: string): Observable<boolean> {
+    this.init();
+    if (this.useMock) {
+      return this.setPasswordMock(identification);
+    }
+    let url = `${this.setUserPasswordUrl}/${identification}`;
+
+    return this.http.patch<ResponseWrapper>(url, {
+      rawPassword: password
+    }, HTTP_JSON_OPTIONS).pipe(
+      map(data => {
+        if (data.status == Status.ERROR || data.status == Status.FATAL) {
+          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while setting password of user ${identification} at backend`));
+        }
+        return data.response as boolean;
+      }),
+      retry(RETRIES),
+      catchError(this.handleError)
+    );
+  }
+
+
+  /**
+   * sets an password of an user at mock
+   * @param identification id of the user
+   * @returns mocked reponse of updating password
+   */
+  private setPasswordMock(identification: string): Observable<boolean> {
+    for (let a of this.getAllNonAdminsFromMock()) {
+      if (a.identification == identification) {
+        return of(true);
+      }
+    }
+    return throwError(new Error(`${Status.ERROR} occurs while setting password of admin ${identification} at backend`));
   }
 }
