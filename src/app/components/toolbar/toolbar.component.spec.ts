@@ -8,6 +8,7 @@ import { AdminService } from 'src/app/services/admin.service';
 import { CommonGroupService } from 'src/app/services/common-group.service';
 import { SelectionService } from 'src/app/services/selection.service';
 import { UserService } from 'src/app/services/user.service';
+import { ToolbarSite } from './toolbar-site';
 
 import { ToolbarComponent } from './toolbar.component';
 
@@ -76,6 +77,7 @@ describe('ToolbarComponent', () => {
 
     expect(getActiveUserSpy).toHaveBeenCalled();
     expect(component.showAdminItems).toBeFalse();
+    expect(component.iconName).toEqual('add_box');
   });
 
   it('ngOnInit - active admin', () => {
@@ -87,8 +89,8 @@ describe('ToolbarComponent', () => {
 
     expect(getActiveUserSpy).toHaveBeenCalled();
     expect(component.showAdminItems).toBeTrue();
+    expect(component.iconName).toEqual('add_box');
   });
-
 
   it('ngOnInit - neither active user nor admin', () => {
     let getActiveUserSpy = spyOn(selectionService, 'getActiveUser').and.returnValue(undefined);
@@ -97,6 +99,44 @@ describe('ToolbarComponent', () => {
 
     expect(getActiveUserSpy).toHaveBeenCalled();
     expect(component.showAdminItems).toBeFalse();
+    expect(component.iconName).toEqual('add_box');
+  });
+
+  it('ngOnInit - admin site', () => {
+    let admin = User.map(user);
+    admin.isGlobalAdmin = true;
+    let getActiveUserSpy = spyOn(selectionService, 'getActiveUser').and.returnValue(admin);
+    component.activeSite = ToolbarSite.ADMINS;
+
+    component.ngOnInit();
+
+    expect(getActiveUserSpy).toHaveBeenCalled();
+    expect(component.showAdminItems).toBeTrue();
+    expect(component.iconName).toEqual('add_moderator');
+  });
+
+  it('ngOnInit - common groups site', () => {
+    let admin = User.map(user);
+    admin.isGlobalAdmin = true;
+    let getActiveUserSpy = spyOn(selectionService, 'getActiveUser').and.returnValue(admin);
+    component.activeSite = ToolbarSite.COMMON_GROUPS;
+
+    component.ngOnInit();
+
+    expect(getActiveUserSpy).toHaveBeenCalled();
+    expect(component.showAdminItems).toBeTrue();
+    expect(component.iconName).toEqual('domain_add');
+  });
+
+  it('ngOnInit - users site', () => {
+    let getActiveUserSpy = spyOn(selectionService, 'getActiveUser').and.returnValue(user);
+    component.activeSite = ToolbarSite.USERS;
+
+    component.ngOnInit();
+
+    expect(getActiveUserSpy).toHaveBeenCalled();
+    expect(component.showAdminItems).toBeFalse();
+    expect(component.iconName).toEqual('person_add');
   });
 
 

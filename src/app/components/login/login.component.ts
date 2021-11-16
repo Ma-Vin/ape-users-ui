@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ADMIN_GROUP_ABS_PATH } from 'src/app/app-routing.module';
+import { USERS_ABS_PATH } from 'src/app/app-routing.module';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private authenticationService: AuthService,
   ) {
-    this.returnUrl = ADMIN_GROUP_ABS_PATH;
+    this.returnUrl = USERS_ABS_PATH;
     this.loginForm = this.formBuilder.group({
       username: ['', Validators.required],
       password: ['', Validators.required]

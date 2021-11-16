@@ -27,6 +27,9 @@ export class ToolbarComponent implements OnInit {
       case ToolbarSite.COMMON_GROUPS:
         this.iconName = 'domain_add';
         break;
+      case ToolbarSite.USERS:
+          this.iconName = 'person_add';
+          break;
       default:
         this.iconName = 'add_box';
     }
