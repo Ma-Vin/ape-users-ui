@@ -57,7 +57,8 @@ describe('AdminService', () => {
     smallImage: undefined,
     lastLogin: new Date(2021, 9, 25, 20, 15, 1),
     validFrom: new Date(2021, 9, 1),
-    validTo: undefined
+    validTo: undefined,
+    role: undefined
   }
 
   const modifiedUserAdmin = User.map({
@@ -70,7 +71,8 @@ describe('AdminService', () => {
     lastLogin: new Date(2021, 9, 25, 20, 15, 1),
     validFrom: new Date(2021, 9, 1),
     validTo: undefined,
-    isGlobalAdmin: true
+    isGlobalAdmin: true,
+    role: undefined
   } as User)
 
   const mockErrorResponseWrapper: ResponseWrapper = {

@@ -4,6 +4,7 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Config } from '../config/config';
 import { ConfigService } from '../config/config.service';
 import { ResponseWrapper } from '../model/response-wrapper';
+import { Role } from '../model/role.model';
 import { Status } from '../model/status.model';
 import { IUser, User } from '../model/user.model';
 import { BaseBackendService } from './base-backend.service';
@@ -41,7 +42,8 @@ describe('UserService', () => {
     smallImage: undefined,
     lastLogin: new Date(2021, 9, 25, 20, 15, 1),
     validFrom: new Date(2021, 9, 1),
-    validTo: undefined
+    validTo: undefined,
+    role: Role.VISITOR
   }
 
   const modifiedUser = User.map({
@@ -54,7 +56,8 @@ describe('UserService', () => {
     lastLogin: new Date(2021, 9, 25, 20, 15, 1),
     validFrom: new Date(2021, 9, 1),
     validTo: undefined,
-    isGlobalAdmin: true
+    isGlobalAdmin: false,
+    role: Role.VISITOR
   } as User)
 
   const mockErrorResponseWrapper: ResponseWrapper = {

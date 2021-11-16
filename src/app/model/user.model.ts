@@ -13,7 +13,7 @@ export interface IUser {
     lastLogin: Date | undefined;
     validFrom: Date | undefined;
     validTo: Date | undefined;
-
+    role: Role | undefined;
 }
 
 export class User implements IUser, IEqualsAndIdentifiable {
@@ -51,7 +51,7 @@ export class User implements IUser, IEqualsAndIdentifiable {
         result.validFrom = base.validFrom;
         result.validTo = base.validTo;
         result.isGlobalAdmin = (base as User).isGlobalAdmin != undefined && (base as User).isGlobalAdmin;
-        result.role = (base as User).role;
+        result.role = base.role;
 
         return result;
     }

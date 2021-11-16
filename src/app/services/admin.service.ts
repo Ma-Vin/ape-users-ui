@@ -368,7 +368,8 @@ export class AdminService extends BaseBackendService {
         lastLogin: undefined,
         validFrom: new Date(),
         validTo: undefined,
-        isGlobalAdmin: true
+        isGlobalAdmin: true,
+        role: undefined
       } as IUser);
 
     this.getAllUsersFromMock().push(addedAdmin);

@@ -275,7 +275,8 @@ export class UserService extends BaseBackendService {
         lastLogin: undefined,
         validFrom: new Date(),
         validTo: undefined,
-        isGlobalAdmin: false
+        isGlobalAdmin: false,
+        role: Role.NOT_RELEVANT
       } as IUser);
 
     this.getAllUsersFromMock().push(addedUser);
