@@ -403,6 +403,7 @@ describe('UserService', () => {
       expect(data.lastLogin).toEqual(modifiedUser.lastLogin);
       expect(data.validFrom).toEqual(modifiedUser.validFrom);
       expect(data.validTo).toBeUndefined();
+      expect(data.role).not.toEqual(modifiedUser.role);
     });
 
     httpMock.expectNone(`//localhost:8080/user/updateUser/${userId}`);

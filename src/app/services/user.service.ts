@@ -210,8 +210,12 @@ export class UserService extends BaseBackendService {
     let users = this.getAllUsersFromMock();
     for (let i = 0; i < users.length; i++) {
       if (users[i].identification == modifiedUser.identification) {
+        let existingRole = users[i].role;
         users[i] = User.map(modifiedUser);
-        return of(User.map(modifiedUser));
+        users[i].role = existingRole;
+        let result = User.map(modifiedUser);
+        result.role = existingRole;
+        return of(result);
       }
     }
     return throwError(new Error(`${Status.ERROR} occurs while updating user ${modifiedUser.identification} at backend`));
