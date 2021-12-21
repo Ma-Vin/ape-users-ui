@@ -24,6 +24,7 @@ export class UserService extends BaseBackendService {
   private deleteUserUrl: string | undefined;
   private countUsersUrl: string | undefined;
   private setUserPasswordUrl: string | undefined;
+  private setUserRoleUrl: string | undefined;
 
   constructor(private http: HttpClient, configService: ConfigService) {
     super('UserService', configService);
@@ -34,15 +35,16 @@ export class UserService extends BaseBackendService {
       return false;
     }
 
-    let adminControllerUrl = this.config.backendBaseUrl.concat('/user');
+    let userControllerUrl = this.config.backendBaseUrl.concat('/user');
 
-    this.getUserUrl = adminControllerUrl.concat('/getUser');
-    this.getAllUsersUrl = adminControllerUrl.concat('/getAllUsers');
-    this.updateUserUrl = adminControllerUrl.concat('/updateUser');
-    this.createUserUrl = adminControllerUrl.concat('/createUser');
-    this.deleteUserUrl = adminControllerUrl.concat('/deleteUser');
-    this.countUsersUrl = adminControllerUrl.concat('/countUsers');
-    this.setUserPasswordUrl = adminControllerUrl.concat('/setUserPassword');
+    this.getUserUrl = userControllerUrl.concat('/getUser');
+    this.getAllUsersUrl = userControllerUrl.concat('/getAllUsers');
+    this.updateUserUrl = userControllerUrl.concat('/updateUser');
+    this.createUserUrl = userControllerUrl.concat('/createUser');
+    this.deleteUserUrl = userControllerUrl.concat('/deleteUser');
+    this.countUsersUrl = userControllerUrl.concat('/countUsers');
+    this.setUserPasswordUrl = userControllerUrl.concat('/setUserPassword');
+    this.setUserRoleUrl = userControllerUrl.concat('/setUserRole');
 
     return true;
   }
@@ -360,7 +362,7 @@ export class UserService extends BaseBackendService {
 
 
   /**
-   * sets an password of an user in the backend
+   * sets a password of an user in the backend
    * @param identification id of the user
    * @param password password to set
    * @returns true if the password was updated. Otherwise false
@@ -388,7 +390,7 @@ export class UserService extends BaseBackendService {
 
 
   /**
-   * sets an password of an user at mock
+   * sets a password of an user at mock
    * @param identification id of the user
    * @returns mocked reponse of updating password
    */
@@ -398,6 +400,52 @@ export class UserService extends BaseBackendService {
         return of(true);
       }
     }
-    return throwError(new Error(`${Status.ERROR} occurs while setting password of admin ${identification} at backend`));
+    return throwError(new Error(`${Status.ERROR} occurs while setting password of user ${identification} at backend`));
+  }
+
+
+  /**
+   * sets a role of an user in the backend
+   * @param identification id of the user
+   * @param role role to set
+   * @returns true if the role was updated. Otherwise false
+   */
+  setRole(identification: string, role: Role): Observable<boolean> {
+    this.init();
+    if (this.useMock) {
+      return this.setUserRoleMock(identification, role);
+    }
+    let url = `${this.setUserRoleUrl}/${identification}`;
+
+    return this.http.patch<ResponseWrapper>(url, {
+      role: role
+    }, HTTP_JSON_OPTIONS).pipe(
+      map(data => {
+        if (data.status == Status.ERROR || data.status == Status.FATAL) {
+          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while setting role of user ${identification} at backend`));
+        }
+        return data.response as boolean;
+      }),
+      retry(RETRIES),
+      catchError(this.handleError)
+    );
+  }
+
+
+  /**
+   * sets a role of an user at the mock
+   * @param identification id of the user
+   * @param role role to set
+   * @returns true if the role was updated. Otherwise false
+   */
+  setUserRoleMock(identification: string, role: Role): Observable<boolean> {
+    for (let u of this.getAllNonAdminsFromMock()) {
+      if (u.identification == identification) {
+        let changed = u.role != role;
+        u.role = role;
+        return of(changed);
+      }
+    }
+    return throwError(new Error(`${Status.ERROR} occurs while setting role of user ${identification} at backend`));
   }
 }

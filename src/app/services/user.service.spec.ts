@@ -788,10 +788,132 @@ describe('UserService', () => {
       },
       e => {
         expect(e).toBeTruthy();
-        expect(e.message).toEqual(`${Status.ERROR} occurs while setting password of admin someId at backend`);
+        expect(e.message).toEqual(`${Status.ERROR} occurs while setting password of user someId at backend`);
       });
 
     httpMock.expectNone(`//localhost:8080/user/setUserPassword/someId`);
+
+    tick();
+  }));
+
+
+
+  /**
+   * setRole
+   */
+  it('setRole - all ok', fakeAsync(() => {
+    let mockResponseWrapper: ResponseWrapper = {
+      response: true,
+      status: Status.OK,
+      messages: []
+    }
+
+    let newRole = Role.MANAGER;
+
+    service.setRole(userId, newRole).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data).toBeTrue();
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/user/setUserRole/${userId}`);
+    expect(req.request.method).toEqual("PATCH");
+    expect(req.request.body).toEqual({ role: newRole });
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/user/setUserRole/${userId}`);
+
+    tick();
+  }));
+
+  it('setRole - with error status', fakeAsync(() => {
+    let newRole = Role.MANAGER;
+
+    service.setRole(userId, newRole).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/user/setUserRole/${userId}`);
+      expect(req.request.method).toEqual("PATCH");
+      expect(req.request.body).toEqual({ role: newRole });
+      req.flush(mockErrorResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/user/setUserRole/${userId}`);
+
+    tick();
+  }));
+
+  it('setRole - with fatal status', fakeAsync(() => {
+    let newRole = Role.MANAGER;
+
+    service.setRole(userId, newRole).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/user/setUserRole/${userId}`);
+      expect(req.request.method).toEqual("PATCH");
+      expect(req.request.body).toEqual({ role: newRole });
+      req.flush(mockFatalResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/user/setUserRole/${userId}`);
+
+    tick();
+  }));
+
+  it('setRole - mock', fakeAsync(() => {
+    let newRole = Role.MANAGER;
+
+    service.useMock = true;
+    service.setRole(userId, newRole).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data).toBeTrue();
+    });
+
+    httpMock.expectNone(`//localhost:8080/user/setUserRole/${userId}`);
+
+    tick();
+  }));
+
+  it('setRole - mock not changed', fakeAsync(() => {
+    let newRole = Role.ADMIN;
+
+    service.useMock = true;
+    service.setRole(userId, newRole).subscribe(data => {
+      expect(data).toBeFalsy();
+      expect(data).toBeFalse();
+    });
+
+    httpMock.expectNone(`//localhost:8080/user/setUserRole/${userId}`);
+
+    tick();
+  }));
+
+  it('setRole - mock with error', fakeAsync(() => {
+    let newRole = Role.MANAGER;
+
+    service.useMock = true;
+    service.setRole('someId', newRole).subscribe(
+      data => {
+        expect(data).toBeFalsy();
+      },
+      e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual(`${Status.ERROR} occurs while setting role of user someId at backend`);
+      });
+
+    httpMock.expectNone(`//localhost:8080/user/setUserRole/someId`);
 
     tick();
   }));
