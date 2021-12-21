@@ -95,17 +95,29 @@ export class AllUsersComponent extends ListDetailComponent<User> {
     this.userService.createUser(this.commonGroupId, this.selectedObject.firstName, this.selectedObject.lastName)
       .subscribe(createdUser => {
         this.selectedObject.identification = createdUser.identification
-        this.userService.updateUser(this.selectedObject)
-          .subscribe(updatedCreatedUser => {
-            this.takeOverNewObject(updatedCreatedUser);
-          });
+        this.updateUserAndTakeOver();
       });
   }
 
   protected onAcceptExistingObject(): void {
+    this.updateUserAndTakeOver();
+  }
+
+  private updateUserAndTakeOver(): void {
     this.userService.updateUser(this.selectedObject)
-      .subscribe(updatedCreatedUser => {
-        this.takeOverUpdatedObject(updatedCreatedUser);
+      .subscribe(updatedUser => {
+        if (this.selectedObject.role != undefined && this.selectedObject.role != updatedUser.role) {
+          this.userService.setRole(updatedUser.identification, this.selectedObject.role).subscribe(
+            roleAdopted => {
+              if (roleAdopted) {
+                updatedUser.role = this.selectedObject.role;
+              }
+              this.isNewObject ? this.takeOverNewObject(updatedUser) : this.takeOverUpdatedObject(updatedUser);
+            }
+          );
+        } else {
+          this.isNewObject ? this.takeOverNewObject(updatedUser) : this.takeOverUpdatedObject(updatedUser);
+        }
       });
   }
 

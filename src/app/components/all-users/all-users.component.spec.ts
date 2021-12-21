@@ -47,42 +47,9 @@ describe('AllUsersComponent', () => {
 
   const commonGroupId = 'CGAA00001';
 
-  const user = User.map({
-    identification: userId,
-    firstName: firstName,
-    lastName: lastName,
-    mail: 'max.power@ma-vin.de',
-    image: undefined,
-    smallImage: undefined,
-    lastLogin: new Date(2021, 9, 25, 20, 15, 1),
-    validFrom: new Date(2021, 9, 1),
-    validTo: undefined,
-    isGlobalAdmin: false,
-    role: Role.VISITOR
-  } as IUser);
-
-  const otherUser = User.map({
-    identification: otherUserId,
-    firstName: firstName,
-    lastName: lastName,
-    mail: 'max.power@ma-vin.de',
-    image: undefined,
-    smallImage: undefined,
-    lastLogin: new Date(2021, 9, 25, 20, 15, 1),
-    validFrom: new Date(2021, 9, 1),
-    validTo: undefined,
-    isGlobalAdmin: false,
-    role: Role.VISITOR
-  } as IUser);
-
-  const commonGroup = CommonGroup.map({
-    identification: commonGroupId,
-    groupName: 'SomeName',
-    validFrom: new Date(2021, 9, 1),
-    validTo: undefined,
-    description: 'Bam!',
-    defaultRole: Role.VISITOR
-  } as ICommonGroup);
+  let user: User;
+  let otherUser: User;
+  let commonGroup: CommonGroup;
 
 
   beforeEach(async () => {
@@ -110,6 +77,8 @@ describe('AllUsersComponent', () => {
     fixture = TestBed.createComponent(AllUsersComponent);
 
     component = fixture.componentInstance;
+
+    initTestObjects();
   });
 
 
@@ -274,15 +243,69 @@ describe('AllUsersComponent', () => {
 
     let createUserSpy = spyOn(userService, 'createUser').and.returnValue(of(otherUser));
     let updateCreatedUserSpy = spyOn(userService, 'updateUser').and.returnValue(of(otherUser));
+    let setRoleSpy = spyOn(userService, 'setRole').and.returnValue(of(false));
 
     component.onAccept();
 
     tick();
 
-    expect(createUserSpy).toHaveBeenCalled;
-    expect(updateCreatedUserSpy).toHaveBeenCalled;
+    expect(createUserSpy).toHaveBeenCalled();
+    expect(updateCreatedUserSpy).toHaveBeenCalled();
+    expect(setRoleSpy).not.toHaveBeenCalled();
     expect(component.selectedObject === otherUser).toBeFalse();
     expect(component.selectedObject.equals(otherUser)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
+    expect(component.allObjectsfilterDataSource.data.includes(user)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.includes(otherUser)).toBeTrue();
+  }));
+
+  it('onAccept - create new user without default role', fakeAsync(() => {
+    component.showObjectDetail = true;
+    component.isNewObject = true;
+    component.selectedObject = User.map(otherUser);
+    component.selectedObject.role = Role.MANAGER;
+    component.allObjectsfilterDataSource.data = [user];
+
+    let createUserSpy = spyOn(userService, 'createUser').and.returnValue(of(otherUser));
+    let updateCreatedUserSpy = spyOn(userService, 'updateUser').and.returnValue(of(otherUser));
+    let setRoleSpy = spyOn(userService, 'setRole').and.returnValue(of(true));
+
+    component.onAccept();
+
+    tick();
+
+    expect(createUserSpy).toHaveBeenCalled();
+    expect(updateCreatedUserSpy).toHaveBeenCalled();
+    expect(setRoleSpy).toHaveBeenCalled();
+    expect(component.selectedObject === otherUser).toBeFalse();
+    expect(component.selectedObject.equals(otherUser)).toBeTrue();
+    expect(component.selectedObject.role).toEqual(Role.MANAGER);
+    expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
+    expect(component.allObjectsfilterDataSource.data.includes(user)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.includes(otherUser)).toBeTrue();
+  }));
+
+  it('onAccept - create new user, without default role, but unsuccessful', fakeAsync(() => {
+    component.showObjectDetail = true;
+    component.isNewObject = true;
+    component.selectedObject = User.map(otherUser);
+    component.selectedObject.role = Role.MANAGER;
+    component.allObjectsfilterDataSource.data = [user];
+
+    let createUserSpy = spyOn(userService, 'createUser').and.returnValue(of(otherUser));
+    let updateCreatedUserSpy = spyOn(userService, 'updateUser').and.returnValue(of(otherUser));
+    let setRoleSpy = spyOn(userService, 'setRole').and.returnValue(of(false));
+
+    component.onAccept();
+
+    tick();
+
+    expect(createUserSpy).toHaveBeenCalled();
+    expect(updateCreatedUserSpy).toHaveBeenCalled();
+    expect(setRoleSpy).toHaveBeenCalled();
+    expect(component.selectedObject === otherUser).toBeFalse();
+    expect(component.selectedObject.equals(otherUser)).toBeTrue();
+    expect(component.selectedObject.role).toEqual(Role.VISITOR);
     expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
     expect(component.allObjectsfilterDataSource.data.includes(user)).toBeTrue();
     expect(component.allObjectsfilterDataSource.data.includes(otherUser)).toBeTrue();
@@ -297,18 +320,75 @@ describe('AllUsersComponent', () => {
     component.allObjectsfilterDataSource.data = [user, otherUser];
 
     let updateUserSpy = spyOn(userService, 'updateUser').and.returnValue(of(modfiedUser));
+    let setRoleSpy = spyOn(userService, 'setRole').and.returnValue(of(false));
 
     component.onAccept();
 
     tick();
 
-    expect(updateUserSpy).toHaveBeenCalled;
+    expect(updateUserSpy).toHaveBeenCalled();
+    expect(setRoleSpy).not.toHaveBeenCalled();
     expect(component.selectedObject === modfiedUser).toBeFalse();
     expect(component.selectedObject.equals(modfiedUser)).toBeTrue();
     expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
     expect(component.allObjectsfilterDataSource.data.includes(user)).toBeTrue();
     expect(component.allObjectsfilterDataSource.data.includes(modfiedUser)).toBeTrue();
   }));
+
+  it('onAccept - update existing user, but different role', fakeAsync(() => {
+    component.showObjectDetail = true;
+    component.isNewObject = false;
+    let modfiedUser = User.map(otherUser);
+    modfiedUser.firstName = modfiedUser.firstName.concat('_');
+    let updatedUser = User.map(modfiedUser);
+    modfiedUser.role = Role.ADMIN;
+    component.selectedObject = modfiedUser;
+    component.allObjectsfilterDataSource.data = [user, otherUser];
+
+    let updateUserSpy = spyOn(userService, 'updateUser').and.returnValue(of(updatedUser));
+    let setRoleSpy = spyOn(userService, 'setRole').and.returnValue(of(true));
+
+    component.onAccept();
+
+    tick();
+
+    expect(updateUserSpy).toHaveBeenCalled();
+    expect(setRoleSpy).toHaveBeenCalled();
+    expect(component.selectedObject === updatedUser).toBeFalse();
+    expect(component.selectedObject.equals(updatedUser)).toBeTrue();
+    expect(component.selectedObject.role).toEqual(Role.ADMIN);
+    expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
+    expect(component.allObjectsfilterDataSource.data.includes(user)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.includes(updatedUser)).toBeTrue();
+  }));
+
+  it('onAccept - update existing user, but different role and unsuccessful', fakeAsync(() => {
+    component.showObjectDetail = true;
+    component.isNewObject = false;
+    let modfiedUser = User.map(otherUser);
+    modfiedUser.firstName = modfiedUser.firstName.concat('_');
+    let updatedUser = User.map(modfiedUser);
+    modfiedUser.role = Role.ADMIN;
+    component.selectedObject = modfiedUser;
+    component.allObjectsfilterDataSource.data = [user, otherUser];
+
+    let updateUserSpy = spyOn(userService, 'updateUser').and.returnValue(of(updatedUser));
+    let setRoleSpy = spyOn(userService, 'setRole').and.returnValue(of(false));
+
+    component.onAccept();
+
+    tick();
+
+    expect(updateUserSpy).toHaveBeenCalled();
+    expect(setRoleSpy).toHaveBeenCalled();
+    expect(component.selectedObject === updatedUser).toBeFalse();
+    expect(component.selectedObject.equals(updatedUser)).toBeTrue();
+    expect(component.selectedObject.role).toEqual(Role.VISITOR);
+    expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
+    expect(component.allObjectsfilterDataSource.data.includes(user)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.includes(updatedUser)).toBeTrue();
+  }));
+
 
   it('onAccept - accept disabled', fakeAsync(() => {
     component.showObjectDetail = true;
@@ -577,22 +657,63 @@ describe('AllUsersComponent', () => {
   /**
    * lastLogin
    */
-     it('lastLogin - set', () => {
-      try {
-        component.lastLogin = '25.10.21, 20:15';
-      } catch (error) {
-        expect((error as Error).message).toEqual(`lastLogin was tried to be set: value=25.10.21, 20:15`);
-        return;
-      }
-      fail('Error should occur');
-    });
-  
-    it('lastLogin - get', () => {
-      component.selectedObject = user;
-      expect(component.lastLogin).toEqual('25.10.21, 20:15');
-    });
-  
-    it('lastLogin - get undefined', () => {
-      expect(component.lastLogin).toEqual('');
-    });
+  it('lastLogin - set', () => {
+    try {
+      component.lastLogin = '25.10.21, 20:15';
+    } catch (error) {
+      expect((error as Error).message).toEqual(`lastLogin was tried to be set: value=25.10.21, 20:15`);
+      return;
+    }
+    fail('Error should occur');
+  });
+
+  it('lastLogin - get', () => {
+    component.selectedObject = user;
+    expect(component.lastLogin).toEqual('25.10.21, 20:15');
+  });
+
+  it('lastLogin - get undefined', () => {
+    expect(component.lastLogin).toEqual('');
+  });
+
+
+
+  function initTestObjects() {
+    user = User.map({
+      identification: userId,
+      firstName: firstName,
+      lastName: lastName,
+      mail: 'max.power@ma-vin.de',
+      image: undefined,
+      smallImage: undefined,
+      lastLogin: new Date(2021, 9, 25, 20, 15, 1),
+      validFrom: new Date(2021, 9, 1),
+      validTo: undefined,
+      isGlobalAdmin: false,
+      role: Role.VISITOR
+    } as IUser);
+
+    otherUser = User.map({
+      identification: otherUserId,
+      firstName: firstName,
+      lastName: lastName,
+      mail: 'max.power@ma-vin.de',
+      image: undefined,
+      smallImage: undefined,
+      lastLogin: new Date(2021, 9, 25, 20, 15, 1),
+      validFrom: new Date(2021, 9, 1),
+      validTo: undefined,
+      isGlobalAdmin: false,
+      role: Role.VISITOR
+    } as IUser);
+
+    commonGroup = CommonGroup.map({
+      identification: commonGroupId,
+      groupName: 'SomeName',
+      validFrom: new Date(2021, 9, 1),
+      validTo: undefined,
+      description: 'Bam!',
+      defaultRole: Role.VISITOR
+    } as ICommonGroup);
+  }
 });
