@@ -38,15 +38,15 @@
             <div class="element-data-row">
                 <mat-form-field class="element-detail-mid">
                     <mat-label>Last Name</mat-label>
-                    <input matInput placeholder="Last Name" [(ngModel)]="selectedObject.lastName" required />
+                    <input matInput placeholder="Last Name" [(ngModel)]="selectedObject.lastName" required [disabled]="disableUpdateCreationRequired"/>
                 </mat-form-field>
                 <mat-form-field class="element-detail-mid">
                     <mat-label>First Name</mat-label>
-                    <input matInput placeholder="First Name" [(ngModel)]="selectedObject.firstName" required />
+                    <input matInput placeholder="First Name" [(ngModel)]="selectedObject.firstName" required [disabled]="disableUpdateCreationRequired"/>
                 </mat-form-field>
                 <mat-form-field class="element-detail-mid">
                     <mat-label>Email</mat-label>
-                    <input matInput placeholder="Email" [(ngModel)]="selectedObject.mail" />
+                    <input matInput placeholder="Email" [(ngModel)]="selectedObject.mail"  [disabled]="disableUpdate"/>
                 </mat-form-field>
             </div>
             <div class="element-data-row">
@@ -60,13 +60,13 @@
             <div class="element-data-row">
                 <mat-form-field class="element-detail-mid" appearance="fill">
                     <mat-label>Valid from</mat-label>
-                    <input matInput [matDatepicker]="pickerValidFrom" [(ngModel)]="selectedObject.validFrom">
+                    <input matInput [matDatepicker]="pickerValidFrom" [(ngModel)]="selectedObject.validFrom" [disabled]="disableUpdate">
                     <mat-datepicker-toggle matSuffix [for]="pickerValidFrom"></mat-datepicker-toggle>
                     <mat-datepicker #pickerValidFrom></mat-datepicker>
                 </mat-form-field>
                 <mat-form-field class="element-detail-mid" appearance="fill">
                     <mat-label>Valid to</mat-label>
-                    <input matInput [matDatepicker]="pickerValidTo" [(ngModel)]="selectedObject.validTo">
+                    <input matInput [matDatepicker]="pickerValidTo" [(ngModel)]="selectedObject.validTo" [disabled]="disableUpdate">
                     <mat-datepicker-toggle matSuffix [for]="pickerValidTo"></mat-datepicker-toggle>
                     <mat-datepicker #pickerValidTo></mat-datepicker>
                 </mat-form-field>

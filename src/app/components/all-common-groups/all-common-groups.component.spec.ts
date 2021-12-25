@@ -147,6 +147,7 @@ describe('CommonGroupComponent', () => {
     expect(component.showObjectDetail).toBeTrue();
     expect(component.selectedObject === commonGroup).toBeFalse();
     expect(component.selectedObject.equals(commonGroup)).toBeTrue();
+    expect(component.disableUpdate).toBeFalse();
   });
 
   it('onSelectObject - same selected before', () => {
@@ -164,6 +165,7 @@ describe('CommonGroupComponent', () => {
     expect(component.showObjectDetail).toBeTrue();
     expect(component.selectedObject === commonGroup).toBeFalse();
     expect(component.selectedObject.equals(commonGroup)).toBeTrue();
+    expect(component.disableUpdate).toBeFalse();
   });
 
   it('onSelectObject - other selected before', () => {
@@ -181,6 +183,7 @@ describe('CommonGroupComponent', () => {
     expect(component.showObjectDetail).toBeTrue();
     expect(component.selectedObject === commonGroup).toBeFalse();
     expect(component.selectedObject.equals(commonGroup)).toBeTrue();
+    expect(component.disableUpdate).toBeFalse();
   });
 
 
@@ -208,6 +211,7 @@ describe('CommonGroupComponent', () => {
     expect(component.isNewObject).toBeTrue();
     expect(component.selectedObject).toBeTruthy();
     expect(component.selectedObject.identification).toEqual('');
+    expect(component.disableUpdate).toBeFalse();
   });
 
 

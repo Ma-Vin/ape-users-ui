@@ -115,4 +115,7 @@ export class AllCommonGroupsComponent extends ListDetailComponent<CommonGroup>{
   }
 
   disableDeleteObjectTypeSpecific(): boolean { return false; }
+
+
+  disableUpdateSelectedObject(): boolean { return false; }
 }

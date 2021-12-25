@@ -206,6 +206,40 @@ describe('AllUsersComponent', () => {
     expect(component.selectedObject.equals(user)).toBeTrue();
   });
 
+  it('onSelectObject - allowed to update', () => {
+    let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
+    let isAllowedToUpdateUserSpy = spyOn(userPermissionSerivce, 'isAllowedToUpdateUser').and.returnValue(true);
+
+    component.onSelectObject(user);
+
+    expect(loactionSpy).toHaveBeenCalledOnceWith(`${USERS_PATH}/${user.identification}`);
+    expect(isAllowedToUpdateUserSpy).toHaveBeenCalled();
+
+    expect(component.isNewObject).toBeFalse();
+    expect(component.showObjectDetail).toBeTrue();
+    expect(component.selectedObject === user).toBeFalse();
+    expect(component.selectedObject.equals(user)).toBeTrue();
+    expect(component.disableUpdate).toBeFalse();
+    expect(component.disableUpdateCreationRequired).toBeFalse();
+  });
+
+  it('onSelectObject - not allowed to update', () => {
+    let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
+    let isAllowedToUpdateUserSpy = spyOn(userPermissionSerivce, 'isAllowedToUpdateUser').and.returnValue(false);
+
+    component.onSelectObject(user);
+
+    expect(loactionSpy).toHaveBeenCalledOnceWith(`${USERS_PATH}/${user.identification}`);
+    expect(isAllowedToUpdateUserSpy).toHaveBeenCalled();
+
+    expect(component.isNewObject).toBeFalse();
+    expect(component.showObjectDetail).toBeTrue();
+    expect(component.selectedObject === user).toBeFalse();
+    expect(component.selectedObject.equals(user)).toBeTrue();
+    expect(component.disableUpdate).toBeTrue();
+    expect(component.disableUpdateCreationRequired).toBeTrue();
+  });
+
 
 
   /**
@@ -226,13 +260,37 @@ describe('AllUsersComponent', () => {
   /**
    * onCreateObject
    */
-  it('onCreateObject', () => {
+  it('onCreateObject - allowed to update', () => {
+    let isAllowedToUpdateUserSpy = spyOn(userPermissionSerivce, 'isAllowedToUpdateUser').and.returnValue(true);
+
     component.onCreateObject();
+
+    expect(isAllowedToUpdateUserSpy).toHaveBeenCalled();
 
     expect(component.showObjectDetail).toBeTrue();
     expect(component.isNewObject).toBeTrue();
     expect(component.selectedObject).toBeTruthy();
     expect(component.selectedObject.identification).toEqual('');
+    expect(component.disableUpdate).toBeFalse();
+    expect(component.disableUpdateCreationRequired).toBeFalse();
+  });
+
+  /**
+ * onCreateObject
+ */
+  it('onCreateObject - not allowed to update', () => {
+    let isAllowedToUpdateUserSpy = spyOn(userPermissionSerivce, 'isAllowedToUpdateUser').and.returnValue(false);
+
+    component.onCreateObject();
+
+    expect(isAllowedToUpdateUserSpy).toHaveBeenCalled();
+
+    expect(component.showObjectDetail).toBeTrue();
+    expect(component.isNewObject).toBeTrue();
+    expect(component.selectedObject).toBeTruthy();
+    expect(component.selectedObject.identification).toEqual('');
+    expect(component.disableUpdate).toBeTrue();
+    expect(component.disableUpdateCreationRequired).toBeFalse();
   });
 
 

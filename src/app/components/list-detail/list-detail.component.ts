@@ -13,6 +13,7 @@ export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> impl
     protected originalObject: T | undefined;
     showObjectDetail: boolean;
     isNewObject = false;
+    disableUpdate = false;
 
 
     allObjectsDisplayedColumns: string[];
@@ -100,7 +101,14 @@ export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> impl
         this.originalObject = objectToSelect;
         this.showObjectDetail = true;
         this.isNewObject = false;
+        this.disableUpdate = this.disableUpdateSelectedObject();
     }
+
+    /**
+     * Method to determine the value to set to disableUpdate while the onSelectObject-call
+     * @returns true if properties of the selected object should not be editable. Otherwise false.
+     */
+    protected abstract disableUpdateSelectedObject(): boolean;
 
     /**
      * Determines wheter a given object is the selected one or not
@@ -171,6 +179,7 @@ export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> impl
         this.originalObject = undefined;
         this.showObjectDetail = true;
         this.isNewObject = true;
+        this.disableUpdate = this.disableUpdateSelectedObject();
     }
 
     /**

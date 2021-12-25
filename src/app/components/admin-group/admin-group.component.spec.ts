@@ -194,6 +194,7 @@ describe('AdminGroupComponent', () => {
     expect(component.showObjectDetail).toBeTrue();
     expect(component.selectedObject === admin).toBeFalse();
     expect(component.selectedObject.equals(admin)).toBeTrue();
+    expect(component.disableUpdate).toBeFalse();
   });
 
   it('onSelectObject - same selected before', () => {
@@ -208,6 +209,7 @@ describe('AdminGroupComponent', () => {
     expect(component.showObjectDetail).toBeTrue();
     expect(component.selectedObject === admin).toBeFalse();
     expect(component.selectedObject.equals(admin)).toBeTrue();
+    expect(component.disableUpdate).toBeFalse();
   });
 
   it('onSelectObject - other selected before', () => {
@@ -222,6 +224,7 @@ describe('AdminGroupComponent', () => {
     expect(component.showObjectDetail).toBeTrue();
     expect(component.selectedObject === admin).toBeFalse();
     expect(component.selectedObject.equals(admin)).toBeTrue();
+    expect(component.disableUpdate).toBeFalse();
   });
 
 
@@ -272,6 +275,7 @@ describe('AdminGroupComponent', () => {
     expect(component.isNewObject).toBeTrue();
     expect(component.selectedObject).toBeTruthy();
     expect(component.selectedObject.identification).toEqual('');
+    expect(component.disableUpdate).toBeFalse();
   });
 
 

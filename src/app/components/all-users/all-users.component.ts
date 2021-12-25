@@ -27,6 +27,7 @@ export class AllUsersComponent extends ListDetailComponent<User> {
   public allowedRoles: Role[] = [Role.ADMIN, Role.MANAGER, Role.CONTRIBUTOR, Role.VISITOR, Role.BLOCKED];
   public roles: RoleWithText[] = [];
   public toolbarSite = ToolbarSite.USERS;
+  public disableUpdateCreationRequired = false;
 
   private commonGroupId = '';
   private defaultRole = Role.NOT_RELEVANT;
@@ -135,8 +136,16 @@ export class AllUsersComponent extends ListDetailComponent<User> {
 
 
 
-  disableDeleteObjectTypeSpecific():boolean{
+  disableDeleteObjectTypeSpecific(): boolean {
     return !this.userPermissionSerivce.isAllowedToDeleteUser(this.selectedObject);
+  }
+
+
+
+  disableUpdateSelectedObject(): boolean {
+    let updateAllowed = this.userPermissionSerivce.isAllowedToUpdateUser(this.selectedObject);
+    this.disableUpdateCreationRequired = !(this.isNewObject || updateAllowed);
+    return !updateAllowed;
   }
 
 

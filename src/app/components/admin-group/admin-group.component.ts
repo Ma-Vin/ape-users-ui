@@ -24,7 +24,7 @@ const placeHolderAdmin = {
 })
 export class AdminGroupComponent extends ListDetailComponent<User> {
   private adminGroupId = '';
-  public toolbarSite= ToolbarSite.ADMINS;
+  public toolbarSite = ToolbarSite.ADMINS;
 
   constructor(private configService: ConfigService, private selectionService: SelectionService, private adminService: AdminService
     , route: ActivatedRoute, location: Location, snackBar: MatSnackBar) {
@@ -136,6 +136,9 @@ export class AdminGroupComponent extends ListDetailComponent<User> {
     return activeUser == undefined || activeUser.identification == this.selectedObject.identification;
   }
 
+
+  disableUpdateSelectedObject(): boolean { return false; }
+  
 
   /**
    * @returns true if all required fields are set. Otherwise false
