@@ -131,9 +131,9 @@ export class AdminGroupComponent extends ListDetailComponent<User> {
   }
 
 
-  disableDelete(): boolean {
+  disableDeleteObjectTypeSpecific(): boolean {
     let activeUser = this.selectionService.getActiveUser();
-    return super.disableDelete() || activeUser == undefined || activeUser.identification == this.selectedObject.identification;
+    return activeUser == undefined || activeUser.identification == this.selectedObject.identification;
   }
 
 

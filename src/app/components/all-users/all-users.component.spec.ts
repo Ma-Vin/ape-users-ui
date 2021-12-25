@@ -23,6 +23,7 @@ import { Role } from 'src/app/model/role.model';
 import { CommonGroup, ICommonGroup } from 'src/app/model/common-group.model';
 import { UserPermissionsService } from 'src/app/services/user-permissions.service';
 import { ToolbarComponent } from '../toolbar/toolbar.component';
+import { not } from '@angular/compiler/src/output/output_ast';
 
 registerLocaleData(localeDe);
 
@@ -439,6 +440,7 @@ describe('AllUsersComponent', () => {
   it('onDelete - delete successful', fakeAsync(() => {
     component.allObjectsfilterDataSource.data = [user, otherUser];
     let deleteUserSpy = spyOn(userService, 'deleteUser').and.returnValue(of(true));
+    spyOn(userPermissionSerivce, 'isAllowedToDeleteUser').and.returnValue(true)
     let openMessage = spyOn(snackBar, 'open').and.returnValue({} as MatSnackBarRef<TextOnlySnackBar>);
 
     component.selectedObject = otherUser;
@@ -459,6 +461,7 @@ describe('AllUsersComponent', () => {
   it('onDelete - delete unsuccessful', fakeAsync(() => {
     component.allObjectsfilterDataSource.data = [user, otherUser];
     let deleteUserSpy = spyOn(userService, 'deleteUser').and.returnValue(of(false));
+    spyOn(userPermissionSerivce, 'isAllowedToDeleteUser').and.returnValue(true)
     let openMessage = spyOn(snackBar, 'open').and.returnValue({} as MatSnackBarRef<TextOnlySnackBar>);
 
     component.selectedObject = otherUser;
@@ -480,6 +483,7 @@ describe('AllUsersComponent', () => {
   it('onDelete - delete disabled', fakeAsync(() => {
     component.allObjectsfilterDataSource.data = [user, otherUser];
     let deleteUserSpy = spyOn(userService, 'deleteUser').and.returnValue(of(false));
+    spyOn(userPermissionSerivce, 'isAllowedToDeleteUser').and.returnValue(false)
     let openMessage = spyOn(snackBar, 'open').and.callFake((message, action, config) => { return {} as MatSnackBarRef<TextOnlySnackBar> });
 
     component.selectedObject = user;
@@ -665,16 +669,38 @@ describe('AllUsersComponent', () => {
   /**
    * disableDelete
    */
-  it('disableDelete - new user', () => {
+  it('disableDelete - new user, but allowed to', () => {
     component.isNewObject = true;
+    let isAllowedToDeleteUserSpy = spyOn(userPermissionSerivce, 'isAllowedToDeleteUser').and.returnValue(true);
 
     expect(component.disableDelete()).toBeTrue();
+    // short circled -> not
+    expect(isAllowedToDeleteUserSpy).not.toHaveBeenCalled();
   });
 
-  it('disableDelete - existing user', () => {
+  it('disableDelete - new user, but not allowed to', () => {
+    component.isNewObject = true;
+    let isAllowedToDeleteUserSpy = spyOn(userPermissionSerivce, 'isAllowedToDeleteUser').and.returnValue(false);
+
+    expect(component.disableDelete()).toBeTrue();
+    // short circled -> not
+    expect(isAllowedToDeleteUserSpy).not.toHaveBeenCalled();
+  });
+
+  it('disableDelete - existing user, but allowed to', () => {
     component.isNewObject = false;
+    let isAllowedToDeleteUserSpy = spyOn(userPermissionSerivce, 'isAllowedToDeleteUser').and.returnValue(true);
 
     expect(component.disableDelete()).toBeFalse();
+    expect(isAllowedToDeleteUserSpy).toHaveBeenCalled();
+  });
+
+  it('disableDelete - existing user, but not allowed to', () => {
+    component.isNewObject = false;
+    let isAllowedToDeleteUserSpy = spyOn(userPermissionSerivce, 'isAllowedToDeleteUser').and.returnValue(false);
+
+    expect(component.disableDelete()).toBeTrue();
+    expect(isAllowedToDeleteUserSpy).toHaveBeenCalled();
   });
 
 

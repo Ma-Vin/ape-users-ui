@@ -26,7 +26,7 @@ interface RoleWithText {
 export class AllCommonGroupsComponent extends ListDetailComponent<CommonGroup>{
   allowedRoles: Role[] = [Role.ADMIN, Role.MANAGER, Role.CONTRIBUTOR, Role.VISITOR, Role.BLOCKED];
   roles: RoleWithText[] = [];
-  public toolbarSite= ToolbarSite.COMMON_GROUPS;
+  public toolbarSite = ToolbarSite.COMMON_GROUPS;
 
 
   constructor(private selectionService: SelectionService, private commonGroupService: CommonGroupService
@@ -113,4 +113,6 @@ export class AllCommonGroupsComponent extends ListDetailComponent<CommonGroup>{
     return this.selectedObject.groupName != undefined && this.selectedObject.groupName.length > 0
       && this.selectedObject.defaultRole != undefined && this.allowedRoles.includes(this.selectedObject.defaultRole);
   }
+
+  disableDeleteObjectTypeSpecific(): boolean { return false; }
 }

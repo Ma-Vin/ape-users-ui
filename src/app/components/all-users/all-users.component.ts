@@ -133,6 +133,14 @@ export class AllUsersComponent extends ListDetailComponent<User> {
       });
   }
 
+
+
+  disableDeleteObjectTypeSpecific():boolean{
+    return !this.userPermissionSerivce.isAllowedToDeleteUser(this.selectedObject);
+  }
+
+
+
   get lastLogin(): string {
     if (this.selectedObject.lastLogin == undefined) {
       return '';

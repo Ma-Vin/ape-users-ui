@@ -139,8 +139,14 @@ export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> impl
      * @returns true if the delete button should be disabled. Otherwise false.
      */
     disableDelete(): boolean {
-        return this.isNewObject;
+        return this.isNewObject || this.disableDeleteObjectTypeSpecific();
     }
+
+
+    /**
+     * @returns true if the delete button should be disabled depending of the type of the object. Otherwise false.
+     */
+    abstract disableDeleteObjectTypeSpecific(): boolean;
 
     /**
      * @returns true if the accept button should be disabled in case of an new created commonGroup. Otherwise false.
