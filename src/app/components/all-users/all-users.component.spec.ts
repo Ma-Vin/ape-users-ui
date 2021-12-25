@@ -22,6 +22,7 @@ import { IUser, User } from 'src/app/model/user.model';
 import { Role } from 'src/app/model/role.model';
 import { CommonGroup, ICommonGroup } from 'src/app/model/common-group.model';
 import { UserPermissionsService } from 'src/app/services/user-permissions.service';
+import { ToolbarComponent } from '../toolbar/toolbar.component';
 
 registerLocaleData(localeDe);
 
@@ -58,7 +59,7 @@ describe('AllUsersComponent', () => {
     await TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([{ path: USERS_PATH, component: AllUsersComponent }]), MaterialModule, BrowserAnimationsModule],
       providers: [{ provide: MAT_DATE_LOCALE, useValue: 'de' }],
-      declarations: [AllUsersComponent]
+      declarations: [AllUsersComponent, ToolbarComponent]
     })
       .compileComponents();
   });

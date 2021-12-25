@@ -3,6 +3,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { ConfigService } from 'src/app/config/config.service';
+import { MaterialModule } from 'src/app/material/material.module';
 import { User } from 'src/app/model/user.model';
 import { AdminService } from 'src/app/services/admin.service';
 import { CommonGroupService } from 'src/app/services/common-group.service';
@@ -41,7 +42,7 @@ describe('ToolbarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [HttpClientTestingModule, MaterialModule],
       declarations: [ToolbarComponent]
     })
       .compileComponents();

@@ -19,6 +19,7 @@ import localeDe from '@angular/common/locales/de';
 import { Config } from 'src/app/config/config';
 import { AdminGroup } from 'src/app/model/admin-group.model';
 import { of } from 'rxjs';
+import { ToolbarComponent } from '../toolbar/toolbar.component';
 
 registerLocaleData(localeDe);
 
@@ -81,7 +82,7 @@ describe('AdminGroupComponent', () => {
     await TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([{ path: ADMIN_GROUP_PATH, component: AdminGroupComponent }]), MaterialModule, BrowserAnimationsModule],
       providers: [{ provide: MAT_DATE_LOCALE, useValue: 'de' }],
-      declarations: [AdminGroupComponent]
+      declarations: [AdminGroupComponent, ToolbarComponent]
     })
       .compileComponents();
   });
