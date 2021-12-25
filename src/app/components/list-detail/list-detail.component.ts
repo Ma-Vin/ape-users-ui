@@ -167,6 +167,14 @@ export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> impl
         this.isNewObject = true;
     }
 
+    /**
+     * 
+     * @returns true if any action on creating a new object should be disabled. Otherwise false
+     */
+    disableCreateObject(): boolean {
+        return false;
+    }
+
 
     /**
      * Stores the modifications on an existing obejct or creates the new one at backend

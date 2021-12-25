@@ -11,7 +11,7 @@
                 <mat-icon>person</mat-icon> Users
             </button>
         </nav>
-        <button mat-raised-button color="primary" (click)="onCreateObject()">
+        <button mat-raised-button color="primary" (click)="onCreateObject()" [disabled]="disableCreateButton">
             <mat-icon>{{iconName}}</mat-icon>
             Create new {{createObjectName}}
         </button>

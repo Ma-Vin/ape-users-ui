@@ -10,7 +10,8 @@ import { ToolbarSite } from './toolbar-site';
 export class ToolbarComponent implements OnInit {
   @Output() onCreateObjectEventEmitter = new EventEmitter<string>();
   @Input() public createObjectName!: string;
-  @Input() public activeSite!: ToolbarSite
+  @Input() public activeSite!: ToolbarSite;
+  @Input() public disableCreateButton!: boolean;
   public iconName = 'add_box';
 
   public showAdminItems!: boolean;
@@ -28,8 +29,8 @@ export class ToolbarComponent implements OnInit {
         this.iconName = 'domain_add';
         break;
       case ToolbarSite.USERS:
-          this.iconName = 'person_add';
-          break;
+        this.iconName = 'person_add';
+        break;
       default:
         this.iconName = 'add_box';
     }

@@ -21,6 +21,7 @@ import { of } from 'rxjs';
 import { IUser, User } from 'src/app/model/user.model';
 import { Role } from 'src/app/model/role.model';
 import { CommonGroup, ICommonGroup } from 'src/app/model/common-group.model';
+import { UserPermissionsService } from 'src/app/services/user-permissions.service';
 
 registerLocaleData(localeDe);
 
@@ -31,6 +32,7 @@ describe('AllUsersComponent', () => {
   let userService: UserService;
   let commonGroupService: CommonGroupService;
   let configService: ConfigService;
+  let userPermissionSerivce: UserPermissionsService;
   let httpMock: HttpTestingController;
   let http: HttpClient;
   let route: ActivatedRoute;
@@ -69,6 +71,7 @@ describe('AllUsersComponent', () => {
     userService = TestBed.inject(UserService);
     commonGroupService = TestBed.inject(CommonGroupService);
     selectionService = TestBed.inject(SelectionService);
+    userPermissionSerivce = TestBed.inject(UserPermissionsService);
 
     route = TestBed.inject(ActivatedRoute);
     location = TestBed.inject(Location);
@@ -633,6 +636,27 @@ describe('AllUsersComponent', () => {
     } as User
 
     expect(component.disableAccept()).toBeTrue();
+  });
+
+
+
+  /**
+   * disableCreateObject
+   */
+  it('disableCreateObject - creating a user is allowed', () => {
+    let isAllowedToCreateUserSpy = spyOn(userPermissionSerivce, 'isAllowedToCreateUser').and.returnValue(true);
+
+    expect(component.disableCreateObject()).toBeFalse();
+
+    expect(isAllowedToCreateUserSpy).toHaveBeenCalled();
+  });
+
+  it('disableCreateObject - creating a user is not allowed', () => {
+    let isAllowedToCreateUserSpy = spyOn(userPermissionSerivce, 'isAllowedToCreateUser').and.returnValue(false);
+
+    expect(component.disableCreateObject()).toBeTrue();
+
+    expect(isAllowedToCreateUserSpy).toHaveBeenCalled();
   });
 
 

@@ -563,6 +563,16 @@ describe('AdminGroupComponent', () => {
   });
 
 
+  
+  /**
+   * disableCreateObject
+   */
+  it('disableCreateObject - creating a user is allowed', () => {
+    expect(component.disableCreateObject()).toBeFalse();
+  });
+
+
+
   /**
    * disableDelete
    */

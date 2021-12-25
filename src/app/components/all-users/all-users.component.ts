@@ -10,6 +10,7 @@ import { USERS_PATH } from 'src/app/app-routing.module';
 import { Role } from 'src/app/model/role.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { ToolbarSite } from '../toolbar/toolbar-site';
+import { UserPermissionsService } from 'src/app/services/user-permissions.service';
 
 
 interface RoleWithText {
@@ -31,7 +32,7 @@ export class AllUsersComponent extends ListDetailComponent<User> {
   private defaultRole = Role.NOT_RELEVANT;
 
   constructor(private selectionService: SelectionService, private userService: UserService
-    , route: ActivatedRoute, location: Location, snackBar: MatSnackBar) {
+    , route: ActivatedRoute, location: Location, snackBar: MatSnackBar, private userPermissionSerivce: UserPermissionsService) {
     super(route, location, snackBar);
     for (let r of this.allowedRoles) {
       this.roles.push({ value: r, text: `${r}` } as RoleWithText);
@@ -59,6 +60,10 @@ export class AllUsersComponent extends ListDetailComponent<User> {
       equals: (other) => other == undefined,
       getIdentification: () => ''
     } as User;
+  }
+
+  disableCreateObject(): boolean {
+    return !this.userPermissionSerivce.isAllowedToCreateUser();
   }
 
   createDisplayedColumns(): string[] {

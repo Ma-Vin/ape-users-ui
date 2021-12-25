@@ -1,4 +1,5 @@
-<app-toolbar (onCreateObjectEventEmitter)="onCreateObject()" [createObjectName]="'Common Group'" [activeSite]="toolbarSite"></app-toolbar>
+<app-toolbar (onCreateObjectEventEmitter)="onCreateObject()" [createObjectName]="'Common Group'"
+    [activeSite]="toolbarSite" [disableCreateButton]="disableCreateObject()"></app-toolbar>
 <div class="object-container">
     <div class="all-objects">
         <mat-form-field>
@@ -6,8 +7,7 @@
             <input matInput (keyup)="applyAllObjectsFilter($event)" placeholder="Common Group Id or Groupname">
         </mat-form-field>
         <table mat-table #tableAllObjectsTable="matTable" #tableAllObjectsSort="matSort"
-            [dataSource]="allObjectsfilterDataSource" matSort matSortActive="identification"
-            matSortDirection="asc">
+            [dataSource]="allObjectsfilterDataSource" matSort matSortActive="identification" matSortDirection="asc">
             <details>all available common groups</details>
             <ng-container matColumnDef="identification">
                 <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header> Id </th>
@@ -18,8 +18,8 @@
                 <td mat-cell *matCellDef="let element"> {{element.groupName}} </td>
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="allObjectsDisplayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: allObjectsDisplayedColumns"
-                (click)="onSelectObject(row)" [class.selected]="isObjectSelected(row)"></tr>
+            <tr mat-row *matRowDef="let row; columns: allObjectsDisplayedColumns" (click)="onSelectObject(row)"
+                [class.selected]="isObjectSelected(row)"></tr>
         </table>
     </div>
     <div class="object-detail">
@@ -28,8 +28,7 @@
             <div class="element-data-row">
                 <mat-form-field class="element-detail-short">
                     <mat-label>Id</mat-label>
-                    <input matInput placeholder="Identification" [(ngModel)]="selectedObject.identification"
-                        disabled />
+                    <input matInput placeholder="Identification" [(ngModel)]="selectedObject.identification" disabled />
                 </mat-form-field>
             </div>
             <div class="element-data-row">
@@ -61,8 +60,7 @@
             <div class="element-data-row-grid">
                 <mat-form-field class="element-detail-grid-full-width">
                     <mat-label>Description</mat-label>
-                    <textarea matInput placeholder="Description"
-                        [(ngModel)]="selectedObject.description"></textarea>
+                    <textarea matInput placeholder="Description" [(ngModel)]="selectedObject.description"></textarea>
                 </mat-form-field>
             </div>
             <div class="button-row">
