@@ -28,6 +28,7 @@ export class AllUsersComponent extends ListDetailComponent<User> {
   public roles: RoleWithText[] = [];
   public toolbarSite = ToolbarSite.USERS;
   public disableUpdateCreationRequired = false;
+  public disableUpdateRole = false;
 
   private commonGroupId = '';
   private defaultRole = Role.NOT_RELEVANT;
@@ -145,6 +146,7 @@ export class AllUsersComponent extends ListDetailComponent<User> {
   disableUpdateSelectedObject(): boolean {
     let updateAllowed = this.userPermissionSerivce.isAllowedToUpdateUser(this.selectedObject);
     this.disableUpdateCreationRequired = !(this.isNewObject || updateAllowed);
+    this.disableUpdateRole = !this.userPermissionSerivce.isAllowedToSetRoleOfUser();
     return !updateAllowed;
   }
 
