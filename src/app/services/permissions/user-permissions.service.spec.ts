@@ -44,13 +44,13 @@ describe('PermissionsService', () => {
 
     service = TestBed.inject(UserPermissionsService);
 
-    initMocks();
+    initMockData();
 
     selectionServiceSpy = spyOn(selectionService, 'getActiveUser').and.returnValue(activeUser);
   });
 
 
-  function initMocks() {
+  function initMockData() {
     activeUser = User.map({
       identification: userId,
       firstName: firstName,
