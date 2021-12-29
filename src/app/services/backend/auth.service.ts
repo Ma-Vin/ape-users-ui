@@ -1,16 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ConfigService } from '../config/config.service';
-import { TokenResponse } from '../model/auth/token-response.model';
-import { JwtPayload } from '../model/auth/jwt-payload.model';
+import { ConfigService } from '../../config/config.service';
+import { TokenResponse } from '../../model/auth/token-response.model';
+import { JwtPayload } from '../../model/auth/jwt-payload.model';
 import { catchError, map, share, switchMap } from 'rxjs/operators';
-import { CryptoService } from './crypto.service';
+import { CryptoService } from '../util/crypto.service';
 import { Observable, of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
-import { LOGIN_PATH } from '../app-routing.module';
-import { SelectionService } from './selection.service';
-import { ALL_USERS_MOCK_KEY, BaseBackendService } from './base-backend.service';
-import { User } from '../model/user.model';
+import { LOGIN_PATH } from '../../app-routing.module';
+import { SelectionService } from '../util/selection.service';
+import { ALL_USERS_MOCK_KEY, BaseBackendService } from '../base/base-backend.service';
+import { User } from '../../model/user.model';
 
 
 export const TOKEN_URL = "/oauth/token";

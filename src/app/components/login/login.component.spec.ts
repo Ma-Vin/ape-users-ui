@@ -5,7 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { AppRoutingModule } from '../../app-routing.module';
 import { MaterialModule } from '../../material/material.module';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../services/backend/auth.service';
 
 import { LoginComponent } from './login.component';
 

@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { LOGIN_PATH } from '../app-routing.module';
-import { AuthService } from './auth.service';
+import { LOGIN_PATH } from '../../app-routing.module';
+import { AuthService } from '../backend/auth.service';
 
 @Injectable({
   providedIn: 'root'

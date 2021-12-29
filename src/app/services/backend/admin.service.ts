@@ -2,13 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, map, retry } from 'rxjs/operators';
-import { ConfigService } from '../config/config.service';
-import { AdminGroup, IAdminGroup } from '../model/admin-group.model';
-import { ResponseWrapper } from '../model/response-wrapper';
-import { Status } from '../model/status.model';
-import { IUser, User } from '../model/user.model';
-import { ALL_USERS_MOCK_KEY, BaseBackendService, NEXT_USER_ID_MOCK_KEY } from './base-backend.service';
-import { HTTP_JSON_OPTIONS, HTTP_URL_OPTIONS, RETRIES } from './base.service';
+import { ConfigService } from '../../config/config.service';
+import { AdminGroup, IAdminGroup } from '../../model/admin-group.model';
+import { ResponseWrapper } from '../../model/response-wrapper';
+import { Status } from '../../model/status.model';
+import { IUser, User } from '../../model/user.model';
+import { ALL_USERS_MOCK_KEY, BaseBackendService, NEXT_USER_ID_MOCK_KEY } from '../base/base-backend.service';
+import { HTTP_JSON_OPTIONS, HTTP_URL_OPTIONS, RETRIES } from '../base/base.service';
 
 
 /**

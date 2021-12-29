@@ -8,8 +8,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ADMIN_GROUP_PATH } from 'src/app/app-routing.module';
 import { ConfigService } from 'src/app/config/config.service';
 import { MaterialModule } from 'src/app/material/material.module';
-import { AdminService } from 'src/app/services/admin.service';
-import { SelectionService } from 'src/app/services/selection.service';
+import { AdminService } from '../../services/backend/admin.service';
+import { SelectionService } from '../../services/util/selection.service';
 import { Location, registerLocaleData } from '@angular/common';
 
 import { AdminGroupComponent } from './admin-group.component';

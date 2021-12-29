@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { ConfigService } from 'src/app/config/config.service';
-import { User } from 'src/app/model/user.model';
-import { AdminService } from 'src/app/services/admin.service';
-import { SelectionService } from 'src/app/services/selection.service';
-import { UserService } from 'src/app/services/user.service';
+import { ConfigService } from '../../config/config.service';
+import { User } from '../../model/user.model';
+import { AdminService } from '../backend/admin.service';
+import { SelectionService } from '../util/selection.service';
+import { UserService } from '../backend/user.service';
 
 import { AdminGuardService } from './admin-guard.service';
 

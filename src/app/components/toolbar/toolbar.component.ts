@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { SelectionService } from 'src/app/services/selection.service';
+import { SelectionService } from '../../services/util/selection.service';
 import { ToolbarSite } from './toolbar-site';
 
 @Component({

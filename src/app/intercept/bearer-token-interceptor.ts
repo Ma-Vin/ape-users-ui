@@ -2,7 +2,7 @@ import { HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest } fro
 import { NEVER, Observable } from "rxjs";
 import { switchMap } from "rxjs/operators";
 import { CONFIG_URL } from "../config/config.service";
-import { AuthService, TOKEN_URL } from "../services/auth.service";
+import { AuthService, TOKEN_URL } from "../services/backend/auth.service";
 
 export const AUTH_HEADER_PROPERTY_NAME = "Authorization";
 export const AUTH_BEARER_PREFIX = "Bearer";

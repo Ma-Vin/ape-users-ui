@@ -2,12 +2,12 @@ import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
-import { CommonGroup } from 'src/app/model/common-group.model';
-import { Role } from 'src/app/model/role.model';
+import { CommonGroup } from '../../model/common-group.model';
+import { Role } from '../../model/role.model';
 import { Location } from '@angular/common';
-import { CommonGroupService } from 'src/app/services/common-group.service';
-import { SelectionService } from 'src/app/services/selection.service';
-import { COMMON_GROUPS_PATH } from 'src/app/app-routing.module';
+import { CommonGroupService } from '../../services/backend/common-group.service';
+import { SelectionService } from '../../services/util/selection.service';
+import { COMMON_GROUPS_PATH } from '../../app-routing.module';
 import { ListDetailComponent } from '../list-detail/list-detail.component';
 import { ToolbarSite } from '../toolbar/toolbar-site';
 

@@ -5,8 +5,8 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { AppRoutingModule } from '../app-routing.module';
 import { ConfigService, CONFIG_URL } from '../config/config.service';
-import { AuthService, TOKEN_URL } from '../services/auth.service';
-import { CryptoService } from '../services/crypto.service';
+import { AuthService, TOKEN_URL } from '../services/backend/auth.service';
+import { CryptoService } from '../services/util/crypto.service';
 import { BearerTokenInterceptor, AUTH_BEARER_PREFIX, AUTH_HEADER_PROPERTY_NAME } from './bearer-token-interceptor';
 
 

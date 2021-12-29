@@ -2,16 +2,15 @@ import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
-import { ConfigService } from '../config/config.service';
-import { AdminGroup, IAdminGroup } from '../model/admin-group.model';
-import { CommonGroup, ICommonGroup } from '../model/common-group.model';
-import { Role } from '../model/role.model';
-import { User } from '../model/user.model';
-import { AdminService } from './admin.service';
-import { CommonGroupService } from './common-group.service';
-
+import { ConfigService } from '../../config/config.service';
+import { AdminGroup, IAdminGroup } from '../../model/admin-group.model';
+import { CommonGroup, ICommonGroup } from '../../model/common-group.model';
+import { Role } from '../../model/role.model';
+import { User } from '../../model/user.model';
+import { AdminService } from '../backend/admin.service';
+import { CommonGroupService } from '../backend/common-group.service';
 import { SelectionService } from './selection.service';
-import { UserService } from './user.service';
+import { UserService } from '../backend/user.service';
 
 describe('SelectionService', () => {
   let service: SelectionService;

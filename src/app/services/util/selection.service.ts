@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { NEVER } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { AdminGroup } from '../model/admin-group.model';
-import { CommonGroup } from '../model/common-group.model';
-import { User } from '../model/user.model';
-import { AdminService } from './admin.service';
-import { CommonGroupService } from './common-group.service';
-import { UserService } from './user.service';
+import { AdminGroup } from '../../model/admin-group.model';
+import { CommonGroup } from '../../model/common-group.model';
+import { User } from '../../model/user.model';
+import { AdminService } from '../backend/admin.service';
+import { CommonGroupService } from '../backend/common-group.service';
+import { UserService } from '../backend/user.service';
 
 @Injectable({
   providedIn: 'root'

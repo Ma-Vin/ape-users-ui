@@ -4,26 +4,25 @@ import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testin
 import { Location, registerLocaleData } from '@angular/common';
 import { MatSnackBar, MatSnackBarRef, TextOnlySnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { ConfigService } from 'src/app/config/config.service';
-import { AdminService } from 'src/app/services/admin.service';
-import { CommonGroupService } from 'src/app/services/common-group.service';
-import { SelectionService } from 'src/app/services/selection.service';
-import { UserService } from 'src/app/services/user.service';
+import { ConfigService } from '../../config/config.service';
+import { AdminService } from '../../services/backend/admin.service';
+import { CommonGroupService } from '../../services/backend/common-group.service';
+import { SelectionService } from '../../services/util/selection.service';
+import { UserService } from '../../services/backend/user.service';
 import localeDe from '@angular/common/locales/de';
 
 import { AllUsersComponent } from './all-users.component';
 import { RouterTestingModule } from '@angular/router/testing';
-import { USERS_PATH } from 'src/app/app-routing.module';
-import { MaterialModule } from 'src/app/material/material.module';
+import { USERS_PATH } from '../../app-routing.module';
+import { MaterialModule } from '../../material/material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { of } from 'rxjs';
-import { IUser, User } from 'src/app/model/user.model';
-import { Role } from 'src/app/model/role.model';
-import { CommonGroup, ICommonGroup } from 'src/app/model/common-group.model';
-import { UserPermissionsService } from 'src/app/services/user-permissions.service';
+import { IUser, User } from '../../model/user.model';
+import { Role } from '../../model/role.model';
+import { CommonGroup, ICommonGroup } from '../../model/common-group.model';
+import { UserPermissionsService } from '../../services/permissions/user-permissions.service';
 import { ToolbarComponent } from '../toolbar/toolbar.component';
-import { not } from '@angular/compiler/src/output/output_ast';
 
 registerLocaleData(localeDe);
 

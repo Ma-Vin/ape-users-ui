@@ -9,7 +9,7 @@ import { LoginComponent } from './components/login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from './material/material.module';
 import { ConfigService } from './config/config.service';
-import { AuthService } from './services/auth.service';
+import { AuthService } from './services/backend/auth.service';
 import { BearerTokenInterceptor } from './intercept/bearer-token-interceptor';
 import { AdminGroupComponent } from './components/admin-group/admin-group.component';
 import { registerLocaleData } from '@angular/common';

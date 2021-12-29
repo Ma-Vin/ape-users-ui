@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { ConfigService } from '../config/config.service';
+import { ConfigService } from '../../config/config.service';
 import { BaseService } from './base.service';
 
 describe('BaseService', () => {

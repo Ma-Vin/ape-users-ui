@@ -1,14 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { Config } from '../config/config';
-import { ConfigService } from '../config/config.service';
-import { CommonGroup, ICommonGroup } from '../model/common-group.model';
-import { ResponseWrapper } from '../model/response-wrapper';
-import { Role } from '../model/role.model';
-import { Status } from '../model/status.model';
-import { BaseBackendService } from './base-backend.service';
-import { RETRIES } from './base.service';
+import { Config } from '../../config/config';
+import { ConfigService } from '../../config/config.service';
+import { CommonGroup, ICommonGroup } from '../../model/common-group.model';
+import { ResponseWrapper } from '../../model/response-wrapper';
+import { Role } from '../../model/role.model';
+import { Status } from '../../model/status.model';
+import { BaseBackendService } from '../base/base-backend.service';
+import { RETRIES } from '../base/base.service';
 
 import { CommonGroupService } from './common-group.service';
 import { INITIAL_USER_ID_AT_MOCK } from './user.service';

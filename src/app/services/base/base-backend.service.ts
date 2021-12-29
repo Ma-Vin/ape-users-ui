@@ -1,6 +1,6 @@
 import { environment } from 'src/environments/environment';
-import { ConfigService } from '../config/config.service';
-import { User } from '../model/user.model';
+import { ConfigService } from '../../config/config.service';
+import { User } from '../../model/user.model';
 import { BaseService } from './base.service';
 
 export const ALL_USERS_MOCK_KEY = 'users';

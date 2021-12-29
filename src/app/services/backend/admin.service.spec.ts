@@ -1,16 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { Config } from '../config/config';
-import { ConfigService } from '../config/config.service';
-import { AdminGroup, IAdminGroup } from '../model/admin-group.model';
-import { ResponseWrapper } from '../model/response-wrapper';
-import { Status } from '../model/status.model';
-import { IUser, User } from '../model/user.model';
+import { Config } from '../../config/config';
+import { ConfigService } from '../../config/config.service';
+import { AdminGroup, IAdminGroup } from '../../model/admin-group.model';
+import { ResponseWrapper } from '../../model/response-wrapper';
+import { Status } from '../../model/status.model';
+import { IUser, User } from '../../model/user.model';
 
 import { AdminService } from './admin.service';
-import { BaseBackendService } from './base-backend.service';
-import { RETRIES } from './base.service';
+import { BaseBackendService } from '../base/base-backend.service';
+import { RETRIES } from '../base/base.service';
 
 describe('AdminService', () => {
   let service: AdminService;

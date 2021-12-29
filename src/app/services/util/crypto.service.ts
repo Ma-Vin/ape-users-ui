@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AES, enc } from 'crypto-js';
-import { ConfigService } from '../config/config.service';
+import { ConfigService } from '../../config/config.service';
 
 @Injectable({
   providedIn: 'root'

@@ -2,13 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { AppRoutingModule, LOGIN_PATH } from '../app-routing.module';
-import { ConfigService } from '../config/config.service';
-import { User } from '../model/user.model';
+import { AppRoutingModule, LOGIN_PATH } from '../../app-routing.module';
+import { ConfigService } from '../../config/config.service';
+import { User } from '../../model/user.model';
 import { ACCESS_TOKEN, ACCESS_TOKEN_EXPIRE, AuthService, REFRESH_TOKEN, REFRESH_TOKENS_MOCK_KEY } from './auth.service';
-import { ALL_USERS_MOCK_KEY, BaseBackendService } from './base-backend.service';
-import { CryptoService } from './crypto.service';
-import { SelectionService } from './selection.service';
+import { ALL_USERS_MOCK_KEY, BaseBackendService } from '../base/base-backend.service';
+import { CryptoService } from '../util/crypto.service';
+import { SelectionService } from '../util/selection.service';
 
 
 describe('AuthService', () => {

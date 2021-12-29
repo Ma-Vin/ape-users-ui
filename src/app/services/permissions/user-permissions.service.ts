@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Role } from '../model/role.model';
-import { User } from '../model/user.model';
-import { SelectionService } from './selection.service';
+import { Role } from '../../model/role.model';
+import { User } from '../../model/user.model';
+import { SelectionService } from '../util/selection.service';
 
 @Injectable({
   providedIn: 'root'

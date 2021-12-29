@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AdminGuardService } from './services/admin-guard.service';
+import { AdminGuardService } from './services/guards/admin-guard.service';
 import { AdminGroupComponent } from './components/admin-group/admin-group.component';
 import { AllCommonGroupsComponent } from './components/all-common-groups/all-common-groups.component';
 import { LoginComponent } from './components/login/login.component';
-import { AuthGuardService } from './services/auth-guard.service';
+import { AuthGuardService } from './services/guards/auth-guard.service';
 import { AllUsersComponent } from './components/all-users/all-users.component';
 
 

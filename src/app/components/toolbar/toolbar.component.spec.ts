@@ -1,14 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
-import { ConfigService } from 'src/app/config/config.service';
-import { MaterialModule } from 'src/app/material/material.module';
-import { User } from 'src/app/model/user.model';
-import { AdminService } from 'src/app/services/admin.service';
-import { CommonGroupService } from 'src/app/services/common-group.service';
-import { SelectionService } from 'src/app/services/selection.service';
-import { UserService } from 'src/app/services/user.service';
+import { ConfigService } from '../../config/config.service';
+import { MaterialModule } from '../../material/material.module';
+import { User } from '../../model/user.model';
+import { AdminService } from '../../services/backend/admin.service';
+import { CommonGroupService } from '../../services/backend/common-group.service';
+import { SelectionService } from '../../services/util/selection.service';
+import { UserService } from '../../services/backend/user.service';
 import { ToolbarSite } from './toolbar-site';
 
 import { ToolbarComponent } from './toolbar.component';

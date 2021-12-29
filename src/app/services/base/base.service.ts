@@ -1,9 +1,9 @@
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { ConfigService } from '../config/config.service';
+import { ConfigService } from '../../config/config.service';
 import { Observable, throwError } from 'rxjs';
-import { Config } from '../config/config';
-import { Message } from '../model/message';
-import { Status } from '../model/status.model';
+import { Config } from '../../config/config';
+import { Message } from '../../model/message';
+import { Status } from '../../model/status.model';
 
 
 export const RETRIES = 3;

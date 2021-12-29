@@ -6,15 +6,15 @@ import { MatSnackBar, MatSnackBarRef, TextOnlySnackBar } from '@angular/material
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { COMMON_GROUPS_PATH } from 'src/app/app-routing.module';
-import { ConfigService } from 'src/app/config/config.service';
-import { MaterialModule } from 'src/app/material/material.module';
-import { SelectionService } from 'src/app/services/selection.service';
+import { COMMON_GROUPS_PATH } from '../../app-routing.module';
+import { ConfigService } from '../../config/config.service';
+import { MaterialModule } from '../../material/material.module';
+import { SelectionService } from '../../services/util/selection.service';
 
 import { AllCommonGroupsComponent } from './all-common-groups.component';
-import { CommonGroupService } from 'src/app/services/common-group.service';
-import { CommonGroup, ICommonGroup } from 'src/app/model/common-group.model';
-import { Role } from 'src/app/model/role.model';
+import { CommonGroupService } from '../../services/backend/common-group.service';
+import { CommonGroup, ICommonGroup } from '../../model/common-group.model';
+import { Role } from '../../model/role.model';
 import { of } from 'rxjs';
 import { ToolbarComponent } from '../toolbar/toolbar.component';
 

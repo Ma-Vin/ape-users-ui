@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { SelectionService } from 'src/app/services/selection.service';
+import { SelectionService } from '../util/selection.service';
 
 @Injectable({
   providedIn: 'root'

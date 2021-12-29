@@ -1,14 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { ConfigService } from '../config/config.service';
-import { Role } from '../model/role.model';
-import { IUser, User } from '../model/user.model';
-import { AdminService } from './admin.service';
-import { SelectionService } from './selection.service';
+import { ConfigService } from '../../config/config.service';
+import { Role } from '../../model/role.model';
+import { IUser, User } from '../../model/user.model';
+import { AdminService } from '../backend/admin.service';
+import { SelectionService } from '../util/selection.service';
 
 import { UserPermissionsService } from './user-permissions.service';
-import { UserService } from './user.service';
+import { UserService } from '../backend/user.service';
 
 describe('PermissionsService', () => {
   let service: UserPermissionsService;

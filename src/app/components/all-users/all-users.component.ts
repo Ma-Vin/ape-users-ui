@@ -2,15 +2,15 @@ import { Component } from '@angular/core';
 import { DatePipe, Location } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { User } from 'src/app/model/user.model';
-import { SelectionService } from 'src/app/services/selection.service';
-import { UserService } from 'src/app/services/user.service';
+import { User } from '../../model/user.model';
+import { SelectionService } from '../../services/util/selection.service';
+import { UserService } from '../../services/backend/user.service';
 import { ListDetailComponent } from '../list-detail/list-detail.component';
-import { USERS_PATH } from 'src/app/app-routing.module';
-import { Role } from 'src/app/model/role.model';
+import { USERS_PATH } from '../../app-routing.module';
+import { Role } from '../../model/role.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { ToolbarSite } from '../toolbar/toolbar-site';
-import { UserPermissionsService } from 'src/app/services/user-permissions.service';
+import { UserPermissionsService } from '../../services/permissions/user-permissions.service';
 
 
 interface RoleWithText {
