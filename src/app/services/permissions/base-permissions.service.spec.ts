@@ -3,6 +3,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { TestBed } from '@angular/core/testing';
 import { Role } from '../../model/role.model';
 import { IUser, User } from '../../model/user.model';
+import { CommonGroup, ICommonGroup } from '../../model/common-group.model';
 import { ConfigService } from '../../config/config.service';
 import { AdminService } from '../backend/admin.service';
 import { CommonGroupService } from '../backend/common-group.service';
@@ -30,6 +31,10 @@ describe('BasePermissionsService', () => {
   const otherFirstName = 'Lower';
   const lastName = 'Power';
   const otherLastName = 'Power';
+
+  let commonGroup: CommonGroup;
+  const commonGroupId = 'CGAA00001';
+  const commonGroupName = 'Name of the group';
 
   let roles = [Role.ADMIN, Role.MANAGER, Role.CONTRIBUTOR, Role.VISITOR, Role.NOT_RELEVANT, Role.BLOCKED];
 
@@ -77,6 +82,15 @@ describe('BasePermissionsService', () => {
       role: Role.VISITOR,
       isGlobalAdmin: false
     } as IUser);
+
+    commonGroup = CommonGroup.map({
+      description: 'some description',
+      groupName: commonGroupName,
+      identification: commonGroupId,
+      validFrom: new Date(2021, 9, 1),
+      validTo: undefined,
+      defaultRole: Role.VISITOR
+    } as ICommonGroup);
   }
 
 
@@ -255,6 +269,22 @@ describe('BasePermissionsService', () => {
     expect(service.isUserItselfAndNotBlocked(user, user)).toBeFalse();
   });
 
+
+
+
+  /**
+   * isUserAtCommonGroup
+   */
+  it('isUserAtCommonGroup - existing common group', () => {
+    spyOn(selectionService, 'getSelectedCommonGroup').and.returnValue(commonGroup);
+    expect(service.isUserAtCommonGroup(commonGroupId)).toBeTrue();
+    expect(service.isUserAtCommonGroup(commonGroupId.concat('_1'))).toBeFalse();
+  });
+
+  it('isUserAtCommonGroup - non existing common group', () => {
+    spyOn(selectionService, 'getSelectedCommonGroup').and.returnValue(undefined);
+    expect(service.isUserAtCommonGroup(commonGroupId)).toBeFalse();
+  });
 });
 
 
@@ -290,5 +320,9 @@ class TestBasePermissionsService extends BasePermissionsService {
 
   getActiveUser(): User | undefined {
     return super.getActiveUser();
+  }
+
+  isUserAtCommonGroup(identification: string) {
+    return super.isUserAtCommonGroup(identification);
   }
 }

@@ -89,4 +89,16 @@ export abstract class BasePermissionsService {
   protected getActiveUser(): User | undefined {
     return this.selectionService.getActiveUser();
   }
+
+
+
+  /**
+   * Checks if the parent common group of an user at selection service is the same as the asked for one
+   * @param identification the identification of the common group which is asked for
+   * @returns true if the active user is member of the common group. Otherwise false.
+   */
+  protected isUserAtCommonGroup(identification: string) {
+    let commonGroup = this.selectionService.getSelectedCommonGroup();
+    return commonGroup != undefined && identification == commonGroup.identification;
+  }
 }
