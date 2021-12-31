@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { DatePipe, Location } from '@angular/common';
 import { ADMIN_GROUP_PATH } from '../../app-routing.module';
 import { ConfigService } from '../../config/config.service';
-import { User } from '../../model/user.model';
+import { IUser, User } from '../../model/user.model';
 import { AdminService } from '../../services/backend/admin.service';
 import { SelectionService } from '../../services/util/selection.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -40,11 +40,10 @@ export class AdminGroupComponent extends ListDetailComponent<User> {
 
 
   createNewEmptyObject(): User {
-    return {
+    return User.map({
       identification: '',
-      equals: (other) => other == undefined,
-      getIdentification: () => ''
-    } as User;
+      isGlobalAdmin: true
+    } as User);
   }
 
 
@@ -138,7 +137,7 @@ export class AdminGroupComponent extends ListDetailComponent<User> {
 
 
   disableUpdateSelectedObject(): boolean { return false; }
-  
+
 
   /**
    * @returns true if all required fields are set. Otherwise false
