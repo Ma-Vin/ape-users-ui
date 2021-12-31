@@ -10,6 +10,7 @@ import { SelectionService } from '../../services/util/selection.service';
 import { COMMON_GROUPS_PATH } from '../../app-routing.module';
 import { ListDetailComponent } from '../list-detail/list-detail.component';
 import { ToolbarSite } from '../toolbar/toolbar-site';
+import { CommonGroupPermissionsService } from '../../services/permissions/common-group-permissions.service';
 
 
 interface RoleWithText {
@@ -30,7 +31,7 @@ export class AllCommonGroupsComponent extends ListDetailComponent<CommonGroup>{
 
 
   constructor(private selectionService: SelectionService, private commonGroupService: CommonGroupService
-    , route: ActivatedRoute, location: Location, snackBar: MatSnackBar) {
+    , private commonGroupPermissionsService: CommonGroupPermissionsService, route: ActivatedRoute, location: Location, snackBar: MatSnackBar) {
 
     super(route, location, snackBar);
     for (let r of this.allowedRoles) {
@@ -114,8 +115,12 @@ export class AllCommonGroupsComponent extends ListDetailComponent<CommonGroup>{
       && this.selectedObject.defaultRole != undefined && this.allowedRoles.includes(this.selectedObject.defaultRole);
   }
 
-  disableDeleteObjectTypeSpecific(): boolean { return false; }
+
+  disableCreateObject(): boolean { return !this.commonGroupPermissionsService.isAllowedCreateCommonGroup(); }
 
 
-  disableUpdateSelectedObject(): boolean { return false; }
+  disableDeleteObjectTypeSpecific(): boolean { return !this.commonGroupPermissionsService.isAllowedToDeleteCommonGroup(); }
+
+
+  disableUpdateSelectedObject(): boolean { return !this.commonGroupPermissionsService.isAllowedToUpdateCommonGroup(this.selectedObject.identification); }
 }

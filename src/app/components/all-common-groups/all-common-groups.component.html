@@ -34,11 +34,12 @@
             <div class="element-data-row">
                 <mat-form-field class="element-detail-long">
                     <mat-label>Group Name</mat-label>
-                    <input matInput placeholder="Group Name" [(ngModel)]="selectedObject.groupName" required />
+                    <input matInput placeholder="Group Name" [(ngModel)]="selectedObject.groupName" required
+                        [disabled]="disableUpdate" />
                 </mat-form-field>
                 <mat-form-field class="element-detail-mid" appearance="fill">
                     <mat-label>Default Role</mat-label>
-                    <mat-select [(value)]="selectedObject.defaultRole" required>
+                    <mat-select [(value)]="selectedObject.defaultRole" required [disabled]="disableUpdate">
                         <mat-option [value]="option.value" *ngFor="let option of roles">{{ option.text }}</mat-option>
                     </mat-select>
                 </mat-form-field>
@@ -46,13 +47,15 @@
             <div class="element-data-row">
                 <mat-form-field class="element-detail-mid" appearance="fill">
                     <mat-label>Valid from</mat-label>
-                    <input matInput [matDatepicker]="pickerValidFrom" [(ngModel)]="selectedObject.validFrom">
+                    <input matInput [matDatepicker]="pickerValidFrom" [(ngModel)]="selectedObject.validFrom"
+                        [disabled]="disableUpdate">
                     <mat-datepicker-toggle matSuffix [for]="pickerValidFrom"></mat-datepicker-toggle>
                     <mat-datepicker #pickerValidFrom></mat-datepicker>
                 </mat-form-field>
                 <mat-form-field class="element-detail-mid" appearance="fill">
                     <mat-label>Valid to</mat-label>
-                    <input matInput [matDatepicker]="pickerValidTo" [(ngModel)]="selectedObject.validTo">
+                    <input matInput [matDatepicker]="pickerValidTo" [(ngModel)]="selectedObject.validTo"
+                        [disabled]="disableUpdate">
                     <mat-datepicker-toggle matSuffix [for]="pickerValidTo"></mat-datepicker-toggle>
                     <mat-datepicker #pickerValidTo></mat-datepicker>
                 </mat-form-field>
@@ -60,7 +63,8 @@
             <div class="element-data-row-grid">
                 <mat-form-field class="element-detail-grid-full-width">
                     <mat-label>Description</mat-label>
-                    <textarea matInput placeholder="Description" [(ngModel)]="selectedObject.description"></textarea>
+                    <textarea matInput placeholder="Description" [(ngModel)]="selectedObject.description"
+                        [disabled]="disableUpdate"></textarea>
                 </mat-form-field>
             </div>
             <div class="button-row">
