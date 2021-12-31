@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { DatePipe, Location } from '@angular/common';
 import { ADMIN_GROUP_PATH } from '../../app-routing.module';
 import { ConfigService } from '../../config/config.service';
-import { IUser, User } from '../../model/user.model';
+import { User } from '../../model/user.model';
 import { AdminService } from '../../services/backend/admin.service';
 import { SelectionService } from '../../services/util/selection.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
