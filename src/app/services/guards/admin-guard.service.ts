@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { SelectionService } from '../util/selection.service';
+import { AdminPermissionsService } from '../permissions/admin-permissions.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminGuardService {
 
-  constructor(private selectionService: SelectionService) { }
+  constructor(private adminPermissionsService: AdminPermissionsService) { }
 
   canActivate(): Observable<boolean> {
-    let activeUser = this.selectionService.getActiveUser();
-    return of(activeUser != undefined && activeUser.isGlobalAdmin);
+    return of(this.adminPermissionsService.isAllowedToUseAnyMethod());
   }
 }

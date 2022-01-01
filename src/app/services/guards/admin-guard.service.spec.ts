@@ -6,6 +6,7 @@ import { User } from '../../model/user.model';
 import { AdminService } from '../backend/admin.service';
 import { SelectionService } from '../util/selection.service';
 import { UserService } from '../backend/user.service';
+import { AdminPermissionsService } from '../permissions/admin-permissions.service';
 
 import { AdminGuardService } from './admin-guard.service';
 
@@ -14,6 +15,7 @@ describe('AdminGuardService', () => {
   let adminService: AdminService;
   let userService: UserService;
   let selectionService: SelectionService;
+  let adminPermissionsService: AdminPermissionsService
   let configService: ConfigService;
   let httpMock: HttpTestingController;
   let http: HttpClient;
@@ -33,6 +35,7 @@ describe('AdminGuardService', () => {
     adminService = TestBed.inject(AdminService);
     userService = TestBed.inject(UserService);
     selectionService = TestBed.inject(SelectionService);
+    adminPermissionsService = TestBed.inject(AdminPermissionsService);
 
     service = TestBed.inject(AdminGuardService);
 
