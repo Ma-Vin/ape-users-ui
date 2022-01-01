@@ -7,6 +7,7 @@ import { LoginComponent } from './components/login/login.component';
 import { AuthGuardService } from './services/guards/auth-guard.service';
 import { AllUsersComponent } from './components/all-users/all-users.component';
 import { CommonGroupsGuardService } from './services/guards/common-groups-guard.service';
+import { UsersGuardService } from './services/guards/users-guard.service';
 
 
 export const LOGIN_PATH = 'login';
@@ -25,8 +26,8 @@ const routes: Routes = [
   { path: `${ADMIN_GROUP_PATH}/:id`, component: AdminGroupComponent, canActivate: [AuthGuardService, AdminGuardService] },
   { path: COMMON_GROUPS_PATH, component: AllCommonGroupsComponent, canActivate: [AuthGuardService, CommonGroupsGuardService] },
   { path: `${COMMON_GROUPS_PATH}/:id`, component: AllCommonGroupsComponent, canActivate: [AuthGuardService, CommonGroupsGuardService] },
-  { path: USERS_PATH, component: AllUsersComponent, canActivate: [AuthGuardService] },
-  { path: `${USERS_PATH}/:id`, component: AllUsersComponent, canActivate: [AuthGuardService] },
+  { path: USERS_PATH, component: AllUsersComponent, canActivate: [AuthGuardService, UsersGuardService] },
+  { path: `${USERS_PATH}/:id`, component: AllUsersComponent, canActivate: [AuthGuardService, UsersGuardService] },
   { path: '**', redirectTo: LOGIN_ABS_PATH }
 ];
 
