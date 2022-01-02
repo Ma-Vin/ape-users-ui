@@ -14,6 +14,7 @@ import { INITIAL_USER_ID_AT_MOCK } from './user.service';
 const ALL_COMMON_GOUP_MOCK_KEY = 'commonGroups'
 const NEXT_COMMON_GOUP_ID_MOCK_KEY = 'nextCommonGroupId'
 const USERS_AT_COMMON_GROUP = 'usersAtCommonGroup'
+export const INITIAL_COMMON_GROUP_ID_AT_MOCK = 'CGAA00001';
 
 @Injectable({
   providedIn: 'root'
@@ -56,7 +57,7 @@ export class CommonGroupService extends BaseBackendService {
     (BaseBackendService.mockData.get(ALL_COMMON_GOUP_MOCK_KEY) as CommonGroup[]).push(
       CommonGroup.map({
         groupName: 'Mocked',
-        identification: 'CGAA00001',
+        identification: INITIAL_COMMON_GROUP_ID_AT_MOCK,
         description: 'A common group from the mock',
         defaultRole: Role.VISITOR
       } as CommonGroup)

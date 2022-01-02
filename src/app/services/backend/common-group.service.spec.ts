@@ -9,9 +9,9 @@ import { Role } from '../../model/role.model';
 import { Status } from '../../model/status.model';
 import { BaseBackendService } from '../base/base-backend.service';
 import { RETRIES } from '../base/base.service';
-
-import { CommonGroupService } from './common-group.service';
 import { INITIAL_USER_ID_AT_MOCK } from './user.service';
+
+import { CommonGroupService, INITIAL_COMMON_GROUP_ID_AT_MOCK } from './common-group.service';
 
 describe('CommonGroupService', () => {
   let service: CommonGroupService;
@@ -20,7 +20,7 @@ describe('CommonGroupService', () => {
   let http: HttpClient;
 
 
-  const commonGroupId = 'CGAA00001';
+  const commonGroupId = INITIAL_COMMON_GROUP_ID_AT_MOCK;
   const commonGroupName = 'Name of the group';
   const userId = INITIAL_USER_ID_AT_MOCK;
 
@@ -303,7 +303,7 @@ describe('CommonGroupService', () => {
   /**
    * getParentCommonGroupOfUser
    */
-   it('getParentCommonGroupOfUser - all ok', fakeAsync(() => {
+  it('getParentCommonGroupOfUser - all ok', fakeAsync(() => {
     let mockResponseWrapper: ResponseWrapper = {
       response: mockICommonGroup,
       status: Status.OK,
