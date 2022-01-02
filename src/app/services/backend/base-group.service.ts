@@ -14,8 +14,8 @@ import { SelectionService } from '../util/selection.service';
 
 const ALL_BASE_GOUPS_MOCK_KEY = 'baseGroups'
 const NEXT_BASE_GOUP_ID_MOCK_KEY = 'nextBaseGroupId'
-const BASES_AT_COMMON_GROUP = 'basessAtCommonGroup'
-const BASES_AT_BASE_GROUP = 'basessAtBaseGroup'
+const BASES_AT_COMMON_GROUP = 'basesAtCommonGroup'
+const BASES_AT_BASE_GROUP = 'basesAtBaseGroup'
 const USERS_AT_BASE_GROUP = 'usersAtBaseGroup'
 const INITIAL_BASE_GROUP_ID_AT_MOCK = 'BGAA00001'
 
