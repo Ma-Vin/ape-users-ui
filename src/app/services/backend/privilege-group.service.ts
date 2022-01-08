@@ -12,10 +12,10 @@ import { INITIAL_COMMON_GROUP_ID_AT_MOCK } from './common-group.service';
 import { SelectionService } from '../util/selection.service';
 
 
-const ALL_BASE_GOUPS_MOCK_KEY = 'privilegeGroups'
-const NEXT_BASE_GOUP_ID_MOCK_KEY = 'nextPrivilegeGroupId'
+const ALL_PRIVILEGE_GOUPS_MOCK_KEY = 'privilegeGroups'
+const NEXT_PRIVILEGE_GOUP_ID_MOCK_KEY = 'nextPrivilegeGroupId'
 const PRIVILEGES_AT_COMMON_GROUP = 'privilegesAtCommonGroup'
-const INITIAL_BASE_GROUP_ID_AT_MOCK = 'PGAA00001'
+const INITIAL_PRIVILEGE_GROUP_ID_AT_MOCK = 'PGAA00001'
 
 @Injectable({
   providedIn: 'root'
@@ -42,7 +42,7 @@ export class PrivilegeGroupService extends BaseBackendService {
       return false;
     }
 
-    let privilegeGroupControllerUrl = this.config.backendBaseUrl.concat('/group/base');
+    let privilegeGroupControllerUrl = this.config.backendBaseUrl.concat('/group/privilege');
 
     this.getPrivilegeGroupUrl = privilegeGroupControllerUrl.concat('/getPrivilegeGroup');
     this.getAllPrivilegeGroupsUrl = privilegeGroupControllerUrl.concat('/getAllPrivilegeGroups');
@@ -56,24 +56,24 @@ export class PrivilegeGroupService extends BaseBackendService {
 
 
   protected initServiceMocks(): void {
-    if (!BaseBackendService.mockData.has(ALL_BASE_GOUPS_MOCK_KEY)) {
-      BaseBackendService.mockData.set(ALL_BASE_GOUPS_MOCK_KEY, [] as PrivilegeGroup[]);
+    if (!BaseBackendService.mockData.has(ALL_PRIVILEGE_GOUPS_MOCK_KEY)) {
+      BaseBackendService.mockData.set(ALL_PRIVILEGE_GOUPS_MOCK_KEY, [] as PrivilegeGroup[]);
     }
-    (BaseBackendService.mockData.get(ALL_BASE_GOUPS_MOCK_KEY) as PrivilegeGroup[]).push(
+    (BaseBackendService.mockData.get(ALL_PRIVILEGE_GOUPS_MOCK_KEY) as PrivilegeGroup[]).push(
       PrivilegeGroup.map({
         groupName: 'Mocked',
-        identification: INITIAL_BASE_GROUP_ID_AT_MOCK,
+        identification: INITIAL_PRIVILEGE_GROUP_ID_AT_MOCK,
         description: 'A privilege group from the mock'
       } as PrivilegeGroup)
     );
-    if (!BaseBackendService.mockData.has(NEXT_BASE_GOUP_ID_MOCK_KEY)) {
-      BaseBackendService.mockData.set(NEXT_BASE_GOUP_ID_MOCK_KEY, 2);
+    if (!BaseBackendService.mockData.has(NEXT_PRIVILEGE_GOUP_ID_MOCK_KEY)) {
+      BaseBackendService.mockData.set(NEXT_PRIVILEGE_GOUP_ID_MOCK_KEY, 2);
     }
     if (!BaseBackendService.mockData.has(PRIVILEGES_AT_COMMON_GROUP)) {
       BaseBackendService.mockData.set(PRIVILEGES_AT_COMMON_GROUP, new Map<string, string[]>());
     }
     (BaseBackendService.mockData.get(PRIVILEGES_AT_COMMON_GROUP) as Map<string, string[]>).set(
-      INITIAL_COMMON_GROUP_ID_AT_MOCK, [INITIAL_BASE_GROUP_ID_AT_MOCK]
+      INITIAL_COMMON_GROUP_ID_AT_MOCK, [INITIAL_PRIVILEGE_GROUP_ID_AT_MOCK]
     );
   }
 
@@ -85,7 +85,7 @@ export class PrivilegeGroupService extends BaseBackendService {
    */
   private getAllPrivilegeGroupsFromMock(): PrivilegeGroup[] {
     this.initMocks();
-    return (BaseBackendService.mockData.get(ALL_BASE_GOUPS_MOCK_KEY) as PrivilegeGroup[]);
+    return (BaseBackendService.mockData.get(ALL_PRIVILEGE_GOUPS_MOCK_KEY) as PrivilegeGroup[]);
   }
 
 
@@ -94,9 +94,9 @@ export class PrivilegeGroupService extends BaseBackendService {
    * Determines all privilege groups at mock data for the selected common group
    * @returns array of all privilege groups at commongroup
    */
-  private getAllBasesAtSelectedCommonGroupFromMock(): PrivilegeGroup[] {
+  private getAllPrivilegesAtSelectedCommonGroupFromMock(): PrivilegeGroup[] {
     let result: PrivilegeGroup[] = [];
-    let relevantPrivilegeGroupIds = this.getAllBaseIdsAtSelectedCommonGroupFromMock();
+    let relevantPrivilegeGroupIds = this.getAllPrivielgeIdsAtSelectedCommonGroupFromMock();
 
     for (let bg of this.getAllPrivilegeGroupsFromMock()) {
       if (relevantPrivilegeGroupIds?.includes(bg.identification)) {
@@ -110,7 +110,7 @@ export class PrivilegeGroupService extends BaseBackendService {
    * Determines all privilege groups ids at mock data for the selected common group
    * @returns array of all privilege group ids at commongroup
    */
-  private getAllBaseIdsAtSelectedCommonGroupFromMock(): string[] {
+  private getAllPrivielgeIdsAtSelectedCommonGroupFromMock(): string[] {
     let commonGroup = this.selectionService.getSelectedCommonGroup();
     if (commonGroup == undefined) {
       return [];
@@ -178,7 +178,7 @@ export class PrivilegeGroupService extends BaseBackendService {
    * @returns the mocked observable of the privilege group
    */
   private getPrivilegeGroupMock(identification: string): Observable<PrivilegeGroup> {
-    for (let bg of this.getAllBasesAtSelectedCommonGroupFromMock())
+    for (let bg of this.getAllPrivilegesAtSelectedCommonGroupFromMock())
       if (bg.identification == identification) {
         return of(bg);
       }
@@ -231,7 +231,7 @@ export class PrivilegeGroupService extends BaseBackendService {
    */
   private getAllPrivilegeGroupsMock(): Observable<PrivilegeGroup[]> {
     let copy: PrivilegeGroup[] = [];
-    for (let bg of this.getAllBasesAtSelectedCommonGroupFromMock()) {
+    for (let bg of this.getAllPrivilegesAtSelectedCommonGroupFromMock()) {
       copy.push(bg)
     }
     return of(copy);
@@ -317,13 +317,13 @@ export class PrivilegeGroupService extends BaseBackendService {
     }
     this.initMocks();
     let idBase = 'PGAA';
-    let nextPrivilegeGroupIdMock = BaseBackendService.mockData.get(NEXT_BASE_GOUP_ID_MOCK_KEY);
+    let nextPrivilegeGroupIdMock = BaseBackendService.mockData.get(NEXT_PRIVILEGE_GOUP_ID_MOCK_KEY);
 
     let idExtend = `${nextPrivilegeGroupIdMock}`;
     while (idExtend.length < 5) {
       idExtend = '0'.concat(idExtend);
     }
-    BaseBackendService.mockData.set(NEXT_BASE_GOUP_ID_MOCK_KEY, nextPrivilegeGroupIdMock + 1);
+    BaseBackendService.mockData.set(NEXT_PRIVILEGE_GOUP_ID_MOCK_KEY, nextPrivilegeGroupIdMock + 1);
 
     let addedPrivilegeGroup: PrivilegeGroup = PrivilegeGroup.map(
       {
