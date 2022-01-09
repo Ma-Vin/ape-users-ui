@@ -170,7 +170,7 @@ export class UserService extends BaseBackendService {
 
   /**
    * Updates an user in the backend
-   * @param modifiedGroup the modefied user to put in the backend
+   * @param modifiedUser the modefied user to put in the backend
    * @returns the stored user
    */
   public updateUser(modifiedUser: User): Observable<User> {

@@ -314,7 +314,7 @@ export class BaseGroupService extends BaseBackendService {
 
     return this.http.get<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
       map(data => {
-        return this.checkErrorAndGetResponse<number>(data, `occurs while counting base groups at ${commonGroupIdentification} at backend`);;
+        return this.checkErrorAndGetResponse<number>(data, `occurs while counting base groups at ${commonGroupIdentification} at backend`);
       }),
       retry(RETRIES),
       catchError(this.handleError)
