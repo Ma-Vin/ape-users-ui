@@ -104,7 +104,7 @@ export class UserService extends BaseBackendService {
       map(data => {
         let user = this.checkErrorAndGetResponse<IUser>(data, `occurs while getting user ${identification} from backend`);
         let result = User.map(user);
-        result.isGlobalAdmin = true;
+        result.isGlobalAdmin = false;
         return result;
       }),
       retry(RETRIES),
@@ -154,6 +154,7 @@ export class UserService extends BaseBackendService {
         let result: User[] = new Array(users.length);
         for (let i = 0; i < users.length; i++) {
           result[i] = User.map(users[i]);
+          result[i].isGlobalAdmin = false;
         }
         return result;
       }),
@@ -186,7 +187,9 @@ export class UserService extends BaseBackendService {
     return this.http.put<ResponseWrapper>(url, modifiedUser as IUser, HTTP_JSON_OPTIONS).pipe(
       map(data => {
         let user = this.checkErrorAndGetResponse<IUser>(data, `occurs while updating user ${modifiedUser.identification} at backend`);
-        return User.map(user);
+        let result = User.map(user);
+        result.isGlobalAdmin = false;
+        return result;
       }),
       retry(RETRIES),
       catchError(this.handleError)

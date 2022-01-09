@@ -113,6 +113,7 @@ describe('UserService', () => {
       expect(data.lastLogin).toEqual(mockIUser.lastLogin);
       expect(data.validFrom).toEqual(mockIUser.validFrom);
       expect(data.validTo).toBeUndefined();
+      expect(data.isGlobalAdmin).toBeFalse();
     });
 
     const req = httpMock.expectOne(`//localhost:8080/user/getUser/${userId}`);
@@ -215,6 +216,7 @@ describe('UserService', () => {
       expect(data[0].lastLogin).toEqual(mockIUser.lastLogin);
       expect(data[0].validFrom).toEqual(mockIUser.validFrom);
       expect(data[0].validTo).toBeUndefined();
+      expect(data[0].isGlobalAdmin).toBeFalse();
     });
 
     const req = httpMock.expectOne(`//localhost:8080/user/getAllUsers/${commonGroupId}`);
@@ -245,6 +247,7 @@ describe('UserService', () => {
       expect(data[0].lastLogin).toEqual(mockIUser.lastLogin);
       expect(data[0].validFrom).toEqual(mockIUser.validFrom);
       expect(data[0].validTo).toBeUndefined();
+      expect(data[0].isGlobalAdmin).toBeFalse();
     });
 
     const req = httpMock.expectOne(`//localhost:8080/user/getAllUsers/${commonGroupId}?page=1&size=50`);
@@ -337,6 +340,7 @@ describe('UserService', () => {
       expect(data.lastLogin).toEqual(mockIUser.lastLogin);
       expect(data.validFrom).toEqual(mockIUser.validFrom);
       expect(data.validTo).toBeUndefined();
+      expect(data.isGlobalAdmin).toBeFalse();
     });
 
 
