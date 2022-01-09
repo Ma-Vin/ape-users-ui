@@ -114,10 +114,8 @@ export class AdminService extends BaseBackendService {
 
     return this.http.get<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while getting admin group ${identification} from backend`));
-        }
-        return AdminGroup.map(data.response as IAdminGroup)
+        let adminGroup = this.checkErrorAndGetResponse<IAdminGroup>(data, `occurs while getting admin group ${identification} from backend`);
+        return AdminGroup.map(adminGroup);
       }),
       retry(RETRIES),
       catchError(this.handleError)
@@ -151,10 +149,8 @@ export class AdminService extends BaseBackendService {
 
     return this.http.get<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while getting admin ${identification} from backend`));
-        }
-        let result = User.map(data.response as IUser);
+        let admin = this.checkErrorAndGetResponse<IUser>(data, `occurs while getting admin ${identification} from backend`);
+        let result = User.map(admin);
         result.isGlobalAdmin = true;
         return result;
       }),
@@ -201,10 +197,7 @@ export class AdminService extends BaseBackendService {
       }
     }).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while getting all admins at ${identification} from backend`));
-        }
-        let users = data.response as IUser[];
+        let users = this.checkErrorAndGetResponse<IUser[]>(data, `occurs while getting all admins at ${identification} from backend`);
         let result: User[] = new Array(users.length);
         for (let i = 0; i < users.length; i++) {
           result[i] = User.map(users[i]);
@@ -240,10 +233,8 @@ export class AdminService extends BaseBackendService {
 
     return this.http.put<ResponseWrapper>(url, modifiedGroup as IAdminGroup, HTTP_URL_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while updating admin group ${modifiedGroup.identification} at backend`));
-        }
-        return AdminGroup.map(data.response as IAdminGroup)
+        let adminGroup = this.checkErrorAndGetResponse<IAdminGroup>(data, `occurs while updating admin group ${modifiedGroup.identification} at backend`);
+        return AdminGroup.map(adminGroup);
       }),
       retry(RETRIES),
       catchError(this.handleError)
@@ -281,10 +272,8 @@ export class AdminService extends BaseBackendService {
 
     return this.http.put<ResponseWrapper>(url, modifiedAdmin as IUser, HTTP_JSON_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while updating admin ${modifiedAdmin.identification} at backend`));
-        }
-        return User.map(data.response as IUser)
+        let admin = this.checkErrorAndGetResponse<IUser>(data, `occurs while updating admin ${modifiedAdmin.identification} at backend`);
+        return User.map(admin);
       }),
       retry(RETRIES),
       catchError(this.handleError)
@@ -327,10 +316,8 @@ export class AdminService extends BaseBackendService {
 
     return this.http.post<ResponseWrapper>(url, body, HTTP_URL_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while creating admin at group ${adminGroupIdentification} from backend`));
-        }
-        let result = User.map(data.response as IUser);
+        let admin = this.checkErrorAndGetResponse<IUser>(data, `occurs while creating admin at group ${adminGroupIdentification} from backend`);
+        let result = User.map(admin);
         result.isGlobalAdmin = true;
         return result;
       }),
@@ -392,10 +379,7 @@ export class AdminService extends BaseBackendService {
 
     return this.http.delete<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while deleting admin ${identification} at backend`));
-        }
-        return data.response as boolean;
+        return this.checkErrorAndGetResponse<boolean>(data, `occurs while deleting admin ${identification} at backend`);
       }),
       retry(RETRIES),
       catchError(this.handleError)
@@ -433,10 +417,7 @@ export class AdminService extends BaseBackendService {
 
     return this.http.get<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while counting admins at group ${identification} at backend`));
-        }
-        return data.response as number;
+        return this.checkErrorAndGetResponse<number>(data, `occurs while counting admins at group ${identification} at backend`);
       }),
       retry(RETRIES),
       catchError(this.handleError)
@@ -469,10 +450,7 @@ export class AdminService extends BaseBackendService {
       rawPassword: password
     }, HTTP_JSON_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while setting password of admin ${identification} at backend`));
-        }
-        return data.response as boolean;
+        return this.checkErrorAndGetResponse<boolean>(data, `occurs while setting password of admin ${identification} at backend`);
       }),
       retry(RETRIES),
       catchError(this.handleError)

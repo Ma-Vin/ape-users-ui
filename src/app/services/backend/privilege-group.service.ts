@@ -155,10 +155,8 @@ export class PrivilegeGroupService extends BaseBackendService {
 
     return this.http.get<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while getting privilege group ${identification} from backend`));
-        }
-        return PrivilegeGroup.map(data.response as IPrivilegeGroup)
+        let privilegeGroup = this.checkErrorAndGetResponse<IPrivilegeGroup>(data, `occurs while getting privilege group ${identification} from backend`);
+        return PrivilegeGroup.map(privilegeGroup);
       }),
       retry(RETRIES),
       catchError(this.handleError)
@@ -203,10 +201,7 @@ export class PrivilegeGroupService extends BaseBackendService {
       }
     }).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while getting all privilege groups from backend`));
-        }
-        let privilegeGroups = data.response as IPrivilegeGroup[];
+        let privilegeGroups = this.checkErrorAndGetResponse<IPrivilegeGroup[]>(data, `occurs while getting all privilege groups from backend`);
         let result: PrivilegeGroup[] = new Array(privilegeGroups.length);
         for (let i = 0; i < privilegeGroups.length; i++) {
           result[i] = PrivilegeGroup.map(privilegeGroups[i]);
@@ -248,10 +243,7 @@ export class PrivilegeGroupService extends BaseBackendService {
 
     return this.http.get<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while counting privilege groups at ${commonGroupIdentification} at backend`));
-        }
-        return data.response as number;
+        return this.checkErrorAndGetResponse<number>(data, `occurs while counting privilege groups at ${commonGroupIdentification} at backend`);
       }),
       retry(RETRIES),
       catchError(this.handleError)
@@ -288,10 +280,8 @@ export class PrivilegeGroupService extends BaseBackendService {
 
     return this.http.post<ResponseWrapper>(url, body, HTTP_URL_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while creating privilege group at backend`));
-        }
-        return PrivilegeGroup.map(data.response as IPrivilegeGroup);
+        let privilegeGroup = this.checkErrorAndGetResponse<IPrivilegeGroup>(data, `occurs while creating privilege group at backend`);
+        return PrivilegeGroup.map(privilegeGroup);
       }),
       retry(RETRIES),
       catchError(this.handleError)
@@ -351,10 +341,7 @@ export class PrivilegeGroupService extends BaseBackendService {
 
     return this.http.delete<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while deleting privilege group ${identification} at backend`));
-        }
-        return data.response as boolean;
+        return this.checkErrorAndGetResponse<boolean>(data, `occurs while deleting privilege group ${identification} at backend`);
       }),
       retry(RETRIES),
       catchError(this.handleError)
@@ -408,10 +395,8 @@ export class PrivilegeGroupService extends BaseBackendService {
 
     return this.http.put<ResponseWrapper>(url, modifiedPrivilegeGroup as IPrivilegeGroup, HTTP_JSON_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while updating privilege group ${modifiedPrivilegeGroup.identification} at backend`));
-        }
-        return PrivilegeGroup.map(data.response as IPrivilegeGroup)
+        let privilegeGroup = this.checkErrorAndGetResponse<IPrivilegeGroup>(data, `occurs while updating privilege group ${modifiedPrivilegeGroup.identification} at backend`);
+        return PrivilegeGroup.map(privilegeGroup);
       }),
       retry(RETRIES),
       catchError(this.handleError)

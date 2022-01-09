@@ -93,10 +93,8 @@ export class CommonGroupService extends BaseBackendService {
 
     return this.http.get<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while getting common group ${identification} from backend`));
-        }
-        return CommonGroup.map(data.response as ICommonGroup)
+        let commonGroup = this.checkErrorAndGetResponse<ICommonGroup>(data, `occurs while getting common group ${identification} from backend`);
+        return CommonGroup.map(commonGroup);
       }),
       retry(RETRIES),
       catchError(this.handleError)
@@ -139,13 +137,10 @@ export class CommonGroupService extends BaseBackendService {
       }
     }).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while getting all common groups from backend`));
-        }
-        let users = data.response as ICommonGroup[];
-        let result: CommonGroup[] = new Array(users.length);
-        for (let i = 0; i < users.length; i++) {
-          result[i] = CommonGroup.map(users[i]);
+        let commonGroups = this.checkErrorAndGetResponse<ICommonGroup[]>(data, `occurs while getting all common groups from backend`);
+        let result: CommonGroup[] = new Array(commonGroups.length);
+        for (let i = 0; i < commonGroups.length; i++) {
+          result[i] = CommonGroup.map(commonGroups[i]);
         }
         return result;
       }),
@@ -182,10 +177,8 @@ export class CommonGroupService extends BaseBackendService {
 
     return this.http.get<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while getting parent common group of user ${userIdentification} from backend`));
-        }
-        return CommonGroup.map(data.response as ICommonGroup)
+        let commonGroup = this.checkErrorAndGetResponse<ICommonGroup>(data, `occurs while getting parent common group of user ${userIdentification} from backend`);
+        return CommonGroup.map(commonGroup);
       }),
       retry(RETRIES),
       catchError(this.handleError)
@@ -230,10 +223,8 @@ export class CommonGroupService extends BaseBackendService {
 
     return this.http.post<ResponseWrapper>(url, body, HTTP_URL_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while creating common group at backend`));
-        }
-        return CommonGroup.map(data.response as ICommonGroup);
+        let commonGroup = this.checkErrorAndGetResponse<ICommonGroup>(data, `occurs while creating common group at backend`);
+        return CommonGroup.map(commonGroup);
       }),
       retry(RETRIES),
       catchError(this.handleError)
@@ -288,10 +279,7 @@ export class CommonGroupService extends BaseBackendService {
 
     return this.http.delete<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while deleting common group ${identification} at backend`));
-        }
-        return data.response as boolean;
+        return this.checkErrorAndGetResponse<boolean>(data, `occurs while deleting common group ${identification} at backend`);
       }),
       retry(RETRIES),
       catchError(this.handleError)
@@ -330,10 +318,8 @@ export class CommonGroupService extends BaseBackendService {
 
     return this.http.put<ResponseWrapper>(url, modifiedCommonGroup as ICommonGroup, HTTP_JSON_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while updating common group ${modifiedCommonGroup.identification} at backend`));
-        }
-        return CommonGroup.map(data.response as ICommonGroup)
+        let commonGroup = this.checkErrorAndGetResponse<ICommonGroup>(data, `occurs while updating common group ${modifiedCommonGroup.identification} at backend`);
+        return CommonGroup.map(commonGroup);
       }),
       retry(RETRIES),
       catchError(this.handleError)

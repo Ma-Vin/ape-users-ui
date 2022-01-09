@@ -102,10 +102,8 @@ export class UserService extends BaseBackendService {
 
     return this.http.get<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while getting user ${identification} from backend`));
-        }
-        let result = User.map(data.response as IUser);
+        let user = this.checkErrorAndGetResponse<IUser>(data, `occurs while getting user ${identification} from backend`);
+        let result = User.map(user);
         result.isGlobalAdmin = true;
         return result;
       }),
@@ -152,10 +150,7 @@ export class UserService extends BaseBackendService {
       }
     }).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while getting all users at ${commonGroupIdentification} from backend`));
-        }
-        let users = data.response as IUser[];
+        let users = this.checkErrorAndGetResponse<IUser[]>(data, `occurs while getting all users at ${commonGroupIdentification} from backend`);
         let result: User[] = new Array(users.length);
         for (let i = 0; i < users.length; i++) {
           result[i] = User.map(users[i]);
@@ -190,10 +185,8 @@ export class UserService extends BaseBackendService {
 
     return this.http.put<ResponseWrapper>(url, modifiedUser as IUser, HTTP_JSON_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while updating user ${modifiedUser.identification} at backend`));
-        }
-        return User.map(data.response as IUser)
+        let user = this.checkErrorAndGetResponse<IUser>(data, `occurs while updating user ${modifiedUser.identification} at backend`);
+        return User.map(user);
       }),
       retry(RETRIES),
       catchError(this.handleError)
@@ -240,10 +233,8 @@ export class UserService extends BaseBackendService {
 
     return this.http.post<ResponseWrapper>(url, body, HTTP_URL_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while creating common at group ${commonGroupIdentification} from backend`));
-        }
-        let result = User.map(data.response as IUser);
+        let user = this.checkErrorAndGetResponse<IUser>(data, `occurs while creating common at group ${commonGroupIdentification} from backend`);
+        let result = User.map(user);
         result.isGlobalAdmin = false;
         return result;
       }),
@@ -305,10 +296,7 @@ export class UserService extends BaseBackendService {
 
     return this.http.delete<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while deleting user ${identification} at backend`));
-        }
-        return data.response as boolean;
+        return this.checkErrorAndGetResponse<boolean>(data, `occurs while deleting user ${identification} at backend`);
       }),
       retry(RETRIES),
       catchError(this.handleError)
@@ -346,10 +334,7 @@ export class UserService extends BaseBackendService {
 
     return this.http.get<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while counting users at group ${identification} at backend`));
-        }
-        return data.response as number;
+        return this.checkErrorAndGetResponse<number>(data, `occurs while counting users at group ${identification} at backend`);
       }),
       retry(RETRIES),
       catchError(this.handleError)
@@ -382,10 +367,7 @@ export class UserService extends BaseBackendService {
       rawPassword: password
     }, HTTP_JSON_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while setting password of user ${identification} at backend`));
-        }
-        return data.response as boolean;
+        return this.checkErrorAndGetResponse<boolean>(data, `occurs while setting password of user ${identification} at backend`);
       }),
       retry(RETRIES),
       catchError(this.handleError)
@@ -425,10 +407,7 @@ export class UserService extends BaseBackendService {
       role: role
     }, HTTP_JSON_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while setting role of user ${identification} at backend`));
-        }
-        return data.response as boolean;
+        return this.checkErrorAndGetResponse<boolean>(data, `occurs while setting role of user ${identification} at backend`);
       }),
       retry(RETRIES),
       catchError(this.handleError)

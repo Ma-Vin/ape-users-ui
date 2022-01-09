@@ -230,10 +230,8 @@ export class BaseGroupService extends BaseBackendService {
 
     return this.http.get<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while getting base group ${identification} from backend`));
-        }
-        return BaseGroup.map(data.response as IBaseGroup)
+        let baseGroup = this.checkErrorAndGetResponse<IBaseGroup>(data, `occurs while getting base group ${identification} from backend`);
+        return BaseGroup.map(baseGroup);
       }),
       retry(RETRIES),
       catchError(this.handleError)
@@ -275,10 +273,7 @@ export class BaseGroupService extends BaseBackendService {
       params: this.createParams(undefined, page, size)
     }).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while getting all base groups from backend`));
-        }
-        let baseGroups = data.response as IBaseGroup[];
+        let baseGroups = this.checkErrorAndGetResponse<IBaseGroup[]>(data, `ooccurs while getting all base groups from backend`);
         let result: BaseGroup[] = new Array(baseGroups.length);
         for (let i = 0; i < baseGroups.length; i++) {
           result[i] = BaseGroup.map(baseGroups[i]);
@@ -320,10 +315,7 @@ export class BaseGroupService extends BaseBackendService {
 
     return this.http.get<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while counting base groups at ${commonGroupIdentification} at backend`));
-        }
-        return data.response as number;
+        return this.checkErrorAndGetResponse<number>(data, `occurs while counting base groups at ${commonGroupIdentification} at backend`);;
       }),
       retry(RETRIES),
       catchError(this.handleError)
@@ -360,10 +352,8 @@ export class BaseGroupService extends BaseBackendService {
 
     return this.http.post<ResponseWrapper>(url, body, HTTP_URL_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while creating base group at backend`));
-        }
-        return BaseGroup.map(data.response as IBaseGroup);
+        let baseGroup = this.checkErrorAndGetResponse<IBaseGroup>(data, `occurs while creating base group at backend`);
+        return BaseGroup.map(baseGroup);
       }),
       retry(RETRIES),
       catchError(this.handleError)
@@ -423,10 +413,7 @@ export class BaseGroupService extends BaseBackendService {
 
     return this.http.delete<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while deleting base group ${identification} at backend`));
-        }
-        return data.response as boolean;
+        return this.checkErrorAndGetResponse<boolean>(data, `occurs while deleting base group ${identification} at backend`);
       }),
       retry(RETRIES),
       catchError(this.handleError)
@@ -480,10 +467,8 @@ export class BaseGroupService extends BaseBackendService {
 
     return this.http.put<ResponseWrapper>(url, modifiedBaseGroup as IBaseGroup, HTTP_JSON_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while updating base group ${modifiedBaseGroup.identification} at backend`));
-        }
-        return BaseGroup.map(data.response as IBaseGroup)
+        let baseGroup = this.checkErrorAndGetResponse<IBaseGroup>(data, `occurs while updating base group ${modifiedBaseGroup.identification} at backend`);
+        return BaseGroup.map(baseGroup);
       }),
       retry(RETRIES),
       catchError(this.handleError)
@@ -534,10 +519,7 @@ export class BaseGroupService extends BaseBackendService {
       baseGroupIdentification: childIdentification
     }, HTTP_JSON_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while adding base group ${childIdentification} to base group ${parentIdentification} at backend`));
-        }
-        return data.response as boolean;
+        return this.checkErrorAndGetResponse<boolean>(data, `occurs while adding base group ${childIdentification} to base group ${parentIdentification} at backend`);
       }),
       retry(RETRIES),
       catchError(this.handleError)
@@ -588,10 +570,7 @@ export class BaseGroupService extends BaseBackendService {
       baseGroupIdentification: childIdentification
     }, HTTP_JSON_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while removing base group ${childIdentification} from base group ${parentIdentification} at backend`));
-        }
-        return data.response as boolean;
+        return this.checkErrorAndGetResponse<boolean>(data, `occurs while removing base group ${childIdentification} from base group ${parentIdentification} at backend`);
       }),
       retry(RETRIES),
       catchError(this.handleError)
@@ -638,10 +617,7 @@ export class BaseGroupService extends BaseBackendService {
 
     return this.http.get<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while counting base groups at ${baseGroupIdentification} at backend`));
-        }
-        return data.response as number;
+        return this.checkErrorAndGetResponse<number>(data, `occurs while counting base groups at ${baseGroupIdentification} at backend`);
       }),
       retry(RETRIES),
       catchError(this.handleError)
@@ -719,10 +695,7 @@ export class BaseGroupService extends BaseBackendService {
       baseGroupRole: baseGroupIdRole
     }, HTTP_JSON_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while adding base group ${childIdentification} to privilege group ${parentIdentification} at backend`));
-        }
-        return data.response as boolean;
+        return this.checkErrorAndGetResponse<boolean>(data, `occurs while adding base group ${childIdentification} to privilege group ${parentIdentification} at backend`);
       }),
       retry(RETRIES),
       catchError(this.handleError)
@@ -779,10 +752,7 @@ export class BaseGroupService extends BaseBackendService {
       baseGroupIdentification: childIdentification
     }, HTTP_JSON_OPTIONS).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while removing base group ${childIdentification} from privilege group ${parentIdentification} at backend`));
-        }
-        return data.response as boolean;
+        return this.checkErrorAndGetResponse<boolean>(data, `occurs while removing base group ${childIdentification} from privilege group ${parentIdentification} at backend`);
       }),
       retry(RETRIES),
       catchError(this.handleError)
@@ -837,10 +807,7 @@ export class BaseGroupService extends BaseBackendService {
       params: this.createParams(role, undefined, undefined)
     }).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while counting base groups at ${privilegeGroupIdentification} at backend`));
-        }
-        return data.response as number;
+        return this.checkErrorAndGetResponse<number>(data, `occurs while counting base groups at ${privilegeGroupIdentification} at backend`);
       }),
       retry(RETRIES),
       catchError(this.handleError)
@@ -905,7 +872,7 @@ export class BaseGroupService extends BaseBackendService {
       params: this.createParams(role, page, size)
     }).pipe(
       map(data => {
-        let baseGroups = super.checkErrorAndGetResponse<IBaseGroup[]>(data, `occurs while getting all sub base groups of ${parentIdentification} from backend`);
+        let baseGroups = this.checkErrorAndGetResponse<IBaseGroup[]>(data, `occurs while getting all sub base groups of ${parentIdentification} from backend`);
         let result: BaseGroup[] = new Array(baseGroups.length);
         for (let i = 0; i < baseGroups.length; i++) {
           result[i] = BaseGroup.map(baseGroups[i]);
