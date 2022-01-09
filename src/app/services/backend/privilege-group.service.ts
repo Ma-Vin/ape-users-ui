@@ -14,8 +14,8 @@ import { SelectionService } from '../util/selection.service';
 
 const ALL_PRIVILEGE_GOUPS_MOCK_KEY = 'privilegeGroups'
 const NEXT_PRIVILEGE_GOUP_ID_MOCK_KEY = 'nextPrivilegeGroupId'
-const PRIVILEGES_AT_COMMON_GROUP = 'privilegesAtCommonGroup'
-const INITIAL_PRIVILEGE_GROUP_ID_AT_MOCK = 'PGAA00001'
+export const PRIVILEGES_AT_COMMON_GROUP = 'privilegesAtCommonGroup'
+export const INITIAL_PRIVILEGE_GROUP_ID_AT_MOCK = 'PGAA00001'
 
 @Injectable({
   providedIn: 'root'
@@ -69,12 +69,7 @@ export class PrivilegeGroupService extends BaseBackendService {
     if (!BaseBackendService.mockData.has(NEXT_PRIVILEGE_GOUP_ID_MOCK_KEY)) {
       BaseBackendService.mockData.set(NEXT_PRIVILEGE_GOUP_ID_MOCK_KEY, 2);
     }
-    if (!BaseBackendService.mockData.has(PRIVILEGES_AT_COMMON_GROUP)) {
-      BaseBackendService.mockData.set(PRIVILEGES_AT_COMMON_GROUP, new Map<string, string[]>());
-    }
-    (BaseBackendService.mockData.get(PRIVILEGES_AT_COMMON_GROUP) as Map<string, string[]>).set(
-      INITIAL_COMMON_GROUP_ID_AT_MOCK, [INITIAL_PRIVILEGE_GROUP_ID_AT_MOCK]
-    );
+    BaseBackendService.addEntryToStringToStringArrayMap(PRIVILEGES_AT_COMMON_GROUP, INITIAL_COMMON_GROUP_ID_AT_MOCK, INITIAL_PRIVILEGE_GROUP_ID_AT_MOCK);
   }
 
 

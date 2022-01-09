@@ -65,10 +65,7 @@ export class CommonGroupService extends BaseBackendService {
     if (!BaseBackendService.mockData.has(NEXT_COMMON_GOUP_ID_MOCK_KEY)) {
       BaseBackendService.mockData.set(NEXT_COMMON_GOUP_ID_MOCK_KEY, 2);
     }
-    if (!BaseBackendService.mockData.has(USERS_AT_COMMON_GROUP)) {
-      BaseBackendService.mockData.set(USERS_AT_COMMON_GROUP, new Map<string, string[]>());
-    }
-    (BaseBackendService.mockData.get(USERS_AT_COMMON_GROUP) as Map<string, string[]>).set('CGAA00001', [INITIAL_USER_ID_AT_MOCK]);
+    BaseBackendService.addEntryToStringToStringArrayMap(USERS_AT_COMMON_GROUP, INITIAL_COMMON_GROUP_ID_AT_MOCK, INITIAL_USER_ID_AT_MOCK);
   }
 
 

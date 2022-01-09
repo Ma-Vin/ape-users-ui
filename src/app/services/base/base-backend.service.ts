@@ -35,6 +35,34 @@ export abstract class BaseBackendService extends BaseService {
   }
 
   /**
+   * creates a new empty Map<string, string[]> if mockData does not have a property asked for 
+   * @param mockProperty the property which should be check ad mock
+   */
+  public static createStringToStringArrayMapIfNotExists(mockProperty: string): void {
+    if (!BaseBackendService.mockData.has(mockProperty)) {
+      BaseBackendService.mockData.set(mockProperty, new Map<string, string[]>());
+    }
+  }
+
+  /**
+   * Adds a value to an array, if it is not contained, at key of a mock property
+   * @param mockProperty mock property which is the Map<string, string[]>
+   * @param key the key of the map
+   * @param valueToAdd the value to add at the array at the key
+   */
+  public static addEntryToStringToStringArrayMap(mockProperty: string, key: string, valueToAdd: string): void {
+    BaseBackendService.createStringToStringArrayMapIfNotExists(mockProperty);
+    let map: Map<string, string[]> = BaseBackendService.mockData.get(mockProperty);
+    if (map.has(key)) {
+      if (!map.get(key)?.includes(valueToAdd)) {
+        map.get(key)?.push(valueToAdd);
+      }
+    } else {
+      map.set(key, [valueToAdd]);
+    }
+  }
+
+  /**
    * Initialize the data at mock
    */
   protected initMocks(): void {
