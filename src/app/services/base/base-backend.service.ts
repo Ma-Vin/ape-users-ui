@@ -80,6 +80,21 @@ export abstract class BaseBackendService extends BaseService {
   }
 
   /**
+   * Determines the string array which contains the ids contained by a given owner at a property at mock
+   * @param ownerIdentification the id of owner 
+   * @param mockProperty property at the mock where to search at
+   * @returns the array of ids
+   */
+  public static getIdsFromMock(ownerIdentification: string, mockProperty: string) {
+    let result = (BaseBackendService.mockData.get(mockProperty) as Map<string, string[]>).get(ownerIdentification);
+    if (result == undefined) {
+      result = [];
+      (BaseBackendService.mockData.get(mockProperty) as Map<string, string[]>).set(ownerIdentification, result);
+    }
+    return result;
+  }
+
+  /**
    * Initialize the data at mock
    */
   protected initMocks(): void {

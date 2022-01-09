@@ -11,15 +11,15 @@ import { ConfigService } from '../../config/config.service';
 import { BaseBackendService, HTTP_JSON_OPTIONS, HTTP_URL_OPTIONS, RETRIES } from '../base/base-backend.service';
 import { INITIAL_COMMON_GROUP_ID_AT_MOCK } from './common-group.service';
 import { SelectionService } from '../util/selection.service';
-import { INITIAL_PRIVILEGE_GROUP_ID_AT_MOCK, PRIVILEGES_AT_COMMON_GROUP } from './privilege-group.service';
+import { INITIAL_PRIVILEGE_GROUP_ID_AT_MOCK, PrivilegeGroupService, PRIVILEGES_AT_COMMON_GROUP } from './privilege-group.service';
 
 
 const ALL_BASE_GOUPS_MOCK_KEY = 'baseGroups'
 const NEXT_BASE_GOUP_ID_MOCK_KEY = 'nextBaseGroupId'
-const BASES_AT_COMMON_GROUP = 'basesAtCommonGroup'
+export const BASES_AT_COMMON_GROUP = 'basesAtCommonGroup'
 const BASES_AT_BASE_GROUP = 'basesAtBaseGroup'
 const BASES_AT_PRIVILEGE_GROUP = 'basesAtPrivilegeGroup'
-const INITIAL_BASE_GROUP_ID_AT_MOCK = 'BGAA00001'
+export const INITIAL_BASE_GROUP_ID_AT_MOCK = 'BGAA00001'
 
 @Injectable({
   providedIn: 'root'
@@ -140,7 +140,7 @@ export class BaseGroupService extends BaseBackendService {
 
     this.initMocks();
 
-    return this.getBaseGroupIdsFromMock(commonGroup.identification);
+    return BaseGroupService.getBaseGroupIdsFromMock(commonGroup.identification);
   }
 
   /**
@@ -155,7 +155,7 @@ export class BaseGroupService extends BaseBackendService {
 
     this.initMocks();
 
-    return this.getPrivilegeGroupIdsFromMock(commonGroup.identification);
+    return PrivilegeGroupService.getPrivilegeGroupIdsFromMock(commonGroup.identification);
   }
 
   /**
@@ -163,17 +163,8 @@ export class BaseGroupService extends BaseBackendService {
    * @param commonGroupIdentification the id of the common group whose base groups are searched for 
    * @returns the array of the base group ids
    */
-  private getBaseGroupIdsFromMock(commonGroupIdentification: string): string[] {
-    return this.getIdsFromMock(commonGroupIdentification, BASES_AT_COMMON_GROUP);
-  }
-
-  /**
-   * Determines the string array which contains the ids of privilege groups contained by a given common group
-   * @param commonGroupIdentification the id of the common group whose privilege groups are searched for 
-   * @returns the array of the privilege group ids
-   */
-  private getPrivilegeGroupIdsFromMock(commonGroupIdentification: string): string[] {
-    return this.getIdsFromMock(commonGroupIdentification, PRIVILEGES_AT_COMMON_GROUP);
+  public static getBaseGroupIdsFromMock(commonGroupIdentification: string): string[] {
+    return BaseBackendService.getIdsFromMock(commonGroupIdentification, BASES_AT_COMMON_GROUP);
   }
 
   /**
@@ -181,8 +172,8 @@ export class BaseGroupService extends BaseBackendService {
    * @param baseGroupIdentification the id of the base group whose base groups are searched for 
    * @returns the array of the base group ids
    */
-  private getSubBaseGroupIdsFromMock(baseGroupIdentification: string): string[] {
-    return this.getIdsFromMock(baseGroupIdentification, BASES_AT_BASE_GROUP);
+  public static getSubBaseGroupIdsFromMock(baseGroupIdentification: string): string[] {
+    return BaseBackendService.getIdsFromMock(baseGroupIdentification, BASES_AT_BASE_GROUP);
   }
 
   /**
@@ -195,21 +186,6 @@ export class BaseGroupService extends BaseBackendService {
     if (result == undefined) {
       result = [];
       (BaseBackendService.mockData.get(BASES_AT_PRIVILEGE_GROUP) as Map<string, BaseGroupIdRole[]>).set(privilegeGroupIdentification, result);
-    }
-    return result;
-  }
-
-  /**
-   * Determines the string array which contains the ids contained by a given owner at a property at mock
-   * @param ownerIdentification the id of owner 
-   * @param mockProperty property at the mock where to search at
-   * @returns the array of ids
-   */
-  private getIdsFromMock(ownerIdentification: string, mockProperty: string) {
-    let result = (BaseBackendService.mockData.get(mockProperty) as Map<string, string[]>).get(ownerIdentification);
-    if (result == undefined) {
-      result = [];
-      (BaseBackendService.mockData.get(mockProperty) as Map<string, string[]>).set(ownerIdentification, result);
     }
     return result;
   }
@@ -330,7 +306,7 @@ export class BaseGroupService extends BaseBackendService {
    */
   private countBaseGroupsMock(commonGroupIdentification: string): Observable<number> {
     this.initMocks();
-    return of(this.getBaseGroupIdsFromMock(commonGroupIdentification).length);
+    return of(BaseGroupService.getBaseGroupIdsFromMock(commonGroupIdentification).length);
   }
 
 
@@ -391,7 +367,7 @@ export class BaseGroupService extends BaseBackendService {
       } as IBaseGroup);
 
     this.getAllBaseGroupsFromMock().push(addedBaseGroup);
-    this.getBaseGroupIdsFromMock(commonGroup.identification).push(addedBaseGroup.identification);
+    BaseGroupService.getBaseGroupIdsFromMock(commonGroup.identification).push(addedBaseGroup.identification);
 
     return of(addedBaseGroup);
   }
@@ -434,7 +410,7 @@ export class BaseGroupService extends BaseBackendService {
 
     this.initMocks();
 
-    let baseGroupIds = this.getBaseGroupIdsFromMock(commonGroup.identification);
+    let baseGroupIds = BaseGroupService.getBaseGroupIdsFromMock(commonGroup.identification);
     if (!baseGroupIds.includes(identification)) {
       return of(false);
     }
@@ -485,7 +461,7 @@ export class BaseGroupService extends BaseBackendService {
     let commonGroup = this.selectionService.getSelectedCommonGroup();
     this.initMocks();
 
-    if (commonGroup == undefined || !this.getBaseGroupIdsFromMock(commonGroup.identification).includes(modifiedBaseGroup.identification)) {
+    if (commonGroup == undefined || !BaseGroupService.getBaseGroupIdsFromMock(commonGroup.identification).includes(modifiedBaseGroup.identification)) {
       return throwError(new Error(`${Status.ERROR} occurs while updating base group ${modifiedBaseGroup.identification} at backend`));
     }
 
@@ -541,7 +517,7 @@ export class BaseGroupService extends BaseBackendService {
       return throwError(new Error(`${Status.ERROR} occurs while adding base group ${childIdentification} to base group ${parentIdentification} at backend`));
     }
 
-    let subBaseGroups = this.getSubBaseGroupIdsFromMock(parentIdentification);
+    let subBaseGroups = BaseGroupService.getSubBaseGroupIdsFromMock(parentIdentification);
     if (subBaseGroups.includes(childIdentification)) {
       return of(false);
     }
@@ -591,7 +567,7 @@ export class BaseGroupService extends BaseBackendService {
       return throwError(new Error(`${Status.ERROR} occurs while removing base group ${childIdentification} from base group ${parentIdentification} at backend`));
     }
 
-    let subBaseGroups = this.getSubBaseGroupIdsFromMock(parentIdentification);
+    let subBaseGroups = BaseGroupService.getSubBaseGroupIdsFromMock(parentIdentification);
     if (!subBaseGroups.includes(childIdentification)) {
       return of(false);
     }
@@ -632,7 +608,7 @@ export class BaseGroupService extends BaseBackendService {
    */
   private countBasesAtBaseGroupMock(baseGroupIdentification: string): Observable<number> {
     this.initMocks();
-    return of(this.getSubBaseGroupIdsFromMock(baseGroupIdentification).length);
+    return of(BaseGroupService.getSubBaseGroupIdsFromMock(baseGroupIdentification).length);
   }
 
 
@@ -663,7 +639,7 @@ export class BaseGroupService extends BaseBackendService {
    */
   private getAllBasesAtBaseGroupMock(parentIdentification: string): Observable<BaseGroup[]> {
     let result: BaseGroup[] = [];
-    let subBaseGroupIds = this.getSubBaseGroupIdsFromMock(parentIdentification);
+    let subBaseGroupIds = BaseGroupService.getSubBaseGroupIdsFromMock(parentIdentification);
     for (let bg of this.getAllBasesAtSelectedCommonGroupFromMock()) {
       if (subBaseGroupIds.includes(bg.identification)) {
         result.push(bg)
@@ -892,6 +868,7 @@ export class BaseGroupService extends BaseBackendService {
    * @returns the mocked observable of all sub base groups
    */
   private getAllBasesAtrivilegeGroupMock(parentIdentification: string, role: Role | undefined): Observable<BaseGroup[]> {
+    this.initMocks();
     let result: BaseGroup[] = [];
     let baseGroups = this.getAllBasesAtSelectedCommonGroupFromMock();
 

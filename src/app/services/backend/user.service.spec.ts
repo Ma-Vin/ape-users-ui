@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { CommonGroup, ICommonGroup } from 'src/app/model/common-group.model';
 import { Config } from '../../config/config';
 import { ConfigService } from '../../config/config.service';
 import { ResponseWrapper } from '../../model/response-wrapper';
@@ -8,21 +9,28 @@ import { Role } from '../../model/role.model';
 import { Status } from '../../model/status.model';
 import { IUser, User } from '../../model/user.model';
 import { BaseBackendService, RETRIES } from '../base/base-backend.service';
+import { SelectionService } from '../util/selection.service';
+import { INITIAL_COMMON_GROUP_ID_AT_MOCK } from './common-group.service';
+import { INITIAL_BASE_GROUP_ID_AT_MOCK } from './base-group.service';
 
-import { UserService } from './user.service';
+import { INITIAL_USER_ID_AT_MOCK, UserService } from './user.service';
 
 describe('UserService', () => {
   let service: UserService;
   let configService: ConfigService;
   let httpMock: HttpTestingController;
   let http: HttpClient;
+  let selectionService: SelectionService;
+
+  let getSelectedCommonGroupSpy: jasmine.Spy<() => CommonGroup | undefined>;
 
 
-  const userId = 'UAA00002';
+  const userId = INITIAL_USER_ID_AT_MOCK;
   const firstName = 'Lower';
   const lastName = 'Power';
 
-  const commonGroupId = 'CGAA00001';
+  const commonGroupId = INITIAL_COMMON_GROUP_ID_AT_MOCK;
+  const baseGroupId = INITIAL_BASE_GROUP_ID_AT_MOCK;
 
   const mockConfig: Config =
   {
@@ -57,7 +65,16 @@ describe('UserService', () => {
     validTo: undefined,
     isGlobalAdmin: false,
     role: Role.VISITOR
-  } as User)
+  } as User);
+
+  const mockCommonGroup = CommonGroup.map({
+    description: 'some description',
+    groupName: 'commonGroupName',
+    identification: commonGroupId,
+    validFrom: new Date(2021, 9, 1),
+    validTo: undefined,
+    defaultRole: Role.VISITOR
+  } as ICommonGroup);
 
   const mockErrorResponseWrapper: ResponseWrapper = {
     response: undefined,
@@ -78,12 +95,20 @@ describe('UserService', () => {
     httpMock = TestBed.inject(HttpTestingController);
     http = TestBed.inject(HttpClient);
     configService = TestBed.inject(ConfigService);
+    selectionService = TestBed.inject(SelectionService);
     service = TestBed.inject(UserService);
 
+    initMockData();
+
+    BaseBackendService.clearMockData();
+  });
+
+  function initMockData() {
     BaseBackendService.clearMockData();
 
     spyOn(configService, 'getConfig').and.returnValue(mockConfig);
-  });
+    getSelectedCommonGroupSpy = spyOn(selectionService, 'getSelectedCommonGroup').and.returnValue(mockCommonGroup);
+  }
 
 
   it('should be created', () => {
@@ -171,6 +196,25 @@ describe('UserService', () => {
       expect(data).toBeTruthy();
       expect(data.identification).toEqual(userId);
     });
+
+    httpMock.expectNone(`//localhost:8080/user/getUser/${userId}`);
+
+    tick();
+  }));
+
+  it('getUser - mock without selected common group', fakeAsync(() => {
+    service.useMock = true;
+    getSelectedCommonGroupSpy.and.returnValue(undefined);
+
+    service.getUser(userId).subscribe(
+      data => {
+        expect(data).toBeFalsy();
+      },
+      e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual(`ERROR occurs while getting user ${userId} from backend`);
+      }
+    );
 
     httpMock.expectNone(`//localhost:8080/user/getUser/${userId}`);
 
@@ -414,6 +458,25 @@ describe('UserService', () => {
     tick();
   }));
 
+  it('updateUser - mock without selected common group', fakeAsync(() => {
+    service.useMock = true;
+    getSelectedCommonGroupSpy.and.returnValue(undefined);
+
+    service.updateUser(modifiedUser).subscribe(
+      data => {
+        expect(data).toBeFalsy();
+      },
+      e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual(`${Status.ERROR} occurs while updating user ${userId} at backend`);
+      });
+
+    httpMock.expectNone(`//localhost:8080/user/updateUser/someId`);
+
+    tick();
+  }));
+
+
   it('updateUser - mock with error', fakeAsync(() => {
     service.useMock = true;
     let otherModifiedUser: User = Object.assign({}, modifiedUser);
@@ -523,6 +586,25 @@ describe('UserService', () => {
     tick();
   }));
 
+  it('createUser - mock without selected common group', fakeAsync(() => {
+    service.useMock = true;
+    getSelectedCommonGroupSpy.and.returnValue(undefined);
+
+    service.createUser(commonGroupId, firstName, lastName).subscribe(
+      data => {
+        expect(data).toBeFalsy();
+      },
+      e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual(`${Status.ERROR} occurs while creating user at backend`);
+      }
+    );
+
+    httpMock.expectNone(`//localhost:8080/user/createUser`);
+
+    tick();
+  }));
+
 
 
   /**
@@ -601,6 +683,26 @@ describe('UserService', () => {
 
     tick();
   }));
+
+  it('deleteUser - mock without selected common group', fakeAsync(() => {
+    service.useMock = true;
+    getSelectedCommonGroupSpy.and.returnValue(undefined);
+
+    service.deleteUser(userId).subscribe(
+      data => {
+        expect(data).toBeFalse();
+      },
+      e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual(`${Status.ERROR} occurs while deleting user ${userId} at backend`);
+      }
+    );
+
+    httpMock.expectNone(`//localhost:8080/user/deleteUser/someId`);
+
+    tick();
+  }));
+
 
   it('deleteUser - mock non existing', fakeAsync(() => {
     service.useMock = true;
@@ -921,4 +1023,453 @@ describe('UserService', () => {
 
     tick();
   }));
+
+
+
+
+  /**
+   * addUserToBaseGroup
+   */
+  it('addUserToBaseGroup - all ok', fakeAsync(() => {
+    let mockResponseWrapper: ResponseWrapper = {
+      response: true,
+      status: Status.OK,
+      messages: []
+    }
+
+    service.addUserToBaseGroup(userId, baseGroupId).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data).toBeTrue();
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/user/addUserToBaseGroup/${baseGroupId}`);
+    expect(req.request.method).toEqual("PATCH");
+    expect(req.request.body).toEqual({ userIdentification: userId });
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/user/addUserToBaseGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+  it('addUserToBaseGroup - with error status', fakeAsync(() => {
+    service.addUserToBaseGroup(userId, baseGroupId).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/user/addUserToBaseGroup/${baseGroupId}`);
+      expect(req.request.method).toEqual("PATCH");
+      expect(req.request.body).toEqual({ userIdentification: userId });
+      req.flush(mockErrorResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/user/addUserToBaseGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+  it('addUserToBaseGroup - with fatal status', fakeAsync(() => {
+    service.addUserToBaseGroup(userId, baseGroupId).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/user/addUserToBaseGroup/${baseGroupId}`);
+      expect(req.request.method).toEqual("PATCH");
+      expect(req.request.body).toEqual({ userIdentification: userId });
+      req.flush(mockFatalResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/user/addUserToBaseGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+  it('addUserToBaseGroup - mock', fakeAsync(() => {
+    service.useMock = true;
+
+    service.createUser(commonGroupId, 'Some other user', lastName).subscribe(
+      createdUser => {
+        service.addUserToBaseGroup(createdUser.identification, baseGroupId).subscribe(
+          firstAddData => {
+            expect(firstAddData).toBeTruthy();
+            expect(firstAddData).toBeTrue();
+
+            service.addUserToBaseGroup(createdUser.identification, baseGroupId).subscribe(
+              secondAddData => {
+                expect(secondAddData).toBeFalse();
+              },
+              e => expect(e).toBeFalsy());
+          },
+          e => expect(e).toBeFalsy());
+      },
+      e => expect(e).toBeFalsy()
+    );
+    httpMock.expectNone(`//localhost:8080/user/addUserToBaseGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+  it('addUserToBaseGroup - mock with error because unknown child', fakeAsync(() => {
+    service.useMock = true;
+    service.addUserToBaseGroup('anyId', baseGroupId).subscribe(
+      data => {
+        expect(data).toBeFalsy();
+      },
+      e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual(`${Status.ERROR} occurs while adding user anyId to base group ${baseGroupId} at backend`);
+      });
+
+    httpMock.expectNone(`//localhost:8080/user/addUserToBaseGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+  it('addUserToBaseGroup - mock with error because unknown parent', fakeAsync(() => {
+    service.useMock = true;
+    service.addUserToBaseGroup(userId, 'anyId').subscribe(
+      data => {
+        expect(data).toBeFalsy();
+      },
+      e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual(`${Status.ERROR} occurs while adding user ${userId} to base group anyId at backend`);
+      });
+
+    httpMock.expectNone(`//localhost:8080/user/addUserToBaseGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+
+
+
+  /**
+   * removeUserFromBaseGroup
+   */
+  it('removeUserFromBaseGroup - all ok', fakeAsync(() => {
+    let mockResponseWrapper: ResponseWrapper = {
+      response: true,
+      status: Status.OK,
+      messages: []
+    }
+
+    service.removeUserFromBaseGroup(userId, baseGroupId).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data).toBeTrue();
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/user/removeUserFromBaseGroup/${baseGroupId}`);
+    expect(req.request.method).toEqual("PATCH");
+    expect(req.request.body).toEqual({ userIdentification: userId });
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/user/removeUserFromBaseGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+  it('removeUserFromBaseGroup - with error status', fakeAsync(() => {
+    service.removeUserFromBaseGroup(userId, baseGroupId).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/user/removeUserFromBaseGroup/${baseGroupId}`);
+      expect(req.request.method).toEqual("PATCH");
+      expect(req.request.body).toEqual({ userIdentification: userId });
+      req.flush(mockErrorResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/user/removeUserFromBaseGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+  it('removeUserFromBaseGroup - with fatal status', fakeAsync(() => {
+    service.removeUserFromBaseGroup(userId, baseGroupId).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/user/removeUserFromBaseGroup/${baseGroupId}`);
+      expect(req.request.method).toEqual("PATCH");
+      expect(req.request.body).toEqual({ userIdentification: userId });
+      req.flush(mockFatalResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/user/removeUserFromBaseGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+  it('removeUserFromBaseGroup - mock', fakeAsync(() => {
+    service.useMock = true;
+
+    service.removeUserFromBaseGroup(userId, baseGroupId).subscribe(
+      firstRemoveData => {
+        expect(firstRemoveData).toBeTruthy();
+        expect(firstRemoveData).toBeTrue();
+
+        service.removeUserFromBaseGroup(userId, baseGroupId).subscribe(
+          secondRemoveData => {
+            expect(secondRemoveData).toBeFalse();
+          },
+          e => expect(e).toBeFalsy());
+      },
+      e => expect(e).toBeFalsy()
+    );
+
+    httpMock.expectNone(`//localhost:8080/group/base/removeUserFromBaseGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+  it('removeUserFromBaseGroup - mock with error because unknown child', fakeAsync(() => {
+    service.useMock = true;
+    service.removeUserFromBaseGroup('anyId', baseGroupId).subscribe(
+      data => {
+        expect(data).toBeFalsy();
+      },
+      e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual(`${Status.ERROR} occurs while removing user anyId from base group ${baseGroupId} at backend`);
+      });
+
+    httpMock.expectNone(`//localhost:8080/group/base/removeUserFromBaseGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+  it('removeUserFromBaseGroup - mock with error because unknown parent', fakeAsync(() => {
+    service.useMock = true;
+    service.removeUserFromBaseGroup(userId, 'anyId').subscribe(
+      data => {
+        expect(data).toBeFalsy();
+      },
+      e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual(`${Status.ERROR} occurs while removing user ${userId} from base group anyId at backend`);
+      });
+
+    httpMock.expectNone(`//localhost:8080/group/base/removeUserFromBaseGroup/anyId`);
+
+    tick();
+  }));
+
+
+
+
+  /**
+   * countUsersAtBaseGroup
+   */
+  it('countUsersAtBaseGroup - all ok', fakeAsync(() => {
+    let mockResponseWrapper: ResponseWrapper = {
+      response: 42,
+      status: Status.OK,
+      messages: []
+    }
+
+    service.countUsersAtBaseGroup(baseGroupId).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data).toEqual(42);
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/user/countUsersAtBaseGroup/${baseGroupId}`);
+    expect(req.request.method).toEqual("GET");
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/user/countUsersAtBaseGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+  it('countUsersAtBaseGroup - with error status', fakeAsync(() => {
+    service.countUsersAtBaseGroup(baseGroupId).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/user/countUsersAtBaseGroup/${baseGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockErrorResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/user/countUsersAtBaseGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+  it('countUsersAtBaseGroup - with fatal status', fakeAsync(() => {
+    service.countUsersAtBaseGroup(baseGroupId).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/user/countUsersAtBaseGroup/${baseGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockFatalResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/user/countUsersAtBaseGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+  it('countUsersAtBaseGroup - mock', fakeAsync(() => {
+    service.useMock = true;
+
+    service.countUsersAtBaseGroup(baseGroupId).subscribe(
+      data => {
+        expect(data).toEqual(1);
+      },
+      e => expect(e).toBeFalsy()
+    );
+
+    httpMock.expectNone(`//localhost:8080/user/countUsersAtBaseGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+
+
+
+
+  /**
+   * getAllUsersFromBaseGroup
+   */
+  it('getAllUsersFromBaseGroup - all ok', fakeAsync(() => {
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockIUser],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAllUsersFromBaseGroup(baseGroupId, undefined, undefined).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].identification).toEqual(userId);
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/user/getAllUsersFromBaseGroup/${baseGroupId}`);
+    expect(req.request.method).toEqual("GET");
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/user/getAllUsersFromBaseGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+  it('getAllUsersFromBaseGroup - with pageing', fakeAsync(() => {
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockIUser],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAllUsersFromBaseGroup(baseGroupId, 1, 50).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].identification).toEqual(userId);
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/user/getAllUsersFromBaseGroup/${baseGroupId}?page=1&size=50`);
+    expect(req.request.method).toEqual("GET");
+    expect(req.request.params.get('page')).toEqual('1');
+    expect(req.request.params.get('size')).toEqual('50');
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/user/getAllUsersFromBaseGroup/${baseGroupId}?page=1&size=50`);
+
+    tick();
+  }));
+
+  it('getAllUsersFromBaseGroup - with error status', fakeAsync(() => {
+    service.getAllUsersFromBaseGroup(baseGroupId, undefined, undefined).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/user/getAllUsersFromBaseGroup/${baseGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockErrorResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/user/getAllUsersFromBaseGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+  it('getAllUsersFromBaseGroup - with fatal status', fakeAsync(() => {
+    service.getAllUsersFromBaseGroup(baseGroupId, undefined, undefined).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/user/getAllUsersFromBaseGroup/${baseGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockFatalResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/user/getAllUsersFromBaseGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+  it('getAllUsersFromBaseGroup - mock', fakeAsync(() => {
+    service.useMock = true;
+    service.getAllUsersFromBaseGroup(baseGroupId, undefined, undefined).subscribe(
+      getAllData => {
+        expect(getAllData).toBeTruthy();
+        expect(getAllData.length).toEqual(1);
+        expect(getAllData[0].identification).toEqual(userId);
+      },
+      e => expect(e).toBeFalsy()
+    );
+
+    httpMock.expectNone(`//localhost:8080/user/getAllUsersFromBaseGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+
 });

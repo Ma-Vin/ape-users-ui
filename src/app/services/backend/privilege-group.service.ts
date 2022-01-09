@@ -112,7 +112,7 @@ export class PrivilegeGroupService extends BaseBackendService {
 
     this.initMocks();
 
-    return this.getPrivilegeGroupIdsFromMock(commonGroup.identification);
+    return PrivilegeGroupService.getPrivilegeGroupIdsFromMock(commonGroup.identification);
   }
 
   /**
@@ -120,23 +120,8 @@ export class PrivilegeGroupService extends BaseBackendService {
    * @param commonGroupIdentification the id of the common group whose privilege groups are searched for 
    * @returns the array of the privilege group ids
    */
-  private getPrivilegeGroupIdsFromMock(commonGroupIdentification: string): string[] {
-    return this.getIdsFromMock(commonGroupIdentification, PRIVILEGES_AT_COMMON_GROUP);
-  }
-
-  /**
-   * Determines the string array which contains the ids contained by a given owner at a property at mock
-   * @param ownerIdentification the id of owner 
-   * @param mockProperty property at the mock where to search at
-   * @returns the array of ids
-   */
-  private getIdsFromMock(ownerIdentification: string, mockProperty: string) {
-    let result = (BaseBackendService.mockData.get(mockProperty) as Map<string, string[]>).get(ownerIdentification);
-    if (result == undefined) {
-      result = [];
-      (BaseBackendService.mockData.get(mockProperty) as Map<string, string[]>).set(ownerIdentification, result);
-    }
-    return result;
+  public static getPrivilegeGroupIdsFromMock(commonGroupIdentification: string): string[] {
+    return BaseBackendService.getIdsFromMock(commonGroupIdentification, PRIVILEGES_AT_COMMON_GROUP);
   }
 
 
@@ -255,7 +240,7 @@ export class PrivilegeGroupService extends BaseBackendService {
    */
   private countPrivilegeGroupsMock(commonGroupIdentification: string): Observable<number> {
     this.initMocks();
-    return of(this.getPrivilegeGroupIdsFromMock(commonGroupIdentification).length);
+    return of(PrivilegeGroupService.getPrivilegeGroupIdsFromMock(commonGroupIdentification).length);
   }
 
 
@@ -316,7 +301,7 @@ export class PrivilegeGroupService extends BaseBackendService {
       } as IPrivilegeGroup);
 
     this.getAllPrivilegeGroupsFromMock().push(addedPrivilegeGroup);
-    this.getPrivilegeGroupIdsFromMock(commonGroup.identification).push(addedPrivilegeGroup.identification);
+    PrivilegeGroupService.getPrivilegeGroupIdsFromMock(commonGroup.identification).push(addedPrivilegeGroup.identification);
 
     return of(addedPrivilegeGroup);
   }
@@ -359,7 +344,7 @@ export class PrivilegeGroupService extends BaseBackendService {
 
     this.initMocks();
 
-    let privilegeGroupIds = this.getPrivilegeGroupIdsFromMock(commonGroup.identification);
+    let privilegeGroupIds = PrivilegeGroupService.getPrivilegeGroupIdsFromMock(commonGroup.identification);
     if (!privilegeGroupIds.includes(identification)) {
       return of(false);
     }
@@ -410,7 +395,7 @@ export class PrivilegeGroupService extends BaseBackendService {
     let commonGroup = this.selectionService.getSelectedCommonGroup();
     this.initMocks();
 
-    if (commonGroup == undefined || !this.getPrivilegeGroupIdsFromMock(commonGroup.identification).includes(modifiedPrivilegeGroup.identification)) {
+    if (commonGroup == undefined || !PrivilegeGroupService.getPrivilegeGroupIdsFromMock(commonGroup.identification).includes(modifiedPrivilegeGroup.identification)) {
       return throwError(new Error(`${Status.ERROR} occurs while updating privilege group ${modifiedPrivilegeGroup.identification} at backend`));
     }
 
