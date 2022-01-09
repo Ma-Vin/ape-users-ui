@@ -4,6 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { Config } from '../../config/config';
 import { Message } from '../../model/message';
 import { Status } from '../../model/status.model';
+import { ResponseWrapper } from 'src/app/model/response-wrapper';
 
 
 export const RETRIES = 3;
@@ -83,5 +84,19 @@ export abstract class BaseService {
       }
     }
     return result == undefined ? defaultMessageText : result.messageText;
+  }
+
+
+  /**
+   * Checks if there exists an error or fatal at response and throws an Error with the first message
+   * @param data response wrapper to check
+   * @param defaultMessage message to use if the is not any at data. The status is put at front of this message.
+   * @returns the cast response object
+   */
+  protected checkErrorAndGetResponse<T>(data: ResponseWrapper, defaultMessage: string): T {
+    if (data.status == Status.ERROR || data.status == Status.FATAL) {
+      throw new Error(this.getFirstMessageText(data.messages, data.status, `${data.status} ${defaultMessage}`));
+    }
+    return data.response as T;
   }
 }

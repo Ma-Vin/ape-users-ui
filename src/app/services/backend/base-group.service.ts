@@ -676,24 +676,7 @@ export class BaseGroupService extends BaseBackendService {
     }
     let url = `${this.getAllBasesAtBaseGroupUrl}/${parentIdentification}`;
 
-    return this.http.get<ResponseWrapper>(url, {
-      headers: HTTP_URL_OPTIONS.headers,
-      params: this.createParams(undefined, page, size)
-    }).pipe(
-      map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while getting all sub base groups of ${parentIdentification} from backend`));
-        }
-        let baseGroups = data.response as IBaseGroup[];
-        let result: BaseGroup[] = new Array(baseGroups.length);
-        for (let i = 0; i < baseGroups.length; i++) {
-          result[i] = BaseGroup.map(baseGroups[i]);
-        }
-        return result;
-      }),
-      retry(RETRIES),
-      catchError(this.handleError)
-    );
+    return this.getAllBaseFromGroup(url, parentIdentification, undefined, page, size);
   }
 
 
@@ -904,15 +887,25 @@ export class BaseGroupService extends BaseBackendService {
     }
     let url = `${this.getAllBasesAtPrivilegeGroupUrl}/${parentIdentification}`;
 
+    return this.getAllBaseFromGroup(url, parentIdentification, role, page, size);
+  }
+
+  /**
+   * Get all base groups of an other parent group from the backend
+   * @param url url of the get target, including parameters
+   * @param parentIdentification Id of the parent base group
+   * @param role the role which filter the base groups. If undefined all will be determined
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @returns the base groups
+   */
+  private getAllBaseFromGroup(url: string, parentIdentification: string, role: Role | undefined, page: number | undefined, size: number | undefined): Observable<BaseGroup[]> {
     return this.http.get<ResponseWrapper>(url, {
       headers: HTTP_URL_OPTIONS.headers,
       params: this.createParams(role, page, size)
     }).pipe(
       map(data => {
-        if (data.status == Status.ERROR || data.status == Status.FATAL) {
-          throw new Error(super.getFirstMessageText(data.messages, data.status, `${data.status} occurs while getting all sub base groups of ${parentIdentification} from backend`));
-        }
-        let baseGroups = data.response as IBaseGroup[];
+        let baseGroups = super.checkErrorAndGetResponse<IBaseGroup[]>(data, `occurs while getting all sub base groups of ${parentIdentification} from backend`);
         let result: BaseGroup[] = new Array(baseGroups.length);
         for (let i = 0; i < baseGroups.length; i++) {
           result[i] = BaseGroup.map(baseGroups[i]);
