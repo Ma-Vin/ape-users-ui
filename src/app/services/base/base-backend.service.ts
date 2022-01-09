@@ -1,3 +1,7 @@
+import { HttpHeaders } from '@angular/common/http';
+import { Message } from '../../model/message';
+import { ResponseWrapper } from '../../model/response-wrapper';
+import { Status } from '../../model/status.model';
 import { environment } from 'src/environments/environment';
 import { ConfigService } from '../../config/config.service';
 import { User } from '../../model/user.model';
@@ -5,6 +9,19 @@ import { BaseService } from './base.service';
 
 export const ALL_USERS_MOCK_KEY = 'users';
 export const NEXT_USER_ID_MOCK_KEY = 'nextUserId';
+export const RETRIES = 3;
+
+export const HTTP_URL_OPTIONS = {
+  headers: new HttpHeaders({
+    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+  })
+};
+
+export const HTTP_JSON_OPTIONS = {
+  headers: new HttpHeaders({
+    'Content-Type': 'application/json;charset=UTF-8'
+  })
+};
 
 export abstract class BaseBackendService extends BaseService {
   protected static mockData: Map<string, any> = new Map();
@@ -83,4 +100,38 @@ export abstract class BaseBackendService extends BaseService {
    * Initialize the service specific data at mock
    */
   protected abstract initServiceMocks(): void;
+
+
+  protected getHttpUrlWithClientBasicAuthOptions() {
+    return {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': `Basic ${btoa(this.clientId + ":" + this.clientSecret)}`
+      })
+    };
+  }
+
+  protected getFirstMessageText(messages: Message[], status: Status, defaultMessageText: string): string {
+    let result: Message | undefined;
+    for (let m of messages) {
+      if (m.status == status && (result == undefined || m.order < result.order)) {
+        result = m;
+      }
+    }
+    return result == undefined ? defaultMessageText : result.messageText;
+  }
+
+
+  /**
+   * Checks if there exists an error or fatal at response and throws an Error with the first message
+   * @param data response wrapper to check
+   * @param defaultMessage message to use if the is not any at data. The status is put at front of this message.
+   * @returns the cast response object
+   */
+  protected checkErrorAndGetResponse<T>(data: ResponseWrapper, defaultMessage: string): T {
+    if (data.status == Status.ERROR || data.status == Status.FATAL) {
+      throw new Error(this.getFirstMessageText(data.messages, data.status, `${data.status} ${defaultMessage}`));
+    }
+    return data.response as T;
+  }
 }

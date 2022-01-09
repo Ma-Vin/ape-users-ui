@@ -7,8 +7,7 @@ import { ResponseWrapper } from '../../model/response-wrapper';
 import { Role } from '../../model/role.model';
 import { Status } from '../../model/status.model';
 import { IUser, User } from '../../model/user.model';
-import { BaseBackendService } from '../base/base-backend.service';
-import { RETRIES } from '../base/base.service';
+import { BaseBackendService, RETRIES } from '../base/base-backend.service';
 
 import { UserService } from './user.service';
 

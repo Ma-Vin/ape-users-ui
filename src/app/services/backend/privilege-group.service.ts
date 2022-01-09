@@ -6,8 +6,7 @@ import { PrivilegeGroup, IPrivilegeGroup } from '../../model/privilege-group.mod
 import { ResponseWrapper } from '../../model/response-wrapper';
 import { Status } from '../../model/status.model';
 import { ConfigService } from '../../config/config.service';
-import { BaseBackendService } from '../base/base-backend.service';
-import { HTTP_JSON_OPTIONS, HTTP_URL_OPTIONS, RETRIES } from '../base/base.service';
+import { BaseBackendService, HTTP_JSON_OPTIONS, HTTP_URL_OPTIONS, RETRIES } from '../base/base-backend.service';
 import { INITIAL_COMMON_GROUP_ID_AT_MOCK } from './common-group.service';
 import { SelectionService } from '../util/selection.service';
 

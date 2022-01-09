@@ -7,8 +7,7 @@ import { CommonGroup, ICommonGroup } from '../../model/common-group.model';
 import { ResponseWrapper } from '../../model/response-wrapper';
 import { Role } from '../../model/role.model';
 import { Status } from '../../model/status.model';
-import { BaseBackendService } from '../base/base-backend.service';
-import { RETRIES } from '../base/base.service';
+import { BaseBackendService, RETRIES } from '../base/base-backend.service';
 import { INITIAL_USER_ID_AT_MOCK } from './user.service';
 
 import { CommonGroupService, INITIAL_COMMON_GROUP_ID_AT_MOCK } from './common-group.service';

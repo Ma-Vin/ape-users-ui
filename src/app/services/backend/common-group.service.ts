@@ -7,8 +7,7 @@ import { CommonGroup, ICommonGroup } from '../../model/common-group.model';
 import { ResponseWrapper } from '../../model/response-wrapper';
 import { Role } from '../../model/role.model';
 import { Status } from '../../model/status.model';
-import { BaseBackendService } from '../base/base-backend.service';
-import { HTTP_JSON_OPTIONS, HTTP_URL_OPTIONS, RETRIES } from '../base/base.service';
+import { BaseBackendService, HTTP_JSON_OPTIONS, HTTP_URL_OPTIONS, RETRIES } from '../base/base-backend.service';
 import { INITIAL_USER_ID_AT_MOCK } from './user.service';
 
 const ALL_COMMON_GOUP_MOCK_KEY = 'commonGroups'

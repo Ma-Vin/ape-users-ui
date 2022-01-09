@@ -9,8 +9,7 @@ import { Status } from '../../model/status.model';
 import { IUser, User } from '../../model/user.model';
 
 import { AdminService } from './admin.service';
-import { BaseBackendService } from '../base/base-backend.service';
-import { RETRIES } from '../base/base.service';
+import { BaseBackendService, RETRIES } from '../base/base-backend.service';
 
 describe('AdminService', () => {
   let service: AdminService;
