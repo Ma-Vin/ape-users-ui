@@ -1,4 +1,4 @@
-import { HttpHeaders } from '@angular/common/http';
+import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { Message } from '../../model/message';
 import { ResponseWrapper } from '../../model/response-wrapper';
 import { Status } from '../../model/status.model';
@@ -133,5 +133,23 @@ export abstract class BaseBackendService extends BaseService {
       throw new Error(this.getFirstMessageText(data.messages, data.status, `${data.status} ${defaultMessage}`));
     }
     return data.response as T;
+  }
+
+
+  /**
+   * creates the pageing params
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0. 
+   * @returns the params
+   */
+  protected createPageingParams(page: number | undefined, size: number | undefined): HttpParams | {
+    [param: string]: string | number | boolean | readonly (string | number | boolean)[];
+  } | undefined {
+    return page == undefined || size == undefined
+      ? undefined
+      : {
+        page: `${page}`,
+        size: `${size}`
+      };
   }
 }

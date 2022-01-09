@@ -130,10 +130,7 @@ export class CommonGroupService extends BaseBackendService {
 
     return this.http.get<ResponseWrapper>(url, {
       headers: HTTP_URL_OPTIONS.headers,
-      params: page == undefined || size == undefined ? undefined : {
-        page: `${page}`,
-        size: `${size}`
-      }
+      params: this.createPageingParams(page, size)
     }).pipe(
       map(data => {
         let commonGroups = this.checkErrorAndGetResponse<ICommonGroup[]>(data, `occurs while getting all common groups from backend`);

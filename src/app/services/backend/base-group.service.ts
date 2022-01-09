@@ -269,7 +269,7 @@ export class BaseGroupService extends BaseBackendService {
 
     return this.http.get<ResponseWrapper>(url, {
       headers: HTTP_URL_OPTIONS.headers,
-      params: this.createParams(undefined, page, size)
+      params: this.createPageingParams(page, size)
     }).pipe(
       map(data => {
         let baseGroups = this.checkErrorAndGetResponse<IBaseGroup[]>(data, `ooccurs while getting all base groups from backend`);
@@ -913,17 +913,11 @@ export class BaseGroupService extends BaseBackendService {
   private createParams(role: Role | undefined, page: number | undefined, size: number | undefined): HttpParams | {
     [param: string]: string | number | boolean | readonly (string | number | boolean)[];
   } | undefined {
-    if ((page == undefined || size == undefined) && role == undefined) {
-      return undefined;
+    if (role == undefined) {
+      return this.createPageingParams(page, size);
     }
     if (page == undefined || size == undefined) {
       return { role: `${role}` };
-    }
-    if (role == undefined) {
-      return {
-        page: `${page}`,
-        size: `${size}`
-      };
     }
     return {
       page: `${page}`,

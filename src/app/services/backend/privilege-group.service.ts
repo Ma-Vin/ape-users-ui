@@ -194,10 +194,7 @@ export class PrivilegeGroupService extends BaseBackendService {
 
     return this.http.get<ResponseWrapper>(url, {
       headers: HTTP_URL_OPTIONS.headers,
-      params: page == undefined || size == undefined ? undefined : {
-        page: `${page}`,
-        size: `${size}`
-      }
+      params: this.createPageingParams(page, size)
     }).pipe(
       map(data => {
         let privilegeGroups = this.checkErrorAndGetResponse<IPrivilegeGroup[]>(data, `occurs while getting all privilege groups from backend`);

@@ -190,10 +190,7 @@ export class AdminService extends BaseBackendService {
 
     return this.http.get<ResponseWrapper>(url, {
       headers: HTTP_URL_OPTIONS.headers,
-      params: page == undefined || size == undefined ? undefined : {
-        page: `${page}`,
-        size: `${size}`
-      }
+      params: this.createPageingParams(page, size)
     }).pipe(
       map(data => {
         let users = this.checkErrorAndGetResponse<IUser[]>(data, `occurs while getting all admins at ${identification} from backend`);
