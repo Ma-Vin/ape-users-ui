@@ -9,6 +9,9 @@ import { ACCESS_TOKEN, ACCESS_TOKEN_EXPIRE, AuthService, REFRESH_TOKEN, REFRESH_
 import { ALL_USERS_MOCK_KEY, BaseBackendService } from '../base/base-backend.service';
 import { CryptoService } from '../util/crypto.service';
 import { SelectionService } from '../util/selection.service';
+import { UserService } from './user.service';
+import { AdminService } from './admin.service';
+import { of } from 'rxjs';
 
 
 describe('AuthService', () => {
@@ -16,9 +19,11 @@ describe('AuthService', () => {
   let httpMock: HttpTestingController;
   let http: HttpClient;
   let router: Router;
+  let userService: UserService;
+  let adminService: AdminService;
   let selectionService: SelectionService;
 
-  let selectionServiceSetActiveUserSpy: jasmine.Spy<(userId: string) => void>;
+  let selectionServiceSetActiveUserSpy: jasmine.Spy<(user: User) => void>;
 
   const baseTime = new Date(2021, 9, 1, 20, 15, 0);
   const jwtHeader = 'eyJ0eXAiOiJKV1QiLCJjdHkiOm51bGwsImFsZyI6IkhTMjU2In0';
@@ -46,6 +51,23 @@ describe('AuthService', () => {
     scope: 'READ|WRITE'
   };
 
+  const userId = 'UAA00002';
+  const firstName = 'Max';
+  const lastName = 'Power';
+
+  const spyUser = User.map({
+    identification: userId,
+    firstName: firstName,
+    lastName: lastName,
+    mail: 'max.power@ma-vin.de',
+    image: undefined,
+    smallImage: undefined,
+    lastLogin: new Date(2021, 9, 25, 20, 15, 1),
+    validFrom: new Date(2021, 9, 1),
+    validTo: undefined,
+    isGlobalAdmin: false
+  } as User);
+
   const fakeConfig = { getConfig: () => mockConfig };
 
   let encryptedMap = new Map<string, string>();
@@ -72,10 +94,13 @@ describe('AuthService', () => {
     http = TestBed.inject(HttpClient);
     router = TestBed.inject(Router);
     selectionService = TestBed.inject(SelectionService);
+    userService = TestBed.inject(UserService);
+    adminService = TestBed.inject(AdminService);
 
-    selectionServiceSetActiveUserSpy = spyOn(selectionService, 'setActiveUser').and.callFake(() => { });
+    selectionServiceSetActiveUserSpy = spyOn(selectionService, 'setActiveUser');
+    spyOn(userService,'getUser').and.returnValue(of(spyUser));
 
-    service = new AuthService(http, fakeConfig as ConfigService, fakeCrypto as CryptoService, router, selectionService);
+    service = new AuthService(http, fakeConfig as ConfigService, fakeCrypto as CryptoService, router, selectionService, userService, adminService);
 
     BaseBackendService.clearMockData();
     encryptedMap.clear();
@@ -103,7 +128,7 @@ describe('AuthService', () => {
       getDecryptedFromLocalStorage: (key: string) => { `decrypted key: ${key}` }
     };
 
-    service = new AuthService(http, fakeConfig as ConfigService, fakeCrypto as CryptoService, router, selectionService);
+    service = new AuthService(http, fakeConfig as ConfigService, fakeCrypto as CryptoService, router, selectionService, userService, adminService);
 
     service.retrieveToken(user, pwd).subscribe(() => { });
 
@@ -125,7 +150,7 @@ describe('AuthService', () => {
     spyOn(fakeCrypto, "setEncryptedAtLocalStorage").and.callThrough();
     expect(fakeCrypto.setEncryptedAtLocalStorage).not.toHaveBeenCalled();
 
-    service = new AuthService(http, fakeConfig as ConfigService, fakeCrypto as CryptoService, router, selectionService);
+    service = new AuthService(http, fakeConfig as ConfigService, fakeCrypto as CryptoService, router, selectionService, userService, adminService);
 
     service.retrieveToken(user, pwd).subscribe(() => { });
 
@@ -196,7 +221,7 @@ describe('AuthService', () => {
       }
     };
 
-    service = new AuthService(http, fakeConfig as ConfigService, fakeCrypto as CryptoService, router, selectionService);
+    service = new AuthService(http, fakeConfig as ConfigService, fakeCrypto as CryptoService, router, selectionService, userService, adminService);
 
     service.refreshToken().subscribe(() => { });
 
@@ -224,7 +249,7 @@ describe('AuthService', () => {
     spyOn(fakeCrypto, "setEncryptedAtLocalStorage").and.callThrough();
     expect(fakeCrypto.setEncryptedAtLocalStorage).not.toHaveBeenCalled();
 
-    service = new AuthService(http, fakeConfig as ConfigService, fakeCrypto as CryptoService, router, selectionService);
+    service = new AuthService(http, fakeConfig as ConfigService, fakeCrypto as CryptoService, router, selectionService, userService, adminService);
 
     service.refreshToken().subscribe(() => { });
 
@@ -242,7 +267,7 @@ describe('AuthService', () => {
     spyOn(fakeCrypto, "setEncryptedAtLocalStorage").and.callThrough();
     expect(fakeCrypto.setEncryptedAtLocalStorage).not.toHaveBeenCalled();
 
-    service = new AuthService(http, fakeConfig as ConfigService, fakeCrypto as CryptoService, router, selectionService);
+    service = new AuthService(http, fakeConfig as ConfigService, fakeCrypto as CryptoService, router, selectionService, userService, adminService);
 
     service.refreshToken().subscribe(() => { });
 
@@ -336,7 +361,7 @@ describe('AuthService', () => {
 
     let spy = spyOn(router, 'navigate').and.callFake(() => new Promise<boolean>((resolve, reject) => resolve(true)));
 
-    service = new AuthService(http, fakeConfig as ConfigService, fakeCrypto as CryptoService, router, selectionService);
+    service = new AuthService(http, fakeConfig as ConfigService, fakeCrypto as CryptoService, router, selectionService, userService, adminService);
 
     service.loginAndRedirect(user, pwd, redirect);
 
@@ -353,7 +378,7 @@ describe('AuthService', () => {
   it('hasValidUser - all ok', fakeAsync(() => {
     createFakeCryptoServiceGetDecrypted(undefined, [ACCESS_TOKEN, ACCESS_TOKEN_EXPIRE, REFRESH_TOKEN], [accessToken, `${baseTime.getTime() + 50}`, refreshToken]);
 
-    service = new AuthService(http, fakeConfig as ConfigService, fakeCryptoModifiable as CryptoService, router, selectionService);
+    service = new AuthService(http, fakeConfig as ConfigService, fakeCryptoModifiable as CryptoService, router, selectionService, userService, adminService);
 
     jasmine.clock().withMock(() => {
       jasmine.clock().mockDate(baseTime);
@@ -371,7 +396,7 @@ describe('AuthService', () => {
   it('hasValidUser - missing token', fakeAsync(() => {
     createFakeCryptoServiceGetDecrypted([ACCESS_TOKEN], [ACCESS_TOKEN_EXPIRE, REFRESH_TOKEN], [`${baseTime.getTime() + 50}`, refreshToken]);
 
-    service = new AuthService(http, fakeConfig as ConfigService, fakeCryptoModifiable as CryptoService, router, selectionService);
+    service = new AuthService(http, fakeConfig as ConfigService, fakeCryptoModifiable as CryptoService, router, selectionService, userService, adminService);
 
     jasmine.clock().withMock(() => {
       jasmine.clock().mockDate(baseTime);
@@ -387,7 +412,7 @@ describe('AuthService', () => {
   it('hasValidUser - missing expiration', fakeAsync(() => {
     createFakeCryptoServiceGetDecrypted([ACCESS_TOKEN_EXPIRE], [ACCESS_TOKEN, REFRESH_TOKEN], [accessToken, refreshToken]);
 
-    service = new AuthService(http, fakeConfig as ConfigService, fakeCryptoModifiable as CryptoService, router, selectionService);
+    service = new AuthService(http, fakeConfig as ConfigService, fakeCryptoModifiable as CryptoService, router, selectionService, userService, adminService);
 
     jasmine.clock().withMock(() => {
       jasmine.clock().mockDate(baseTime);
@@ -403,7 +428,7 @@ describe('AuthService', () => {
   it('hasValidUser - missing refresh token', fakeAsync(() => {
     createFakeCryptoServiceGetDecrypted([REFRESH_TOKEN], [ACCESS_TOKEN, ACCESS_TOKEN_EXPIRE], [accessToken, `${baseTime.getTime() + 50}`]);
 
-    service = new AuthService(http, fakeConfig as ConfigService, fakeCryptoModifiable as CryptoService, router, selectionService);
+    service = new AuthService(http, fakeConfig as ConfigService, fakeCryptoModifiable as CryptoService, router, selectionService, userService, adminService);
 
     jasmine.clock().withMock(() => {
       jasmine.clock().mockDate(baseTime);
@@ -420,7 +445,7 @@ describe('AuthService', () => {
   it('hasValidUser - expired token', fakeAsync(() => {
     createFakeCryptoServiceGetDecrypted(undefined, [ACCESS_TOKEN, ACCESS_TOKEN_EXPIRE, REFRESH_TOKEN], [accessToken, `${baseTime.getTime() - 50}`, refreshToken]);
 
-    service = new AuthService(http, fakeConfig as ConfigService, fakeCryptoModifiable as CryptoService, router, selectionService);
+    service = new AuthService(http, fakeConfig as ConfigService, fakeCryptoModifiable as CryptoService, router, selectionService, userService, adminService);
 
     jasmine.clock().withMock(() => {
       jasmine.clock().mockDate(baseTime);

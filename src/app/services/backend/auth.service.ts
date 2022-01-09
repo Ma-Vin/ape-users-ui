@@ -5,12 +5,14 @@ import { TokenResponse } from '../../model/auth/token-response.model';
 import { JwtPayload } from '../../model/auth/jwt-payload.model';
 import { catchError, map, share, switchMap } from 'rxjs/operators';
 import { CryptoService } from '../util/crypto.service';
-import { Observable, of, throwError } from 'rxjs';
+import { NEVER, Observable, of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { LOGIN_PATH } from '../../app-routing.module';
 import { SelectionService } from '../util/selection.service';
 import { ALL_USERS_MOCK_KEY, BaseBackendService } from '../base/base-backend.service';
 import { User } from '../../model/user.model';
+import { UserService } from './user.service';
+import { AdminService } from './admin.service';
 
 
 export const TOKEN_URL = "/oauth/token";
@@ -43,7 +45,7 @@ export class AuthService extends BaseBackendService {
   private jwtSignatureUrlEncodedMock = 'bJ-OOeN4NUJdk4dD0VpNRYBv09Tn-RK4nhrvWXzgcxY';
 
   constructor(protected http: HttpClient, protected configService: ConfigService, private cryptoService: CryptoService
-    , private router: Router, private selectionService: SelectionService) {
+    , private router: Router, private selectionService: SelectionService, private userService: UserService, private adminService: AdminService) {
 
     super('AuthService', configService);
     this.retrieveTokenUrl = '';
@@ -212,8 +214,28 @@ export class AuthService extends BaseBackendService {
     if (split.length == 3) {
       let payloadText = atob(split[1]);
       let parsedPayload = JSON.parse(payloadText) as JwtPayload;
-      this.selectionService.setActiveUser(parsedPayload.sub);
+      this.setActiveUserAtSelectionService(parsedPayload.sub);
     }
+  }
+
+
+  /**
+   * Sets the user at the selection service. The user is determined by the user and admin servivce
+   * @param userId the identification of the user to set
+   */
+  private setActiveUserAtSelectionService(userId: string): void {
+    this.userService.getUser(userId).pipe(
+      catchError((err, caugth) => {
+        if (err instanceof Error && err.message == `There is not any User with identification "${userId}"`) {
+          console.debug(`The user ${userId} does not exists, may be it iss an admin`)
+          return this.adminService.getAdmin(userId);
+        }
+        this.selectionService.setActiveUser(undefined);
+        return NEVER;
+      })
+    ).subscribe(data => {
+      this.selectionService.setActiveUser(data);
+    });
   }
 
   loginAndRedirect(username: string, password: string, redirect: string): void {

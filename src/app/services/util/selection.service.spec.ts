@@ -14,8 +14,6 @@ import { UserService } from '../backend/user.service';
 
 describe('SelectionService', () => {
   let service: SelectionService;
-  let adminService: AdminService;
-  let userService: UserService;
   let commonGroupService: CommonGroupService;
   let configService: ConfigService;
   let httpMock: HttpTestingController;
@@ -77,8 +75,6 @@ describe('SelectionService', () => {
     httpMock = TestBed.inject(HttpTestingController);
     http = TestBed.inject(HttpClient);
     configService = TestBed.inject(ConfigService);
-    adminService = TestBed.inject(AdminService);
-    userService = TestBed.inject(UserService);
     commonGroupService = TestBed.inject(CommonGroupService);
 
     service = TestBed.inject(SelectionService);
@@ -91,14 +87,10 @@ describe('SelectionService', () => {
 
 
   it('setActiveUser - user', fakeAsync(() => {
-    let userServiceSpy = spyOn(userService, 'getUser').and.callFake(userId => of(user));
-    let adminServiceSpy = spyOn(adminService, 'getAdmin').and.callFake(userId => throwError(new Error(`There is not any User with identification "${userId}"`)));
     let commonGroupServiceSpy = spyOn(commonGroupService, 'getParentCommonGroupOfUser').and.returnValue(of(commonGroup));
 
-    service.setActiveUser(userId);
+    service.setActiveUser(user);
 
-    expect(userServiceSpy).toHaveBeenCalled();
-    expect(adminServiceSpy).not.toHaveBeenCalled();
     expect(commonGroupServiceSpy).toHaveBeenCalled();
 
     tick();
@@ -111,14 +103,10 @@ describe('SelectionService', () => {
 
 
   it('setActiveUser - admin', fakeAsync(() => {
-    let userServiceSpy = spyOn(userService, 'getUser').and.callFake(userId => throwError(new Error(`There is not any User with identification "${userId}"`)));
-    let adminServiceSpy = spyOn(adminService, 'getAdmin').and.callFake(userId => of(admin));
-    let commonGroupServiceSpy = spyOn(commonGroupService, 'getParentCommonGroupOfUser').and.callFake(userId => throwError(new Error(`TThe parent common group of user "${userId}" was not found`)));
+    let commonGroupServiceSpy = spyOn(commonGroupService, 'getParentCommonGroupOfUser').and.callFake(userId => throwError(new Error(`The parent common group of user "${userId}" was not found`)));
 
-    service.setActiveUser(userId);
+    service.setActiveUser(admin);
 
-    expect(userServiceSpy).toHaveBeenCalled();
-    expect(adminServiceSpy).toHaveBeenCalled();
     expect(commonGroupServiceSpy).not.toHaveBeenCalled();
 
     tick();
@@ -129,16 +117,11 @@ describe('SelectionService', () => {
   }));
 
 
-  it('setActiveUser - user with other error', fakeAsync(() => {
-    let userServiceSpy = spyOn(userService, 'getUser').and.callFake(userId => throwError(new Error('any other error')));
-    let adminServiceSpy = spyOn(adminService, 'getAdmin').and.callFake(userId => of(admin));
-    let commonGroupServiceSpy = spyOn(commonGroupService, 'getParentCommonGroupOfUser').and.callFake(userId => throwError(new Error(`TThe parent common group of user "${userId}" was not found`)));
+  it('setActiveUser - undefined', fakeAsync(() => {
+    let commonGroupServiceSpy = spyOn(commonGroupService, 'getParentCommonGroupOfUser').and.callFake(userId => throwError(new Error(`The parent common group of user "${userId}" was not found`)));
 
+    service.setActiveUser(undefined);
 
-    service.setActiveUser(userId);
-
-    expect(userServiceSpy).toHaveBeenCalled();
-    expect(adminServiceSpy).not.toHaveBeenCalled();
     expect(commonGroupServiceSpy).not.toHaveBeenCalled();
 
     tick();
@@ -149,11 +132,8 @@ describe('SelectionService', () => {
 
 
   it('removeActiveUser - user', fakeAsync(() => {
-    let userServiceSpy = spyOn(userService, 'getUser').and.callFake(userId => of(user));
 
-    service.setActiveUser(userId);
-
-    expect(userServiceSpy).toHaveBeenCalled();
+    service.setActiveUser(user);
 
     tick();
 
