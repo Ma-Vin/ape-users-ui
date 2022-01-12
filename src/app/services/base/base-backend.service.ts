@@ -6,6 +6,7 @@ import { environment } from 'src/environments/environment';
 import { ConfigService } from '../../config/config.service';
 import { User } from '../../model/user.model';
 import { BaseService } from './base.service';
+import { Role } from 'src/app/model/role.model';
 
 export const ALL_USERS_MOCK_KEY = 'users';
 export const NEXT_USER_ID_MOCK_KEY = 'nextUserId';
@@ -166,5 +167,28 @@ export abstract class BaseBackendService extends BaseService {
         page: `${page}`,
         size: `${size}`
       };
+  }
+
+  /**
+   * creates the pageing params with role
+   * @param role role to add at params
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0. 
+   * @returns the params
+   */
+   protected createPageingRoleParams(role: Role | undefined, page: number | undefined, size: number | undefined): HttpParams | {
+    [param: string]: string | number | boolean | readonly (string | number | boolean)[];
+  } | undefined {
+    if (role == undefined) {
+      return this.createPageingParams(page, size);
+    }
+    if (page == undefined || size == undefined) {
+      return { role: `${role}` };
+    }
+    return {
+      page: `${page}`,
+      size: `${size}`,
+      role: `${role}`
+    };
   }
 }

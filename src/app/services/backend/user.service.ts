@@ -1,7 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, map, retry } from 'rxjs/operators';
+import { UserIdRole } from '../../model/user-id-role.model';
 import { ConfigService } from '../../config/config.service';
 import { ResponseWrapper } from '../../model/response-wrapper';
 import { Role } from '../../model/role.model';
@@ -11,10 +12,12 @@ import { ALL_USERS_MOCK_KEY, BaseBackendService, NEXT_USER_ID_MOCK_KEY, HTTP_JSO
 import { SelectionService } from '../util/selection.service';
 import { BaseGroupService, INITIAL_BASE_GROUP_ID_AT_MOCK, BASES_AT_COMMON_GROUP } from './base-group.service';
 import { INITIAL_COMMON_GROUP_ID_AT_MOCK } from './common-group.service';
+import { INITIAL_PRIVILEGE_GROUP_ID_AT_MOCK, PrivilegeGroupService, PRIVILEGES_AT_COMMON_GROUP } from './privilege-group.service';
 
 
 const USERS_AT_COMMON_GROUP = 'usersAtCommonGroup'
 const USERS_AT_BASE_GROUP = 'usersAtBaseGroup'
+const USERS_AT_PRIVILEGE_GROUP = 'usersAtPrivilegeGroup'
 export const INITIAL_USER_ID_AT_MOCK = 'UAA00002';
 
 @Injectable({
@@ -30,9 +33,13 @@ export class UserService extends BaseBackendService {
   private setUserPasswordUrl: string | undefined;
   private setUserRoleUrl: string | undefined;
   private addUserToBaseGroupUrl: string | undefined;
-  private removeUserToBaseGroupUrl: string | undefined;
+  private removeUserFromBaseGroupUrl: string | undefined;
   private countUsersAtBaseGroupUrl: string | undefined;
   private getAllUsersFromBaseGroupUrl: string | undefined;
+  private addUserToPrivilegeGroupUrl: string | undefined;
+  private removeUserFromPrivilegeGroupUrl: string | undefined;
+  private countUsersAtPrivilegeGroupUrl: string | undefined;
+  private getAllUsersFromPrivilegeGroupUrl: string | undefined;
 
   constructor(private http: HttpClient, configService: ConfigService, private selectionService: SelectionService) {
     super('UserService', configService);
@@ -54,9 +61,13 @@ export class UserService extends BaseBackendService {
     this.setUserPasswordUrl = userControllerUrl.concat('/setUserPassword');
     this.setUserRoleUrl = userControllerUrl.concat('/setUserRole');
     this.addUserToBaseGroupUrl = userControllerUrl.concat('/addUserToBaseGroup');
-    this.removeUserToBaseGroupUrl = userControllerUrl.concat('/removeUserFromBaseGroup');
+    this.removeUserFromBaseGroupUrl = userControllerUrl.concat('/removeUserFromBaseGroup');
     this.countUsersAtBaseGroupUrl = userControllerUrl.concat('/countUsersAtBaseGroup');
     this.getAllUsersFromBaseGroupUrl = userControllerUrl.concat('/getAllUsersFromBaseGroup');
+    this.addUserToPrivilegeGroupUrl = userControllerUrl.concat('/addUserToPrivilegeGroup');
+    this.removeUserFromPrivilegeGroupUrl = userControllerUrl.concat('/removeUserFromPrivilegeGroup');
+    this.countUsersAtPrivilegeGroupUrl = userControllerUrl.concat('/countUsersAtPrivilegeGroup');
+    this.getAllUsersFromPrivilegeGroupUrl = userControllerUrl.concat('/getAllUsersFromPrivilegeGroup');
 
     return true;
   }
@@ -79,6 +90,11 @@ export class UserService extends BaseBackendService {
     BaseBackendService.addEntryToStringToStringArrayMap(USERS_AT_COMMON_GROUP, INITIAL_COMMON_GROUP_ID_AT_MOCK, INITIAL_USER_ID_AT_MOCK);
     BaseBackendService.addEntryToStringToStringArrayMap(USERS_AT_BASE_GROUP, INITIAL_BASE_GROUP_ID_AT_MOCK, INITIAL_USER_ID_AT_MOCK);
     BaseBackendService.addEntryToStringToStringArrayMap(BASES_AT_COMMON_GROUP, INITIAL_COMMON_GROUP_ID_AT_MOCK, INITIAL_BASE_GROUP_ID_AT_MOCK);
+    BaseBackendService.addEntryToStringToStringArrayMap(PRIVILEGES_AT_COMMON_GROUP, INITIAL_COMMON_GROUP_ID_AT_MOCK, INITIAL_PRIVILEGE_GROUP_ID_AT_MOCK);
+
+    if (!BaseBackendService.mockData.has(USERS_AT_PRIVILEGE_GROUP)) {
+      BaseBackendService.mockData.set(USERS_AT_PRIVILEGE_GROUP, new Map<string, UserIdRole[]>());
+    }
   }
 
   /**
@@ -114,10 +130,10 @@ export class UserService extends BaseBackendService {
   }
 
   /**
- * Determines the string array which contains the ids of users contained by a given common group
- * @param baseGroupIdentification the id of the base group whose base groups are searched for 
- * @returns the array of the user ids
- */
+   * Determines the string array which contains the ids of users contained by a given common group
+   * @param baseGroupIdentification the id of the base group whose base groups are searched for 
+   * @returns the array of the user ids
+   */
   public static getUserIdsAtBaseGroupFromMock(baseGroupIdentification: string): string[] {
     return BaseBackendService.getIdsFromMock(baseGroupIdentification, USERS_AT_BASE_GROUP);
   }
@@ -135,6 +151,22 @@ export class UserService extends BaseBackendService {
     this.initMocks();
 
     return BaseGroupService.getBaseGroupIdsFromMock(commonGroup.identification);
+  }
+
+
+  /**
+   * Determines all privilege groups ids at mock data for the selected common group
+   * @returns array of all privilege group ids at commongroup
+   */
+  private getAllPrivilegeIdsAtSelectedCommonGroupFromMock(): string[] {
+    let commonGroup = this.selectionService.getSelectedCommonGroup();
+    if (commonGroup == undefined) {
+      return [];
+    }
+
+    this.initMocks();
+
+    return PrivilegeGroupService.getPrivilegeGroupIdsFromMock(commonGroup.identification);
   }
 
 
@@ -168,6 +200,22 @@ export class UserService extends BaseBackendService {
     }
     return result;
   }
+
+
+  /**
+   * Determines the string array which contains the ids of user contained by a given other privilege group
+   * @param baseGroupIdentification the id of the privilege group whose users are searched for 
+   * @returns the array of the user ids and their roles
+   */
+  private getUserIdRolesAtPrivilegeFromMock(privilegeGroupIdentification: string): UserIdRole[] {
+    let result = (BaseBackendService.mockData.get(USERS_AT_PRIVILEGE_GROUP) as Map<string, UserIdRole[]>).get(privilegeGroupIdentification);
+    if (result == undefined) {
+      result = [];
+      (BaseBackendService.mockData.get(USERS_AT_PRIVILEGE_GROUP) as Map<string, UserIdRole[]>).set(privilegeGroupIdentification, result);
+    }
+    return result;
+  }
+
 
 
   /**
@@ -617,7 +665,7 @@ export class UserService extends BaseBackendService {
     if (this.useMock) {
       return this.removeUserFromBaseGroupMock(userIdentification, baseGroupIdentification);
     }
-    let url = `${this.removeUserToBaseGroupUrl}/${baseGroupIdentification}`;
+    let url = `${this.removeUserFromBaseGroupUrl}/${baseGroupIdentification}`;
 
     return this.http.patch<ResponseWrapper>(url, {
       userIdentification: userIdentification
@@ -745,4 +793,305 @@ export class UserService extends BaseBackendService {
   }
 
 
+
+  /**
+   * Adds an user to a privilege group
+   * @param userIdentification id of the user to add
+   * @param privilegeGroupIdentification id of privilege group where to add at
+   * @param role The role of the user at the group
+   * @returns reponse of adding the user
+   */
+  public addUserToPrivilegeGroup(userIdentification: string, privilegeGroupIdentification: string, role: Role): Observable<boolean> {
+    this.init();
+    if (this.useMock) {
+      return this.addUserToPrivilegeGroupMock(userIdentification, privilegeGroupIdentification, role);
+    }
+    let url = `${this.addUserToPrivilegeGroupUrl}/${privilegeGroupIdentification}`;
+    let userIdRole = new UserIdRole(userIdentification, role);
+    return this.http.patch<ResponseWrapper>(url, {
+      userRole: userIdRole
+    }, HTTP_JSON_OPTIONS).pipe(
+      map(data => {
+        return this.checkErrorAndGetResponse<boolean>(data, `occurs while adding user ${userIdentification} to privilege group ${privilegeGroupIdentification} with role ${role} at backend`);
+      }),
+      retry(RETRIES),
+      catchError(this.handleError)
+    );
+  }
+
+
+
+  /**
+   * Adds an user to a privilege group at mock
+   * @param userIdentification id of the user to add
+   * @param privilegeGroupIdentification id of privilege group where to add at
+   * @param role The role of the user at the group
+   * @returns mocked reponse of adding the user
+   */
+  public addUserToPrivilegeGroupMock(userIdentification: string, privilegeGroupIdentification: string, role: Role): Observable<boolean> {
+    this.initMocks();
+
+    let allUserIds = this.getAllUserIdsAtSelectedCommonGroupFromMock();
+    let allPrivilegeGroupIds = this.getAllPrivilegeIdsAtSelectedCommonGroupFromMock();
+
+    if (!allUserIds.includes(userIdentification) || !allPrivilegeGroupIds.includes(privilegeGroupIdentification)) {
+      return throwError(new Error(`${Status.ERROR} occurs while adding user ${userIdentification} to privilege group ${privilegeGroupIdentification} with role ${role} at backend`));
+    }
+
+    let userRoles = this.getUserIdRolesAtPrivilegeFromMock(privilegeGroupIdentification);
+    for (let ur of userRoles) {
+      if (ur.userIdentification == userIdentification) {
+        return of(false);
+      }
+    }
+
+    let userIdRole = new UserIdRole(userIdentification, role);
+    userRoles.push(userIdRole);
+    return of(true);
+  }
+
+
+
+  /**
+   * Removes an user from a privilege one
+   * @param userIdentification id of the child user to remove
+   * @param privilegeGroupIdentification id of the parent privilege group where to remove from
+   * @returns true if the user was removed. Otherwise false
+   */
+  removeUserFromPrivilegeGroup(userIdentification: string, privilegeGroupIdentification: string): Observable<boolean> {
+    this.init();
+    if (this.useMock) {
+      return this.removeUserFromPrivilegeGroupMock(userIdentification, privilegeGroupIdentification);
+    }
+    let url = `${this.removeUserFromPrivilegeGroupUrl}/${privilegeGroupIdentification}`;
+
+    return this.http.patch<ResponseWrapper>(url, {
+      userIdentification: userIdentification
+    }, HTTP_JSON_OPTIONS).pipe(
+      map(data => {
+        return this.checkErrorAndGetResponse<boolean>(data, `occurs while removing user ${userIdentification} from privilege group ${privilegeGroupIdentification} at backend`);
+      }),
+      retry(RETRIES),
+      catchError(this.handleError)
+    );
+  }
+
+
+
+  /**
+   * Removes an user from a privilege one at mock
+   * @param userIdentification id of the child user to remove
+   * @param privilegeGroupIdentification id of the parent privilege group where to remove from
+   * @returns mocked reponse of removing the user
+   */
+  private removeUserFromPrivilegeGroupMock(userIdentification: string, privilegeGroupIdentification: string): Observable<boolean> {
+    this.initMocks();
+
+    let allUserIds = this.getAllUserIdsAtSelectedCommonGroupFromMock();
+    let allPrivilegeGroupIds = this.getAllPrivilegeIdsAtSelectedCommonGroupFromMock();
+
+    if (!allUserIds.includes(userIdentification) || !allPrivilegeGroupIds.includes(privilegeGroupIdentification)) {
+      return throwError(new Error(`${Status.ERROR} occurs while removing user ${userIdentification} from privilege group ${privilegeGroupIdentification} at backend`));
+    }
+
+    let usersAtPrivilegeGroup = this.getUserIdRolesAtPrivilegeFromMock(privilegeGroupIdentification);
+    for (let i = 0; i < usersAtPrivilegeGroup.length; i++) {
+      if (usersAtPrivilegeGroup[i].userIdentification == userIdentification) {
+        usersAtPrivilegeGroup.splice(i, 1);
+        return of(true);
+      }
+    }
+
+    return of(false);
+  }
+
+
+
+  /**
+    * Count users at a privilege group at the backend
+    * @param privilegeGroupIdentification the id of the privilege group where to count at
+    * @param role the role which filter the users to be count. If undefined all will be count.
+    * @returns the number users at the privilege group
+    */
+  public countUsersAtPrivilegeGroup(privilegeGroupIdentification: string, role: Role | undefined): Observable<number> {
+    this.init();
+    if (this.useMock) {
+      return this.countUsersAtPrivilegeGroupMock(privilegeGroupIdentification, role);
+    }
+    let url = `${this.countUsersAtPrivilegeGroupUrl}/${privilegeGroupIdentification}`;
+
+    return this.http.get<ResponseWrapper>(url, {
+      headers: HTTP_URL_OPTIONS.headers,
+      params: this.createPageingRoleParams(role, undefined, undefined)
+    }).pipe(
+      map(data => {
+        return this.checkErrorAndGetResponse<number>(data, `occurs while counting users at ${privilegeGroupIdentification} with role ${role} at backend`);
+      }),
+      retry(RETRIES),
+      catchError(this.handleError)
+    );
+  }
+
+
+
+  /**
+   * Creates mock for counting users at a privilege group at mock
+   * @param baseGroupIdentification the id of the base group where to count at
+   * @param role the role which filter the users to be count. If undefined all will becount.
+   * @returns the mocked observable of the counted number
+   */
+  private countUsersAtPrivilegeGroupMock(privilegeGroupIdentification: string, role: Role | undefined): Observable<number> {
+    this.initMocks();
+    let userRoles = this.getUserIdRolesAtPrivilegeFromMock(privilegeGroupIdentification);
+    if (role == undefined) {
+      return of(userRoles.length);
+    }
+    let count = 0;
+    for (let ur of userRoles) {
+      if (ur.role == role) {
+        count++;
+      }
+    }
+    return of(count);
+  }
+
+
+
+  /**
+   * Get all users at a privilege group from the backend
+   * @param privilegeGroupIdentification Id of the parent privilege group
+   * @param dissolveSubgroups indicator if the users of subgroups should also be added 
+   * @param role the role which filter the users. If undefined all will be determined
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @returns the users
+   */
+  public getAllBasesAtPrivilegeGroup(privilegeGroupIdentification: string, dissolveSubgroups: boolean | undefined, role: Role | undefined
+    , page: number | undefined, size: number | undefined): Observable<User[]> {
+
+    this.init();
+    if (this.useMock) {
+      return this.getAllBasesAtrivilegeGroupMock(privilegeGroupIdentification, dissolveSubgroups, role);
+    }
+    let url = `${this.getAllUsersFromPrivilegeGroupUrl}/${privilegeGroupIdentification}`;
+
+    return this.http.get<ResponseWrapper>(url, {
+      headers: HTTP_URL_OPTIONS.headers,
+      params: this.createParams(dissolveSubgroups, role, page, size)
+    }).pipe(
+      map(data => {
+        let baseGroups = this.checkErrorAndGetResponse<IUser[]>(data, `occurs while getting all users of ${privilegeGroupIdentification} with role ${role} from backend`);
+        let result: User[] = new Array(baseGroups.length);
+        for (let i = 0; i < baseGroups.length; i++) {
+          result[i] = User.map(baseGroups[i]);
+        }
+        return result;
+      }),
+      retry(RETRIES),
+      catchError(this.handleError)
+    );
+  }
+
+
+
+  /**
+   * Creates mock for getting all sub base groups of a privilege one
+   * @param privilegeGroupIdentification Id of the parent base group
+   * @param dissolveSubgroups indicator if the users of subgroups should also be added
+   * @param role the role which filter the base groups. If undefined all will be determined
+   * @returns the mocked observable of all sub base groups
+   */
+  private getAllBasesAtrivilegeGroupMock(privilegeGroupIdentification: string, dissolveSubgroups: boolean | undefined, role: Role | undefined): Observable<User[]> {
+    this.initMocks();
+    let result: User[] = [];
+    let users = this.getAllUsersAtSelectedCommonGroupFromMock();
+
+    for (let ur of this.getUserIdRolesAtPrivilegeFromMock(privilegeGroupIdentification)) {
+      if (role != undefined && ur.role != role) {
+        continue;
+      }
+      for (let u of users) {
+        if (u.identification == ur.userIdentification) {
+          result.push(u);
+          break;
+        }
+      }
+    }
+
+    if (dissolveSubgroups) {
+      for (let br of BaseGroupService.getBaseGroupIdRolesAtPrivilegeFromMock(privilegeGroupIdentification)) {
+        if (role != undefined && br.role != role) {
+          continue;
+        }
+        for (let userId of this.getDisolvedUsersAtBaseGroup(br.baseGroupIdentification)) {
+          for (let u of users) {
+            if (u.identification == userId && !result.includes(u)) {
+              result.push(u);
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    return of(result);
+  }
+
+
+
+  /**
+   * Collects all user ids from a base group and its sub groups
+   * @param baseGroupIdentification id of the base group
+   * @returns list of of user ids
+   */
+  private getDisolvedUsersAtBaseGroup(baseGroupIdentification: string): string[] {
+    let result: string[] = [];
+
+    UserService.getUserIdsAtBaseGroupFromMock(baseGroupIdentification).forEach(userId => { result.push(userId); });
+
+    BaseGroupService.getSubBaseGroupIdsFromMock(baseGroupIdentification).forEach(baseId => {
+      this.getDisolvedUsersAtBaseGroup(baseId).forEach(userId => { result.push(userId); });
+    });
+
+    return result;
+  }
+
+
+
+  /**
+   * creates the pageing params with role
+   * @param role role to add at params
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0. 
+   * @returns the params
+   */
+  protected createParams(dissolveSubgroups: boolean | undefined, role: Role | undefined, page: number | undefined, size: number | undefined): HttpParams | {
+    [param: string]: string | number | boolean | readonly (string | number | boolean)[];
+  } | undefined {
+    if (dissolveSubgroups == undefined) {
+      return this.createPageingRoleParams(role, page, size);
+    }
+    if ((page == undefined || size == undefined) && role == undefined) {
+      return { dissolveSubgroups: `${dissolveSubgroups}` };
+    }
+    if ((page == undefined || size == undefined) && role != undefined) {
+      return {
+        role: `${role}`,
+        dissolveSubgroups: `${dissolveSubgroups}`
+      };
+    }
+    if ((page != undefined && size != undefined) && role == undefined) {
+      return {
+        page: `${page}`,
+        size: `${size}`,
+        dissolveSubgroups: `${dissolveSubgroups}`
+      };
+    }
+    return {
+      page: `${page}`,
+      size: `${size}`,
+      role: `${role}`,
+      dissolveSubgroups: `${dissolveSubgroups}`
+    };
+  }
 }

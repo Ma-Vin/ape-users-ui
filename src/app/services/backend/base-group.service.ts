@@ -181,7 +181,7 @@ export class BaseGroupService extends BaseBackendService {
    * @param baseGroupIdentification the id of the privilege group whose base groups are searched for 
    * @returns the array of the base group ids and their roles
    */
-  private getBaseGroupIdRolesAtPrivilegeFromMock(privilegeGroupIdentification: string): BaseGroupIdRole[] {
+  public static getBaseGroupIdRolesAtPrivilegeFromMock(privilegeGroupIdentification: string): BaseGroupIdRole[] {
     let result = (BaseBackendService.mockData.get(BASES_AT_PRIVILEGE_GROUP) as Map<string, BaseGroupIdRole[]>).get(privilegeGroupIdentification);
     if (result == undefined) {
       result = [];
@@ -696,7 +696,7 @@ export class BaseGroupService extends BaseBackendService {
       return throwError(new Error(`${Status.ERROR} occurs while adding base group ${childIdentification} to privilege group ${parentIdentification} at backend`));
     }
 
-    let subBaseGroups = this.getBaseGroupIdRolesAtPrivilegeFromMock(parentIdentification);
+    let subBaseGroups = BaseGroupService.getBaseGroupIdRolesAtPrivilegeFromMock(parentIdentification);
     for (let br of subBaseGroups) {
       if (br.baseGroupIdentification == childIdentification) {
         return of(false);
@@ -751,7 +751,7 @@ export class BaseGroupService extends BaseBackendService {
       return throwError(new Error(`${Status.ERROR} occurs while removing base group ${childIdentification} from privilege group ${parentIdentification} at backend`));
     }
 
-    let subBaseGroups = this.getBaseGroupIdRolesAtPrivilegeFromMock(parentIdentification);
+    let subBaseGroups = BaseGroupService.getBaseGroupIdRolesAtPrivilegeFromMock(parentIdentification);
     for (let i = 0; i < subBaseGroups.length; i++) {
       if (subBaseGroups[i].baseGroupIdentification == childIdentification) {
         subBaseGroups.splice(i, 1);
@@ -779,7 +779,7 @@ export class BaseGroupService extends BaseBackendService {
 
     return this.http.get<ResponseWrapper>(url, {
       headers: HTTP_URL_OPTIONS.headers,
-      params: this.createParams(role, undefined, undefined)
+      params: this.createPageingRoleParams(role, undefined, undefined)
     }).pipe(
       map(data => {
         return this.checkErrorAndGetResponse<number>(data, `occurs while counting base groups at ${privilegeGroupIdentification} at backend`);
@@ -793,13 +793,13 @@ export class BaseGroupService extends BaseBackendService {
 
   /**
    * Creates mock for counting sub base groups of a privilege one at mock
-   * @param baseGroupIdentification the id of the base group where to count at
+   * @param privilegeGroupIdentification the id of the privilege group where to count at
    * @param role the role which filter the base groups to be count. If undefined all will becount.
    * @returns the mocked observable of the counted number
    */
   private countBasesAtPrivilegeGroupMock(privilegeGroupIdentification: string, role: Role | undefined): Observable<number> {
     this.initMocks();
-    let subBaseGroups = this.getBaseGroupIdRolesAtPrivilegeFromMock(privilegeGroupIdentification);
+    let subBaseGroups = BaseGroupService.getBaseGroupIdRolesAtPrivilegeFromMock(privilegeGroupIdentification);
     if (role == undefined) {
       return of(subBaseGroups.length);
     }
@@ -844,7 +844,7 @@ export class BaseGroupService extends BaseBackendService {
   private getAllBaseFromGroup(url: string, parentIdentification: string, role: Role | undefined, page: number | undefined, size: number | undefined): Observable<BaseGroup[]> {
     return this.http.get<ResponseWrapper>(url, {
       headers: HTTP_URL_OPTIONS.headers,
-      params: this.createParams(role, page, size)
+      params: this.createPageingRoleParams(role, page, size)
     }).pipe(
       map(data => {
         let baseGroups = this.checkErrorAndGetResponse<IBaseGroup[]>(data, `occurs while getting all sub base groups of ${parentIdentification} from backend`);
@@ -872,7 +872,7 @@ export class BaseGroupService extends BaseBackendService {
     let result: BaseGroup[] = [];
     let baseGroups = this.getAllBasesAtSelectedCommonGroupFromMock();
 
-    for (let br of this.getBaseGroupIdRolesAtPrivilegeFromMock(parentIdentification)) {
+    for (let br of BaseGroupService.getBaseGroupIdRolesAtPrivilegeFromMock(parentIdentification)) {
       if (role != undefined && br.role != role) {
         continue;
       }
@@ -885,21 +885,5 @@ export class BaseGroupService extends BaseBackendService {
     }
 
     return of(result);
-  }
-
-  private createParams(role: Role | undefined, page: number | undefined, size: number | undefined): HttpParams | {
-    [param: string]: string | number | boolean | readonly (string | number | boolean)[];
-  } | undefined {
-    if (role == undefined) {
-      return this.createPageingParams(page, size);
-    }
-    if (page == undefined || size == undefined) {
-      return { role: `${role}` };
-    }
-    return {
-      page: `${page}`,
-      size: `${size}`,
-      role: `${role}`
-    };
   }
 }

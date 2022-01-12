@@ -1472,7 +1472,7 @@ describe('BaseGroupService', () => {
       e => expect(e).toBeFalsy());
 
 
-    httpMock.expectNone(`//localhost:8080/group/base/removeBaseFromPrivilegeGroup/${baseGroupId}`);
+    httpMock.expectNone(`//localhost:8080/group/base/removeBaseFromPrivilegeGroup/${privilegeGroupId}`);
 
     tick();
   }));
