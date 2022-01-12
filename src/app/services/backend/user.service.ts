@@ -1018,7 +1018,23 @@ export class UserService extends BaseBackendService {
       }
     }
 
+    this.getUsersAtSubBaseGroups(privilegeGroupIdentification, dissolveSubgroups, role).forEach(u => { if (!result.includes(u)) { result.push(u) } });
+
+    return of(result);
+  }
+
+  /**
+   * Collects all users from all base groups at a given privilege one
+   * @param privilegeGroupIdentification id of the privilege group
+   * @param dissolveSubgroups indicator if the users of subgroups should also be added
+   * @param role the role which filter the base groups. If undefined all will be determined
+   * @returns list of users
+   */
+  private getUsersAtSubBaseGroups(privilegeGroupIdentification: string, dissolveSubgroups: boolean | undefined, role: Role | undefined): User[] {
+    let result: User[] = [];
     if (dissolveSubgroups) {
+      let users = this.getAllUsersAtSelectedCommonGroupFromMock();
+
       for (let br of BaseGroupService.getBaseGroupIdRolesAtPrivilegeFromMock(privilegeGroupIdentification)) {
         if (role != undefined && br.role != role) {
           continue;
@@ -1033,10 +1049,8 @@ export class UserService extends BaseBackendService {
         }
       }
     }
-
-    return of(result);
+    return result;
   }
-
 
 
   /**
