@@ -11,7 +11,7 @@ import { CryptoService } from '../util/crypto.service';
 import { SelectionService } from '../util/selection.service';
 import { UserService } from './user.service';
 import { AdminService } from './admin.service';
-import { of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 
 
 describe('AuthService', () => {
@@ -24,14 +24,16 @@ describe('AuthService', () => {
   let selectionService: SelectionService;
 
   let selectionServiceSetActiveUserSpy: jasmine.Spy<(user: User) => void>;
+  let getUserSpy: jasmine.Spy<(userId: string) => Observable<User>>;
+  let getAdminSpy: jasmine.Spy<(userId: string) => Observable<User>>;
 
   const baseTime = new Date(2021, 9, 1, 20, 15, 0);
   const jwtHeader = 'eyJ0eXAiOiJKV1QiLCJjdHkiOm51bGwsImFsZyI6IkhTMjU2In0';
-  const jwtPayload = 'eyJpc3MiOiJVQUEwMDAwMSIsInN1YiI6IlVBQTAwMDAxIiwiYXVkIjpudWxsLCJleHAiOjE2MjUxNzY4MDAsIm5iZiI6bnVsbCwiaWF0IjoxNjI1MDkwNDAwLCJqdGkiOiJhYmMiLCJ0aW1lWm9uZSI6IkV1cm9wZS9CZXJsaW4ifQ';
-  const jwtRefrehPayload = 'eyJpc3MiOiJVQUEwMDAwMSIsInN1YiI6IlVBQTAwMDAxIiwiYXVkIjpudWxsLCJleHAiOjE2MjUxODY4MDAsIm5iZiI6bnVsbCwiaWF0IjoxNjI1MTAwNDAwLCJqdGkiOiJhYmMiLCJ0aW1lWm9uZSI6IkV1cm9wZS9CZXJsaW4ifQ';
+  const jwtPayload = 'eyJpc3MiOiJVQUEwMDAwMiIsInN1YiI6IlVBQTAwMDAyIiwiYXVkIjpudWxsLCJleHAiOjE2MjUxNzY4MDAsIm5iZiI6bnVsbCwiaWF0IjoxNjI1MDkwNDAwLCJqdGkiOiJhYmMiLCJ0aW1lWm9uZSI6IkV1cm9wZS9CZXJsaW4ifQ';
+  const jwtRefrehPayload = 'eyJpc3MiOiJVQUEwMDAwMiIsInN1YiI6IlVBQTAwMDAyIiwiYXVkIjpudWxsLCJleHAiOjE2MjUxODY4MDAsIm5iZiI6bnVsbCwiaWF0IjoxNjI1MTAwNDAwLCJqdGkiOiJhYmMiLCJ0aW1lWm9uZSI6IkV1cm9wZS9CZXJsaW4ifQ';
   // SomeDummySecret
-  const jwtSignature = 'bJ-OOeN4NUJdk4dD0VpNRYBv09Tn-RK4nhrvWXzgcxY';
-  const jwtRefreshSignature = 'INWLeAiLfMYQTb6FkWiaX-W1pq0VCxVZPzLlh-dCsIw';
+  const jwtSignature = 'HGnch2fGaW4HpEYvwhsEzRSZCg6iGPOIBRc5G1IrfSs';
+  const jwtRefreshSignature = 'AYIH4Vy0V2GE0MAGfU3nw3IoB6U54lKap4bFuRH132U';
   const accessToken = `${jwtHeader}.${jwtPayload}.${jwtSignature}`
   const refreshToken = `${jwtHeader}.${jwtRefrehPayload}.${jwtRefreshSignature}`
 
@@ -98,7 +100,8 @@ describe('AuthService', () => {
     adminService = TestBed.inject(AdminService);
 
     selectionServiceSetActiveUserSpy = spyOn(selectionService, 'setActiveUser');
-    spyOn(userService,'getUser').and.returnValue(of(spyUser));
+    getUserSpy = spyOn(userService, 'getUser').and.returnValue(of(spyUser));
+    getAdminSpy = spyOn(adminService, 'getAdmin').and.returnValue(throwError(new Error(`There is not any Admin with identification "${userId}"`)));
 
     service = new AuthService(http, fakeConfig as ConfigService, fakeCrypto as CryptoService, router, selectionService, userService, adminService);
 
@@ -112,7 +115,7 @@ describe('AuthService', () => {
   });
 
 
-  it('retrieveToken - retrieve token should be saved', fakeAsync(() => {
+  it('retrieveToken - retrieve token of user should be saved', fakeAsync(() => {
     let user = 'username';
     let pwd = 'pwd';
 
@@ -137,6 +140,46 @@ describe('AuthService', () => {
     req.flush(mockResponse);
 
     expect(selectionServiceSetActiveUserSpy).toHaveBeenCalled();
+    expect(getUserSpy).toHaveBeenCalled();
+    expect(getAdminSpy).not.toHaveBeenCalled();
+
+    tick();
+  }));
+
+
+  it('retrieveToken - retrieve token of amdin should be saved', fakeAsync(() => {
+    let user = 'username';
+    let pwd = 'pwd';
+
+
+    getUserSpy.and.returnValue(throwError(new Error(`There is not any User with identification "${userId}"`)));
+    getAdminSpy.and.returnValue(of(spyUser));
+
+    //userService.getUser('dummy').subscribe(data=> {console.log("data dummy")}, e=>{ console.log(`isError ${e instanceof Error}`); let err = e as Error; console.log(err.message)})
+
+    const fakeCrypto = {
+      encrypt: (plaintext: string) => { `encrypted: ${plaintext}` },
+      decrypt: (encryptedText: string) => { `decrypted: ${encryptedText}` },
+      setEncryptedAtLocalStorage: (key: string, value: string) => {
+        expect(['access_token', 'access_token_expire', 'refresh_token']).toContain(key);
+        if (key != 'access_token_expire') {
+          expect([accessToken, refreshToken]).toContain(value);
+        }
+      },
+      getDecryptedFromLocalStorage: (key: string) => { `decrypted key: ${key}` }
+    };
+
+    service = new AuthService(http, fakeConfig as ConfigService, fakeCrypto as CryptoService, router, selectionService, userService, adminService);
+
+    service.retrieveToken(user, pwd).subscribe(() => { });
+
+    const req = httpMock.expectOne('//localhost:8080/oauth/token');
+    expect(req.request.method).toEqual("POST");
+    req.flush(mockResponse);
+
+    expect(selectionServiceSetActiveUserSpy).toHaveBeenCalled();
+    expect(getUserSpy).toHaveBeenCalled();
+    expect(getAdminSpy).toHaveBeenCalled();
 
     tick();
   }));

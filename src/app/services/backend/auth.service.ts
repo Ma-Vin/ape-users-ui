@@ -224,18 +224,34 @@ export class AuthService extends BaseBackendService {
    * @param userId the identification of the user to set
    */
   private setActiveUserAtSelectionService(userId: string): void {
+    if (this.useMock) {
+      this.setActiveUserAtSelectionServiceMock(userId);
+      return
+    }
     this.userService.getUser(userId).pipe(
       catchError((err, caugth) => {
         if (err instanceof Error && err.message == `There is not any User with identification "${userId}"`) {
-          console.debug(`The user ${userId} does not exists, may be it iss an admin`)
+          console.debug(`The user ${userId} does not exists, may be it is an admin`)
           return this.adminService.getAdmin(userId);
         }
+        console.error(err);
         this.selectionService.setActiveUser(undefined);
         return NEVER;
       })
     ).subscribe(data => {
       this.selectionService.setActiveUser(data);
     });
+  }
+
+  private setActiveUserAtSelectionServiceMock(userId: string): void {
+    this.initMocks();
+    for (let u of (BaseBackendService.mockData.get(ALL_USERS_MOCK_KEY) as User[])) {
+      if (u.identification == userId) {
+        this.selectionService.setActiveUser(u);
+        break;
+      }
+    }
+    throwError(new Error(`There is not any User with identification "${userId}"`));
   }
 
   loginAndRedirect(username: string, password: string, redirect: string): void {
