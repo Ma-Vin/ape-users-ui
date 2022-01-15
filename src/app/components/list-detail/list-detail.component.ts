@@ -150,6 +150,13 @@ export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> impl
         return this.isNewObject || this.disableDeleteObjectTypeSpecific();
     }
 
+    disableAcceptCallBack = (): boolean => {
+        return this.disableAccept();
+    }
+
+    disableDeleteCallBack = (): boolean => {
+        return this.disableDelete();
+    }
 
     /**
      * @returns true if the delete button should be disabled depending of the type of the object. Otherwise false.
@@ -205,6 +212,10 @@ export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> impl
         } else {
             this.onAcceptExistingObject();
         }
+    }
+
+    onAcceptCallBack = (): void => {
+        this.onAccept();
     }
 
 
@@ -279,6 +290,10 @@ export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> impl
         this.onDeleteExistingObject();
     }
 
+    onDeleteCallBack = (): void => {
+        this.onDelete();
+    }
+
     /**
      * Deletes the selected existing object
      */
@@ -294,4 +309,7 @@ export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> impl
         this.selectedObject = this.createNewEmptyObject();
     }
 
+    onCancelCallBack = (): void => {
+        this.onCancel();
+    }
 }

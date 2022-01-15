@@ -315,6 +315,34 @@ describe('CommonGroupComponent', () => {
   }));
 
 
+
+  /**
+   * onAcceptCallBack
+   */
+  it('onAcceptCallBack - create new common group', fakeAsync(() => {
+    component.showObjectDetail = true;
+    component.isNewObject = true;
+    component.selectedObject = otherCommonGroup;
+    component.allObjectsfilterDataSource.data = [commonGroup];
+
+    let createcommonGroupSpy = spyOn(commonGroupService, 'createCommonGroup').and.returnValue(of(otherCommonGroup));
+    let updateCreatedcommonGroupSpy = spyOn(commonGroupService, 'updateCommonGroup').and.returnValue(of(otherCommonGroup));
+
+    component.onAcceptCallBack();
+
+    tick();
+
+    expect(createcommonGroupSpy).toHaveBeenCalled;
+    expect(updateCreatedcommonGroupSpy).toHaveBeenCalled;
+    expect(component.selectedObject === otherCommonGroup).toBeFalse();
+    expect(component.selectedObject.equals(otherCommonGroup)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
+    expect(component.allObjectsfilterDataSource.data.includes(commonGroup)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.includes(otherCommonGroup)).toBeTrue();
+  }));
+
+
+
   /**
    * onCancel
    */
@@ -326,6 +354,21 @@ describe('CommonGroupComponent', () => {
     expect(component.selectedObject).toBeTruthy();
     expect(component.selectedObject.identification).toEqual('');
   });
+
+
+
+  /**
+   * onCancelCallBack
+   */
+  it('onCancelCallBack', () => {
+    component.onCancelCallBack();
+
+    expect(component.showObjectDetail).toBeFalse();
+    expect(component.isNewObject).toBeFalse();
+    expect(component.selectedObject).toBeTruthy();
+    expect(component.selectedObject.identification).toEqual('');
+  });
+
 
 
   /**
@@ -428,14 +471,43 @@ describe('CommonGroupComponent', () => {
   }));
 
 
+
   /**
-   * disableAccept
+   * onDeleteCallBack
+   */
+  it('onDeleteCallBack - delete successful', fakeAsync(() => {
+    component.allObjectsfilterDataSource.data = [commonGroup, otherCommonGroup];
+    let deleteCommongroupSpy = spyOn(commonGroupService, 'deleteCommonGroup').and.returnValue(of(true));
+    let openMessage = spyOn(snackBar, 'open').and.returnValue({} as MatSnackBarRef<TextOnlySnackBar>);
+    let isAllowedToDeleteCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToDeleteCommonGroup').and.returnValue(true);
+
+    component.selectedObject = otherCommonGroup;
+    component.showObjectDetail = true;
+    component.isNewObject = false;
+
+    component.onDeleteCallBack();
+
+    tick();
+
+    expect(deleteCommongroupSpy).toHaveBeenCalled();
+    expect(openMessage).not.toHaveBeenCalled();
+    expect(isAllowedToDeleteCommonGroupSpy).toHaveBeenCalled();
+
+    expect(component.allObjectsfilterDataSource.data.length).toEqual(1);
+    expect(component.allObjectsfilterDataSource.data.includes(commonGroup)).toBeTrue();
+  }));
+
+
+
+  /**
+   * disableAccept/Callback
    */
   it('disableAccept - new common group', () => {
     component.isNewObject = true;
     component.selectedObject = commonGroup;
 
     expect(component.disableAccept()).toBeFalse();
+    expect(component.disableAcceptCallBack()).toBeFalse();
   });
 
   it('disableAccept - new common group, but missing group name', () => {
@@ -445,6 +517,7 @@ describe('CommonGroupComponent', () => {
     } as CommonGroup
 
     expect(component.disableAccept()).toBeTrue();
+    expect(component.disableAcceptCallBack()).toBeTrue();
   });
 
 
@@ -456,6 +529,7 @@ describe('CommonGroupComponent', () => {
     } as CommonGroup
 
     expect(component.disableAccept()).toBeTrue();
+    expect(component.disableAcceptCallBack()).toBeTrue();
   });
 
   it('disableAccept - existing common group', () => {
@@ -463,11 +537,13 @@ describe('CommonGroupComponent', () => {
     component.selectedObject = commonGroup;
 
     expect(component.disableAccept()).toBeFalse();
+    expect(component.disableAcceptCallBack()).toBeFalse();
   });
 
   it('disableAccept - existing common group, but not modified', () => {
     component.onSelectObject(commonGroup);
     expect(component.disableAccept()).toBeTrue();
+    expect(component.disableAcceptCallBack()).toBeTrue();
   });
 
   it('disableAccept - existing common group, but missing group name', () => {
@@ -477,6 +553,7 @@ describe('CommonGroupComponent', () => {
     } as CommonGroup
 
     expect(component.disableAccept()).toBeTrue();
+    expect(component.disableAcceptCallBack()).toBeTrue();
   });
 
   it('disableAccept - existing common group, but empty group name', () => {
@@ -487,6 +564,7 @@ describe('CommonGroupComponent', () => {
     } as CommonGroup
 
     expect(component.disableAccept()).toBeTrue();
+    expect(component.disableAcceptCallBack()).toBeTrue();
   });
 
 
@@ -506,13 +584,14 @@ describe('CommonGroupComponent', () => {
 
 
   /**
-   * disableDelete
+   * disableDelete/Callback
    */
   it('disableDelete - new common group', () => {
     component.isNewObject = true;
     spyOn(commonGroupPermissionsService, 'isAllowedToDeleteCommonGroup').and.returnValue(true);
 
     expect(component.disableDelete()).toBeTrue();
+    expect(component.disableDeleteCallBack()).toBeTrue();
   });
 
   it('disableDelete - existing common group', () => {
@@ -520,6 +599,7 @@ describe('CommonGroupComponent', () => {
     spyOn(commonGroupPermissionsService, 'isAllowedToDeleteCommonGroup').and.returnValue(true);
 
     expect(component.disableDelete()).toBeFalse();
+    expect(component.disableDeleteCallBack()).toBeFalse();
   });
 
   it('disableDelete - existing common group, but not allowed to', () => {
@@ -527,5 +607,6 @@ describe('CommonGroupComponent', () => {
     spyOn(commonGroupPermissionsService, 'isAllowedToDeleteCommonGroup').and.returnValue(false);
 
     expect(component.disableDelete()).toBeTrue();
+    expect(component.disableDeleteCallBack()).toBeTrue();
   });
 });

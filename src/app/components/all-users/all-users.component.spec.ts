@@ -488,12 +488,52 @@ describe('AllUsersComponent', () => {
   }));
 
 
+  /**
+   * onAcceptCallBack
+   */
+  it('onAcceptCallBack - create new user', fakeAsync(() => {
+    component.showObjectDetail = true;
+    component.isNewObject = true;
+    component.selectedObject = otherUser;
+    component.allObjectsfilterDataSource.data = [user];
+
+    let createUserSpy = spyOn(userService, 'createUser').and.returnValue(of(otherUser));
+    let updateCreatedUserSpy = spyOn(userService, 'updateUser').and.returnValue(of(otherUser));
+    let setRoleSpy = spyOn(userService, 'setRole').and.returnValue(of(false));
+
+    component.onAcceptCallBack();
+
+    tick();
+
+    expect(createUserSpy).toHaveBeenCalled();
+    expect(updateCreatedUserSpy).toHaveBeenCalled();
+    expect(setRoleSpy).not.toHaveBeenCalled();
+    expect(component.selectedObject === otherUser).toBeFalse();
+    expect(component.selectedObject.equals(otherUser)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
+    expect(component.allObjectsfilterDataSource.data.includes(user)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.includes(otherUser)).toBeTrue();
+  }));
+
+
 
   /**
    * onCancel
    */
   it('onCancel', () => {
     component.onCancel();
+
+    expect(component.showObjectDetail).toBeFalse();
+    expect(component.isNewObject).toBeFalse();
+    expect(component.selectedObject).toBeTruthy();
+    expect(component.selectedObject.identification).toEqual('');
+  });
+
+  /**
+   * onCancelCallBack
+   */
+  it('onCancel', () => {
+    component.onCancelCallBack();
 
     expect(component.showObjectDetail).toBeFalse();
     expect(component.isNewObject).toBeFalse();
@@ -577,13 +617,41 @@ describe('AllUsersComponent', () => {
 
 
   /**
-   * disableAccept
+   * onDeleteCallBack
+   */
+  it('onDeleteCallBack - delete successful', fakeAsync(() => {
+    component.allObjectsfilterDataSource.data = [user, otherUser];
+    let deleteUserSpy = spyOn(userService, 'deleteUser').and.returnValue(of(true));
+    spyOn(userPermissionSerivce, 'isAllowedToDeleteUser').and.returnValue(true)
+    let openMessage = spyOn(snackBar, 'open').and.returnValue({} as MatSnackBarRef<TextOnlySnackBar>);
+
+    component.selectedObject = otherUser;
+    component.showObjectDetail = true;
+    component.isNewObject = false;
+
+    component.onDeleteCallBack();
+
+    tick();
+
+    expect(deleteUserSpy).toHaveBeenCalled();
+    expect(openMessage).not.toHaveBeenCalled();
+
+
+    expect(component.allObjectsfilterDataSource.data.length).toEqual(1);
+    expect(component.allObjectsfilterDataSource.data.includes(user)).toBeTrue();
+  }));
+
+
+
+  /**
+   * disableAccept/CallBack
    */
   it('disableAccept - new user', () => {
     component.isNewObject = true;
     component.selectedObject = user;
 
     expect(component.disableAccept()).toBeFalse();
+    expect(component.disableAcceptCallBack()).toBeFalse();
   });
 
   it('disableAccept - new user, but missing first name', () => {
@@ -595,6 +663,7 @@ describe('AllUsersComponent', () => {
     } as User
 
     expect(component.disableAccept()).toBeTrue();
+    expect(component.disableAcceptCallBack()).toBeTrue();
   });
 
   it('disableAccept - new user, but empty first name', () => {
@@ -607,6 +676,7 @@ describe('AllUsersComponent', () => {
     } as User
 
     expect(component.disableAccept()).toBeTrue();
+    expect(component.disableAcceptCallBack()).toBeTrue();
   });
 
   it('disableAccept - new user, but missing last name', () => {
@@ -618,6 +688,7 @@ describe('AllUsersComponent', () => {
     } as User
 
     expect(component.disableAccept()).toBeTrue();
+    expect(component.disableAcceptCallBack()).toBeTrue();
   });
 
   it('disableAccept - new user, but empty last name', () => {
@@ -630,6 +701,7 @@ describe('AllUsersComponent', () => {
     } as User
 
     expect(component.disableAccept()).toBeTrue();
+    expect(component.disableAcceptCallBack()).toBeTrue();
   });
 
   it('disableAccept - new user, but missing role', () => {
@@ -641,6 +713,7 @@ describe('AllUsersComponent', () => {
     } as User
 
     expect(component.disableAccept()).toBeTrue();
+    expect(component.disableAcceptCallBack()).toBeTrue();
   });
 
   it('disableAccept - existing user', () => {
@@ -648,11 +721,13 @@ describe('AllUsersComponent', () => {
     component.selectedObject = user;
 
     expect(component.disableAccept()).toBeFalse();
+    expect(component.disableAcceptCallBack()).toBeFalse();
   });
 
   it('disableAccept - existing user, but not modified', () => {
     component.onSelectObject(user);
     expect(component.disableAccept()).toBeTrue();
+    expect(component.disableAcceptCallBack()).toBeTrue();
   });
 
   it('disableAccept - existing user, but missing first name', () => {
@@ -664,6 +739,7 @@ describe('AllUsersComponent', () => {
     } as User
 
     expect(component.disableAccept()).toBeTrue();
+    expect(component.disableAcceptCallBack()).toBeTrue();
   });
 
   it('disableAccept - existing user, but empty first name', () => {
@@ -676,6 +752,7 @@ describe('AllUsersComponent', () => {
     } as User
 
     expect(component.disableAccept()).toBeTrue();
+    expect(component.disableAcceptCallBack()).toBeTrue();
   });
 
   it('disableAccept - existing user, but missing last name', () => {
@@ -687,6 +764,7 @@ describe('AllUsersComponent', () => {
     } as User
 
     expect(component.disableAccept()).toBeTrue();
+    expect(component.disableAcceptCallBack()).toBeTrue();
   });
 
   it('disableAccept - existing user, but empty last name', () => {
@@ -699,6 +777,7 @@ describe('AllUsersComponent', () => {
     } as User
 
     expect(component.disableAccept()).toBeTrue();
+    expect(component.disableAcceptCallBack()).toBeTrue();
   });
 
   it('disableAccept - existing user, but missing role', () => {
@@ -710,6 +789,7 @@ describe('AllUsersComponent', () => {
     } as User
 
     expect(component.disableAccept()).toBeTrue();
+    expect(component.disableAcceptCallBack()).toBeTrue();
   });
 
 
@@ -736,13 +816,14 @@ describe('AllUsersComponent', () => {
 
 
   /**
-   * disableDelete
+   * disableDelete/CallBack
    */
   it('disableDelete - new user, but allowed to', () => {
     component.isNewObject = true;
     let isAllowedToDeleteUserSpy = spyOn(userPermissionSerivce, 'isAllowedToDeleteUser').and.returnValue(true);
 
     expect(component.disableDelete()).toBeTrue();
+    expect(component.disableDeleteCallBack()).toBeTrue();
     // short circled -> not
     expect(isAllowedToDeleteUserSpy).not.toHaveBeenCalled();
   });
@@ -752,6 +833,7 @@ describe('AllUsersComponent', () => {
     let isAllowedToDeleteUserSpy = spyOn(userPermissionSerivce, 'isAllowedToDeleteUser').and.returnValue(false);
 
     expect(component.disableDelete()).toBeTrue();
+    expect(component.disableDeleteCallBack()).toBeTrue();
     // short circled -> not
     expect(isAllowedToDeleteUserSpy).not.toHaveBeenCalled();
   });
@@ -761,6 +843,7 @@ describe('AllUsersComponent', () => {
     let isAllowedToDeleteUserSpy = spyOn(userPermissionSerivce, 'isAllowedToDeleteUser').and.returnValue(true);
 
     expect(component.disableDelete()).toBeFalse();
+    expect(component.disableDeleteCallBack()).toBeFalse();
     expect(isAllowedToDeleteUserSpy).toHaveBeenCalled();
   });
 
@@ -769,6 +852,7 @@ describe('AllUsersComponent', () => {
     let isAllowedToDeleteUserSpy = spyOn(userPermissionSerivce, 'isAllowedToDeleteUser').and.returnValue(false);
 
     expect(component.disableDelete()).toBeTrue();
+    expect(component.disableDeleteCallBack()).toBeTrue();
     expect(isAllowedToDeleteUserSpy).toHaveBeenCalled();
   });
 

@@ -67,25 +67,9 @@
                     <input matInput [(ngModel)]="lastLogin" disabled />
                 </mat-form-field>
             </div>
-            <div class="button-row">
-                <button mat-raised-button color="primary" (click)="onAccept()" [disabled]="disableAccept()">
-                    <div *ngIf="isNewObject; then newBlock else changeBlock"></div>
-                    <ng-template #newBlock>
-                        <mat-icon>add_box</mat-icon>
-                        Create
-                    </ng-template>
-                    <ng-template #changeBlock>
-                        <mat-icon>create</mat-icon>
-                        Accept
-                    </ng-template>
-                </button>
-                <button mat-raised-button color="primary" (click)="onCancel()">
-                    <mat-icon>undo</mat-icon> Cancel
-                </button>
-                <button mat-raised-button color="primary" (click)="onDelete()" [disabled]="disableDelete()">
-                    <mat-icon>delete_forever</mat-icon> Delete
-                </button>
-            </div>
+            <app-detail-button-row [onAccept]="onAcceptCallBack" [disableAccept]="disableAcceptCallBack"
+                [onCancel]="onCancelCallBack" [onDelete]="onDeleteCallBack" [disableDelete]="disableDeleteCallBack"
+                [isNewObject]="isNewObject"></app-detail-button-row>
         </ng-template>
         <ng-template #adminNotSelectedBlock>
             <h1>Please select an admin</h1>

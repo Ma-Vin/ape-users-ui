@@ -376,6 +376,35 @@ describe('AdminGroupComponent', () => {
   }));
 
 
+
+  /**
+   * onAcceptCallBack
+   */
+  it('onAcceptCallBack - create new admin', fakeAsync(() => {
+    component.showObjectDetail = true;
+    component.isNewObject = true;
+    component.selectedObject = otherAdmin;
+    component.allObjectsfilterDataSource.data = [admin];
+
+    spyOn(selectionService, 'getSelectedAdminGroup').and.returnValue({ identification: adminGroupId } as AdminGroup);
+    let createAdminSpy = spyOn(adminService, 'createAdmin').and.returnValue(of(otherAdmin));
+    let updateCreatedAdminSpy = spyOn(adminService, 'updateAdmin').and.returnValue(of(otherAdmin));
+
+    component.onAcceptCallBack();
+
+    tick();
+
+    expect(createAdminSpy).toHaveBeenCalled;
+    expect(updateCreatedAdminSpy).toHaveBeenCalled;
+    expect(component.selectedObject === otherAdmin).toBeFalse();
+    expect(component.selectedObject.equals(otherAdmin)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
+    expect(component.allObjectsfilterDataSource.data.includes(admin)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.includes(otherAdmin)).toBeTrue();
+  }));
+
+
+
   /**
    * onCancel
    */
@@ -387,6 +416,21 @@ describe('AdminGroupComponent', () => {
     expect(component.selectedObject).toBeTruthy();
     expect(component.selectedObject.identification).toEqual('');
   });
+
+
+
+  /**
+   * onCancelCallBack
+   */
+  it('onCancelCallBack', () => {
+    component.onCancelCallBack();
+
+    expect(component.showObjectDetail).toBeFalse();
+    expect(component.isNewObject).toBeFalse();
+    expect(component.selectedObject).toBeTruthy();
+    expect(component.selectedObject.identification).toEqual('');
+  });
+
 
 
   /**
@@ -461,14 +505,43 @@ describe('AdminGroupComponent', () => {
   }));
 
 
+
   /**
-   * disableAccept
+   * onDeleteCallBack
+   */
+  it('onDeleteCallBack - delete successful', fakeAsync(() => {
+    component.allObjectsfilterDataSource.data = [admin, otherAdmin];
+    spyOn(selectionService, 'getActiveUser').and.returnValue(admin);
+    let deleteAdminSpy = spyOn(adminService, 'deleteAdmin').and.returnValue(of(true));
+    let openMessage = spyOn(snackBar, 'open').and.returnValue({} as MatSnackBarRef<TextOnlySnackBar>);
+
+    component.selectedObject = otherAdmin;
+    component.showObjectDetail = true;
+    component.isNewObject = false;
+
+    component.onDeleteCallBack();
+
+    tick();
+
+    expect(deleteAdminSpy).toHaveBeenCalled();
+    expect(openMessage).not.toHaveBeenCalled();
+
+
+    expect(component.allObjectsfilterDataSource.data.length).toEqual(1);
+    expect(component.allObjectsfilterDataSource.data.includes(admin)).toBeTrue();
+  }));
+
+
+
+  /**
+   * disableAccept/Callback
    */
   it('disableAccept - new admin', () => {
     component.isNewObject = true;
     component.selectedObject = admin;
 
     expect(component.disableAccept()).toBeFalse();
+    expect(component.disableAcceptCallBack()).toBeFalse();
   });
 
   it('disableAccept - new admin, but missing firstName', () => {
@@ -479,6 +552,7 @@ describe('AdminGroupComponent', () => {
     } as User
 
     expect(component.disableAccept()).toBeTrue();
+    expect(component.disableAcceptCallBack()).toBeTrue();
   });
 
   it('disableAccept - new admin, but empty firstName', () => {
@@ -490,6 +564,7 @@ describe('AdminGroupComponent', () => {
     } as User
 
     expect(component.disableAccept()).toBeTrue();
+    expect(component.disableAcceptCallBack()).toBeTrue();
   });
 
   it('disableAccept - new admin, but missing lastName', () => {
@@ -500,6 +575,7 @@ describe('AdminGroupComponent', () => {
     } as User
 
     expect(component.disableAccept()).toBeTrue();
+    expect(component.disableAcceptCallBack()).toBeTrue();
   });
 
   it('disableAccept - new admin, but empty lastName', () => {
@@ -511,6 +587,7 @@ describe('AdminGroupComponent', () => {
     } as User
 
     expect(component.disableAccept()).toBeTrue();
+    expect(component.disableAcceptCallBack()).toBeTrue();
   });
 
   it('disableAccept - existing admin', () => {
@@ -518,11 +595,13 @@ describe('AdminGroupComponent', () => {
     component.selectedObject = admin;
 
     expect(component.disableAccept()).toBeFalse();
+    expect(component.disableAcceptCallBack()).toBeFalse();
   });
 
   it('disableAccept - existing admin, but not modified', () => {
     component.onSelectObject(admin);
     expect(component.disableAccept()).toBeTrue();
+    expect(component.disableAcceptCallBack()).toBeTrue();
   });
 
   it('disableAccept - existing admin, but missing firstName', () => {
@@ -533,6 +612,7 @@ describe('AdminGroupComponent', () => {
     } as User
 
     expect(component.disableAccept()).toBeTrue();
+    expect(component.disableAcceptCallBack()).toBeTrue();
   });
 
   it('disableAccept - existing admin, but empty firstName', () => {
@@ -544,6 +624,7 @@ describe('AdminGroupComponent', () => {
     } as User
 
     expect(component.disableAccept()).toBeTrue();
+    expect(component.disableAcceptCallBack()).toBeTrue();
   });
 
   it('disableAccept - existing admin, but missing lastName', () => {
@@ -554,6 +635,7 @@ describe('AdminGroupComponent', () => {
     } as User
 
     expect(component.disableAccept()).toBeTrue();
+    expect(component.disableAcceptCallBack()).toBeTrue();
   });
 
   it('disableAccept - existing admin, but empty lastName', () => {
@@ -565,10 +647,11 @@ describe('AdminGroupComponent', () => {
     } as User
 
     expect(component.disableAccept()).toBeTrue();
+    expect(component.disableAcceptCallBack()).toBeTrue();
   });
 
 
-  
+
   /**
    * disableCreateObject
    */
@@ -579,7 +662,7 @@ describe('AdminGroupComponent', () => {
 
 
   /**
-   * disableDelete
+   * disableDelete/CAllback
    */
   it('disableDelete - not new and other', () => {
     component.isNewObject = false;
@@ -587,6 +670,7 @@ describe('AdminGroupComponent', () => {
     spyOn(selectionService, 'getActiveUser').and.returnValue(otherAdmin);
 
     expect(component.disableDelete()).toBeFalse();
+    expect(component.disableDeleteCallBack()).toBeFalse();
   });
 
   it('disableDelete - undefined active user', () => {
@@ -595,6 +679,7 @@ describe('AdminGroupComponent', () => {
     spyOn(selectionService, 'getActiveUser').and.returnValue(undefined);
 
     expect(component.disableDelete()).toBeTrue();
+    expect(component.disableDeleteCallBack()).toBeTrue();
   });
 
   it('disableDelete - new admin', () => {
@@ -603,6 +688,7 @@ describe('AdminGroupComponent', () => {
     spyOn(selectionService, 'getActiveUser').and.returnValue(otherAdmin);
 
     expect(component.disableDelete()).toBeTrue();
+    expect(component.disableDeleteCallBack()).toBeTrue();
   });
 
   it('disableDelete - active user', () => {
@@ -611,6 +697,7 @@ describe('AdminGroupComponent', () => {
     spyOn(selectionService, 'getActiveUser').and.returnValue(admin);
 
     expect(component.disableDelete()).toBeTrue();
+    expect(component.disableDeleteCallBack()).toBeTrue();
   });
 
 });
