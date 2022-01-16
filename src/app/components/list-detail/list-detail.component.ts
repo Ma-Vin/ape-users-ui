@@ -16,7 +16,6 @@ export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> impl
     disableUpdate = false;
 
 
-    allObjectsDisplayedColumns: string[];
     allObjectsfilterDataSource: MatTableDataSource<T> = new MatTableDataSource<T>([]);
     @ViewChild('tableAllObjectsSort', { static: false }) sort: MatSort | null = null;
     @ViewChild('tableAllObjectsTable', { static: false }) table: MatTable<T> | undefined;
@@ -25,7 +24,6 @@ export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> impl
     constructor(protected route: ActivatedRoute, protected location: Location, protected snackBar: MatSnackBar) {
         this.selectedObject = this.createNewEmptyObject();
         this.showObjectDetail = false;
-        this.allObjectsDisplayedColumns = this.createDisplayedColumns();
     }
 
     /**
@@ -41,10 +39,6 @@ export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> impl
      */
     abstract createNewEmptyObject(): T;
 
-    /**
-     * @returns An Array of Columns for the list of all objects
-     */
-    abstract createDisplayedColumns(): string[];
 
     /**
      * Loads all objects and adds them to the filtered datasource
@@ -90,7 +84,7 @@ export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> impl
 
     /**
      * Selects a given object
-     * @param objectToSelect the group to select
+     * @param objectToSelect the object to select
      */
     onSelectObject(objectToSelect: T): void {
         if (this.selectedObject.getIdentification() != objectToSelect.getIdentification()) {
@@ -102,7 +96,20 @@ export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> impl
         this.showObjectDetail = true;
         this.isNewObject = false;
         this.disableUpdate = this.disableUpdateSelectedObject();
+
+        this.onSelectObjectTypeSpecific(objectToSelect);
     }
+
+    onSelectObjectCallBack = (objectToSelect: T): void => {
+        this.onSelectObject(objectToSelect);
+    }
+
+    /**
+     * executes some type specific actions in the end of onSelectObject
+     * @param objectToSelect the object to select
+     * 
+     */
+    abstract onSelectObjectTypeSpecific(objectToSelect: T): void;
 
     /**
      * Method to determine the value to set to disableUpdate while the onSelectObject-call
@@ -118,6 +125,11 @@ export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> impl
     isObjectSelected(objectToCheck: T): boolean {
         return this.selectedObject.getIdentification() == objectToCheck.getIdentification();
     }
+
+    isObjectSelectedCallBack = (objectToCheck: T): boolean => {
+        return this.isObjectSelected(objectToCheck);
+    }
+
 
     /**
      * Opens a snackbar with a message

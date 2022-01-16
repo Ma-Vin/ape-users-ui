@@ -1,0 +1,23 @@
+@import '../../../app-constants.less';
+
+.all-objects {
+    margin  : @base-margin;
+    overflow: auto;
+
+    .mat-table,
+    .mat-form-field {
+        width: 100%;
+    }
+
+    .mat-row {
+        &:hover {
+            font-style : italic;
+            font-weight: bold;
+        }
+
+        &.selected {
+            font-weight: bold;
+        }
+    }
+
+}

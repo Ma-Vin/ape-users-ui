@@ -47,10 +47,6 @@ export class AdminGroupComponent extends ListDetailComponent<User> {
   }
 
 
-  createDisplayedColumns(): string[] {
-    return ['identification', 'firstName', 'lastName'];
-  }
-
   protected getBaseRoute(): string {
     return ADMIN_GROUP_PATH;
   }
@@ -146,5 +142,7 @@ export class AdminGroupComponent extends ListDetailComponent<User> {
     return this.selectedObject.firstName != undefined && this.selectedObject.firstName.length > 0
       && this.selectedObject.lastName != undefined && this.selectedObject.lastName.length > 0;
   }
+
+  onSelectObjectTypeSpecific(objectToSelect: User): void { }
 
 }

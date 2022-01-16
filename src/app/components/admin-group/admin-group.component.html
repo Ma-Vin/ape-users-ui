@@ -1,31 +1,9 @@
 <app-toolbar (onCreateObjectEventEmitter)="onCreateObject()" [createObjectName]="'Admin'" [activeSite]="toolbarSite"
     [disableCreateButton]="disableCreateObject()"></app-toolbar>
 <div class="object-container">
-    <div class="all-objects">
-        <mat-form-field>
-            <mat-label>Filter</mat-label>
-            <input matInput (keyup)="applyAllObjectsFilter($event)" placeholder="Admin Id, First- or Lastname">
-        </mat-form-field>
-        <table mat-table #tableAllObjectsTable="matTable" #tableAllObjectsSort="matSort"
-            [dataSource]="allObjectsfilterDataSource" matSort matSortActive="identification" matSortDirection="asc">
-            <details>all available admins</details>
-            <ng-container matColumnDef="identification">
-                <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header> Id </th>
-                <td mat-cell *matCellDef="let element"> {{element.identification}} </td>
-            </ng-container>
-            <ng-container matColumnDef="firstName">
-                <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header> First Name </th>
-                <td mat-cell *matCellDef="let element"> {{element.firstName}} </td>
-            </ng-container>
-            <ng-container matColumnDef="lastName">
-                <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header> Last Name </th>
-                <td mat-cell *matCellDef="let element"> {{element.lastName}} </td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="allObjectsDisplayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: allObjectsDisplayedColumns;" (click)="onSelectObject(row)"
-                [class.selected]="isObjectSelected(row)"></tr>
-        </table>
-    </div>
+    <app-first-last-name-list [allObjectsfilterDataSource]="allObjectsfilterDataSource"
+        [selectObject]="onSelectObjectCallBack" [isObjectSelected]="isObjectSelectedCallBack">
+    </app-first-last-name-list>
     <div class="object-detail">
         <div *ngIf="showObjectDetail; then adminSelectedBlock else adminNotSelectedBlock"></div>
         <ng-template #adminSelectedBlock>

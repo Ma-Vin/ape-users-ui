@@ -19,6 +19,8 @@ import { AllCommonGroupsComponent } from './components/all-common-groups/all-com
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { AllUsersComponent } from './components/all-users/all-users.component';
 import { DetailButtonRowComponent } from './components/list-detail/detail-button-row/detail-button-row.component';
+import { FirstLastNameListComponent } from './components/list-detail/first-last-name-list/first-last-name-list.component';
+import { GroupNameListComponent } from './components/list-detail/group-name-list/group-name-list.component';
 
 registerLocaleData(localeDE);
 
@@ -30,7 +32,9 @@ registerLocaleData(localeDE);
     AllCommonGroupsComponent,
     ToolbarComponent,
     AllUsersComponent,
-    DetailButtonRowComponent
+    DetailButtonRowComponent,
+    FirstLastNameListComponent,
+    GroupNameListComponent
   ],
   imports: [
     BrowserModule,

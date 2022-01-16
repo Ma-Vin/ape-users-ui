@@ -49,11 +49,6 @@ export class AllCommonGroupsComponent extends ListDetailComponent<CommonGroup>{
   }
 
 
-  createDisplayedColumns(): string[] {
-    return ['identification', 'groupName']
-  }
-
-
   mapObject(source: CommonGroup): CommonGroup {
     return CommonGroup.map(source);
   }
@@ -78,8 +73,7 @@ export class AllCommonGroupsComponent extends ListDetailComponent<CommonGroup>{
   }
 
 
-  onSelectObject(objectToSelect: CommonGroup): void {
-    super.onSelectObject(objectToSelect);
+  onSelectObjectTypeSpecific(objectToSelect: CommonGroup): void {
     this.selectionService.setSelectedCommonGroup(objectToSelect);
   }
 

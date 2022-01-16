@@ -68,10 +68,6 @@ export class AllUsersComponent extends ListDetailComponent<User> {
     return !this.userPermissionSerivce.isAllowedToCreateUser();
   }
 
-  createDisplayedColumns(): string[] {
-    return ['identification', 'firstName', 'lastName'];
-  }
-
   protected loadAllObjects(): void {
     console.debug("AllUsersComponent: get all users from service");
     this.userService.getAllUsers(this.commonGroupId, undefined, undefined).subscribe(
@@ -151,7 +147,9 @@ export class AllUsersComponent extends ListDetailComponent<User> {
   }
 
 
+  onSelectObjectTypeSpecific(objectToSelect: User): void { }
 
+  
   get lastLogin(): string {
     if (this.selectedObject.lastLogin == undefined) {
       return '';
