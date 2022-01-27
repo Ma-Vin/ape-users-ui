@@ -1,0 +1,54 @@
+<app-toolbar (onCreateObjectEventEmitter)="onCreateObject()" [createObjectName]="'Base Group'"
+    [activeSite]="toolbarSite" [disableCreateButton]="disableCreateObject()"></app-toolbar>
+<div class="object-container">
+    <app-group-name-list [allObjectsfilterDataSource]="allObjectsfilterDataSource"
+        [selectObject]="onSelectObjectCallBack" [isObjectSelected]="isObjectSelectedCallBack">
+    </app-group-name-list>
+    <div class="object-detail">
+        <div *ngIf="showObjectDetail; then BaseGroupselectedBlock else BaseGroupNotSelectedBlock"></div>
+        <ng-template #BaseGroupselectedBlock>
+            <div class="element-data-row">
+                <mat-form-field class="element-detail-short">
+                    <mat-label>Id</mat-label>
+                    <input matInput placeholder="Identification" [(ngModel)]="selectedObject.identification" disabled />
+                </mat-form-field>
+            </div>
+            <div class="element-data-row">
+                <mat-form-field class="element-detail-long">
+                    <mat-label>Group Name</mat-label>
+                    <input matInput placeholder="Group Name" [(ngModel)]="selectedObject.groupName" required
+                        [disabled]="disableUpdate" />
+                </mat-form-field>
+            </div>
+            <div class="element-data-row">
+                <mat-form-field class="element-detail-mid" appearance="fill">
+                    <mat-label>Valid from</mat-label>
+                    <input matInput [matDatepicker]="pickerValidFrom" [(ngModel)]="selectedObject.validFrom"
+                        [disabled]="disableUpdate">
+                    <mat-datepicker-toggle matSuffix [for]="pickerValidFrom"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerValidFrom></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field class="element-detail-mid" appearance="fill">
+                    <mat-label>Valid to</mat-label>
+                    <input matInput [matDatepicker]="pickerValidTo" [(ngModel)]="selectedObject.validTo"
+                        [disabled]="disableUpdate">
+                    <mat-datepicker-toggle matSuffix [for]="pickerValidTo"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerValidTo></mat-datepicker>
+                </mat-form-field>
+            </div>
+            <div class="element-data-row-grid">
+                <mat-form-field class="element-detail-grid-full-width">
+                    <mat-label>Description</mat-label>
+                    <textarea matInput placeholder="Description" [(ngModel)]="selectedObject.description"
+                        [disabled]="disableUpdate"></textarea>
+                </mat-form-field>
+            </div>
+            <app-detail-button-row [onAccept]="onAcceptCallBack" [disableAccept]="disableAcceptCallBack"
+                [onCancel]="onCancelCallBack" [onDelete]="onDeleteCallBack" [disableDelete]="disableDeleteCallBack"
+                [isNewObject]="isNewObject"></app-detail-button-row>
+        </ng-template>
+        <ng-template #BaseGroupNotSelectedBlock>
+            <h1>Please select a Base Group</h1>
+        </ng-template>
+    </div>
+</div>

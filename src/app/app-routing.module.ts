@@ -8,15 +8,19 @@ import { AuthGuardService } from './services/guards/auth-guard.service';
 import { AllUsersComponent } from './components/all-users/all-users.component';
 import { CommonGroupsGuardService } from './services/guards/common-groups-guard.service';
 import { UsersGuardService } from './services/guards/users-guard.service';
+import { AllBaseGroupsComponent } from './components/all-base-groups/all-base-groups.component';
+import { BaseGroupGuardService } from './services/guards/base-group-guard.service';
 
 
 export const LOGIN_PATH = 'login';
 export const ADMIN_GROUP_PATH = 'admins';
 export const COMMON_GROUPS_PATH = 'commongroups';
+export const BASE_GROUPS_PATH = 'basegroups';
 export const USERS_PATH = 'users';
 export const LOGIN_ABS_PATH = `/${LOGIN_PATH}`;
 export const ADMIN_GROUP_ABS_PATH = `/${ADMIN_GROUP_PATH}`;
 export const COMMON_GROUPS_ABS_PATH = `/${COMMON_GROUPS_PATH}`;
+export const BASE_GROUPS_ABS_PATH = `/${BASE_GROUPS_PATH}`;
 export const USERS_ABS_PATH = `/${USERS_PATH}`;
 
 const routes: Routes = [
@@ -26,6 +30,8 @@ const routes: Routes = [
   { path: `${ADMIN_GROUP_PATH}/:id`, component: AdminGroupComponent, canActivate: [AuthGuardService, AdminGuardService] },
   { path: COMMON_GROUPS_PATH, component: AllCommonGroupsComponent, canActivate: [AuthGuardService, CommonGroupsGuardService] },
   { path: `${COMMON_GROUPS_PATH}/:id`, component: AllCommonGroupsComponent, canActivate: [AuthGuardService, CommonGroupsGuardService] },
+  { path: BASE_GROUPS_PATH, component: AllBaseGroupsComponent, canActivate: [AuthGuardService, BaseGroupGuardService] },
+  { path: `${BASE_GROUPS_PATH}/:id`, component: AllBaseGroupsComponent, canActivate: [AuthGuardService, BaseGroupGuardService] },
   { path: USERS_PATH, component: AllUsersComponent, canActivate: [AuthGuardService, UsersGuardService] },
   { path: `${USERS_PATH}/:id`, component: AllUsersComponent, canActivate: [AuthGuardService, UsersGuardService] },
   { path: '**', redirectTo: LOGIN_ABS_PATH }

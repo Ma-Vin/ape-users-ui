@@ -232,7 +232,7 @@ describe('CommonGroupComponent', () => {
    * onCreateObject
    */
   it('onCreateObject', () => {
-    let isAllowedToUpdateCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToUpdateCommonGroup').and.returnValue(true);
+    spyOn(commonGroupPermissionsService, 'isAllowedToUpdateCommonGroup').and.returnValue(true);
 
     component.onCreateObject();
 
@@ -253,14 +253,14 @@ describe('CommonGroupComponent', () => {
     component.selectedObject = otherCommonGroup;
     component.allObjectsfilterDataSource.data = [commonGroup];
 
-    let createcommonGroupSpy = spyOn(commonGroupService, 'createCommonGroup').and.returnValue(of(otherCommonGroup));
+    let createCommonGroupSpy = spyOn(commonGroupService, 'createCommonGroup').and.returnValue(of(otherCommonGroup));
     let updateCreatedcommonGroupSpy = spyOn(commonGroupService, 'updateCommonGroup').and.returnValue(of(otherCommonGroup));
 
     component.onAccept();
 
     tick();
 
-    expect(createcommonGroupSpy).toHaveBeenCalled;
+    expect(createCommonGroupSpy).toHaveBeenCalled;
     expect(updateCreatedcommonGroupSpy).toHaveBeenCalled;
     expect(component.selectedObject === otherCommonGroup).toBeFalse();
     expect(component.selectedObject.equals(otherCommonGroup)).toBeTrue();
@@ -277,13 +277,13 @@ describe('CommonGroupComponent', () => {
     component.selectedObject = modfiedCommonGroup;
     component.allObjectsfilterDataSource.data = [commonGroup, otherCommonGroup];
 
-    let updatecommonGroupSpy = spyOn(commonGroupService, 'updateCommonGroup').and.returnValue(of(modfiedCommonGroup));
+    let updateCommonGroupSpy = spyOn(commonGroupService, 'updateCommonGroup').and.returnValue(of(modfiedCommonGroup));
 
     component.onAccept();
 
     tick();
 
-    expect(updatecommonGroupSpy).toHaveBeenCalled;
+    expect(updateCommonGroupSpy).toHaveBeenCalled;
     expect(component.selectedObject === modfiedCommonGroup).toBeFalse();
     expect(component.selectedObject.equals(modfiedCommonGroup)).toBeTrue();
     expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
@@ -299,14 +299,14 @@ describe('CommonGroupComponent', () => {
     component.selectedObject = modfiedCommonGroup;
     component.allObjectsfilterDataSource.data = [commonGroup, otherCommonGroup];
 
-    let updatecommonGroupSpy = spyOn(commonGroupService, 'updateCommonGroup').and.returnValue(of(modfiedCommonGroup));
+    let updateCommonGroupSpy = spyOn(commonGroupService, 'updateCommonGroup').and.returnValue(of(modfiedCommonGroup));
     let openMessage = spyOn(snackBar, 'open').and.callFake((message, action, config) => { return {} as MatSnackBarRef<TextOnlySnackBar> });
 
     component.onAccept();
 
     tick();
 
-    expect(updatecommonGroupSpy).not.toHaveBeenCalled;
+    expect(updateCommonGroupSpy).not.toHaveBeenCalled;
     expect(openMessage).toHaveBeenCalled();
 
     expect(component.selectedObject.identification).toEqual('');
@@ -325,14 +325,14 @@ describe('CommonGroupComponent', () => {
     component.selectedObject = otherCommonGroup;
     component.allObjectsfilterDataSource.data = [commonGroup];
 
-    let createcommonGroupSpy = spyOn(commonGroupService, 'createCommonGroup').and.returnValue(of(otherCommonGroup));
+    let createCommonGroupSpy = spyOn(commonGroupService, 'createCommonGroup').and.returnValue(of(otherCommonGroup));
     let updateCreatedcommonGroupSpy = spyOn(commonGroupService, 'updateCommonGroup').and.returnValue(of(otherCommonGroup));
 
     component.onAcceptCallBack();
 
     tick();
 
-    expect(createcommonGroupSpy).toHaveBeenCalled;
+    expect(createCommonGroupSpy).toHaveBeenCalled;
     expect(updateCreatedcommonGroupSpy).toHaveBeenCalled;
     expect(component.selectedObject === otherCommonGroup).toBeFalse();
     expect(component.selectedObject.equals(otherCommonGroup)).toBeTrue();
@@ -376,7 +376,7 @@ describe('CommonGroupComponent', () => {
    */
   it('onDelete - delete successful', fakeAsync(() => {
     component.allObjectsfilterDataSource.data = [commonGroup, otherCommonGroup];
-    let deleteCommongroupSpy = spyOn(commonGroupService, 'deleteCommonGroup').and.returnValue(of(true));
+    let deleteCommonGroupSpy = spyOn(commonGroupService, 'deleteCommonGroup').and.returnValue(of(true));
     let openMessage = spyOn(snackBar, 'open').and.returnValue({} as MatSnackBarRef<TextOnlySnackBar>);
     let isAllowedToDeleteCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToDeleteCommonGroup').and.returnValue(true);
 
@@ -387,7 +387,7 @@ describe('CommonGroupComponent', () => {
 
     tick();
 
-    expect(deleteCommongroupSpy).toHaveBeenCalled();
+    expect(deleteCommonGroupSpy).toHaveBeenCalled();
     expect(openMessage).not.toHaveBeenCalled();
     expect(isAllowedToDeleteCommonGroupSpy).toHaveBeenCalled();
 
@@ -397,7 +397,7 @@ describe('CommonGroupComponent', () => {
 
   it('onDelete - delete unsuccessful', fakeAsync(() => {
     component.allObjectsfilterDataSource.data = [commonGroup, otherCommonGroup];
-    let deleteCommongroupSpy = spyOn(commonGroupService, 'deleteCommonGroup').and.returnValue(of(false));
+    let deleteCommonGroupSpy = spyOn(commonGroupService, 'deleteCommonGroup').and.returnValue(of(false));
     let openMessage = spyOn(snackBar, 'open').and.returnValue({} as MatSnackBarRef<TextOnlySnackBar>);
     let isAllowedToDeleteCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToDeleteCommonGroup').and.returnValue(true);
 
@@ -408,7 +408,7 @@ describe('CommonGroupComponent', () => {
 
     tick();
 
-    expect(deleteCommongroupSpy).toHaveBeenCalled();
+    expect(deleteCommonGroupSpy).toHaveBeenCalled();
     expect(openMessage).toHaveBeenCalled();
     expect(isAllowedToDeleteCommonGroupSpy).toHaveBeenCalled();
 
@@ -420,7 +420,7 @@ describe('CommonGroupComponent', () => {
 
   it('onDelete - delete disabled - new item', fakeAsync(() => {
     component.allObjectsfilterDataSource.data = [commonGroup, otherCommonGroup];
-    let deleteCommongroupSpy = spyOn(commonGroupService, 'deleteCommonGroup').and.returnValue(of(false));
+    let deleteCommonGroupSpy = spyOn(commonGroupService, 'deleteCommonGroup').and.returnValue(of(false));
     let openMessage = spyOn(snackBar, 'open').and.callFake((message, action, config) => { return {} as MatSnackBarRef<TextOnlySnackBar> });
     let isAllowedToDeleteCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToDeleteCommonGroup').and.returnValue(true);
 
@@ -431,7 +431,7 @@ describe('CommonGroupComponent', () => {
 
     tick();
 
-    expect(deleteCommongroupSpy).not.toHaveBeenCalled();
+    expect(deleteCommonGroupSpy).not.toHaveBeenCalled();
     expect(openMessage).toHaveBeenCalled();
     expect(isAllowedToDeleteCommonGroupSpy).not.toHaveBeenCalled(); // since new one and short circle check
 
@@ -446,7 +446,7 @@ describe('CommonGroupComponent', () => {
 
   it('onDelete - delete disabled - not allowed to', fakeAsync(() => {
     component.allObjectsfilterDataSource.data = [commonGroup, otherCommonGroup];
-    let deleteCommongroupSpy = spyOn(commonGroupService, 'deleteCommonGroup').and.returnValue(of(true));
+    let deleteCommonGroupSpy = spyOn(commonGroupService, 'deleteCommonGroup').and.returnValue(of(true));
     let openMessage = spyOn(snackBar, 'open').and.returnValue({} as MatSnackBarRef<TextOnlySnackBar>);
     let isAllowedToDeleteCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToDeleteCommonGroup').and.returnValue(false);
 
@@ -457,7 +457,7 @@ describe('CommonGroupComponent', () => {
 
     tick();
 
-    expect(deleteCommongroupSpy).not.toHaveBeenCalled();
+    expect(deleteCommonGroupSpy).not.toHaveBeenCalled();
     expect(openMessage).toHaveBeenCalled();
     expect(isAllowedToDeleteCommonGroupSpy).toHaveBeenCalled();
 
@@ -477,7 +477,7 @@ describe('CommonGroupComponent', () => {
    */
   it('onDeleteCallBack - delete successful', fakeAsync(() => {
     component.allObjectsfilterDataSource.data = [commonGroup, otherCommonGroup];
-    let deleteCommongroupSpy = spyOn(commonGroupService, 'deleteCommonGroup').and.returnValue(of(true));
+    let deleteCommonGroupSpy = spyOn(commonGroupService, 'deleteCommonGroup').and.returnValue(of(true));
     let openMessage = spyOn(snackBar, 'open').and.returnValue({} as MatSnackBarRef<TextOnlySnackBar>);
     let isAllowedToDeleteCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToDeleteCommonGroup').and.returnValue(true);
 
@@ -489,7 +489,7 @@ describe('CommonGroupComponent', () => {
 
     tick();
 
-    expect(deleteCommongroupSpy).toHaveBeenCalled();
+    expect(deleteCommonGroupSpy).toHaveBeenCalled();
     expect(openMessage).not.toHaveBeenCalled();
     expect(isAllowedToDeleteCommonGroupSpy).toHaveBeenCalled();
 
@@ -572,12 +572,12 @@ describe('CommonGroupComponent', () => {
   /**
    * disableCreateObject
    */
-  it('disableCreateObject - creating a user is allowed', () => {
+  it('disableCreateObject - creating a common group is allowed', () => {
     spyOn(commonGroupPermissionsService, 'isAllowedCreateCommonGroup').and.returnValue(true);
     expect(component.disableCreateObject()).toBeFalse();
   });
 
-  it('disableCreateObject - creating a user is not allowed', () => {
+  it('disableCreateObject - creating a common group is not allowed', () => {
     spyOn(commonGroupPermissionsService, 'isAllowedCreateCommonGroup').and.returnValue(false);
     expect(component.disableCreateObject()).toBeTrue();
   });

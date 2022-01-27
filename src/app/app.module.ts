@@ -21,6 +21,7 @@ import { AllUsersComponent } from './components/all-users/all-users.component';
 import { DetailButtonRowComponent } from './components/list-detail/detail-button-row/detail-button-row.component';
 import { FirstLastNameListComponent } from './components/list-detail/first-last-name-list/first-last-name-list.component';
 import { GroupNameListComponent } from './components/list-detail/group-name-list/group-name-list.component';
+import { AllBaseGroupsComponent } from './components/all-base-groups/all-base-groups.component';
 
 registerLocaleData(localeDE);
 
@@ -34,7 +35,8 @@ registerLocaleData(localeDE);
     AllUsersComponent,
     DetailButtonRowComponent,
     FirstLastNameListComponent,
-    GroupNameListComponent
+    GroupNameListComponent,
+    AllBaseGroupsComponent
   ],
   imports: [
     BrowserModule,

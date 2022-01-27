@@ -139,6 +139,19 @@ describe('ToolbarComponent', () => {
     expect(component.iconName).toEqual('person_add');
   });
 
+  it('ngOnInit - base groups site', () => {
+    let admin = User.map(user);
+    admin.isGlobalAdmin = true;
+    let getActiveUserSpy = spyOn(selectionService, 'getActiveUser').and.returnValue(admin);
+    component.activeSite = ToolbarSite.BASE_GROUPS;
+
+    component.ngOnInit();
+
+    expect(getActiveUserSpy).toHaveBeenCalled();
+    expect(component.showAdminItems).toBeTrue();
+    expect(component.iconName).toEqual('group_add');
+  });
+
 
 
   /**
