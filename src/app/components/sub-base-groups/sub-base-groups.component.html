@@ -1,0 +1,28 @@
+<div class="sub-basegroups" *ngIf="showSubBaseGroups()">
+    <h4>Subgroups</h4>
+    <table #subgroupTableSort="matSort" mat-table [dataSource]="subgroupDataSource" matSort>
+        <ng-container matColumnDef="identification">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Id </th>
+            <td mat-cell *matCellDef="let element"> {{element.identification}} </td>
+        </ng-container>
+        <ng-container matColumnDef="groupName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Group Name </th>
+            <td mat-cell *matCellDef="let element"> {{element.groupName}} </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedSubGroupColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedSubGroupColumns;" (click)="onSelectSubGroup(row)"
+            [class.selected]="isSubGroupSelected(row)">
+        </tr>
+    </table>
+    <mat-paginator #subgroupTableMatPaginator="matPaginator" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+    </mat-paginator>
+    <div class="button-row">
+        <button mat-raised-button color="primary" (click)="openAddSubGroupDialog()" [disabled]="disableAddBaseGroup()">
+            <mat-icon>group_add</mat-icon> Add group
+        </button>
+        <button mat-raised-button color="primary" (click)="removeSubGroup()" enabled="selectedSubGroup"
+            [disabled]="disableRemoveBaseGroup()">
+            <mat-icon>group_remove</mat-icon> Remove group
+        </button>
+    </div>
+</div>

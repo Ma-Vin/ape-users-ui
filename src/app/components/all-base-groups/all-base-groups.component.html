@@ -46,6 +46,7 @@
             <app-detail-button-row [onAccept]="onAcceptCallBack" [disableAccept]="disableAcceptCallBack"
                 [onCancel]="onCancelCallBack" [onDelete]="onDeleteCallBack" [disableDelete]="disableDeleteCallBack"
                 [isNewObject]="isNewObject"></app-detail-button-row>
+            <app-sub-base-groups [selectedBaseGroup]="selectedObject"></app-sub-base-groups>
         </ng-template>
         <ng-template #BaseGroupNotSelectedBlock>
             <h1>Please select a Base Group</h1>
