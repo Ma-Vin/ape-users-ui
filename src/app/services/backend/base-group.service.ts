@@ -519,10 +519,12 @@ export class BaseGroupService extends BaseBackendService {
 
     let subBaseGroups = BaseGroupService.getSubBaseGroupIdsFromMock(parentIdentification);
     if (subBaseGroups.includes(childIdentification)) {
+      console.debug(`the base group ${childIdentification} was not added to the other one ${parentIdentification} at mock`)
       return of(false);
     }
 
     subBaseGroups.push(childIdentification);
+    console.debug(`the base group ${childIdentification} was added to the other one ${parentIdentification} at mock`)
     return of(true);
   }
 
@@ -569,10 +571,12 @@ export class BaseGroupService extends BaseBackendService {
 
     let subBaseGroups = BaseGroupService.getSubBaseGroupIdsFromMock(parentIdentification);
     if (!subBaseGroups.includes(childIdentification)) {
+      console.debug(`the base group ${childIdentification} was not removed from the other one ${parentIdentification} at mock`)
       return of(false);
     }
 
     subBaseGroups.splice(subBaseGroups.indexOf(childIdentification), 1);
+    console.debug(`the base group ${childIdentification} was removed from the other one ${parentIdentification} at mock`)
     return of(true);
   }
 
