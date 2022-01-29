@@ -3,7 +3,7 @@ import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { NEVER, Observable, of } from 'rxjs';
+import { NEVER, Observable } from 'rxjs';
 import { IAbstractGroup } from 'src/app/model/abstract-group.model';
 import { BaseGroup } from 'src/app/model/base-group.model';
 import { PrivilegeGroup } from 'src/app/model/privilege-group.model';

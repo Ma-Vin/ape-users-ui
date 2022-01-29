@@ -38,7 +38,7 @@ export class SubBaseGroupsComponent implements OnInit, OnChanges {
     this.loadAllObjects();
   }
 
-  
+
   public ngOnChanges(changes: SimpleChanges): void {
     this.loadAllObjects();
   }
@@ -64,11 +64,7 @@ export class SubBaseGroupsComponent implements OnInit, OnChanges {
    */
   private loadAllBasesFromBaseGroup(identification: string): void {
     this.baseGroupService.getAllBasesAtBaseGroup(identification, undefined, undefined).subscribe(
-      groups => {
-        this.subgroupDataSource = new MatTableDataSource(groups);
-        this.subgroupDataSource.paginator = this.subgroupPaginator;
-        this.subgroupDataSource.sort = this.subGroupSort;
-      }
+      groups => this.takeOverSubBaseGroups(groups)
     );
   }
 
@@ -80,12 +76,18 @@ export class SubBaseGroupsComponent implements OnInit, OnChanges {
    */
   private loadAllBasesFromPrivilegeGroup(identification: string, role: Role): void {
     this.baseGroupService.getAllBasesAtPrivilegeGroup(identification, role, undefined, undefined).subscribe(
-      groups => {
-        this.subgroupDataSource = new MatTableDataSource(groups);
-        this.subgroupDataSource.paginator = this.subgroupPaginator;
-        this.subgroupDataSource.sort = this.subGroupSort;
-      }
+      groups => this.takeOverSubBaseGroups(groups)
     );
+  }
+
+  /**
+   * Sets a given base group array to the data source 
+   * @param groups the base goups to set
+   */
+  private takeOverSubBaseGroups(groups: BaseGroup[]): void {
+    this.subgroupDataSource = new MatTableDataSource(groups);
+    this.subgroupDataSource.paginator = this.subgroupPaginator;
+    this.subgroupDataSource.sort = this.subGroupSort;
   }
 
 
