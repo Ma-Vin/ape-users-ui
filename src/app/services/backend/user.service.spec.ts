@@ -1865,16 +1865,16 @@ describe('UserService', () => {
 
 
   /**
-   * getAllBasesAtPrivilegeGroup
+   * getAllUsersFromPrivilegeGroup
    */
-  it('getAllBasesAtPrivilegeGroup - all ok', fakeAsync(() => {
+  it('getAllUsersFromPrivilegeGroup - all ok', fakeAsync(() => {
     let mockResponseWrapper: ResponseWrapper = {
       response: [mockIUser],
       status: Status.OK,
       messages: []
     }
 
-    service.getAllBasesAtPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined, undefined).subscribe(data => {
+    service.getAllUsersFromPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined, undefined).subscribe(data => {
       expect(data).toBeTruthy();
       expect(data.length).toEqual(1);
       expect(data[0].identification).toEqual(mockIUser.identification);
@@ -1896,14 +1896,14 @@ describe('UserService', () => {
   }));
 
 
-  it('getAllBasesAtPrivilegeGroup - dissolve subgroups', fakeAsync(() => {
+  it('getAllUsersFromPrivilegeGroup - dissolve subgroups', fakeAsync(() => {
     let mockResponseWrapper: ResponseWrapper = {
       response: [mockIUser],
       status: Status.OK,
       messages: []
     }
 
-    service.getAllBasesAtPrivilegeGroup(privilegeGroupId, true, undefined, undefined, undefined).subscribe(data => {
+    service.getAllUsersFromPrivilegeGroup(privilegeGroupId, true, undefined, undefined, undefined).subscribe(data => {
       expect(data).toBeTruthy();
       expect(data.length).toEqual(1);
       expect(data[0].identification).toEqual(mockIUser.identification);
@@ -1924,14 +1924,14 @@ describe('UserService', () => {
     tick();
   }));
 
-  it('getAllBasesAtPrivilegeGroup - with pageing', fakeAsync(() => {
+  it('getAllUsersFromPrivilegeGroup - with pageing', fakeAsync(() => {
     let mockResponseWrapper: ResponseWrapper = {
       response: [mockIUser],
       status: Status.OK,
       messages: []
     }
 
-    service.getAllBasesAtPrivilegeGroup(privilegeGroupId, undefined, undefined, 1, 50).subscribe(data => {
+    service.getAllUsersFromPrivilegeGroup(privilegeGroupId, undefined, undefined, 1, 50).subscribe(data => {
       expect(data).toBeTruthy();
       expect(data.length).toEqual(1);
       expect(data[0].identification).toEqual(mockIUser.identification);
@@ -1951,14 +1951,14 @@ describe('UserService', () => {
     tick();
   }));
 
-  it('getAllBasesAtPrivilegeGroup - with pageing and dissolve subgroups', fakeAsync(() => {
+  it('getAllUsersFromPrivilegeGroup - with pageing and dissolve subgroups', fakeAsync(() => {
     let mockResponseWrapper: ResponseWrapper = {
       response: [mockIUser],
       status: Status.OK,
       messages: []
     }
 
-    service.getAllBasesAtPrivilegeGroup(privilegeGroupId, true, undefined, 1, 50).subscribe(data => {
+    service.getAllUsersFromPrivilegeGroup(privilegeGroupId, true, undefined, 1, 50).subscribe(data => {
       expect(data).toBeTruthy();
       expect(data.length).toEqual(1);
       expect(data[0].identification).toEqual(mockIUser.identification);
@@ -1977,14 +1977,14 @@ describe('UserService', () => {
     tick();
   }));
 
-  it('getAllBasesAtPrivilegeGroup - with pageing and role', fakeAsync(() => {
+  it('getAllUsersFromPrivilegeGroup - with pageing and role', fakeAsync(() => {
     let mockResponseWrapper: ResponseWrapper = {
       response: [mockIUser],
       status: Status.OK,
       messages: []
     }
 
-    service.getAllBasesAtPrivilegeGroup(privilegeGroupId, undefined, Role.CONTRIBUTOR, 1, 50).subscribe(data => {
+    service.getAllUsersFromPrivilegeGroup(privilegeGroupId, undefined, Role.CONTRIBUTOR, 1, 50).subscribe(data => {
       expect(data).toBeTruthy();
       expect(data.length).toEqual(1);
       expect(data[0].identification).toEqual(mockIUser.identification);
@@ -2004,14 +2004,14 @@ describe('UserService', () => {
     tick();
   }));
 
-  it('getAllBasesAtPrivilegeGroup - with pageing, role and dissolve subgroups', fakeAsync(() => {
+  it('getAllUsersFromPrivilegeGroup - with pageing, role and dissolve subgroups', fakeAsync(() => {
     let mockResponseWrapper: ResponseWrapper = {
       response: [mockIUser],
       status: Status.OK,
       messages: []
     }
 
-    service.getAllBasesAtPrivilegeGroup(privilegeGroupId, true, Role.CONTRIBUTOR, 1, 50).subscribe(data => {
+    service.getAllUsersFromPrivilegeGroup(privilegeGroupId, true, Role.CONTRIBUTOR, 1, 50).subscribe(data => {
       expect(data).toBeTruthy();
       expect(data.length).toEqual(1);
       expect(data[0].identification).toEqual(mockIUser.identification);
@@ -2032,14 +2032,14 @@ describe('UserService', () => {
   }));
 
 
-  it('getAllBasesAtPrivilegeGroup - with role', fakeAsync(() => {
+  it('getAllUsersFromPrivilegeGroup - with role', fakeAsync(() => {
     let mockResponseWrapper: ResponseWrapper = {
       response: [mockIUser],
       status: Status.OK,
       messages: []
     }
 
-    service.getAllBasesAtPrivilegeGroup(privilegeGroupId, undefined, Role.CONTRIBUTOR, undefined, undefined).subscribe(data => {
+    service.getAllUsersFromPrivilegeGroup(privilegeGroupId, undefined, Role.CONTRIBUTOR, undefined, undefined).subscribe(data => {
       expect(data).toBeTruthy();
       expect(data.length).toEqual(1);
       expect(data[0].identification).toEqual(mockIUser.identification);
@@ -2059,14 +2059,14 @@ describe('UserService', () => {
     tick();
   }));
 
-  it('getAllBasesAtPrivilegeGroup - with role and dissolve subgroups', fakeAsync(() => {
+  it('getAllUsersFromPrivilegeGroup - with role and dissolve subgroups', fakeAsync(() => {
     let mockResponseWrapper: ResponseWrapper = {
       response: [mockIUser],
       status: Status.OK,
       messages: []
     }
 
-    service.getAllBasesAtPrivilegeGroup(privilegeGroupId, true, Role.CONTRIBUTOR, undefined, undefined).subscribe(data => {
+    service.getAllUsersFromPrivilegeGroup(privilegeGroupId, true, Role.CONTRIBUTOR, undefined, undefined).subscribe(data => {
       expect(data).toBeTruthy();
       expect(data.length).toEqual(1);
       expect(data[0].identification).toEqual(mockIUser.identification);
@@ -2087,8 +2087,8 @@ describe('UserService', () => {
   }));
 
 
-  it('getAllBasesAtPrivilegeGroup - with error status', fakeAsync(() => {
-    service.getAllBasesAtPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined, undefined).subscribe(
+  it('getAllUsersFromPrivilegeGroup - with error status', fakeAsync(() => {
+    service.getAllUsersFromPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined, undefined).subscribe(
       data => { expect(data).toBeFalsy(); }
       , e => {
         expect(e).toBeTruthy();
@@ -2107,8 +2107,8 @@ describe('UserService', () => {
     tick();
   }));
 
-  it('getAllBasesAtPrivilegeGroup - with fatal status', fakeAsync(() => {
-    service.getAllBasesAtPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined, undefined).subscribe(
+  it('getAllUsersFromPrivilegeGroup - with fatal status', fakeAsync(() => {
+    service.getAllUsersFromPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined, undefined).subscribe(
       data => { expect(data).toBeFalsy(); }
       , e => {
         expect(e).toBeTruthy();
@@ -2127,7 +2127,7 @@ describe('UserService', () => {
     tick();
   }));
 
-  it('getAllBasesAtPrivilegeGroup - mock with role', fakeAsync(() => {
+  it('getAllUsersFromPrivilegeGroup - mock with role', fakeAsync(() => {
     service.useMock = true;
     baseGroupService.useMock = true;
    
@@ -2152,14 +2152,14 @@ describe('UserService', () => {
                           addUser => {
                             expect(addUser).toBeTrue();
 
-                            service.getAllBasesAtPrivilegeGroup(privilegeGroupId, false, Role.CONTRIBUTOR, undefined, undefined).subscribe(
+                            service.getAllUsersFromPrivilegeGroup(privilegeGroupId, false, Role.CONTRIBUTOR, undefined, undefined).subscribe(
                               getAllData => {
                                 expect(getAllData).toBeTruthy();
                                 expect(getAllData.length).toEqual(1);
                                 expect(getAllData[0].identification).toEqual(userId);
                               }, e => expect(e).toBeFalsy());
 
-                            service.getAllBasesAtPrivilegeGroup(privilegeGroupId, false, Role.MANAGER, undefined, undefined).subscribe(
+                            service.getAllUsersFromPrivilegeGroup(privilegeGroupId, false, Role.MANAGER, undefined, undefined).subscribe(
                               getAllData => {
                                 expect(getAllData).toBeTruthy();
                                 expect(getAllData.length).toEqual(0);
@@ -2176,7 +2176,7 @@ describe('UserService', () => {
     tick();
   }));
 
-  it('getAllBasesAtPrivilegeGroup - mock without role', fakeAsync(() => {
+  it('getAllUsersFromPrivilegeGroup - mock without role', fakeAsync(() => {
     service.useMock = true;
     baseGroupService.useMock = true;
 
@@ -2200,7 +2200,7 @@ describe('UserService', () => {
                           addUser => {
                             expect(addUser).toBeTrue();
 
-                            service.getAllBasesAtPrivilegeGroup(privilegeGroupId, false, undefined, undefined, undefined).subscribe(
+                            service.getAllUsersFromPrivilegeGroup(privilegeGroupId, false, undefined, undefined, undefined).subscribe(
                               getAllData => {
                                 expect(getAllData).toBeTruthy();
                                 expect(getAllData.length).toEqual(1);
@@ -2220,7 +2220,7 @@ describe('UserService', () => {
     tick();
   }));
 
-  it('getAllBasesAtPrivilegeGroup - mock with role and dissolve subgroups', fakeAsync(() => {
+  it('getAllUsersFromPrivilegeGroup - mock with role and dissolve subgroups', fakeAsync(() => {
     service.useMock = true;
     baseGroupService.useMock = true;
    
@@ -2245,7 +2245,7 @@ describe('UserService', () => {
                           addUser => {
                             expect(addUser).toBeTrue();
 
-                            service.getAllBasesAtPrivilegeGroup(privilegeGroupId, true, Role.CONTRIBUTOR, undefined, undefined).subscribe(
+                            service.getAllUsersFromPrivilegeGroup(privilegeGroupId, true, Role.CONTRIBUTOR, undefined, undefined).subscribe(
                               getAllData => {
                                 expect(getAllData).toBeTruthy();
                                 expect(getAllData.length).toEqual(2);
@@ -2253,7 +2253,7 @@ describe('UserService', () => {
                                 expect(getAllData[1].identification).toEqual(createdSubUser.identification);
                               }, e => expect(e).toBeFalsy());
 
-                            service.getAllBasesAtPrivilegeGroup(privilegeGroupId, true, Role.MANAGER, undefined, undefined).subscribe(
+                            service.getAllUsersFromPrivilegeGroup(privilegeGroupId, true, Role.MANAGER, undefined, undefined).subscribe(
                               getAllData => {
                                 expect(getAllData).toBeTruthy();
                                 expect(getAllData.length).toEqual(0);
@@ -2270,7 +2270,7 @@ describe('UserService', () => {
     tick();
   }));
 
-  it('getAllBasesAtPrivilegeGroup - mock without role and dissolve subgroups', fakeAsync(() => {
+  it('getAllUsersFromPrivilegeGroup - mock without role and dissolve subgroups', fakeAsync(() => {
     service.useMock = true;
     baseGroupService.useMock = true;
 
@@ -2294,7 +2294,7 @@ describe('UserService', () => {
                           addUser => {
                             expect(addUser).toBeTrue();
 
-                            service.getAllBasesAtPrivilegeGroup(privilegeGroupId, true, undefined, undefined, undefined).subscribe(
+                            service.getAllUsersFromPrivilegeGroup(privilegeGroupId, true, undefined, undefined, undefined).subscribe(
                               getAllData => {
                                 expect(getAllData).toBeTruthy();
                                 expect(getAllData.length).toEqual(2);

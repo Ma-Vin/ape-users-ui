@@ -966,12 +966,12 @@ export class UserService extends BaseBackendService {
    * @param size the size of the page to be returned, must be greater than 0.
    * @returns the users
    */
-  public getAllBasesAtPrivilegeGroup(privilegeGroupIdentification: string, dissolveSubgroups: boolean | undefined, role: Role | undefined
+  public getAllUsersFromPrivilegeGroup(privilegeGroupIdentification: string, dissolveSubgroups: boolean | undefined, role: Role | undefined
     , page: number | undefined, size: number | undefined): Observable<User[]> {
 
     this.init();
     if (this.useMock) {
-      return this.getAllBasesAtrivilegeGroupMock(privilegeGroupIdentification, dissolveSubgroups, role);
+      return this.getAllUsersFromPrivilegeGroupMock(privilegeGroupIdentification, dissolveSubgroups, role);
     }
     let url = `${this.getAllUsersFromPrivilegeGroupUrl}/${privilegeGroupIdentification}`;
 
@@ -995,13 +995,13 @@ export class UserService extends BaseBackendService {
 
 
   /**
-   * Creates mock for getting all sub base groups of a privilege one
+   * Creates mock for getting all users groups of a privilege group
    * @param privilegeGroupIdentification Id of the parent base group
    * @param dissolveSubgroups indicator if the users of subgroups should also be added
    * @param role the role which filter the base groups. If undefined all will be determined
-   * @returns the mocked observable of all sub base groups
+   * @returns the mocked observable of all users
    */
-  private getAllBasesAtrivilegeGroupMock(privilegeGroupIdentification: string, dissolveSubgroups: boolean | undefined, role: Role | undefined): Observable<User[]> {
+  private getAllUsersFromPrivilegeGroupMock(privilegeGroupIdentification: string, dissolveSubgroups: boolean | undefined, role: Role | undefined): Observable<User[]> {
     this.initMocks();
     let result: User[] = [];
     let users = this.getAllUsersAtSelectedCommonGroupFromMock();
