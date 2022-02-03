@@ -94,4 +94,69 @@ export class UserPermissionsService extends BasePermissionsService {
     return this.isAllowedToGetUser();
   }
 
+
+  /**
+   * @returns true if the active user is allowed to add an user to a base group. Otherwise false.
+   */
+  isAllowedToAddUserToBaseGroup() {
+    return this.isAllowedToCreateUser();
+  }
+
+
+  /**
+   * @returns true if the active user is allowed to remove an user from a base group. Otherwise false.
+   */
+  isAllowedToRemoveUserFromBaseGroup() {
+    return this.isAllowedToAddUserToBaseGroup();
+  }
+
+
+  /**
+   * @returns true if the active user is allowed to count users at a base group. Otherwise false.
+   */
+  isAllowedToCountUsersAtBaseGroup(): boolean {
+    return this.isAllowedToGetUser();
+  }
+
+
+  /**
+   * @returns true if the active user is allowed to get all users from a base group. Otherwise false.
+   */
+  isAllowedToGetAllUsersAtBaseGroup(): boolean {
+    return this.isAllowedToGetUser();
+  }
+
+
+  /**
+   * @returns true if the active user is allowed to add an user to a privilege group. Otherwise false.
+   */
+  isAllowedToAddUserToPrivilegeGroup() {
+    let activeUser = this.getActiveUser();
+    return activeUser != undefined && this.isSameRoleOrHigher(Role.MANAGER, activeUser);
+  }
+
+
+  /**
+   * @returns true if the active user is allowed to remove an user from a privilege group. Otherwise false.
+   */
+  isAllowedToRemoveUserFromPrivilegeGroup() {
+    return this.isAllowedToAddUserToPrivilegeGroup();
+  }
+
+
+  /**
+   * @returns true if the active user is allowed to count users at a privilege group. Otherwise false.
+   */
+  isAllowedToCountUsersAtPrivilegeGroup(): boolean {
+    return this.isAllowedToGetUser();
+  }
+
+
+  /**
+   * @returns true if the active user is allowed to get all users from a privilege group. Otherwise false.
+   */
+  isAllowedToGetAllUsersAtPrivilegeGroup(): boolean {
+    return this.isAllowedToGetUser();
+  }
+
 }
