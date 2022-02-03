@@ -24,6 +24,8 @@ import { GroupNameListComponent } from './components/list-detail/group-name-list
 import { AllBaseGroupsComponent } from './components/all-base-groups/all-base-groups.component';
 import { SubBaseGroupsComponent } from './components/sub-base-groups/sub-base-groups.component';
 import { AddBaseGroupDialogComponent } from './components/add-base-group-dialog/add-base-group-dialog.component';
+import { UsersAtGroupComponent } from './components/users-at-group/users-at-group.component';
+import { AddUserDialogComponent } from './components/add-user-dialog/add-user-dialog.component';
 
 registerLocaleData(localeDE);
 
@@ -40,7 +42,9 @@ registerLocaleData(localeDE);
     GroupNameListComponent,
     AllBaseGroupsComponent,
     SubBaseGroupsComponent,
-    AddBaseGroupDialogComponent
+    AddBaseGroupDialogComponent,
+    UsersAtGroupComponent,
+    AddUserDialogComponent
   ],
   imports: [
     BrowserModule,

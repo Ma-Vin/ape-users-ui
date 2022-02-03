@@ -1,0 +1,33 @@
+@import "../../app-constants.less";
+
+
+.elements {
+    margin: @base-margin 0;
+    padding-top: @base-margin;
+}
+
+.mat-table,
+.mat-form-field {
+    width: 100%;
+}
+
+.mat-row {
+    &:hover {
+        font-style : italic;
+        font-weight: bold;
+    }
+
+    &.selected {
+        font-weight: bold;
+    }
+}
+
+.button-row {
+    display        : flex;
+    flex-wrap      : wrap;
+    justify-content: center;
+
+    .mat-button-base {
+        margin: @base-margin;
+    }
+}
