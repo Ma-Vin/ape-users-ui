@@ -4,20 +4,20 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { SimpleChanges } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
-import { MatSnackBar, MatSnackBarConfig, MatSnackBarRef, TextOnlySnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NEVER, Observable, of } from 'rxjs';
-import { ConfigService } from 'src/app/config/config.service';
-import { MaterialModule } from 'src/app/material/material.module';
-import { BaseGroup, IBaseGroup } from 'src/app/model/base-group.model';
-import { IPrivilegeGroup, PrivilegeGroup } from 'src/app/model/privilege-group.model';
-import { Role } from 'src/app/model/role.model';
-import { AdminService } from 'src/app/services/backend/admin.service';
-import { BaseGroupService } from 'src/app/services/backend/base-group.service';
-import { CommonGroupService } from 'src/app/services/backend/common-group.service';
-import { UserService } from 'src/app/services/backend/user.service';
-import { BaseGroupPermissionsService } from 'src/app/services/permissions/base-group-permissions.service';
-import { SelectionService } from 'src/app/services/util/selection.service';
+import { ConfigService } from '../../config/config.service';
+import { MaterialModule } from '../../material/material.module';
+import { BaseGroup, IBaseGroup } from '../../model/base-group.model';
+import { IPrivilegeGroup, PrivilegeGroup } from '../../model/privilege-group.model';
+import { Role } from '../../model/role.model';
+import { AdminService } from '../../services/backend/admin.service';
+import { BaseGroupService } from '../../services/backend/base-group.service';
+import { CommonGroupService } from '../../services/backend/common-group.service';
+import { UserService } from '../../services/backend/user.service';
+import { BaseGroupPermissionsService } from '../../services/permissions/base-group-permissions.service';
+import { SelectionService } from '../../services/util/selection.service';
 import { AddBaseGroupDialogComponent } from '../add-base-group-dialog/add-base-group-dialog.component';
 
 import { SubBaseGroupsComponent } from './sub-base-groups.component';
@@ -134,8 +134,8 @@ describe('SubBaseGroupsComponent', () => {
 
     tick();
 
-    expect(component.subgroupDataSource.data.length).toEqual(1);
-    expect(component.subgroupDataSource.data[0].identification).toEqual(secondBaseGroupId);
+    expect(component.elementsDataSource.data.length).toEqual(1);
+    expect(component.elementsDataSource.data[0].identification).toEqual(secondBaseGroupId);
 
     expect(getAllBasesAtBaseGroupSpy).toHaveBeenCalled();
     expect(getAllBasesAtPrivilegeGroupSpy).not.toHaveBeenCalled();
@@ -153,8 +153,8 @@ describe('SubBaseGroupsComponent', () => {
 
     tick();
 
-    expect(component.subgroupDataSource.data.length).toEqual(1);
-    expect(component.subgroupDataSource.data[0].identification).toEqual(secondBaseGroupId);
+    expect(component.elementsDataSource.data.length).toEqual(1);
+    expect(component.elementsDataSource.data[0].identification).toEqual(secondBaseGroupId);
 
     expect(getAllBasesAtBaseGroupSpy).not.toHaveBeenCalled();
     expect(getAllBasesAtPrivilegeGroupSpy).toHaveBeenCalled();
@@ -172,7 +172,7 @@ describe('SubBaseGroupsComponent', () => {
 
     tick();
 
-    expect(component.subgroupDataSource.data.length).toEqual(0);
+    expect(component.elementsDataSource.data.length).toEqual(0);
 
     expect(getAllBasesAtBaseGroupSpy).not.toHaveBeenCalled();
     expect(getAllBasesAtPrivilegeGroupSpy).not.toHaveBeenCalled();
@@ -194,8 +194,8 @@ describe('SubBaseGroupsComponent', () => {
 
     tick();
 
-    expect(component.subgroupDataSource.data.length).toEqual(1);
-    expect(component.subgroupDataSource.data[0].identification).toEqual(secondBaseGroupId);
+    expect(component.elementsDataSource.data.length).toEqual(1);
+    expect(component.elementsDataSource.data[0].identification).toEqual(secondBaseGroupId);
 
     expect(getAllBasesAtBaseGroupSpy).toHaveBeenCalled();
     expect(getAllBasesAtPrivilegeGroupSpy).not.toHaveBeenCalled();
@@ -213,8 +213,8 @@ describe('SubBaseGroupsComponent', () => {
 
     tick();
 
-    expect(component.subgroupDataSource.data.length).toEqual(1);
-    expect(component.subgroupDataSource.data[0].identification).toEqual(secondBaseGroupId);
+    expect(component.elementsDataSource.data.length).toEqual(1);
+    expect(component.elementsDataSource.data[0].identification).toEqual(secondBaseGroupId);
 
     expect(getAllBasesAtBaseGroupSpy).not.toHaveBeenCalled();
     expect(getAllBasesAtPrivilegeGroupSpy).toHaveBeenCalled();
@@ -232,7 +232,7 @@ describe('SubBaseGroupsComponent', () => {
 
     tick();
 
-    expect(component.subgroupDataSource.data.length).toEqual(0);
+    expect(component.elementsDataSource.data.length).toEqual(0);
 
     expect(getAllBasesAtBaseGroupSpy).not.toHaveBeenCalled();
     expect(getAllBasesAtPrivilegeGroupSpy).not.toHaveBeenCalled();
@@ -240,9 +240,9 @@ describe('SubBaseGroupsComponent', () => {
 
 
   /**
-   * showSubBaseGroups
+   * showElements
    */
-  it('showSubBaseGroups - base group and allowed', () => {
+  it('showElements - base group and allowed', () => {
     let isAllowedToGetAllBasesAtBaseGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToGetAllBasesAtBaseGroup').and.returnValue(true);
     let isAllowedToGetAllBasesAtPrivilegeGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToGetAllBasesAtPrivilegeGroup').and.returnValue(false);
 
@@ -250,13 +250,13 @@ describe('SubBaseGroupsComponent', () => {
     component.selectedPrivilegeGroup = undefined;
     component.role = undefined;
 
-    expect(component.showSubBaseGroups()).toBeTrue();
+    expect(component.showElements()).toBeTrue();
 
     expect(isAllowedToGetAllBasesAtBaseGroupSpy).toHaveBeenCalled();
     expect(isAllowedToGetAllBasesAtPrivilegeGroupSpy).not.toHaveBeenCalled();
   });
 
-  it('showSubBaseGroups - base group and not allowed', () => {
+  it('showElements - base group and not allowed', () => {
     let isAllowedToGetAllBasesAtBaseGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToGetAllBasesAtBaseGroup').and.returnValue(false);
     let isAllowedToGetAllBasesAtPrivilegeGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToGetAllBasesAtPrivilegeGroup').and.returnValue(false);
 
@@ -264,13 +264,13 @@ describe('SubBaseGroupsComponent', () => {
     component.selectedPrivilegeGroup = undefined;
     component.role = undefined;
 
-    expect(component.showSubBaseGroups()).toBeFalse();
+    expect(component.showElements()).toBeFalse();
 
     expect(isAllowedToGetAllBasesAtBaseGroupSpy).toHaveBeenCalled();
     expect(isAllowedToGetAllBasesAtPrivilegeGroupSpy).not.toHaveBeenCalled();
   });
 
-  it('showSubBaseGroups - privilege group and allowed', () => {
+  it('showElements - privilege group and allowed', () => {
     let isAllowedToGetAllBasesAtBaseGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToGetAllBasesAtBaseGroup').and.returnValue(false);
     let isAllowedToGetAllBasesAtPrivilegeGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToGetAllBasesAtPrivilegeGroup').and.returnValue(true);
 
@@ -278,14 +278,14 @@ describe('SubBaseGroupsComponent', () => {
     component.selectedPrivilegeGroup = privilegeGroup;
     component.role = Role.ADMIN;
 
-    expect(component.showSubBaseGroups()).toBeTrue();
+    expect(component.showElements()).toBeTrue();
 
     expect(isAllowedToGetAllBasesAtBaseGroupSpy).not.toHaveBeenCalled();
     expect(isAllowedToGetAllBasesAtPrivilegeGroupSpy).toHaveBeenCalled();
   });
 
 
-  it('showSubBaseGroups - privilege group and allowed, but missing role', () => {
+  it('showElements - privilege group and allowed, but missing role', () => {
     let isAllowedToGetAllBasesAtBaseGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToGetAllBasesAtBaseGroup').and.returnValue(false);
     let isAllowedToGetAllBasesAtPrivilegeGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToGetAllBasesAtPrivilegeGroup').and.returnValue(true);
 
@@ -293,13 +293,13 @@ describe('SubBaseGroupsComponent', () => {
     component.selectedPrivilegeGroup = privilegeGroup;
     component.role = undefined;
 
-    expect(component.showSubBaseGroups()).toBeFalse();
+    expect(component.showElements()).toBeFalse();
 
     expect(isAllowedToGetAllBasesAtBaseGroupSpy).not.toHaveBeenCalled();
     expect(isAllowedToGetAllBasesAtPrivilegeGroupSpy).not.toHaveBeenCalled();
   });
 
-  it('showSubBaseGroups - privilege group and not allowed', () => {
+  it('showElements - privilege group and not allowed', () => {
     let isAllowedToGetAllBasesAtBaseGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToGetAllBasesAtBaseGroup').and.returnValue(false);
     let isAllowedToGetAllBasesAtPrivilegeGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToGetAllBasesAtPrivilegeGroup').and.returnValue(false);
 
@@ -307,7 +307,7 @@ describe('SubBaseGroupsComponent', () => {
     component.selectedPrivilegeGroup = privilegeGroup;
     component.role = Role.ADMIN;
 
-    expect(component.showSubBaseGroups()).toBeFalse();
+    expect(component.showElements()).toBeFalse();
 
     expect(isAllowedToGetAllBasesAtBaseGroupSpy).not.toHaveBeenCalled();
     expect(isAllowedToGetAllBasesAtPrivilegeGroupSpy).toHaveBeenCalled();
@@ -316,63 +316,63 @@ describe('SubBaseGroupsComponent', () => {
 
 
   /**
-   * onSelectSubGroup
+   * onSelectElement
    */
-  it('onSelectSubGroup - nothing selected', () => {
-    component.selectedSubGroup = undefined;
+  it('onSelectElement - nothing selected', () => {
+    component.selectedElement = undefined;
 
-    component.onSelectSubGroup(baseGroup);
+    component.onSelectElement(baseGroup);
 
-    expect(component.selectedSubGroup).toBeDefined();
-    expect(component.selectedSubGroup!.identification).toEqual(baseGroupId);
+    expect(component.selectedElement).toBeDefined();
+    expect(component.selectedElement!.identification).toEqual(baseGroupId);
   });
 
-  it('onSelectSubGroup - same selected', () => {
-    component.selectedSubGroup = baseGroup;
+  it('onSelectElement - same selected', () => {
+    component.selectedElement = baseGroup;
 
-    component.onSelectSubGroup(baseGroup);
+    component.onSelectElement(baseGroup);
 
-    expect(component.selectedSubGroup).not.toBeDefined();
+    expect(component.selectedElement).not.toBeDefined();
   });
 
-  it('onSelectSubGroup - other selected', () => {
-    component.selectedSubGroup = secondBaseGroup;
+  it('onSelectElement - other selected', () => {
+    component.selectedElement = secondBaseGroup;
 
-    component.onSelectSubGroup(baseGroup);
+    component.onSelectElement(baseGroup);
 
-    expect(component.selectedSubGroup).toBeDefined();
-    expect(component.selectedSubGroup!.identification).toEqual(baseGroupId);
+    expect(component.selectedElement).toBeDefined();
+    expect(component.selectedElement!.identification).toEqual(baseGroupId);
   });
 
 
 
   /**
-   * isSubGroupSelected
+   * isElementSelected
    */
-  it('isSubGroupSelected - nothing selected', () => {
-    component.selectedSubGroup = undefined;
+  it('isElementSelected - nothing selected', () => {
+    component.selectedElement = undefined;
 
-    expect(component.isSubGroupSelected(baseGroup)).toBeFalse();
+    expect(component.isElementSelected(baseGroup)).toBeFalse();
   });
 
-  it('isSubGroupSelected - same selected', () => {
-    component.selectedSubGroup = baseGroup;
+  it('isElementSelected - same selected', () => {
+    component.selectedElement = baseGroup;
 
-    expect(component.isSubGroupSelected(baseGroup)).toBeTrue();
+    expect(component.isElementSelected(baseGroup)).toBeTrue();
   });
 
-  it('isSubGroupSelected - other selected', () => {
-    component.selectedSubGroup = secondBaseGroup;
+  it('isElementSelected - other selected', () => {
+    component.selectedElement = secondBaseGroup;
 
-    expect(component.isSubGroupSelected(baseGroup)).toBeFalse();
+    expect(component.isElementSelected(baseGroup)).toBeFalse();
   });
 
 
 
   /**
-   * openAddSubGroupDialog
+   * openAddElementDialog
    */
-  it('openAddSubGroupDialog - add to base group', () => {
+  it('openAddElementDialog - add to base group', () => {
     component.selectedBaseGroup = baseGroup;
     component.selectedPrivilegeGroup = undefined;
     component.role = undefined;
@@ -382,10 +382,10 @@ describe('SubBaseGroupsComponent', () => {
     let addBaseToPrivilegeGroupSpy = spyOn(baseGroupService, 'addBaseToPrivilegeGroup').and.returnValue(of(false));
     let openSnackBarSpy = spyOn(snackBar, 'open');
 
-    component.openAddSubGroupDialog();
+    component.openAddElementDialog();
 
-    expect(component.subgroupDataSource.data.length).toEqual(1);
-    expect(component.subgroupDataSource.data[0].identification).toEqual(secondBaseGroupId);
+    expect(component.elementsDataSource.data.length).toEqual(1);
+    expect(component.elementsDataSource.data[0].identification).toEqual(secondBaseGroupId);
 
     expect(afterClosedSpy).toHaveBeenCalled();
     expect(addBaseToBaseGroupSpy).toHaveBeenCalledWith(secondBaseGroupId, baseGroupId);
@@ -393,7 +393,7 @@ describe('SubBaseGroupsComponent', () => {
     expect(openSnackBarSpy).not.toHaveBeenCalled();
   });
 
-  it('openAddSubGroupDialog - add to base group, but not added', () => {
+  it('openAddElementDialog - add to base group, but not added', () => {
     component.selectedBaseGroup = baseGroup;
     component.selectedPrivilegeGroup = undefined;
     component.role = undefined;
@@ -403,9 +403,9 @@ describe('SubBaseGroupsComponent', () => {
     let addBaseToPrivilegeGroupSpy = spyOn(baseGroupService, 'addBaseToPrivilegeGroup').and.returnValue(of(false));
     let openSnackBarSpy = spyOn(snackBar, 'open');
 
-    component.openAddSubGroupDialog();
+    component.openAddElementDialog();
 
-    expect(component.subgroupDataSource.data.length).toEqual(0);
+    expect(component.elementsDataSource.data.length).toEqual(0);
 
     expect(afterClosedSpy).toHaveBeenCalled();
     expect(addBaseToBaseGroupSpy).toHaveBeenCalledWith(secondBaseGroupId, baseGroupId);
@@ -413,7 +413,7 @@ describe('SubBaseGroupsComponent', () => {
     expect(openSnackBarSpy).toHaveBeenCalled();
   });
 
-  it('openAddSubGroupDialog - add to base group, but undefined return at dialog', () => {
+  it('openAddElementDialog - add to base group, but undefined return at dialog', () => {
     component.selectedBaseGroup = baseGroup;
     component.selectedPrivilegeGroup = undefined;
     component.role = undefined;
@@ -423,9 +423,9 @@ describe('SubBaseGroupsComponent', () => {
     let addBaseToPrivilegeGroupSpy = spyOn(baseGroupService, 'addBaseToPrivilegeGroup').and.returnValue(of(false));
     let openSnackBarSpy = spyOn(snackBar, 'open');
 
-    component.openAddSubGroupDialog();
+    component.openAddElementDialog();
 
-    expect(component.subgroupDataSource.data.length).toEqual(0);
+    expect(component.elementsDataSource.data.length).toEqual(0);
 
     expect(afterClosedSpy).toHaveBeenCalled();
     expect(addBaseToBaseGroupSpy).not.toHaveBeenCalledWith(secondBaseGroupId, baseGroupId);
@@ -433,7 +433,7 @@ describe('SubBaseGroupsComponent', () => {
     expect(openSnackBarSpy).not.toHaveBeenCalled();
   });
 
-  it('openAddSubGroupDialog - add to privilege group', () => {
+  it('openAddElementDialog - add to privilege group', () => {
     component.selectedBaseGroup = undefined;
     component.selectedPrivilegeGroup = privilegeGroup;
     component.role = Role.CONTRIBUTOR;
@@ -443,10 +443,10 @@ describe('SubBaseGroupsComponent', () => {
     let addBaseToPrivilegeGroupSpy = spyOn(baseGroupService, 'addBaseToPrivilegeGroup').and.returnValue(of(true));
     let openSnackBarSpy = spyOn(snackBar, 'open');
 
-    component.openAddSubGroupDialog();
+    component.openAddElementDialog();
 
-    expect(component.subgroupDataSource.data.length).toEqual(1);
-    expect(component.subgroupDataSource.data[0].identification).toEqual(secondBaseGroupId);
+    expect(component.elementsDataSource.data.length).toEqual(1);
+    expect(component.elementsDataSource.data[0].identification).toEqual(secondBaseGroupId);
 
     expect(afterClosedSpy).toHaveBeenCalled();
     expect(addBaseToBaseGroupSpy).not.toHaveBeenCalled();
@@ -454,7 +454,7 @@ describe('SubBaseGroupsComponent', () => {
     expect(openSnackBarSpy).not.toHaveBeenCalled();
   });
 
-  it('openAddSubGroupDialog - add to privilege group, without privilege', () => {
+  it('openAddElementDialog - add to privilege group, without privilege', () => {
     component.selectedBaseGroup = undefined;
     component.selectedPrivilegeGroup = privilegeGroup;
     component.role = undefined;
@@ -464,9 +464,9 @@ describe('SubBaseGroupsComponent', () => {
     let addBaseToPrivilegeGroupSpy = spyOn(baseGroupService, 'addBaseToPrivilegeGroup').and.returnValue(of(true));
     let openSnackBarSpy = spyOn(snackBar, 'open');
 
-    component.openAddSubGroupDialog();
+    component.openAddElementDialog();
 
-    expect(component.subgroupDataSource.data.length).toEqual(0);
+    expect(component.elementsDataSource.data.length).toEqual(0);
 
     expect(afterClosedSpy).toHaveBeenCalled();
     expect(addBaseToBaseGroupSpy).not.toHaveBeenCalled();
@@ -474,7 +474,7 @@ describe('SubBaseGroupsComponent', () => {
     expect(openSnackBarSpy).not.toHaveBeenCalled();
   });
 
-  it('openAddSubGroupDialog - add to privilege group, but not added', () => {
+  it('openAddElementDialog - add to privilege group, but not added', () => {
     component.selectedBaseGroup = undefined;
     component.selectedPrivilegeGroup = privilegeGroup;
     component.role = Role.CONTRIBUTOR;
@@ -484,9 +484,9 @@ describe('SubBaseGroupsComponent', () => {
     let addBaseToPrivilegeGroupSpy = spyOn(baseGroupService, 'addBaseToPrivilegeGroup').and.returnValue(of(false));
     let openSnackBarSpy = spyOn(snackBar, 'open');
 
-    component.openAddSubGroupDialog();
+    component.openAddElementDialog();
 
-    expect(component.subgroupDataSource.data.length).toEqual(0);
+    expect(component.elementsDataSource.data.length).toEqual(0);
 
     expect(afterClosedSpy).toHaveBeenCalled();
     expect(addBaseToBaseGroupSpy).not.toHaveBeenCalled();
@@ -497,9 +497,9 @@ describe('SubBaseGroupsComponent', () => {
 
 
   /**
-   * disableAddBaseGroup
+   * disableAddElement
    */
-  it('disableAddBaseGroup - base group', () => {
+  it('disableAddElement - base group', () => {
     component.selectedBaseGroup = baseGroup;
     component.selectedPrivilegeGroup = undefined;
     component.role = undefined;
@@ -507,13 +507,13 @@ describe('SubBaseGroupsComponent', () => {
     let isAllowedToAddBaseToBaseGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToAddBaseToBaseGroup').and.returnValue(true);
     let isAllowedToAddBaseToPrivilegeGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToAddBaseToPrivilegeGroup').and.returnValue(false);
 
-    expect(component.disableAddBaseGroup()).toBeFalse();
+    expect(component.disableAddElement()).toBeFalse();
 
     expect(isAllowedToAddBaseToBaseGroupSpy).toHaveBeenCalled();
     expect(isAllowedToAddBaseToPrivilegeGroupSpy).not.toHaveBeenCalled();
   });
 
-  it('disableAddBaseGroup - base group but not allowd', () => {
+  it('disableAddElement - base group but not allowd', () => {
     component.selectedBaseGroup = baseGroup;
     component.selectedPrivilegeGroup = undefined;
     component.role = undefined;
@@ -521,13 +521,13 @@ describe('SubBaseGroupsComponent', () => {
     let isAllowedToAddBaseToBaseGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToAddBaseToBaseGroup').and.returnValue(false);
     let isAllowedToAddBaseToPrivilegeGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToAddBaseToPrivilegeGroup').and.returnValue(false);
 
-    expect(component.disableAddBaseGroup()).toBeTrue();
+    expect(component.disableAddElement()).toBeTrue();
 
     expect(isAllowedToAddBaseToBaseGroupSpy).toHaveBeenCalled();
     expect(isAllowedToAddBaseToPrivilegeGroupSpy).not.toHaveBeenCalled();
   });
 
-  it('disableAddBaseGroup - privilege group', () => {
+  it('disableAddElement - privilege group', () => {
     component.selectedBaseGroup = undefined;
     component.selectedPrivilegeGroup = privilegeGroup;
     component.role = Role.CONTRIBUTOR;
@@ -535,13 +535,13 @@ describe('SubBaseGroupsComponent', () => {
     let isAllowedToAddBaseToBaseGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToAddBaseToBaseGroup').and.returnValue(false);
     let isAllowedToAddBaseToPrivilegeGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToAddBaseToPrivilegeGroup').and.returnValue(true);
 
-    expect(component.disableAddBaseGroup()).toBeFalse();
+    expect(component.disableAddElement()).toBeFalse();
 
     expect(isAllowedToAddBaseToBaseGroupSpy).not.toHaveBeenCalled();
     expect(isAllowedToAddBaseToPrivilegeGroupSpy).toHaveBeenCalled();
   });
 
-  it('disableAddBaseGroup - privilege group but missing role', () => {
+  it('disableAddElement - privilege group but missing role', () => {
     component.selectedBaseGroup = undefined;
     component.selectedPrivilegeGroup = privilegeGroup;
     component.role = undefined;
@@ -549,13 +549,13 @@ describe('SubBaseGroupsComponent', () => {
     let isAllowedToAddBaseToBaseGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToAddBaseToBaseGroup').and.returnValue(false);
     let isAllowedToAddBaseToPrivilegeGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToAddBaseToPrivilegeGroup').and.returnValue(true);
 
-    expect(component.disableAddBaseGroup()).toBeTrue();
+    expect(component.disableAddElement()).toBeTrue();
 
     expect(isAllowedToAddBaseToBaseGroupSpy).not.toHaveBeenCalled();
     expect(isAllowedToAddBaseToPrivilegeGroupSpy).not.toHaveBeenCalled();
   });
 
-  it('disableAddBaseGroup - privilege group but not allowed', () => {
+  it('disableAddElement - privilege group but not allowed', () => {
     component.selectedBaseGroup = undefined;
     component.selectedPrivilegeGroup = privilegeGroup;
     component.role = Role.CONTRIBUTOR;
@@ -563,7 +563,7 @@ describe('SubBaseGroupsComponent', () => {
     let isAllowedToAddBaseToBaseGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToAddBaseToBaseGroup').and.returnValue(false);
     let isAllowedToAddBaseToPrivilegeGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToAddBaseToPrivilegeGroup').and.returnValue(false);
 
-    expect(component.disableAddBaseGroup()).toBeTrue();
+    expect(component.disableAddElement()).toBeTrue();
 
     expect(isAllowedToAddBaseToBaseGroupSpy).not.toHaveBeenCalled();
     expect(isAllowedToAddBaseToPrivilegeGroupSpy).toHaveBeenCalled();
@@ -572,11 +572,11 @@ describe('SubBaseGroupsComponent', () => {
 
 
   /**
-   * removeSubGroup
+   * removeElement
    */
-  it('removeSubGroup - no sub base group selected', fakeAsync(() => {
-    component.subgroupDataSource.data = [thirdBaseGroup, secondBaseGroup];
-    component.selectedSubGroup = undefined;
+  it('removeElement - no sub base group selected', fakeAsync(() => {
+    component.elementsDataSource.data = [thirdBaseGroup, secondBaseGroup];
+    component.selectedElement = undefined;
     component.selectedBaseGroup = baseGroup;
     component.selectedPrivilegeGroup = undefined;
     component.role = undefined;
@@ -585,20 +585,20 @@ describe('SubBaseGroupsComponent', () => {
     let removeBaseFromPrivilegeGroupSpy = spyOn(baseGroupService, 'removeBaseFromPrivilegeGroup').and.returnValue(of(false));
     let openSnackBarSpy = spyOn(snackBar, 'open');
 
-    component.removeSubGroup();
+    component.removeElement();
 
     tick();
 
-    expect(component.selectedSubGroup).not.toBeDefined();
-    expect(component.subgroupDataSource.data.length).toEqual(2);
+    expect(component.selectedElement).not.toBeDefined();
+    expect(component.elementsDataSource.data.length).toEqual(2);
     expect(removeBaseFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(removeBaseFromPrivilegeGroupSpy).not.toHaveBeenCalled();
     expect(openSnackBarSpy).not.toHaveBeenCalled();
   }));
 
-  it('removeSubGroup - base group', fakeAsync(() => {
-    component.subgroupDataSource.data = [thirdBaseGroup, secondBaseGroup];
-    component.selectedSubGroup = secondBaseGroup;
+  it('removeElement - base group', fakeAsync(() => {
+    component.elementsDataSource.data = [thirdBaseGroup, secondBaseGroup];
+    component.selectedElement = secondBaseGroup;
     component.selectedBaseGroup = baseGroup;
     component.selectedPrivilegeGroup = undefined;
     component.role = undefined;
@@ -607,21 +607,21 @@ describe('SubBaseGroupsComponent', () => {
     let removeBaseFromPrivilegeGroupSpy = spyOn(baseGroupService, 'removeBaseFromPrivilegeGroup').and.returnValue(of(false));
     let openSnackBarSpy = spyOn(snackBar, 'open');
 
-    component.removeSubGroup();
+    component.removeElement();
 
     tick();
 
-    expect(component.selectedSubGroup).not.toBeDefined();
-    expect(component.subgroupDataSource.data.length).toEqual(1);
-    expect(component.subgroupDataSource.data[0].identification).toEqual(thirdBaseGroupId);
+    expect(component.selectedElement).not.toBeDefined();
+    expect(component.elementsDataSource.data.length).toEqual(1);
+    expect(component.elementsDataSource.data[0].identification).toEqual(thirdBaseGroupId);
     expect(removeBaseFromBaseGroupSpy).toHaveBeenCalled();
     expect(removeBaseFromPrivilegeGroupSpy).not.toHaveBeenCalled();
     expect(openSnackBarSpy).not.toHaveBeenCalled();
   }));
 
-  it('removeSubGroup - base group but not removed', fakeAsync(() => {
-    component.subgroupDataSource.data = [thirdBaseGroup, secondBaseGroup];
-    component.selectedSubGroup = secondBaseGroup;
+  it('removeElement - base group but not removed', fakeAsync(() => {
+    component.elementsDataSource.data = [thirdBaseGroup, secondBaseGroup];
+    component.selectedElement = secondBaseGroup;
     component.selectedBaseGroup = baseGroup;
     component.selectedPrivilegeGroup = undefined;
     component.role = undefined;
@@ -630,20 +630,20 @@ describe('SubBaseGroupsComponent', () => {
     let removeBaseFromPrivilegeGroupSpy = spyOn(baseGroupService, 'removeBaseFromPrivilegeGroup').and.returnValue(of(false));
     let openSnackBarSpy = spyOn(snackBar, 'open');
 
-    component.removeSubGroup();
+    component.removeElement();
 
     tick();
 
-    expect(component.selectedSubGroup).toBeDefined();
-    expect(component.subgroupDataSource.data.length).toEqual(2);
+    expect(component.selectedElement).toBeDefined();
+    expect(component.elementsDataSource.data.length).toEqual(2);
     expect(removeBaseFromBaseGroupSpy).toHaveBeenCalled();
     expect(removeBaseFromPrivilegeGroupSpy).not.toHaveBeenCalled();
     expect(openSnackBarSpy).toHaveBeenCalled();
   }));
 
-  it('removeSubGroup - privilege group', fakeAsync(() => {
-    component.subgroupDataSource.data = [thirdBaseGroup, secondBaseGroup];
-    component.selectedSubGroup = secondBaseGroup;
+  it('removeElement - privilege group', fakeAsync(() => {
+    component.elementsDataSource.data = [thirdBaseGroup, secondBaseGroup];
+    component.selectedElement = secondBaseGroup;
     component.selectedBaseGroup = undefined;
     component.selectedPrivilegeGroup = privilegeGroup;
     component.role = Role.CONTRIBUTOR;
@@ -652,21 +652,21 @@ describe('SubBaseGroupsComponent', () => {
     let removeBaseFromPrivilegeGroupSpy = spyOn(baseGroupService, 'removeBaseFromPrivilegeGroup').and.returnValue(of(true));
     let openSnackBarSpy = spyOn(snackBar, 'open');
 
-    component.removeSubGroup();
+    component.removeElement();
 
     tick();
 
-    expect(component.selectedSubGroup).not.toBeDefined();
-    expect(component.subgroupDataSource.data.length).toEqual(1);
-    expect(component.subgroupDataSource.data[0].identification).toEqual(thirdBaseGroupId);
+    expect(component.selectedElement).not.toBeDefined();
+    expect(component.elementsDataSource.data.length).toEqual(1);
+    expect(component.elementsDataSource.data[0].identification).toEqual(thirdBaseGroupId);
     expect(removeBaseFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(removeBaseFromPrivilegeGroupSpy).toHaveBeenCalled();
     expect(openSnackBarSpy).not.toHaveBeenCalled();
   }));
 
-  it('removeSubGroup - privilege group but not removed', fakeAsync(() => {
-    component.subgroupDataSource.data = [thirdBaseGroup, secondBaseGroup];
-    component.selectedSubGroup = secondBaseGroup;
+  it('removeElement - privilege group but not removed', fakeAsync(() => {
+    component.elementsDataSource.data = [thirdBaseGroup, secondBaseGroup];
+    component.selectedElement = secondBaseGroup;
     component.selectedBaseGroup = undefined;
     component.selectedPrivilegeGroup = privilegeGroup;
     component.role = Role.CONTRIBUTOR;
@@ -675,12 +675,12 @@ describe('SubBaseGroupsComponent', () => {
     let removeBaseFromPrivilegeGroupSpy = spyOn(baseGroupService, 'removeBaseFromPrivilegeGroup').and.returnValue(of(false));
     let openSnackBarSpy = spyOn(snackBar, 'open');
 
-    component.removeSubGroup();
+    component.removeElement();
 
     tick();
 
-    expect(component.selectedSubGroup).toBeDefined();
-    expect(component.subgroupDataSource.data.length).toEqual(2);
+    expect(component.selectedElement).toBeDefined();
+    expect(component.elementsDataSource.data.length).toEqual(2);
     expect(removeBaseFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(removeBaseFromPrivilegeGroupSpy).toHaveBeenCalled();
     expect(openSnackBarSpy).toHaveBeenCalled();
@@ -690,10 +690,10 @@ describe('SubBaseGroupsComponent', () => {
 
 
   /**
-   * disableRemoveBaseGroup
+   * disableRemoveElement
    */
-  it('disableRemoveBaseGroup - no sub base group selected', () => {
-    component.selectedSubGroup = undefined;
+  it('disableRemoveElement - no sub base group selected', () => {
+    component.selectedElement = undefined;
     component.selectedBaseGroup = baseGroup;
     component.selectedPrivilegeGroup = undefined;
     component.role = undefined;
@@ -701,14 +701,14 @@ describe('SubBaseGroupsComponent', () => {
     let isAllowedToRemoveBaseFromBaseGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToRemoveBaseFromBaseGroup').and.returnValue(true);
     let isAllowedToRemoveBaseFromBPrivilegeGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToRemoveBaseFromBPrivilegeGroup').and.returnValue(false);
 
-    expect(component.disableRemoveBaseGroup()).toBeTrue();
+    expect(component.disableRemoveElement()).toBeTrue();
 
     expect(isAllowedToRemoveBaseFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(isAllowedToRemoveBaseFromBPrivilegeGroupSpy).not.toHaveBeenCalled();
   });
 
-  it('disableRemoveBaseGroup - base group', () => {
-    component.selectedSubGroup = secondBaseGroup;
+  it('disableRemoveElement - base group', () => {
+    component.selectedElement = secondBaseGroup;
     component.selectedBaseGroup = baseGroup;
     component.selectedPrivilegeGroup = undefined;
     component.role = undefined;
@@ -716,14 +716,14 @@ describe('SubBaseGroupsComponent', () => {
     let isAllowedToRemoveBaseFromBaseGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToRemoveBaseFromBaseGroup').and.returnValue(true);
     let isAllowedToRemoveBaseFromBPrivilegeGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToRemoveBaseFromBPrivilegeGroup').and.returnValue(false);
 
-    expect(component.disableRemoveBaseGroup()).toBeFalse();
+    expect(component.disableRemoveElement()).toBeFalse();
 
     expect(isAllowedToRemoveBaseFromBaseGroupSpy).toHaveBeenCalled();
     expect(isAllowedToRemoveBaseFromBPrivilegeGroupSpy).not.toHaveBeenCalled();
   });
 
-  it('disableRemoveBaseGroup - base group but not allowd', () => {
-    component.selectedSubGroup = secondBaseGroup;
+  it('disableRemoveElement - base group but not allowd', () => {
+    component.selectedElement = secondBaseGroup;
     component.selectedBaseGroup = baseGroup;
     component.selectedPrivilegeGroup = undefined;
     component.role = undefined;
@@ -731,14 +731,14 @@ describe('SubBaseGroupsComponent', () => {
     let isAllowedToRemoveBaseFromBaseGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToRemoveBaseFromBaseGroup').and.returnValue(false);
     let isAllowedToRemoveBaseFromBPrivilegeGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToRemoveBaseFromBPrivilegeGroup').and.returnValue(false);
 
-    expect(component.disableRemoveBaseGroup()).toBeTrue();
+    expect(component.disableRemoveElement()).toBeTrue();
 
     expect(isAllowedToRemoveBaseFromBaseGroupSpy).toHaveBeenCalled();
     expect(isAllowedToRemoveBaseFromBPrivilegeGroupSpy).not.toHaveBeenCalled();
   });
 
-  it('disableRemoveBaseGroup - privilege group', () => {
-    component.selectedSubGroup = secondBaseGroup;
+  it('disableRemoveElement - privilege group', () => {
+    component.selectedElement = secondBaseGroup;
     component.selectedBaseGroup = undefined;
     component.selectedPrivilegeGroup = privilegeGroup;
     component.role = Role.CONTRIBUTOR;
@@ -746,14 +746,14 @@ describe('SubBaseGroupsComponent', () => {
     let isAllowedToRemoveBaseFromBaseGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToRemoveBaseFromBaseGroup').and.returnValue(false);
     let isAllowedToRemoveBaseFromBPrivilegeGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToRemoveBaseFromBPrivilegeGroup').and.returnValue(true);
 
-    expect(component.disableRemoveBaseGroup()).toBeFalse();
+    expect(component.disableRemoveElement()).toBeFalse();
 
     expect(isAllowedToRemoveBaseFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(isAllowedToRemoveBaseFromBPrivilegeGroupSpy).toHaveBeenCalled();
   });
 
-  it('disableRemoveBaseGroup - privilege group but missing role', () => {
-    component.selectedSubGroup = secondBaseGroup;
+  it('disableRemoveElement - privilege group but missing role', () => {
+    component.selectedElement = secondBaseGroup;
     component.selectedBaseGroup = undefined;
     component.selectedPrivilegeGroup = privilegeGroup;
     component.role = undefined;
@@ -761,14 +761,14 @@ describe('SubBaseGroupsComponent', () => {
     let isAllowedToRemoveBaseFromBaseGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToRemoveBaseFromBaseGroup').and.returnValue(false);
     let isAllowedToRemoveBaseFromBPrivilegeGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToRemoveBaseFromBPrivilegeGroup').and.returnValue(true);
 
-    expect(component.disableRemoveBaseGroup()).toBeTrue();
+    expect(component.disableRemoveElement()).toBeTrue();
 
     expect(isAllowedToRemoveBaseFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(isAllowedToRemoveBaseFromBPrivilegeGroupSpy).not.toHaveBeenCalled();
   });
 
-  it('disableRemoveBaseGroup - privilege group but not allowed', () => {
-    component.selectedSubGroup = secondBaseGroup;
+  it('disableRemoveElement - privilege group but not allowed', () => {
+    component.selectedElement = secondBaseGroup;
     component.selectedBaseGroup = undefined;
     component.selectedPrivilegeGroup = privilegeGroup;
     component.role = Role.CONTRIBUTOR;
@@ -776,7 +776,7 @@ describe('SubBaseGroupsComponent', () => {
     let isAllowedToRemoveBaseFromBaseGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToRemoveBaseFromBaseGroup').and.returnValue(false);
     let isAllowedToRemoveBaseFromBPrivilegeGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToRemoveBaseFromBPrivilegeGroup').and.returnValue(false);
 
-    expect(component.disableRemoveBaseGroup()).toBeTrue();
+    expect(component.disableRemoveElement()).toBeTrue();
 
     expect(isAllowedToRemoveBaseFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(isAllowedToRemoveBaseFromBPrivilegeGroupSpy).toHaveBeenCalled();
