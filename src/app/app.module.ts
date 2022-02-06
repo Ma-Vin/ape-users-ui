@@ -26,6 +26,7 @@ import { SubBaseGroupsComponent } from './components/sub-base-groups/sub-base-gr
 import { AddBaseGroupDialogComponent } from './components/add-base-group-dialog/add-base-group-dialog.component';
 import { UsersAtGroupComponent } from './components/users-at-group/users-at-group.component';
 import { AddUserDialogComponent } from './components/add-user-dialog/add-user-dialog.component';
+import { AllPrivilegeGroupsComponent } from './components/all-privilege-groups/all-privilege-groups.component';
 
 registerLocaleData(localeDE);
 
@@ -44,7 +45,8 @@ registerLocaleData(localeDE);
     SubBaseGroupsComponent,
     AddBaseGroupDialogComponent,
     UsersAtGroupComponent,
-    AddUserDialogComponent
+    AddUserDialogComponent,
+    AllPrivilegeGroupsComponent
   ],
   imports: [
     BrowserModule,

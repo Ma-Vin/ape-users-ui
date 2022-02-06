@@ -152,6 +152,20 @@ describe('ToolbarComponent', () => {
     expect(component.iconName).toEqual('group_add');
   });
 
+  it('ngOnInit - privilege groups site', () => {
+    let admin = User.map(user);
+    admin.isGlobalAdmin = true;
+    let getActiveUserSpy = spyOn(selectionService, 'getActiveUser').and.returnValue(admin);
+    component.activeSite = ToolbarSite.PRIVILEGE_GROUPS;
+
+    component.ngOnInit();
+
+    expect(getActiveUserSpy).toHaveBeenCalled();
+    expect(component.showAdminItems).toBeTrue();
+    expect(component.iconName).toEqual('group_add');
+  });
+
+
 
 
   /**

@@ -1,4 +1,4 @@
-<div class="sub-basegroups" *ngIf="showElements()">
+<div class="elements" *ngIf="showElements()">
     <h4>Subgroups</h4>
     <table #elementsSort="matSort" mat-table [dataSource]="elementsDataSource" matSort>
         <ng-container matColumnDef="identification">

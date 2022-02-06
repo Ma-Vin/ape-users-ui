@@ -29,6 +29,7 @@ export class ToolbarComponent implements OnInit {
         this.iconName = 'domain_add';
         break;
       case ToolbarSite.BASE_GROUPS:
+      case ToolbarSite.PRIVILEGE_GROUPS:
         this.iconName = 'group_add';
         break;
       case ToolbarSite.USERS:
