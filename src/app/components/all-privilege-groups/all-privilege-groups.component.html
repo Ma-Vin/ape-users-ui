@@ -48,34 +48,44 @@
                 [isNewObject]="isNewObject"></app-detail-button-row>
             <mat-tab-group>
                 <mat-tab label="Admin">
-                    <app-sub-base-groups [selectedPrivilegeGroup]="selectedObject" [role]="getRole('ADMIN')">
-                    </app-sub-base-groups>
-                    <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('ADMIN')">
-                    </app-users-at-group>
+                    <div class="privilege-tab">
+                        <app-sub-base-groups [selectedPrivilegeGroup]="selectedObject" [role]="getRole('ADMIN')">
+                        </app-sub-base-groups>
+                        <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('ADMIN')">
+                        </app-users-at-group>
+                    </div>
                 </mat-tab>
                 <mat-tab label="Manager">
-                    <app-sub-base-groups [selectedPrivilegeGroup]="selectedObject" [role]="getRole('MANAGER')">
-                    </app-sub-base-groups>
-                    <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('MANAGER')">
-                    </app-users-at-group>
+                    <div class="privilege-tab">
+                        <app-sub-base-groups [selectedPrivilegeGroup]="selectedObject" [role]="getRole('MANAGER')">
+                        </app-sub-base-groups>
+                        <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('MANAGER')">
+                        </app-users-at-group>
+                    </div>
                 </mat-tab>
                 <mat-tab label="Contributor">
-                    <app-sub-base-groups [selectedPrivilegeGroup]="selectedObject" [role]="getRole('CONTRIBUTOR')">
-                    </app-sub-base-groups>
-                    <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('CONTRIBUTOR')">
-                    </app-users-at-group>
+                    <div class="privilege-tab">
+                        <app-sub-base-groups [selectedPrivilegeGroup]="selectedObject" [role]="getRole('CONTRIBUTOR')">
+                        </app-sub-base-groups>
+                        <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('CONTRIBUTOR')">
+                        </app-users-at-group>
+                    </div>
                 </mat-tab>
                 <mat-tab label="Visitor">
-                    <app-sub-base-groups [selectedPrivilegeGroup]="selectedObject" [role]="getRole('VISITOR')">
-                    </app-sub-base-groups>
-                    <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('VISITOR')">
-                    </app-users-at-group>
+                    <div class="privilege-tab">
+                        <app-sub-base-groups [selectedPrivilegeGroup]="selectedObject" [role]="getRole('VISITOR')">
+                        </app-sub-base-groups>
+                        <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('VISITOR')">
+                        </app-users-at-group>
+                    </div>
                 </mat-tab>
                 <mat-tab label="Blocked">
-                    <app-sub-base-groups [selectedPrivilegeGroup]="selectedObject" [role]="getRole('BLOCKED')">
-                    </app-sub-base-groups>
-                    <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('BLOCKED')">
-                    </app-users-at-group>
+                    <div class="privilege-tab">
+                        <app-sub-base-groups [selectedPrivilegeGroup]="selectedObject" [role]="getRole('BLOCKED')">
+                        </app-sub-base-groups>
+                        <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('BLOCKED')">
+                        </app-users-at-group>
+                    </div>
                 </mat-tab>
             </mat-tab-group>
         </ng-template>
