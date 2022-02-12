@@ -284,7 +284,7 @@ export abstract class ElementsAtGroupComponent<T extends IEqualsAndIdentifiable,
       return;
     }
     if (this.selectedBaseGroup != undefined) {
-      this.removeElementFromBaseGroup(this.selectedElement!.getIdentification(), this.selectedBaseGroup.identification).subscribe(
+      this.removeElementFromBaseGroup(this.selectedElement.getIdentification(), this.selectedBaseGroup.identification).subscribe(
         removed => {
           if (removed) {
             this.removeFromAllElements(this.selectedElement!.getIdentification());
@@ -295,7 +295,7 @@ export abstract class ElementsAtGroupComponent<T extends IEqualsAndIdentifiable,
         });
     }
     if (this.selectedPrivilegeGroup != undefined) {
-      this.removeElementFromPrivilegeGroup(this.selectedElement!.getIdentification(), this.selectedPrivilegeGroup.identification).subscribe(
+      this.removeElementFromPrivilegeGroup(this.selectedElement.getIdentification(), this.selectedPrivilegeGroup.identification).subscribe(
         removed => {
           if (removed) {
             this.removeFromAllElements(this.selectedElement!.getIdentification());
