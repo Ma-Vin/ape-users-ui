@@ -14,6 +14,7 @@ import { ToolbarComponent } from './toolbar.component';
 import { CommonGroup, ICommonGroup } from 'src/app/model/common-group.model';
 import { Role } from 'src/app/model/role.model';
 import { SimpleChanges } from '@angular/core';
+import { ADMIN_GROUP_PATH, USERS_PATH } from 'src/app/app-routing.module';
 
 describe('ToolbarComponent', () => {
   let component: ToolbarComponent;
@@ -27,17 +28,21 @@ describe('ToolbarComponent', () => {
 
   let fixture: ComponentFixture<ToolbarComponent>;
 
+  const userId = 'UAA00001';
+  const firstName = 'Lower';
+  const lastName = 'Power';
 
   const user = User.map({
-    identification: '',
-    firstName: 'Max',
-    lastName: 'Power',
+    identification: userId,
+    firstName: firstName,
+    lastName: lastName,
     mail: 'max.power@ma-vin.de',
     image: undefined,
     smallImage: undefined,
     lastLogin: new Date(2021, 9, 25, 20, 15, 1),
     validFrom: new Date(2021, 9, 1),
     validTo: undefined,
+    role: Role.VISITOR,
     isGlobalAdmin: false
   } as User);
 
@@ -93,6 +98,9 @@ describe('ToolbarComponent', () => {
     expect(getActiveUserSpy).toHaveBeenCalled();
     expect(component.showAdminItems).toBeFalse();
     expect(component.iconName).toEqual('add_box');
+    expect(component.activeUserIdentification).toEqual(userId);
+    expect(component.activeUserParentUrl).toEqual(USERS_PATH);
+    expect(component.activeUserText).toEqual(`${lastName}, ${firstName}: ${userId}`);
   });
 
   it('ngOnInit - active admin', () => {
@@ -105,6 +113,9 @@ describe('ToolbarComponent', () => {
     expect(getActiveUserSpy).toHaveBeenCalled();
     expect(component.showAdminItems).toBeTrue();
     expect(component.iconName).toEqual('add_box');
+    expect(component.activeUserIdentification).toEqual(userId);
+    expect(component.activeUserParentUrl).toEqual(ADMIN_GROUP_PATH);
+    expect(component.activeUserText).toEqual(`${lastName}, ${firstName}: ${userId}`);
   });
 
   it('ngOnInit - neither active user nor admin', () => {
@@ -115,6 +126,9 @@ describe('ToolbarComponent', () => {
     expect(getActiveUserSpy).toHaveBeenCalled();
     expect(component.showAdminItems).toBeFalse();
     expect(component.iconName).toEqual('add_box');
+    expect(component.activeUserIdentification).not.toBeDefined();
+    expect(component.activeUserParentUrl).not.toBeDefined();
+    expect(component.activeUserText).toEqual('not selected');
   });
 
   it('ngOnInit - admin site', () => {

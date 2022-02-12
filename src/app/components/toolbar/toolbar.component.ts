@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { ADMIN_GROUP_PATH, USERS_PATH } from '../../app-routing.module';
 import { SelectionService } from '../../services/util/selection.service';
 import { ToolbarSite } from './toolbar-site';
 
@@ -17,6 +18,9 @@ export class ToolbarComponent implements OnInit, OnChanges {
 
   @Input() public commonGroupIdentification: string | undefined;
   public commonGroupText = NOT_SELECTED_TEXT;
+  public activeUserIdentification: string | undefined;
+  public activeUserParentUrl: string | undefined;
+  public activeUserText = NOT_SELECTED_TEXT;
   public iconName = 'add_box';
 
   public showAdminItems!: boolean;
@@ -26,6 +30,7 @@ export class ToolbarComponent implements OnInit, OnChanges {
 
   public ngOnInit(): void {
     this.determineShowAdminItems();
+    this.determineActiveUserValues();
     switch (this.activeSite) {
       case ToolbarSite.ADMINS:
         this.iconName = 'add_moderator';
@@ -54,6 +59,19 @@ export class ToolbarComponent implements OnInit, OnChanges {
   private determineShowAdminItems(): void {
     let activeUser = this.selectionService.getActiveUser();
     this.showAdminItems = activeUser != undefined && activeUser.isGlobalAdmin;
+  }
+
+  private determineActiveUserValues(): void {
+    let user = this.selectionService.getActiveUser();
+    if (user != undefined) {
+      this.activeUserIdentification = user.identification;
+      this.activeUserParentUrl = user.isGlobalAdmin ? ADMIN_GROUP_PATH : USERS_PATH;
+      this.activeUserText = `${user.lastName}, ${user.firstName}: ${this.activeUserIdentification}`;
+    } else {
+      this.activeUserIdentification = undefined;
+      this.activeUserParentUrl = undefined;
+      this.activeUserText = NOT_SELECTED_TEXT;
+    }
   }
 
   public onCreateObject(): void {

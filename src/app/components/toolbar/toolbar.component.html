@@ -24,6 +24,9 @@
             <mat-icon>{{iconName}}</mat-icon>
             Create new {{createObjectName}}
         </button>
+        <button class="account-button" mat-flat-button color="primary" routerLink="/{{activeUserParentUrl}}/{{activeUserIdentification}}" [disabled]="activeUserIdentification == undefined">
+            <mat-icon>account_box</mat-icon> {{activeUserText}}
+        </button>
     </mat-toolbar-row>
 </mat-toolbar>
 <h3>{{activeSite}}</h3>
