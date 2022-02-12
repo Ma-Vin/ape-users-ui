@@ -152,6 +152,7 @@ describe('CommonGroupComponent', () => {
     expect(component.showObjectDetail).toBeTrue();
     expect(component.selectedObject === commonGroup).toBeFalse();
     expect(component.selectedObject.equals(commonGroup)).toBeTrue();
+    expect(component.selectedObjectIdentification).toEqual(commonGroupId);
     expect(component.disableUpdate).toBeFalse();
   });
 
@@ -172,6 +173,7 @@ describe('CommonGroupComponent', () => {
     expect(component.showObjectDetail).toBeTrue();
     expect(component.selectedObject === commonGroup).toBeFalse();
     expect(component.selectedObject.equals(commonGroup)).toBeTrue();
+    expect(component.selectedObjectIdentification).toEqual(commonGroupId);
     expect(component.disableUpdate).toBeFalse();
   });
 
@@ -192,6 +194,7 @@ describe('CommonGroupComponent', () => {
     expect(component.showObjectDetail).toBeTrue();
     expect(component.selectedObject === commonGroup).toBeFalse();
     expect(component.selectedObject.equals(commonGroup)).toBeTrue();
+    expect(component.selectedObjectIdentification).toEqual(commonGroupId);
     expect(component.disableUpdate).toBeFalse();
   });
 
@@ -210,6 +213,7 @@ describe('CommonGroupComponent', () => {
     expect(component.showObjectDetail).toBeTrue();
     expect(component.selectedObject === commonGroup).toBeFalse();
     expect(component.selectedObject.equals(commonGroup)).toBeTrue();
+    expect(component.selectedObjectIdentification).toEqual(commonGroupId);
     expect(component.disableUpdate).toBeTrue();
   });
 
@@ -347,12 +351,14 @@ describe('CommonGroupComponent', () => {
    * onCancel
    */
   it('onCancel', () => {
+    component.selectedObjectIdentification = 'a';
     component.onCancel();
 
     expect(component.showObjectDetail).toBeFalse();
     expect(component.isNewObject).toBeFalse();
     expect(component.selectedObject).toBeTruthy();
     expect(component.selectedObject.identification).toEqual('');
+    expect(component.selectedObjectIdentification).not.toBeDefined();
   });
 
 
@@ -381,6 +387,7 @@ describe('CommonGroupComponent', () => {
     let isAllowedToDeleteCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToDeleteCommonGroup').and.returnValue(true);
 
     component.selectedObject = otherCommonGroup;
+    component.selectedObjectIdentification = otherCommonGroupId;
     component.showObjectDetail = true;
     component.isNewObject = false;
     component.onDelete();
@@ -393,6 +400,7 @@ describe('CommonGroupComponent', () => {
 
     expect(component.allObjectsfilterDataSource.data.length).toEqual(1);
     expect(component.allObjectsfilterDataSource.data.includes(commonGroup)).toBeTrue();
+    expect(component.selectedObjectIdentification).not.toBeDefined();
   }));
 
   it('onDelete - delete unsuccessful', fakeAsync(() => {
@@ -402,6 +410,7 @@ describe('CommonGroupComponent', () => {
     let isAllowedToDeleteCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToDeleteCommonGroup').and.returnValue(true);
 
     component.selectedObject = otherCommonGroup;
+    component.selectedObjectIdentification = otherCommonGroupId;
     component.showObjectDetail = true;
     component.isNewObject = false;
     component.onDelete();
@@ -416,6 +425,7 @@ describe('CommonGroupComponent', () => {
 
     expect(component.allObjectsfilterDataSource.data.includes(commonGroup)).toBeTrue();
     expect(component.allObjectsfilterDataSource.data.includes(otherCommonGroup)).toBeTrue();
+    expect(component.selectedObjectIdentification).toBeDefined();
   }));
 
   it('onDelete - delete disabled - new item', fakeAsync(() => {

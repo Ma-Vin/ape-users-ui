@@ -11,6 +11,9 @@ import { UserService } from '../../services/backend/user.service';
 import { ToolbarSite } from './toolbar-site';
 
 import { ToolbarComponent } from './toolbar.component';
+import { CommonGroup, ICommonGroup } from 'src/app/model/common-group.model';
+import { Role } from 'src/app/model/role.model';
+import { SimpleChanges } from '@angular/core';
 
 describe('ToolbarComponent', () => {
   let component: ToolbarComponent;
@@ -37,6 +40,18 @@ describe('ToolbarComponent', () => {
     validTo: undefined,
     isGlobalAdmin: false
   } as User);
+
+  const commonGroupId = 'CGAA00001';
+  const commonGroupName = 'Name of the group';
+
+  const commonGroup = CommonGroup.map({
+    identification: commonGroupId,
+    groupName: commonGroupName,
+    validFrom: new Date(2021, 9, 1),
+    validTo: undefined,
+    description: 'Bam!',
+    defaultRole: Role.VISITOR
+  } as ICommonGroup);
 
 
   beforeEach(async () => {
@@ -163,6 +178,31 @@ describe('ToolbarComponent', () => {
     expect(getActiveUserSpy).toHaveBeenCalled();
     expect(component.showAdminItems).toBeTrue();
     expect(component.iconName).toEqual('group_add');
+  });
+
+
+
+  /**
+   * ngOnChanges
+   */
+  it('ngOnChanges - common group selected', () => {
+    let getSelectedCommonGroupSpy = spyOn(selectionService, 'getSelectedCommonGroup').and.returnValue(commonGroup);
+
+    component.ngOnChanges({} as SimpleChanges);
+
+    expect(getSelectedCommonGroupSpy).toHaveBeenCalled();
+    expect(component.commonGroupText).toEqual(commonGroupId);
+    expect(component.commonGroupIdentification).toEqual(commonGroupId);
+  });
+
+  it('ngOnChanges - common group not elected', () => {
+    let getSelectedCommonGroupSpy = spyOn(selectionService, 'getSelectedCommonGroup').and.returnValue(undefined);
+
+    component.ngOnChanges({} as SimpleChanges);
+
+    expect(getSelectedCommonGroupSpy).toHaveBeenCalled();
+    expect(component.commonGroupText).toEqual('not selected');
+    expect(component.commonGroupIdentification).not.toBeDefined();
   });
 
 

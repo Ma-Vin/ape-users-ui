@@ -1,17 +1,22 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { SelectionService } from '../../services/util/selection.service';
 import { ToolbarSite } from './toolbar-site';
+
+const NOT_SELECTED_TEXT = 'not selected';
 
 @Component({
   selector: 'app-toolbar',
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.less']
 })
-export class ToolbarComponent implements OnInit {
+export class ToolbarComponent implements OnInit, OnChanges {
   @Output() onCreateObjectEventEmitter = new EventEmitter<string>();
   @Input() public createObjectName!: string;
   @Input() public activeSite!: ToolbarSite;
   @Input() public disableCreateButton!: boolean;
+
+  @Input() public commonGroupIdentification: string | undefined;
+  public commonGroupText = NOT_SELECTED_TEXT;
   public iconName = 'add_box';
 
   public showAdminItems!: boolean;
@@ -38,6 +43,12 @@ export class ToolbarComponent implements OnInit {
       default:
         this.iconName = 'add_box';
     }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    let commonGroup = this.selectionService.getSelectedCommonGroup();
+    this.commonGroupIdentification = commonGroup == undefined ? undefined : commonGroup.identification;
+    this.commonGroupText = this.commonGroupIdentification == undefined ? NOT_SELECTED_TEXT : this.commonGroupIdentification;
   }
 
   private determineShowAdminItems(): void {

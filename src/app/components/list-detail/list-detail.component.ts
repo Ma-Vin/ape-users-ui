@@ -10,6 +10,7 @@ import { IEqualsAndIdentifiable } from "src/app/model/equals-identifiable";
 export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> implements OnInit {
 
     @Input() @Output() selectedObject: T;
+    public selectedObjectIdentification: string | undefined;
     protected originalObject: T | undefined;
     showObjectDetail: boolean;
     isNewObject = false;
@@ -96,6 +97,7 @@ export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> impl
         this.showObjectDetail = true;
         this.isNewObject = false;
         this.disableUpdate = this.disableUpdateSelectedObject();
+        this.selectedObjectIdentification = this.selectedObject.getIdentification();
 
         this.onSelectObjectTypeSpecific(objectToSelect);
     }
@@ -319,6 +321,7 @@ export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> impl
         this.isNewObject = false;
         this.originalObject = undefined;
         this.selectedObject = this.createNewEmptyObject();
+        this.selectedObjectIdentification = undefined;
     }
 
     onCancelCallBack = (): void => {

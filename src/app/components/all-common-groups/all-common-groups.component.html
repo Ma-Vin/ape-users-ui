@@ -1,5 +1,5 @@
 <app-toolbar (onCreateObjectEventEmitter)="onCreateObject()" [createObjectName]="'Common Group'"
-    [activeSite]="toolbarSite" [disableCreateButton]="disableCreateObject()"></app-toolbar>
+    [activeSite]="toolbarSite" [disableCreateButton]="disableCreateObject()" [commonGroupIdentification]="selectedObjectIdentification"></app-toolbar>
 <div class="object-container">
     <app-group-name-list [allObjectsfilterDataSource]="allObjectsfilterDataSource"
         [selectObject]="onSelectObjectCallBack" [isObjectSelected]="isObjectSelectedCallBack">

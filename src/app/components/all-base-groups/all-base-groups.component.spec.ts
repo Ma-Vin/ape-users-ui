@@ -157,6 +157,7 @@ describe('AllBaseGroupsComponent', () => {
     expect(component.showObjectDetail).toBeTrue();
     expect(component.selectedObject === baseGroup).toBeFalse();
     expect(component.selectedObject.equals(baseGroup)).toBeTrue();
+    expect(component.selectedObjectIdentification).toEqual(baseGroupId);
     expect(component.disableUpdate).toBeFalse();
   });
 
@@ -175,6 +176,7 @@ describe('AllBaseGroupsComponent', () => {
     expect(component.showObjectDetail).toBeTrue();
     expect(component.selectedObject === baseGroup).toBeFalse();
     expect(component.selectedObject.equals(baseGroup)).toBeTrue();
+    expect(component.selectedObjectIdentification).toEqual(baseGroupId);
     expect(component.disableUpdate).toBeFalse();
   });
 
@@ -193,6 +195,7 @@ describe('AllBaseGroupsComponent', () => {
     expect(component.showObjectDetail).toBeTrue();
     expect(component.selectedObject === baseGroup).toBeFalse();
     expect(component.selectedObject.equals(baseGroup)).toBeTrue();
+    expect(component.selectedObjectIdentification).toEqual(baseGroupId);
     expect(component.disableUpdate).toBeFalse();
   });
 
@@ -209,6 +212,7 @@ describe('AllBaseGroupsComponent', () => {
     expect(component.showObjectDetail).toBeTrue();
     expect(component.selectedObject === baseGroup).toBeFalse();
     expect(component.selectedObject.equals(baseGroup)).toBeTrue();
+    expect(component.selectedObjectIdentification).toEqual(baseGroupId);
     expect(component.disableUpdate).toBeTrue();
   });
 
@@ -354,12 +358,14 @@ describe('AllBaseGroupsComponent', () => {
    * onCancel
    */
   it('onCancel', () => {
+    component.selectedObjectIdentification = 'a';
     component.onCancel();
 
     expect(component.showObjectDetail).toBeFalse();
     expect(component.isNewObject).toBeFalse();
     expect(component.selectedObject).toBeTruthy();
     expect(component.selectedObject.identification).toEqual('');
+    expect(component.selectedObjectIdentification).not.toBeDefined();
   });
 
 
@@ -390,6 +396,7 @@ describe('AllBaseGroupsComponent', () => {
     let isAllowedToDeleteBaseGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToDeleteBaseGroup').and.returnValue(true);
 
     component.selectedObject = otherBaseGroup;
+    component.selectedObjectIdentification = otherBaseGroupId;
     component.showObjectDetail = true;
     component.isNewObject = false;
     component.onDelete();
@@ -402,6 +409,7 @@ describe('AllBaseGroupsComponent', () => {
 
     expect(component.allObjectsfilterDataSource.data.length).toEqual(1);
     expect(component.allObjectsfilterDataSource.data.includes(baseGroup)).toBeTrue();
+    expect(component.selectedObjectIdentification).not.toBeDefined();
   }));
 
   it('onDelete - delete unsuccessful', fakeAsync(() => {
@@ -411,6 +419,7 @@ describe('AllBaseGroupsComponent', () => {
     let isAllowedToDeleteBaseGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToDeleteBaseGroup').and.returnValue(true);
 
     component.selectedObject = otherBaseGroup;
+    component.selectedObjectIdentification = otherBaseGroupId;
     component.showObjectDetail = true;
     component.isNewObject = false;
     component.onDelete();
@@ -425,6 +434,7 @@ describe('AllBaseGroupsComponent', () => {
 
     expect(component.allObjectsfilterDataSource.data.includes(baseGroup)).toBeTrue();
     expect(component.allObjectsfilterDataSource.data.includes(otherBaseGroup)).toBeTrue();
+    expect(component.selectedObjectIdentification).toBeDefined();
   }));
 
   it('onDelete - delete disabled - new item', fakeAsync(() => {

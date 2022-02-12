@@ -83,12 +83,12 @@ describe('AllPrivilegeGroupsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  
+
 
   /**
    * ngOnInit
    */
-   it('ngOnInit - without id at route', fakeAsync(() => {
+  it('ngOnInit - without id at route', fakeAsync(() => {
     let getAllPrivilegeGroupsSpy = spyOn(privilegeGroupService, 'getAllPrivilegeGroups').and.returnValue(of([otherPrivilegeGroup, privilegeGroup]));
 
     component.ngOnInit();
@@ -153,6 +153,7 @@ describe('AllPrivilegeGroupsComponent', () => {
     expect(component.showObjectDetail).toBeTrue();
     expect(component.selectedObject === privilegeGroup).toBeFalse();
     expect(component.selectedObject.equals(privilegeGroup)).toBeTrue();
+    expect(component.selectedObjectIdentification).toEqual(privilegeGroupId);
     expect(component.disableUpdate).toBeFalse();
   });
 
@@ -171,6 +172,7 @@ describe('AllPrivilegeGroupsComponent', () => {
     expect(component.showObjectDetail).toBeTrue();
     expect(component.selectedObject === privilegeGroup).toBeFalse();
     expect(component.selectedObject.equals(privilegeGroup)).toBeTrue();
+    expect(component.selectedObjectIdentification).toEqual(privilegeGroupId);
     expect(component.disableUpdate).toBeFalse();
   });
 
@@ -189,6 +191,7 @@ describe('AllPrivilegeGroupsComponent', () => {
     expect(component.showObjectDetail).toBeTrue();
     expect(component.selectedObject === privilegeGroup).toBeFalse();
     expect(component.selectedObject.equals(privilegeGroup)).toBeTrue();
+    expect(component.selectedObjectIdentification).toEqual(privilegeGroupId);
     expect(component.disableUpdate).toBeFalse();
   });
 
@@ -205,6 +208,7 @@ describe('AllPrivilegeGroupsComponent', () => {
     expect(component.showObjectDetail).toBeTrue();
     expect(component.selectedObject === privilegeGroup).toBeFalse();
     expect(component.selectedObject.equals(privilegeGroup)).toBeTrue();
+    expect(component.selectedObjectIdentification).toEqual(privilegeGroupId);
     expect(component.disableUpdate).toBeTrue();
   });
 
@@ -350,12 +354,14 @@ describe('AllPrivilegeGroupsComponent', () => {
    * onCancel
    */
   it('onCancel', () => {
+    component.selectedObjectIdentification = 'a';
     component.onCancel();
 
     expect(component.showObjectDetail).toBeFalse();
     expect(component.isNewObject).toBeFalse();
     expect(component.selectedObject).toBeTruthy();
     expect(component.selectedObject.identification).toEqual('');
+    expect(component.selectedObjectIdentification).not.toBeDefined();
   });
 
 
@@ -386,6 +392,7 @@ describe('AllPrivilegeGroupsComponent', () => {
     let isAllowedToDeletePrivilegeGroupSpy = spyOn(privilegeGroupPermissionsService, 'isAllowedToDeletePrivilegeGroup').and.returnValue(true);
 
     component.selectedObject = otherPrivilegeGroup;
+    component.selectedObjectIdentification = otherPrivilegeGroupId;
     component.showObjectDetail = true;
     component.isNewObject = false;
     component.onDelete();
@@ -398,6 +405,7 @@ describe('AllPrivilegeGroupsComponent', () => {
 
     expect(component.allObjectsfilterDataSource.data.length).toEqual(1);
     expect(component.allObjectsfilterDataSource.data.includes(privilegeGroup)).toBeTrue();
+    expect(component.selectedObjectIdentification).not.toBeDefined();
   }));
 
   it('onDelete - delete unsuccessful', fakeAsync(() => {
@@ -407,6 +415,7 @@ describe('AllPrivilegeGroupsComponent', () => {
     let isAllowedToDeletePrivilegeGroupSpy = spyOn(privilegeGroupPermissionsService, 'isAllowedToDeletePrivilegeGroup').and.returnValue(true);
 
     component.selectedObject = otherPrivilegeGroup;
+    component.selectedObjectIdentification = otherPrivilegeGroupId;
     component.showObjectDetail = true;
     component.isNewObject = false;
     component.onDelete();
@@ -421,6 +430,7 @@ describe('AllPrivilegeGroupsComponent', () => {
 
     expect(component.allObjectsfilterDataSource.data.includes(privilegeGroup)).toBeTrue();
     expect(component.allObjectsfilterDataSource.data.includes(otherPrivilegeGroup)).toBeTrue();
+    expect(component.selectedObjectIdentification).toBeDefined();
   }));
 
   it('onDelete - delete disabled - new item', fakeAsync(() => {
@@ -626,7 +636,7 @@ describe('AllPrivilegeGroupsComponent', () => {
   /**
    * getRole
    */
-   it('getRole', () => {
+  it('getRole', () => {
     expect(component.getRole('ADMIN')).toEqual(Role.ADMIN);
     expect(component.getRole('MANAGER')).toEqual(Role.MANAGER);
     expect(component.getRole('CONTRIBUTOR')).toEqual(Role.CONTRIBUTOR);

@@ -194,6 +194,7 @@ describe('AdminGroupComponent', () => {
     expect(component.showObjectDetail).toBeTrue();
     expect(component.selectedObject === admin).toBeFalse();
     expect(component.selectedObject.equals(admin)).toBeTrue();
+    expect(component.selectedObjectIdentification).toEqual(adminId);
     expect(component.disableUpdate).toBeFalse();
   });
 
@@ -209,6 +210,7 @@ describe('AdminGroupComponent', () => {
     expect(component.showObjectDetail).toBeTrue();
     expect(component.selectedObject === admin).toBeFalse();
     expect(component.selectedObject.equals(admin)).toBeTrue();
+    expect(component.selectedObjectIdentification).toEqual(adminId);
     expect(component.disableUpdate).toBeFalse();
   });
 
@@ -224,6 +226,7 @@ describe('AdminGroupComponent', () => {
     expect(component.showObjectDetail).toBeTrue();
     expect(component.selectedObject === admin).toBeFalse();
     expect(component.selectedObject.equals(admin)).toBeTrue();
+    expect(component.selectedObjectIdentification).toEqual(adminId);
     expect(component.disableUpdate).toBeFalse();
   });
 
@@ -409,12 +412,14 @@ describe('AdminGroupComponent', () => {
    * onCancel
    */
   it('onCancel', () => {
+    component.selectedObjectIdentification = 'a';
     component.onCancel();
 
     expect(component.showObjectDetail).toBeFalse();
     expect(component.isNewObject).toBeFalse();
     expect(component.selectedObject).toBeTruthy();
     expect(component.selectedObject.identification).toEqual('');
+    expect(component.selectedObjectIdentification).not.toBeDefined();
   });
 
 
@@ -443,6 +448,7 @@ describe('AdminGroupComponent', () => {
     let openMessage = spyOn(snackBar, 'open').and.returnValue({} as MatSnackBarRef<TextOnlySnackBar>);
 
     component.selectedObject = otherAdmin;
+    component.selectedObjectIdentification = otherAdminId;
     component.showObjectDetail = true;
     component.isNewObject = false;
     component.onDelete();
@@ -455,6 +461,7 @@ describe('AdminGroupComponent', () => {
 
     expect(component.allObjectsfilterDataSource.data.length).toEqual(1);
     expect(component.allObjectsfilterDataSource.data.includes(admin)).toBeTrue();
+    expect(component.selectedObjectIdentification).not.toBeDefined();
   }));
 
   it('onDelete - delete unsuccessful', fakeAsync(() => {
@@ -464,6 +471,7 @@ describe('AdminGroupComponent', () => {
     let openMessage = spyOn(snackBar, 'open').and.returnValue({} as MatSnackBarRef<TextOnlySnackBar>);
 
     component.selectedObject = otherAdmin;
+    component.selectedObjectIdentification = otherAdminId;
     component.showObjectDetail = true;
     component.isNewObject = false;
     component.onDelete();
@@ -477,6 +485,7 @@ describe('AdminGroupComponent', () => {
 
     expect(component.allObjectsfilterDataSource.data.includes(admin)).toBeTrue();
     expect(component.allObjectsfilterDataSource.data.includes(otherAdmin)).toBeTrue();
+    expect(component.selectedObjectIdentification).toBeDefined();
   }));
 
   it('onDelete - delete disabled', fakeAsync(() => {

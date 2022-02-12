@@ -173,6 +173,7 @@ describe('AllUsersComponent', () => {
     expect(component.showObjectDetail).toBeTrue();
     expect(component.selectedObject === user).toBeFalse();
     expect(component.selectedObject.equals(user)).toBeTrue();
+    expect(component.selectedObjectIdentification).toEqual(userId);
   });
 
   it('onSelectObject - same selected before', () => {
@@ -188,6 +189,7 @@ describe('AllUsersComponent', () => {
     expect(component.showObjectDetail).toBeTrue();
     expect(component.selectedObject === user).toBeFalse();
     expect(component.selectedObject.equals(user)).toBeTrue();
+    expect(component.selectedObjectIdentification).toEqual(userId);
   });
 
   it('onSelectObject - other selected before', () => {
@@ -203,6 +205,7 @@ describe('AllUsersComponent', () => {
     expect(component.showObjectDetail).toBeTrue();
     expect(component.selectedObject === user).toBeFalse();
     expect(component.selectedObject.equals(user)).toBeTrue();
+    expect(component.selectedObjectIdentification).toEqual(userId);
   });
 
   it('onSelectObject - allowed to update', () => {
@@ -220,6 +223,7 @@ describe('AllUsersComponent', () => {
     expect(component.showObjectDetail).toBeTrue();
     expect(component.selectedObject === user).toBeFalse();
     expect(component.selectedObject.equals(user)).toBeTrue();
+    expect(component.selectedObjectIdentification).toEqual(userId);
     expect(component.disableUpdate).toBeFalse();
     expect(component.disableUpdateCreationRequired).toBeFalse();
     expect(component.disableUpdateRole).toBeFalse();
@@ -240,6 +244,7 @@ describe('AllUsersComponent', () => {
     expect(component.showObjectDetail).toBeTrue();
     expect(component.selectedObject === user).toBeFalse();
     expect(component.selectedObject.equals(user)).toBeTrue();
+    expect(component.selectedObjectIdentification).toEqual(userId);
     expect(component.disableUpdate).toBeTrue();
     expect(component.disableUpdateCreationRequired).toBeTrue();
     expect(component.disableUpdateRole).toBeTrue();
@@ -521,12 +526,14 @@ describe('AllUsersComponent', () => {
    * onCancel
    */
   it('onCancel', () => {
+    component.selectedObjectIdentification = 'a';
     component.onCancel();
 
     expect(component.showObjectDetail).toBeFalse();
     expect(component.isNewObject).toBeFalse();
     expect(component.selectedObject).toBeTruthy();
     expect(component.selectedObject.identification).toEqual('');
+    expect(component.selectedObjectIdentification).not.toBeDefined();
   });
 
   /**
@@ -553,6 +560,7 @@ describe('AllUsersComponent', () => {
     let openMessage = spyOn(snackBar, 'open').and.returnValue({} as MatSnackBarRef<TextOnlySnackBar>);
 
     component.selectedObject = otherUser;
+    component.selectedObjectIdentification = otherUserId;
     component.showObjectDetail = true;
     component.isNewObject = false;
     component.onDelete();
@@ -565,6 +573,7 @@ describe('AllUsersComponent', () => {
 
     expect(component.allObjectsfilterDataSource.data.length).toEqual(1);
     expect(component.allObjectsfilterDataSource.data.includes(user)).toBeTrue();
+    expect(component.selectedObjectIdentification).not.toBeDefined();
   }));
 
   it('onDelete - delete unsuccessful', fakeAsync(() => {
@@ -574,6 +583,7 @@ describe('AllUsersComponent', () => {
     let openMessage = spyOn(snackBar, 'open').and.returnValue({} as MatSnackBarRef<TextOnlySnackBar>);
 
     component.selectedObject = otherUser;
+    component.selectedObjectIdentification = otherUserId;
     component.showObjectDetail = true;
     component.isNewObject = false;
     component.onDelete();
@@ -587,6 +597,7 @@ describe('AllUsersComponent', () => {
 
     expect(component.allObjectsfilterDataSource.data.includes(user)).toBeTrue();
     expect(component.allObjectsfilterDataSource.data.includes(otherUser)).toBeTrue();
+    expect(component.selectedObjectIdentification).toBeDefined();
   }));
 
   it('onDelete - delete disabled', fakeAsync(() => {
