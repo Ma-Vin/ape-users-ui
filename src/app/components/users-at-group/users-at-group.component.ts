@@ -1,8 +1,8 @@
 import { ComponentType } from '@angular/cdk/portal';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Role } from '../../model/role.model';
 import { User } from '../../model/user.model';
 import { UserService } from '../../services/backend/user.service';
@@ -16,6 +16,9 @@ import { ElementsAtGroupComponent } from '../elements-at-group/elements-at-group
   styleUrls: ['./users-at-group.component.less']
 })
 export class UsersAtGroupComponent extends ElementsAtGroupComponent<User, AddUserDialogComponent> {
+
+  @Input() public flatSubgroupsView = false;
+  public flattenSubgroups = false;
 
   constructor(private userService: UserService, private userPermissionsService: UserPermissionsService
     , public dialog: MatDialog, protected snackBar: MatSnackBar) {
@@ -36,7 +39,10 @@ export class UsersAtGroupComponent extends ElementsAtGroupComponent<User, AddUse
 
 
   protected loadAllElementsFromPrivilegeGroup(identification: string, role: Role): Observable<User[]> {
-    return this.userService.getAllUsersFromPrivilegeGroup(identification, false, role, undefined, undefined);
+    if (!this.flatSubgroupsView || this.flattenSubgroups) {
+      return this.userService.getAllUsersFromPrivilegeGroup(identification, this.flatSubgroupsView, role, undefined, undefined);
+    }
+    return of([]);
   }
 
 
@@ -93,6 +99,11 @@ export class UsersAtGroupComponent extends ElementsAtGroupComponent<User, AddUse
 
   protected isAllowedToRemoveAnElementFromPrivilegeGroup(): boolean {
     return this.userPermissionsService.isAllowedToRemoveUserFromPrivilegeGroup();
+  }
+
+  public onFlattenSubgroups(): void {
+    this.flattenSubgroups = !this.flattenSubgroups;
+    this.loadAllElements();
   }
 
 }

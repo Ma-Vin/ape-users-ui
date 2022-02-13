@@ -14,7 +14,6 @@ import { IPrivilegeGroup, PrivilegeGroup } from 'src/app/model/privilege-group.m
 import { Role } from 'src/app/model/role.model';
 import { IUser, User } from 'src/app/model/user.model';
 import { AdminService } from 'src/app/services/backend/admin.service';
-import { BaseGroupService } from 'src/app/services/backend/base-group.service';
 import { CommonGroupService } from 'src/app/services/backend/common-group.service';
 import { UserService } from 'src/app/services/backend/user.service';
 import { UserPermissionsService } from 'src/app/services/permissions/user-permissions.service';
@@ -163,6 +162,47 @@ describe('UsersAtGroupComponent', () => {
     component.selectedBaseGroup = undefined;
     component.selectedPrivilegeGroup = privilegeGroup;
     component.role = Role.ADMIN;
+
+    component.ngOnInit()
+
+    tick();
+
+    expect(component.elementsDataSource.data.length).toEqual(1);
+    expect(component.elementsDataSource.data[0].identification).toEqual(secondUserId);
+
+    expect(getAllUsersFromBaseGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUsersFromPrivilegeGroupSpy).toHaveBeenCalled();
+  }));
+
+  it('ngOnInit - privilege group, flattenedView but not to flatten', fakeAsync(() => {
+    let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([]));
+    let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([secondUser]));
+
+    component.selectedBaseGroup = undefined;
+    component.selectedPrivilegeGroup = privilegeGroup;
+    component.role = Role.ADMIN;
+    component.flatSubgroupsView = true;
+    component.flattenSubgroups = false;
+
+    component.ngOnInit()
+
+    tick();
+
+    expect(component.elementsDataSource.data.length).toEqual(0);
+
+    expect(getAllUsersFromBaseGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUsersFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+  }));
+
+  it('ngOnInit - privilege group, flattenedView and to flatten', fakeAsync(() => {
+    let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([]));
+    let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([secondUser]));
+
+    component.selectedBaseGroup = undefined;
+    component.selectedPrivilegeGroup = privilegeGroup;
+    component.role = Role.ADMIN;
+    component.flatSubgroupsView = true;
+    component.flattenSubgroups = true;
 
     component.ngOnInit()
 
@@ -797,4 +837,47 @@ describe('UsersAtGroupComponent', () => {
     expect(isAllowedToRemoveUserFromPrivilegeGroupSpy).toHaveBeenCalled();
   });
 
+
+
+  /**
+   * onFlattenSubgroups
+   */
+  it('onFlattenSubgroups - not flatten before', fakeAsync(() => {
+    let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([secondUser]));
+
+    component.selectedBaseGroup = undefined;
+    component.selectedPrivilegeGroup = privilegeGroup;
+    component.role = Role.ADMIN;
+    component.flatSubgroupsView = true;
+    component.flattenSubgroups = false;
+
+    component.onFlattenSubgroups()
+
+    tick();
+
+    expect(component.flattenSubgroups).toBeTrue();
+    expect(component.elementsDataSource.data.length).toEqual(1);
+    expect(component.elementsDataSource.data[0].identification).toEqual(secondUserId);
+
+    expect(getAllUsersFromPrivilegeGroupSpy).toHaveBeenCalled();
+  }));
+
+  it('onFlattenSubgroups - flattenn before', fakeAsync(() => {
+    let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([secondUser]));
+
+    component.selectedBaseGroup = undefined;
+    component.selectedPrivilegeGroup = privilegeGroup;
+    component.role = Role.ADMIN;
+    component.flatSubgroupsView = true;
+    component.flattenSubgroups = true;
+
+    component.onFlattenSubgroups()
+
+    tick();
+
+    expect(component.flattenSubgroups).toBeFalse();
+    expect(component.elementsDataSource.data.length).toEqual(0);
+
+    expect(getAllUsersFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+  }));
 });

@@ -53,6 +53,9 @@
                         </app-sub-base-groups>
                         <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('ADMIN')">
                         </app-users-at-group>
+                        <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('ADMIN')"
+                            [flatSubgroupsView]="true">
+                        </app-users-at-group>
                     </div>
                 </mat-tab>
                 <mat-tab label="Manager">
@@ -60,6 +63,9 @@
                         <app-sub-base-groups [selectedPrivilegeGroup]="selectedObject" [role]="getRole('MANAGER')">
                         </app-sub-base-groups>
                         <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('MANAGER')">
+                        </app-users-at-group>
+                        <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('MANAGER')"
+                            [flatSubgroupsView]="true">
                         </app-users-at-group>
                     </div>
                 </mat-tab>
@@ -69,6 +75,9 @@
                         </app-sub-base-groups>
                         <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('CONTRIBUTOR')">
                         </app-users-at-group>
+                        <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('CONTRIBUTOR')"
+                            [flatSubgroupsView]="true">
+                        </app-users-at-group>
                     </div>
                 </mat-tab>
                 <mat-tab label="Visitor">
@@ -77,6 +86,9 @@
                         </app-sub-base-groups>
                         <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('VISITOR')">
                         </app-users-at-group>
+                        <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('VISITOR')"
+                            [flatSubgroupsView]="true">
+                        </app-users-at-group>
                     </div>
                 </mat-tab>
                 <mat-tab label="Blocked">
@@ -84,6 +96,9 @@
                         <app-sub-base-groups [selectedPrivilegeGroup]="selectedObject" [role]="getRole('BLOCKED')">
                         </app-sub-base-groups>
                         <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('BLOCKED')">
+                        </app-users-at-group>
+                        <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('BLOCKED')"
+                            [flatSubgroupsView]="true">
                         </app-users-at-group>
                     </div>
                 </mat-tab>

@@ -55,7 +55,7 @@ export abstract class ElementsAtGroupComponent<T extends IEqualsAndIdentifiable,
   /**
    * Loads all relevant sub groubs either from the selected base or privilege group
    */
-  private loadAllElements(): void {
+  protected loadAllElements(): void {
     if (this.selectedBaseGroup != undefined) {
       this.loadAllElementsFromBaseGroup(this.selectedBaseGroup.identification).subscribe(
         elements => this.takeOverElements(elements)
