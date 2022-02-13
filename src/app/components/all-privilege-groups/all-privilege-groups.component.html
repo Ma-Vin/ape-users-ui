@@ -49,56 +49,66 @@
             <mat-tab-group>
                 <mat-tab label="Admin">
                     <div class="privilege-tab">
-                        <app-sub-base-groups [selectedPrivilegeGroup]="selectedObject" [role]="getRole('ADMIN')">
+                        <app-sub-base-groups [selectedPrivilegeGroup]="selectedObject" [role]="getRole('ADMIN')"
+                            (onListModifiedEventEmitter)="onCleanFlattenedGroups()">
                         </app-sub-base-groups>
-                        <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('ADMIN')">
+                        <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('ADMIN')"
+                            (onListModifiedEventEmitter)="onCleanFlattenedGroups()">
                         </app-users-at-group>
                         <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('ADMIN')"
-                            [flatSubgroupsView]="true">
+                            [flatSubgroupsView]="true" [cleanFlattenSubGroupsTrigger]="cleanFlattenSubGroupsTrigger">
                         </app-users-at-group>
                     </div>
                 </mat-tab>
                 <mat-tab label="Manager">
                     <div class="privilege-tab">
-                        <app-sub-base-groups [selectedPrivilegeGroup]="selectedObject" [role]="getRole('MANAGER')">
+                        <app-sub-base-groups [selectedPrivilegeGroup]="selectedObject" [role]="getRole('MANAGER')"
+                            (onListModifiedEventEmitter)="onCleanFlattenedGroups()">
                         </app-sub-base-groups>
-                        <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('MANAGER')">
+                        <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('MANAGER')"
+                            (onListModifiedEventEmitter)="onCleanFlattenedGroups()">
                         </app-users-at-group>
                         <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('MANAGER')"
-                            [flatSubgroupsView]="true">
+                            [flatSubgroupsView]="true" [cleanFlattenSubGroupsTrigger]="cleanFlattenSubGroupsTrigger">
                         </app-users-at-group>
                     </div>
                 </mat-tab>
                 <mat-tab label="Contributor">
                     <div class="privilege-tab">
-                        <app-sub-base-groups [selectedPrivilegeGroup]="selectedObject" [role]="getRole('CONTRIBUTOR')">
+                        <app-sub-base-groups [selectedPrivilegeGroup]="selectedObject" [role]="getRole('CONTRIBUTOR')"
+                            (onListModifiedEventEmitter)="onCleanFlattenedGroups()">
                         </app-sub-base-groups>
-                        <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('CONTRIBUTOR')">
+                        <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('CONTRIBUTOR')"
+                            (onListModifiedEventEmitter)="onCleanFlattenedGroups()">
                         </app-users-at-group>
                         <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('CONTRIBUTOR')"
-                            [flatSubgroupsView]="true">
+                            [flatSubgroupsView]="true" [cleanFlattenSubGroupsTrigger]="cleanFlattenSubGroupsTrigger">
                         </app-users-at-group>
                     </div>
                 </mat-tab>
                 <mat-tab label="Visitor">
                     <div class="privilege-tab">
-                        <app-sub-base-groups [selectedPrivilegeGroup]="selectedObject" [role]="getRole('VISITOR')">
+                        <app-sub-base-groups [selectedPrivilegeGroup]="selectedObject" [role]="getRole('VISITOR')"
+                            (onListModifiedEventEmitter)="onCleanFlattenedGroups()">
                         </app-sub-base-groups>
-                        <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('VISITOR')">
+                        <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('VISITOR')"
+                            (onListModifiedEventEmitter)="onCleanFlattenedGroups()">
                         </app-users-at-group>
                         <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('VISITOR')"
-                            [flatSubgroupsView]="true">
+                            [flatSubgroupsView]="true" [cleanFlattenSubGroupsTrigger]="cleanFlattenSubGroupsTrigger">
                         </app-users-at-group>
                     </div>
                 </mat-tab>
                 <mat-tab label="Blocked">
                     <div class="privilege-tab">
-                        <app-sub-base-groups [selectedPrivilegeGroup]="selectedObject" [role]="getRole('BLOCKED')">
+                        <app-sub-base-groups [selectedPrivilegeGroup]="selectedObject" [role]="getRole('BLOCKED')"
+                            (onListModifiedEventEmitter)="onCleanFlattenedGroups()">
                         </app-sub-base-groups>
-                        <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('BLOCKED')">
+                        <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('BLOCKED')"
+                            (onListModifiedEventEmitter)="onCleanFlattenedGroups()">
                         </app-users-at-group>
                         <app-users-at-group [selectedPrivilegeGroup]="selectedObject" [role]="getRole('BLOCKED')"
-                            [flatSubgroupsView]="true">
+                            [flatSubgroupsView]="true" [cleanFlattenSubGroupsTrigger]="cleanFlattenSubGroupsTrigger">
                         </app-users-at-group>
                     </div>
                 </mat-tab>

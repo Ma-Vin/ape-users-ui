@@ -645,4 +645,19 @@ describe('AllPrivilegeGroupsComponent', () => {
     expect(component.getRole('NOT_RELEVANT')).toEqual(Role.NOT_RELEVANT);
     expect(component.getRole('anything')).toEqual(Role.NOT_RELEVANT);
   });
+
+
+
+  /**
+   * onCleanFlattenedGroups
+   */
+  it('onCleanFlattenedGroups', () => {
+    component.cleanFlattenSubGroupsTrigger = false;
+
+    component.onCleanFlattenedGroups();
+    expect(component.cleanFlattenSubGroupsTrigger).toBeTrue();
+
+    component.onCleanFlattenedGroups();
+    expect(component.cleanFlattenSubGroupsTrigger).toBeFalse();
+  });
 });

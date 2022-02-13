@@ -18,6 +18,7 @@ import { Role } from '../../model/role.model';
 })
 export class AllPrivilegeGroupsComponent extends ListDetailComponent<PrivilegeGroup> {
   public toolbarSite = ToolbarSite.PRIVILEGE_GROUPS;
+  public cleanFlattenSubGroupsTrigger = false;
 
   constructor(private privilegeGroupService: PrivilegeGroupService, private privilegeGroupPermissionsService: PrivilegeGroupPermissionsService
     , route: ActivatedRoute, location: Location, snackBar: MatSnackBar) {
@@ -117,6 +118,10 @@ export class AllPrivilegeGroupsComponent extends ListDetailComponent<PrivilegeGr
       case 'BLOCKED': return Role.BLOCKED;
       default: return Role.NOT_RELEVANT;
     }
+  }
+
+  onCleanFlattenedGroups(): void {
+    this.cleanFlattenSubGroupsTrigger = !this.cleanFlattenSubGroupsTrigger;
   }
 
 }

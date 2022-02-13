@@ -1,5 +1,5 @@
 import { ComponentType } from '@angular/cdk/portal';
-import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -16,6 +16,7 @@ import { AddElementDialogComponent, AddElementDialogData } from '../add-element-
 @Component({ template: '' })
 export abstract class ElementsAtGroupComponent<T extends IEqualsAndIdentifiable, S extends AddElementDialogComponent<T, S>> implements OnInit, OnChanges {
 
+  @Output() onListModifiedEventEmitter = new EventEmitter<string>();
   @Input() selectedBaseGroup: BaseGroup | undefined;
   @Input() selectedPrivilegeGroup: PrivilegeGroup | undefined;
   @Input() role: Role | undefined;
@@ -239,6 +240,7 @@ export abstract class ElementsAtGroupComponent<T extends IEqualsAndIdentifiable,
         if (added) {
           this.elementsDataSource.data.push(elementToAdd);
           this.elementsDataSource.data = this.elementsDataSource.data.slice();
+          this.onListModifiedEventEmitter.emit(`Add ${elementToAdd.getIdentification()} to ${this.selectedBaseGroup!.identification}`);
         } else {
           this.openSnackBar(`The ${this.elementText} ${elementToAdd.getIdentification()} was not added to the base group ${this.selectedBaseGroup!.identification}`, 'Error');
         }
@@ -249,6 +251,7 @@ export abstract class ElementsAtGroupComponent<T extends IEqualsAndIdentifiable,
         if (added) {
           this.elementsDataSource.data.push(elementToAdd);
           this.elementsDataSource.data = this.elementsDataSource.data.slice();
+          this.onListModifiedEventEmitter.emit(`Add ${elementToAdd.getIdentification()} to ${this.selectedPrivilegeGroup!.identification}`);
         } else {
           this.openSnackBar(`The ${this.elementText} ${elementToAdd.getIdentification()} was not added with role ${this.role} to the privilege group ${this.selectedPrivilegeGroup!.identification}`, 'Error');
         }
@@ -287,6 +290,7 @@ export abstract class ElementsAtGroupComponent<T extends IEqualsAndIdentifiable,
       this.removeElementFromBaseGroup(this.selectedElement.getIdentification(), this.selectedBaseGroup.identification).subscribe(
         removed => {
           if (removed) {
+            this.onListModifiedEventEmitter.emit(`Remove ${this.selectedElement!.getIdentification()} from ${this.selectedBaseGroup!.identification}`);
             this.removeFromAllElements(this.selectedElement!.getIdentification());
             this.selectedElement = undefined;
           } else {
@@ -298,6 +302,7 @@ export abstract class ElementsAtGroupComponent<T extends IEqualsAndIdentifiable,
       this.removeElementFromPrivilegeGroup(this.selectedElement.getIdentification(), this.selectedPrivilegeGroup.identification).subscribe(
         removed => {
           if (removed) {
+            this.onListModifiedEventEmitter.emit(`Remove ${this.selectedElement!.getIdentification()} from ${this.selectedPrivilegeGroup!.identification}`);
             this.removeFromAllElements(this.selectedElement!.getIdentification());
             this.selectedElement = undefined;
           } else {
@@ -362,7 +367,7 @@ export abstract class ElementsAtGroupComponent<T extends IEqualsAndIdentifiable,
    * @returns true if the active user is allowed to remove an element from a privilege group. Otherwise false
    */
   protected abstract isAllowedToRemoveAnElementFromPrivilegeGroup(): boolean;
-  
+
 
   /**
    * Opens a snackbar with a message

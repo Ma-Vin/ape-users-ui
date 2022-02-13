@@ -1,5 +1,5 @@
 import { ComponentType } from '@angular/cdk/portal';
-import { Component, Input } from '@angular/core';
+import { Component, Input, SimpleChanges } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, of } from 'rxjs';
@@ -18,11 +18,20 @@ import { ElementsAtGroupComponent } from '../elements-at-group/elements-at-group
 export class UsersAtGroupComponent extends ElementsAtGroupComponent<User, AddUserDialogComponent> {
 
   @Input() public flatSubgroupsView = false;
+  @Input() public cleanFlattenSubGroupsTrigger = false;
   public flattenSubgroups = false;
 
   constructor(private userService: UserService, private userPermissionsService: UserPermissionsService
     , public dialog: MatDialog, protected snackBar: MatSnackBar) {
     super(dialog, snackBar);
+  }
+
+  public ngOnChanges(changes: SimpleChanges): void {
+    if (this.flatSubgroupsView && changes.cleanFlattenSubGroupsTrigger != undefined
+      && changes.cleanFlattenSubGroupsTrigger.previousValue != changes.cleanFlattenSubGroupsTrigger.currentValue) {
+      this.flattenSubgroups = false;
+    }
+    super.ngOnChanges(changes);
   }
 
   protected getElementText(): string {

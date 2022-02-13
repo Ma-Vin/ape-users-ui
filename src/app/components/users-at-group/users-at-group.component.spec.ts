@@ -1,7 +1,7 @@
 import { ComponentType } from '@angular/cdk/portal';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { SimpleChanges } from '@angular/core';
+import { SimpleChange, SimpleChanges } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
@@ -293,6 +293,50 @@ describe('UsersAtGroupComponent', () => {
     expect(getAllUsersFromPrivilegeGroupSpy).not.toHaveBeenCalled();
   }));
 
+  it('ngOnChanges - privilege group flatten view without trigger', fakeAsync(() => {
+    let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([]));
+    let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([secondUser]));
+
+    component.flatSubgroupsView = true;
+    component.flattenSubgroups = true;
+    component.selectedBaseGroup = undefined;
+    component.selectedPrivilegeGroup = privilegeGroup;
+    component.role = Role.ADMIN;
+
+    component.ngOnChanges({} as SimpleChanges)
+
+    tick();
+
+    expect(component.elementsDataSource.data.length).toEqual(1);
+    expect(component.elementsDataSource.data[0].identification).toEqual(secondUserId);
+    expect(component.flattenSubgroups).toBeTrue();
+
+    expect(getAllUsersFromBaseGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUsersFromPrivilegeGroupSpy).toHaveBeenCalled();
+  }));
+
+  it('ngOnChanges - privilege group flatten view with trigger', fakeAsync(() => {
+    let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([]));
+    let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([secondUser]));
+
+    component.flatSubgroupsView = true;
+    component.flattenSubgroups = true;
+    component.selectedBaseGroup = undefined;
+    component.selectedPrivilegeGroup = privilegeGroup;
+    component.role = Role.ADMIN;
+
+    component.ngOnChanges({
+      cleanFlattenSubGroupsTrigger: new SimpleChange(true, false, true)
+    });
+
+    tick();
+
+    expect(component.elementsDataSource.data.length).toEqual(0);
+    expect(component.flattenSubgroups).toBeFalse();
+
+    expect(getAllUsersFromBaseGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUsersFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+  }));
 
   /**
    * showElements
@@ -436,6 +480,7 @@ describe('UsersAtGroupComponent', () => {
     let addUserToBaseGroupSpy = spyOn(userService, 'addUserToBaseGroup').and.returnValue(of(true));
     let addUserToPrivilegeGroupSpy = spyOn(userService, 'addUserToPrivilegeGroup').and.returnValue(of(false));
     let openSnackBarSpy = spyOn(snackBar, 'open');
+    let listModifiedEmitterSpy = spyOn(component.onListModifiedEventEmitter, 'emit');
 
     component.openAddElementDialog();
 
@@ -446,6 +491,7 @@ describe('UsersAtGroupComponent', () => {
     expect(addUserToBaseGroupSpy).toHaveBeenCalledWith(secondUserId, baseGroupId);
     expect(addUserToPrivilegeGroupSpy).not.toHaveBeenCalled();
     expect(openSnackBarSpy).not.toHaveBeenCalled();
+    expect(listModifiedEmitterSpy).toHaveBeenCalled();
   });
 
   it('openAddElementDialog - add to base group, but not added', () => {
@@ -457,6 +503,7 @@ describe('UsersAtGroupComponent', () => {
     let addUserToBaseGroupSpy = spyOn(userService, 'addUserToBaseGroup').and.returnValue(of(false));
     let addUserToPrivilegeGroupSpy = spyOn(userService, 'addUserToPrivilegeGroup').and.returnValue(of(false));
     let openSnackBarSpy = spyOn(snackBar, 'open');
+    let listModifiedEmitterSpy = spyOn(component.onListModifiedEventEmitter, 'emit');
 
     component.openAddElementDialog();
 
@@ -466,6 +513,7 @@ describe('UsersAtGroupComponent', () => {
     expect(addUserToBaseGroupSpy).toHaveBeenCalledWith(secondUserId, baseGroupId);
     expect(addUserToPrivilegeGroupSpy).not.toHaveBeenCalled();
     expect(openSnackBarSpy).toHaveBeenCalled();
+    expect(listModifiedEmitterSpy).not.toHaveBeenCalled();
   });
 
   it('openAddElementDialog - add to base group, but undefined return at dialog', () => {
@@ -477,6 +525,7 @@ describe('UsersAtGroupComponent', () => {
     let addUserToBaseGroupSpy = spyOn(userService, 'addUserToBaseGroup').and.returnValue(of(true));
     let addUserToPrivilegeGroupSpy = spyOn(userService, 'addUserToPrivilegeGroup').and.returnValue(of(false));
     let openSnackBarSpy = spyOn(snackBar, 'open');
+    let listModifiedEmitterSpy = spyOn(component.onListModifiedEventEmitter, 'emit');
 
     component.openAddElementDialog();
 
@@ -486,6 +535,7 @@ describe('UsersAtGroupComponent', () => {
     expect(addUserToBaseGroupSpy).not.toHaveBeenCalledWith(secondUserId, baseGroupId);
     expect(addUserToPrivilegeGroupSpy).not.toHaveBeenCalled();
     expect(openSnackBarSpy).not.toHaveBeenCalled();
+    expect(listModifiedEmitterSpy).not.toHaveBeenCalled();
   });
 
   it('openAddElementDialog - add to privilege group', () => {
@@ -497,6 +547,7 @@ describe('UsersAtGroupComponent', () => {
     let addUserToBaseGroupSpy = spyOn(userService, 'addUserToBaseGroup').and.returnValue(of(false));
     let addUserToPrivilegeGroupSpy = spyOn(userService, 'addUserToPrivilegeGroup').and.returnValue(of(true));
     let openSnackBarSpy = spyOn(snackBar, 'open');
+    let listModifiedEmitterSpy = spyOn(component.onListModifiedEventEmitter, 'emit');
 
     component.openAddElementDialog();
 
@@ -507,6 +558,7 @@ describe('UsersAtGroupComponent', () => {
     expect(addUserToBaseGroupSpy).not.toHaveBeenCalled();
     expect(addUserToPrivilegeGroupSpy).toHaveBeenCalledWith(secondUserId, privilegeGroupId, Role.CONTRIBUTOR);
     expect(openSnackBarSpy).not.toHaveBeenCalled();
+    expect(listModifiedEmitterSpy).toHaveBeenCalled();
   });
 
   it('openAddElementDialog - add to privilege group, without privilege', () => {
@@ -518,6 +570,7 @@ describe('UsersAtGroupComponent', () => {
     let addUserToBaseGroupSpy = spyOn(userService, 'addUserToBaseGroup').and.returnValue(of(false));
     let addUserToPrivilegeGroupSpy = spyOn(userService, 'addUserToPrivilegeGroup').and.returnValue(of(true));
     let openSnackBarSpy = spyOn(snackBar, 'open');
+    let listModifiedEmitterSpy = spyOn(component.onListModifiedEventEmitter, 'emit');
 
     component.openAddElementDialog();
 
@@ -527,6 +580,7 @@ describe('UsersAtGroupComponent', () => {
     expect(addUserToBaseGroupSpy).not.toHaveBeenCalled();
     expect(addUserToPrivilegeGroupSpy).not.toHaveBeenCalled();
     expect(openSnackBarSpy).not.toHaveBeenCalled();
+    expect(listModifiedEmitterSpy).not.toHaveBeenCalled();
   });
 
   it('openAddElementDialog - add to privilege group, but not added', () => {
@@ -538,6 +592,7 @@ describe('UsersAtGroupComponent', () => {
     let addUserToBaseGroupSpy = spyOn(userService, 'addUserToBaseGroup').and.returnValue(of(false));
     let addUserToPrivilegeGroupSpy = spyOn(userService, 'addUserToPrivilegeGroup').and.returnValue(of(false));
     let openSnackBarSpy = spyOn(snackBar, 'open');
+    let listModifiedEmitterSpy = spyOn(component.onListModifiedEventEmitter, 'emit');
 
     component.openAddElementDialog();
 
@@ -547,6 +602,7 @@ describe('UsersAtGroupComponent', () => {
     expect(addUserToBaseGroupSpy).not.toHaveBeenCalled();
     expect(addUserToPrivilegeGroupSpy).toHaveBeenCalledWith(secondUserId, privilegeGroupId, Role.CONTRIBUTOR);
     expect(openSnackBarSpy).toHaveBeenCalled();
+    expect(listModifiedEmitterSpy).not.toHaveBeenCalled();
   });
 
 
@@ -639,6 +695,7 @@ describe('UsersAtGroupComponent', () => {
     let removeUserFromBaseGroupSpy = spyOn(userService, 'removeUserFromBaseGroup').and.returnValue(of(true));
     let removeUserFromPrivilegeGroupSpy = spyOn(userService, 'removeUserFromPrivilegeGroup').and.returnValue(of(false));
     let openSnackBarSpy = spyOn(snackBar, 'open');
+    let listModifiedEmitterSpy = spyOn(component.onListModifiedEventEmitter, 'emit');
 
     component.removeElement();
 
@@ -649,6 +706,7 @@ describe('UsersAtGroupComponent', () => {
     expect(removeUserFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(removeUserFromPrivilegeGroupSpy).not.toHaveBeenCalled();
     expect(openSnackBarSpy).not.toHaveBeenCalled();
+    expect(listModifiedEmitterSpy).not.toHaveBeenCalled();
   }));
 
   it('removeElement - base group', fakeAsync(() => {
@@ -661,6 +719,7 @@ describe('UsersAtGroupComponent', () => {
     let removeUserFromBaseGroupSpy = spyOn(userService, 'removeUserFromBaseGroup').and.returnValue(of(true));
     let removeUserFromPrivilegeGroupSpy = spyOn(userService, 'removeUserFromPrivilegeGroup').and.returnValue(of(false));
     let openSnackBarSpy = spyOn(snackBar, 'open');
+    let listModifiedEmitterSpy = spyOn(component.onListModifiedEventEmitter, 'emit');
 
     component.removeElement();
 
@@ -672,6 +731,7 @@ describe('UsersAtGroupComponent', () => {
     expect(removeUserFromBaseGroupSpy).toHaveBeenCalled();
     expect(removeUserFromPrivilegeGroupSpy).not.toHaveBeenCalled();
     expect(openSnackBarSpy).not.toHaveBeenCalled();
+    expect(listModifiedEmitterSpy).toHaveBeenCalled();
   }));
 
   it('removeElement - base group but not removed', fakeAsync(() => {
@@ -684,6 +744,7 @@ describe('UsersAtGroupComponent', () => {
     let removeUserFromBaseGroupSpy = spyOn(userService, 'removeUserFromBaseGroup').and.returnValue(of(false));
     let removeUserFromPrivilegeGroupSpy = spyOn(userService, 'removeUserFromPrivilegeGroup').and.returnValue(of(false));
     let openSnackBarSpy = spyOn(snackBar, 'open');
+    let listModifiedEmitterSpy = spyOn(component.onListModifiedEventEmitter, 'emit');
 
     component.removeElement();
 
@@ -694,6 +755,7 @@ describe('UsersAtGroupComponent', () => {
     expect(removeUserFromBaseGroupSpy).toHaveBeenCalled();
     expect(removeUserFromPrivilegeGroupSpy).not.toHaveBeenCalled();
     expect(openSnackBarSpy).toHaveBeenCalled();
+    expect(listModifiedEmitterSpy).not.toHaveBeenCalled();
   }));
 
   it('removeElement - privilege group', fakeAsync(() => {
@@ -706,6 +768,7 @@ describe('UsersAtGroupComponent', () => {
     let removeUserFromBaseGroupSpy = spyOn(userService, 'removeUserFromBaseGroup').and.returnValue(of(false));
     let removeUserFromPrivilegeGroupSpy = spyOn(userService, 'removeUserFromPrivilegeGroup').and.returnValue(of(true));
     let openSnackBarSpy = spyOn(snackBar, 'open');
+    let listModifiedEmitterSpy = spyOn(component.onListModifiedEventEmitter, 'emit');
 
     component.removeElement();
 
@@ -717,6 +780,7 @@ describe('UsersAtGroupComponent', () => {
     expect(removeUserFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(removeUserFromPrivilegeGroupSpy).toHaveBeenCalled();
     expect(openSnackBarSpy).not.toHaveBeenCalled();
+    expect(listModifiedEmitterSpy).toHaveBeenCalled();
   }));
 
   it('removeElement - privilege group but not removed', fakeAsync(() => {
@@ -729,6 +793,7 @@ describe('UsersAtGroupComponent', () => {
     let removeUserFromBaseGroupSpy = spyOn(userService, 'removeUserFromBaseGroup').and.returnValue(of(false));
     let removeUserFromPrivilegeGroupSpy = spyOn(userService, 'removeUserFromPrivilegeGroup').and.returnValue(of(false));
     let openSnackBarSpy = spyOn(snackBar, 'open');
+    let listModifiedEmitterSpy = spyOn(component.onListModifiedEventEmitter, 'emit');
 
     component.removeElement();
 
@@ -739,6 +804,7 @@ describe('UsersAtGroupComponent', () => {
     expect(removeUserFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(removeUserFromPrivilegeGroupSpy).toHaveBeenCalled();
     expect(openSnackBarSpy).toHaveBeenCalled();
+    expect(listModifiedEmitterSpy).not.toHaveBeenCalled();
   }));
 
 
