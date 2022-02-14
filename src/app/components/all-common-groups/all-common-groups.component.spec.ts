@@ -121,18 +121,6 @@ describe('CommonGroupComponent', () => {
   }));
 
 
-  /**
-   * applyAllcommonGroupsFilter
-   */
-  it('applyAllObjectsFilter', () => {
-    let filterValue = 'SomeValue';
-    let eventTarget = { value: filterValue } as HTMLInputElement;
-    let event = { target: eventTarget as EventTarget } as Event;
-    component.applyAllObjectsFilter(event);
-
-    expect(component.allObjectsfilterDataSource.filter).toEqual(filterValue.toLocaleLowerCase());
-  });
-
 
   /**
    * onSelectObject

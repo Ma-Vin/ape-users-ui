@@ -1,8 +1,7 @@
-import { Component, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { Component, Input, OnInit, Output } from "@angular/core";
 import { Location } from '@angular/common';
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { MatSort } from "@angular/material/sort";
-import { MatTable, MatTableDataSource } from "@angular/material/table";
+import { MatTableDataSource } from "@angular/material/table";
 import { ActivatedRoute } from "@angular/router";
 import { IEqualsAndIdentifiable } from "src/app/model/equals-identifiable";
 
@@ -18,8 +17,6 @@ export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> impl
 
 
     allObjectsfilterDataSource: MatTableDataSource<T> = new MatTableDataSource<T>([]);
-    @ViewChild('tableAllObjectsSort', { static: false }) sort: MatSort | null = null;
-    @ViewChild('tableAllObjectsTable', { static: false }) table: MatTable<T> | undefined;
 
 
     constructor(protected route: ActivatedRoute, protected location: Location, protected snackBar: MatSnackBar) {
@@ -45,16 +42,6 @@ export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> impl
      * Loads all objects and adds them to the filtered datasource
      */
     protected abstract loadAllObjects(): void;
-
-
-    /**
-     * Applies a value at the filter of the datasource with all objects
-     * @param event Event with the value to use at filter.
-     */
-    applyAllObjectsFilter(event: Event): void {
-        const filterValue = (event.target as HTMLInputElement).value;
-        this.allObjectsfilterDataSource.filter = filterValue.trim().toLowerCase();
-    }
 
     /**
      * Creates a new objects and maps the attributes
@@ -239,8 +226,7 @@ export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> impl
      */
     protected takeOverNewObject(newObject: T): void {
         this.allObjectsfilterDataSource.data.push(newObject);
-        this.allObjectsfilterDataSource.sort = this.sort;
-        this.table?.renderRows();
+        this.allObjectsfilterDataSource.data = this.allObjectsfilterDataSource.data.slice();
         this.onSelectObject(newObject);
     }
 
@@ -253,12 +239,11 @@ export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> impl
         for (let i = 0; i < this.allObjectsfilterDataSource.data.length; i++) {
             if (this.allObjectsfilterDataSource.data[i].getIdentification() == this.selectedObject.getIdentification()) {
                 this.allObjectsfilterDataSource.data[i] = updatedObject;
-                this.allObjectsfilterDataSource.sort = this.sort;
-                this.table?.renderRows();
                 this.onSelectObject(updatedObject);
                 break;
             }
         }
+        this.allObjectsfilterDataSource.data = this.allObjectsfilterDataSource.data.slice();
     }
 
     /**
@@ -270,12 +255,12 @@ export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> impl
             for (let i = 0; i < this.allObjectsfilterDataSource.data.length; i++) {
                 if (this.allObjectsfilterDataSource.data[i].getIdentification() == this.selectedObject.getIdentification()) {
                     this.allObjectsfilterDataSource.data.splice(i, 1);
-                    this.allObjectsfilterDataSource.sort = this.sort;
-                    this.table?.renderRows();
                     this.onCancel();
                     break;
                 }
             }
+
+            this.allObjectsfilterDataSource.data = this.allObjectsfilterDataSource.data.slice();
         } else {
             this.openSnackBar(`${this.selectedObject.getIdentification()} was not deleted`, 'Error');
         }

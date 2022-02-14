@@ -7,7 +7,6 @@ import { ListDetailComponent } from '../list-detail/list-detail.component';
 import { ToolbarSite } from '../toolbar/toolbar-site';
 import { PrivilegeGroupService } from '../../services/backend/privilege-group.service';
 import { PrivilegeGroupPermissionsService } from '../../services/permissions/privilege-group-permissions.service';
-import { MatTableDataSource } from '@angular/material/table';
 import { PRIVILEGE_GROUPS_PATH } from '../../app-routing.module';
 import { Role } from '../../model/role.model';
 
@@ -41,8 +40,7 @@ export class AllPrivilegeGroupsComponent extends ListDetailComponent<PrivilegeGr
     this.privilegeGroupService.getAllPrivilegeGroups(undefined, undefined).subscribe(
       allBaseGroups => {
         console.debug("AllPrivilegeGroupsComponent: store all privilege groups from service");
-        this.allObjectsfilterDataSource = new MatTableDataSource(allBaseGroups);
-        this.allObjectsfilterDataSource.sort = this.sort;
+        this.allObjectsfilterDataSource.data = allBaseGroups;
         this.checkUrlId();
       }
     );

@@ -6,7 +6,6 @@ import { BaseGroup } from 'src/app/model/base-group.model';
 import { BaseGroupService } from 'src/app/services/backend/base-group.service';
 import { ListDetailComponent } from '../list-detail/list-detail.component';
 import { BaseGroupPermissionsService } from 'src/app/services/permissions/base-group-permissions.service';
-import { MatTableDataSource } from '@angular/material/table';
 import { BASE_GROUPS_PATH } from 'src/app/app-routing.module';
 import { ToolbarSite } from '../toolbar/toolbar-site';
 
@@ -40,8 +39,7 @@ export class AllBaseGroupsComponent extends ListDetailComponent<BaseGroup> {
     this.baseGroupService.getAllBaseGroups(undefined, undefined).subscribe(
       allBaseGroups => {
         console.debug("AllBaseGroupsComponent: store all base groups from service");
-        this.allObjectsfilterDataSource = new MatTableDataSource(allBaseGroups);
-        this.allObjectsfilterDataSource.sort = this.sort;
+        this.allObjectsfilterDataSource.data = allBaseGroups;
         this.checkUrlId();
       }
     );

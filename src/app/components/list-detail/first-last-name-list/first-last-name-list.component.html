@@ -3,7 +3,7 @@
         <mat-label>Filter</mat-label>
         <input matInput (keyup)="applyAllObjectsFilter($event)" placeholder="User Id, First- or Lastname">
     </mat-form-field>
-    <table mat-table #tableAllObjectsTable="matTable" #tableAllObjectsSort="matSort"
+    <table mat-table #tableAllObjectsSort="matSort"
         [dataSource]="allObjectsfilterDataSource" matSort matSortActive="identification" matSortDirection="asc">
         <details>all available users</details>
         <ng-container matColumnDef="identification">

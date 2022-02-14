@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { CommonGroup } from '../../model/common-group.model';
 import { Role } from '../../model/role.model';
@@ -60,8 +59,7 @@ export class AllCommonGroupsComponent extends ListDetailComponent<CommonGroup>{
     this.commonGroupService.getAllCommonGroups(undefined, undefined).subscribe(
       allCommonGroups => {
         console.debug("CommonGroupComponent: store all common groups from service");
-        this.allObjectsfilterDataSource = new MatTableDataSource(allCommonGroups);
-        this.allObjectsfilterDataSource.sort = this.sort;
+        this.allObjectsfilterDataSource.data = allCommonGroups;
         this.checkUrlId();
       }
     );

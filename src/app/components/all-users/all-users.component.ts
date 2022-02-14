@@ -8,7 +8,6 @@ import { UserService } from '../../services/backend/user.service';
 import { ListDetailComponent } from '../list-detail/list-detail.component';
 import { USERS_PATH } from '../../app-routing.module';
 import { Role } from '../../model/role.model';
-import { MatTableDataSource } from '@angular/material/table';
 import { ToolbarSite } from '../toolbar/toolbar-site';
 import { UserPermissionsService } from '../../services/permissions/user-permissions.service';
 
@@ -73,8 +72,7 @@ export class AllUsersComponent extends ListDetailComponent<User> {
     this.userService.getAllUsers(this.commonGroupId, undefined, undefined).subscribe(
       allUsers => {
         console.debug("AllUsersComponent: store all users from service");
-        this.allObjectsfilterDataSource = new MatTableDataSource(allUsers);
-        this.allObjectsfilterDataSource.sort = this.sort;
+        this.allObjectsfilterDataSource.data = allUsers;
         this.checkUrlId();
       }
     );
@@ -149,7 +147,7 @@ export class AllUsersComponent extends ListDetailComponent<User> {
 
   onSelectObjectTypeSpecific(objectToSelect: User): void { }
 
-  
+
   get lastLogin(): string {
     if (this.selectedObject.lastLogin == undefined) {
       return '';

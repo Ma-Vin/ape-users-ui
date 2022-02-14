@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { DatePipe, Location } from '@angular/common';
 import { ADMIN_GROUP_PATH } from '../../app-routing.module';
@@ -69,8 +68,7 @@ export class AdminGroupComponent extends ListDetailComponent<User> {
     this.adminService.getAllAdmins(this.adminGroupId, undefined, undefined).subscribe(
       allAdmins => {
         console.debug("AdminGroupComponent: store all admins from service");
-        this.allObjectsfilterDataSource = new MatTableDataSource(allAdmins);
-        this.allObjectsfilterDataSource.sort = this.sort;
+        this.allObjectsfilterDataSource.data = allAdmins;
         this.checkUrlId();
       }
     );
