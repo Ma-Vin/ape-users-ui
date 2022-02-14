@@ -23,8 +23,9 @@ export abstract class ElementsAtGroupComponent<T extends IEqualsAndIdentifiable,
 
   selectedElement: T | undefined;
   elementsDataSource: MatTableDataSource<T> = new MatTableDataSource<T>([]);
-  @ViewChild('elementTableSort', { static: false }) elementsSort!: MatSort;
-  @ViewChild('elementTableMatPaginator', { static: false }) elementPaginator!: MatPaginator;
+  private elementsSort: MatSort | undefined;
+  private elementPaginator!: MatPaginator | undefined;
+
   private elementText: string;
   displayedColumns: string[] = ['identification', 'groupName'];
 
@@ -36,6 +37,24 @@ export abstract class ElementsAtGroupComponent<T extends IEqualsAndIdentifiable,
   public ngOnInit() {
     this.loadAllElements();
   }
+
+
+  @ViewChild('elementTableMatPaginator', { static: false })
+  set paginator(value: MatPaginator) {
+    if (this.elementsDataSource) {
+      this.elementsDataSource.paginator = value;
+    }
+    this.elementPaginator = value;
+  }
+
+  @ViewChild('elementTableSort', { static: false })
+  set sort(value: MatSort) {
+    if (this.elementsDataSource) {
+      this.elementsDataSource.sort = value;
+    }
+    this.elementsSort = value;
+  }
+
 
   /**
    * @returns the text of the element for logging
@@ -76,8 +95,8 @@ export abstract class ElementsAtGroupComponent<T extends IEqualsAndIdentifiable,
    */
   private takeOverElements(groups: T[]): void {
     this.elementsDataSource = new MatTableDataSource(groups);
-    this.elementsDataSource.paginator = this.elementPaginator;
-    this.elementsDataSource.sort = this.elementsSort;
+    this.elementsDataSource.paginator = this.elementPaginator!;
+    this.elementsDataSource.sort = this.elementsSort!;
   }
 
 
@@ -340,7 +359,6 @@ export abstract class ElementsAtGroupComponent<T extends IEqualsAndIdentifiable,
     for (let i = 0; i < this.elementsDataSource.data.length; i++) {
       if (this.elementsDataSource.data[i].getIdentification() == identification) {
         this.elementsDataSource.data.splice(i, 1);
-        this.elementsDataSource.sort = this.elementsSort;
         break;
       }
     }
