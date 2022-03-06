@@ -28,6 +28,7 @@ export class BaseGroupService extends BaseBackendService {
 
   private getBaseGroupUrl: string | undefined;
   private getAllBaseGroupsUrl: string | undefined;
+  private getAllBaseGroupPartsUrl: string | undefined;
   private updateBaseGroupUrl: string | undefined;
   private createBaseGroupUrl: string | undefined;
   private deleteBaseGroupUrl: string | undefined;
@@ -57,6 +58,7 @@ export class BaseGroupService extends BaseBackendService {
 
     this.getBaseGroupUrl = baseGroupControllerUrl.concat('/getBaseGroup');
     this.getAllBaseGroupsUrl = baseGroupControllerUrl.concat('/getAllBaseGroups');
+    this.getAllBaseGroupPartsUrl = baseGroupControllerUrl.concat('/getAllBaseGroupParts');
     this.updateBaseGroupUrl = baseGroupControllerUrl.concat('/updateBaseGroup');
     this.createBaseGroupUrl = baseGroupControllerUrl.concat('/createBaseGroup');
     this.deleteBaseGroupUrl = baseGroupControllerUrl.concat('/deleteBaseGroup');
@@ -238,10 +240,34 @@ export class BaseGroupService extends BaseBackendService {
    */
   public getAllBaseGroups(page: number | undefined, size: number | undefined): Observable<BaseGroup[]> {
     this.init();
+    return this.getAllBaseGroupsWithUrl(page, size, `${this.getAllBaseGroupsUrl}`, true);
+  }
+
+  /**
+   * Get all base group parts with reduced data from the backend
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @returns the base group parts
+   */
+  public getAllBaseGroupParts(page: number | undefined, size: number | undefined): Observable<BaseGroup[]> {
+    this.init();
+    return this.getAllBaseGroupsWithUrl(page, size, `${this.getAllBaseGroupPartsUrl}`, false);
+  }
+
+
+
+  /**
+   * Get all base group or group parts with reduced data from the backend
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @param url the url where to get the data from backend
+   * @param isComplete indicator if the url points to the endpoint which return the complete entity or the one with reduced data
+   * @returns the base groups
+   */
+  private getAllBaseGroupsWithUrl(page: number | undefined, size: number | undefined, url: string, isComplete: boolean) {
     if (this.useMock) {
-      return this.getAllBaseGroupsMock();
+      return this.getAllBaseGroupsMock(isComplete);
     }
-    let url = `${this.getAllBaseGroupsUrl}`;
 
     return this.http.get<ResponseWrapper>(url, {
       headers: HTTP_URL_OPTIONS.headers,
@@ -252,6 +278,7 @@ export class BaseGroupService extends BaseBackendService {
         let result: BaseGroup[] = new Array(baseGroups.length);
         for (let i = 0; i < baseGroups.length; i++) {
           result[i] = BaseGroup.map(baseGroups[i]);
+          result[i].isComplente = isComplete;
         }
         return result;
       }),
@@ -264,12 +291,20 @@ export class BaseGroupService extends BaseBackendService {
 
   /**
    * Creates mock for getting all base groups
+   * @param isComplete indicator whether return base groups completly or with reduced data
    * @returns the mocked observable of all base groups
    */
-  private getAllBaseGroupsMock(): Observable<BaseGroup[]> {
+  private getAllBaseGroupsMock(isComplete: boolean): Observable<BaseGroup[]> {
     let copy: BaseGroup[] = [];
     for (let bg of this.getAllBasesAtSelectedCommonGroupFromMock()) {
-      copy.push(bg)
+      let entry = BaseGroup.map(bg);
+      if (!isComplete) {
+        entry.description = undefined;
+        entry.validFrom = undefined;
+        entry.validTo = undefined;
+      }
+      entry.isComplente = isComplete;
+      copy.push(entry)
     }
     return of(copy);
   }
