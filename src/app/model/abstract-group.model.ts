@@ -23,4 +23,9 @@ export interface IAbstractGroup {
      * End of the validity
      */
     validTo: Date | undefined;
+
+    /**
+     * Indicator whether this instance is loaded completly from backend or loaded in parts
+     */
+    isComplente: boolean;
 }

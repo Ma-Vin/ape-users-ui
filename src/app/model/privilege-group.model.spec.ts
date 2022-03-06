@@ -70,7 +70,14 @@ describe('PrivilegeGroup', () => {
         expect(privilegeGroup.equals(otherPrivilegeGroup)).toBeFalse();
     });
 
+    it('equal - PrivilegeGroup not equal isComplete', () => {
+        otherPrivilegeGroup.isComplente = false;
+        expect(privilegeGroup.isComplente).not.toEqual(otherPrivilegeGroup.isComplente);
+        expect(privilegeGroup.equals(otherPrivilegeGroup)).toBeFalse();
+    });
+
     it('map - should have equal values', () => {
+        privilegeGroup.isComplente = false;
         let mappedPrivilegeGroup = PrivilegeGroup.map(privilegeGroup);
 
         expect(mappedPrivilegeGroup).toBeInstanceOf(PrivilegeGroup);
@@ -79,6 +86,7 @@ describe('PrivilegeGroup', () => {
         expect(mappedPrivilegeGroup.description).toEqual(privilegeGroup.description);
         expect(mappedPrivilegeGroup.validFrom).toEqual(privilegeGroup.validFrom);
         expect(mappedPrivilegeGroup.validTo).toEqual(privilegeGroup.validTo);
+        expect(mappedPrivilegeGroup.isComplente).toEqual(privilegeGroup.isComplente);
 
         expect(privilegeGroup.equals(mappedPrivilegeGroup)).toBeTrue();
     });

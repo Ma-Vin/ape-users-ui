@@ -10,18 +10,20 @@ export class AdminGroup implements IAdminGroup, IEqualsAndIdentifiable {
     identification: string;
     validFrom: Date | undefined;
     validTo: Date | undefined;
+    isComplente = true;
 
     constructor(groupName: string, identification: string) {
         this.groupName = groupName;
         this.identification = identification;
     }
 
-    public static map(base: IAdminGroup): AdminGroup {
-        let result = new AdminGroup(base.groupName, base.identification);
+    public static map(admin: IAdminGroup): AdminGroup {
+        let result = new AdminGroup(admin.groupName, admin.identification);
 
-        result.description = base.description;
-        result.validFrom = base.validFrom;
-        result.validTo = base.validTo;
+        result.description = admin.description;
+        result.validFrom = admin.validFrom;
+        result.validTo = admin.validTo;
+        result.isComplente = admin.isComplente;
 
         return result;
     }
@@ -43,6 +45,7 @@ export class AdminGroup implements IAdminGroup, IEqualsAndIdentifiable {
             && this.description == other.description
             && this.validFrom?.getTime() == other.validFrom?.getTime()
             && this.validTo?.getTime() == other.validTo?.getTime()
+            && this.isComplente == other.isComplente;
     }
 
 

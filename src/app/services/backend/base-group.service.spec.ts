@@ -51,7 +51,8 @@ describe('BaseGroupService', () => {
     groupName: baseGroupName,
     identification: baseGroupId,
     validFrom: new Date(2021, 9, 1),
-    validTo: undefined
+    validTo: undefined,
+    isComplente: true
   }
 
   const modifiedBaseGroup = BaseGroup.map({

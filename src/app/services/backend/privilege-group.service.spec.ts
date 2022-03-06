@@ -48,7 +48,8 @@ describe('PrivilegeGroupService', () => {
     groupName: privilegeGroupName,
     identification: privilegeGroupId,
     validFrom: new Date(2021, 9, 1),
-    validTo: undefined
+    validTo: undefined,
+    isComplente: true
   }
 
   const modifiedPrivilegeGroup = PrivilegeGroup.map({

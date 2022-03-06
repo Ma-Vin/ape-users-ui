@@ -16,18 +16,20 @@ export class PrivilegeGroup implements IPrivilegeGroup, IEqualsAndIdentifiable {
     identification: string;
     validFrom: Date | undefined;
     validTo: Date | undefined;
+    isComplente = true;
 
     /**
      * Creates an new PrivilegeGroup and maps the given values to the new one
-     * @param base the structure which is to map to a PrivilegeGroup
+     * @param privilege the structure which is to map to a PrivilegeGroup
      * @returns the new created PrivilegeGroup instance
      */
-    public static map(base: IPrivilegeGroup): PrivilegeGroup {
-        let result = new PrivilegeGroup(base.groupName, base.identification);
+    public static map(privilege: IPrivilegeGroup): PrivilegeGroup {
+        let result = new PrivilegeGroup(privilege.groupName, privilege.identification);
 
-        result.description = base.description;
-        result.validFrom = base.validFrom;
-        result.validTo = base.validTo;
+        result.description = privilege.description;
+        result.validFrom = privilege.validFrom;
+        result.validTo = privilege.validTo;
+        result.isComplente = privilege.isComplente;
 
         return result;
     }
@@ -48,7 +50,8 @@ export class PrivilegeGroup implements IPrivilegeGroup, IEqualsAndIdentifiable {
             && this.groupName == other.groupName
             && this.description == other.description
             && this.validFrom?.getTime() == other.validFrom?.getTime()
-            && this.validTo?.getTime() == other.validTo?.getTime();
+            && this.validTo?.getTime() == other.validTo?.getTime()
+            && this.isComplente == other.isComplente;
     }
 
 

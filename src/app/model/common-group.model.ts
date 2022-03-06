@@ -19,19 +19,21 @@ export class CommonGroup implements ICommonGroup, IEqualsAndIdentifiable {
     identification: string;
     validFrom: Date | undefined;
     validTo: Date | undefined;
+    isComplente = true;
 
     /**
      * Creates an new CommonGroup and maps the given values to the new one
-     * @param base the structure which is to map to a CommonGroup
+     * @param common the structure which is to map to a CommonGroup
      * @returns the new created CommonGroup instance
      */
-    public static map(base: ICommonGroup): CommonGroup {
-        let result = new CommonGroup(base.groupName, base.identification);
+    public static map(common: ICommonGroup): CommonGroup {
+        let result = new CommonGroup(common.groupName, common.identification);
 
-        result.description = base.description;
-        result.validFrom = base.validFrom;
-        result.validTo = base.validTo;
-        result.defaultRole = base.defaultRole;
+        result.description = common.description;
+        result.validFrom = common.validFrom;
+        result.validTo = common.validTo;
+        result.defaultRole = common.defaultRole;
+        result.isComplente = common.isComplente;
 
         return result;
     }
@@ -52,6 +54,7 @@ export class CommonGroup implements ICommonGroup, IEqualsAndIdentifiable {
             && this.validFrom?.getTime() == other.validFrom?.getTime()
             && this.validTo?.getTime() == other.validTo?.getTime()
             && this.defaultRole == other.defaultRole
+            && this.isComplente == other.isComplente;
     }
 
     getIdentification(): string {

@@ -36,7 +36,8 @@ describe('AdminService', () => {
     groupName: 'Name of the group',
     identification: adminGroupId,
     validFrom: new Date(2021, 9, 1),
-    validTo: undefined
+    validTo: undefined,
+    isComplente: true
   }
 
   const modifiedAdminGroup = AdminGroup.map({

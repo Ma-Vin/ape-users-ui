@@ -70,12 +70,12 @@ describe('CommonGroup', () => {
     });
 
     it('equal - CommonGroup not equal valid from', () => {
-        otherCommonGroup.validFrom =  new Date(2021, 12, 2);
+        otherCommonGroup.validFrom = new Date(2021, 12, 2);
         expect(commonGroup.equals(otherCommonGroup)).toBeFalse();
     });
 
     it('equal - CommonGroup not equal valid to', () => {
-        otherCommonGroup.validTo =  new Date(2022, 12, 2);
+        otherCommonGroup.validTo = new Date(2022, 12, 2);
         expect(commonGroup.equals(otherCommonGroup)).toBeFalse();
     });
 
@@ -84,11 +84,18 @@ describe('CommonGroup', () => {
         expect(commonGroup.equals(otherCommonGroup)).toBeFalse();
     });
 
+    it('equal - CommonGroup not equal isComlete', () => {
+        otherCommonGroup.isComplente = false;
+        expect(commonGroup.isComplente).not.toEqual(otherCommonGroup.isComplente);
+        expect(commonGroup.equals(otherCommonGroup)).toBeFalse();
+    });
+
 
     /**
      * map
      */
     it('map - should have equal values', () => {
+        commonGroup.isComplente = false;
         let mappedCommonGroup = CommonGroup.map(commonGroup);
 
         expect(mappedCommonGroup).toBeInstanceOf(CommonGroup);
@@ -99,6 +106,7 @@ describe('CommonGroup', () => {
         expect(mappedCommonGroup.defaultRole).toEqual(commonGroup.defaultRole);
         expect(mappedCommonGroup.validFrom).toEqual(commonGroup.validFrom);
         expect(mappedCommonGroup.validTo).toEqual(commonGroup.validTo);
+        expect(mappedCommonGroup.isComplente).toEqual(commonGroup.isComplente);
 
         expect(commonGroup.equals(mappedCommonGroup)).toBeTrue();
     });
