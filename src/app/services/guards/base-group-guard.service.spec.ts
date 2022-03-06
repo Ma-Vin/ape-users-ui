@@ -47,23 +47,53 @@ describe('BaseGroupGuardService', () => {
   /**
    * canActivate
    */
-  it('canActivate - allowed to get all base groups', fakeAsync(() => {
+  it('canActivate - allowed to get all base groups and parts', fakeAsync(() => {
     let isAllowedToGetAllBaseGroupsSpy = spyOn(baseGroupPermissionsService, 'isAllowedToGetAllBaseGroups').and.returnValue(true);
+    let isAllowedToGetAllBaseGroupPartsSpy = spyOn(baseGroupPermissionsService, 'isAllowedToGetAllBaseGroupParts').and.returnValue(true);
 
     service.canActivate().subscribe(data => expect(data).toBeTrue());
 
     expect(isAllowedToGetAllBaseGroupsSpy).toHaveBeenCalled();
+    expect(isAllowedToGetAllBaseGroupPartsSpy).toHaveBeenCalled();
 
     tick();
   }));
 
 
-  it('canActivate - not allowed to get all  base groups', fakeAsync(() => {
+  it('canActivate - not allowed to get all base groups, but parts', fakeAsync(() => {
     let isAllowedToGetAllBaseGroupsSpy = spyOn(baseGroupPermissionsService, 'isAllowedToGetAllBaseGroups').and.returnValue(false);
+    let isAllowedToGetAllBaseGroupPartsSpy = spyOn(baseGroupPermissionsService, 'isAllowedToGetAllBaseGroupParts').and.returnValue(true);
 
     service.canActivate().subscribe(data => expect(data).toBeFalse());
 
     expect(isAllowedToGetAllBaseGroupsSpy).toHaveBeenCalled();
+    expect(isAllowedToGetAllBaseGroupPartsSpy).not.toHaveBeenCalled();
+
+    tick();
+  }));
+
+
+  it('canActivate - not allowed to get all base group parts, but base groups', fakeAsync(() => {
+    let isAllowedToGetAllBaseGroupsSpy = spyOn(baseGroupPermissionsService, 'isAllowedToGetAllBaseGroups').and.returnValue(true);
+    let isAllowedToGetAllBaseGroupPartsSpy = spyOn(baseGroupPermissionsService, 'isAllowedToGetAllBaseGroupParts').and.returnValue(false);
+
+    service.canActivate().subscribe(data => expect(data).toBeFalse());
+
+    expect(isAllowedToGetAllBaseGroupsSpy).toHaveBeenCalled();
+    expect(isAllowedToGetAllBaseGroupPartsSpy).toHaveBeenCalled();
+
+    tick();
+  }));
+
+
+  it('canActivate - not allowed to get all base group and parts', fakeAsync(() => {
+    let isAllowedToGetAllBaseGroupsSpy = spyOn(baseGroupPermissionsService, 'isAllowedToGetAllBaseGroups').and.returnValue(false);
+    let isAllowedToGetAllBaseGroupPartsSpy = spyOn(baseGroupPermissionsService, 'isAllowedToGetAllBaseGroupParts').and.returnValue(false);
+
+    service.canActivate().subscribe(data => expect(data).toBeFalse());
+
+    expect(isAllowedToGetAllBaseGroupsSpy).toHaveBeenCalled();
+    expect(isAllowedToGetAllBaseGroupPartsSpy).not.toHaveBeenCalled();
 
     tick();
   }));

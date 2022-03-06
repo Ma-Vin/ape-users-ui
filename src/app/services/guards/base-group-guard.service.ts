@@ -10,6 +10,6 @@ export class BaseGroupGuardService {
   constructor(private baseGroupPermissionService: BaseGroupPermissionsService) { }
 
   canActivate(): Observable<boolean> {
-    return of(this.baseGroupPermissionService.isAllowedToGetAllBaseGroups());
+    return of(this.baseGroupPermissionService.isAllowedToGetAllBaseGroups() && this.baseGroupPermissionService.isAllowedToGetAllBaseGroupParts());
   }
 }
