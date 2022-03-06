@@ -37,6 +37,7 @@ export class BaseGroupService extends BaseBackendService {
   private removeBaseFromBaseGroupUrl: string | undefined;
   private countBasesAtBaseGroupUrl: string | undefined;
   private getAllBasesAtBaseGroupUrl: string | undefined;
+  private getAllBasePartsAtBaseGroupUrl: string | undefined;
   private addBaseToPrivilegeGroupUrl: string | undefined;
   private removeBaseFromPrivilegeGroupUrl: string | undefined;
   private countBasesAtPrivilegeGroupUrl: string | undefined;
@@ -67,6 +68,7 @@ export class BaseGroupService extends BaseBackendService {
     this.removeBaseFromBaseGroupUrl = baseGroupControllerUrl.concat('/removeBaseFromBaseGroup');
     this.countBasesAtBaseGroupUrl = baseGroupControllerUrl.concat('/countBaseAtBaseGroup');
     this.getAllBasesAtBaseGroupUrl = baseGroupControllerUrl.concat('/findAllBaseAtBaseGroup');
+    this.getAllBasePartsAtBaseGroupUrl = baseGroupControllerUrl.concat('/findAllBasePartAtBaseGroup');
     this.addBaseToPrivilegeGroupUrl = baseGroupControllerUrl.concat('/addBaseToPrivilegeGroup');
     this.removeBaseFromPrivilegeGroupUrl = baseGroupControllerUrl.concat('/removeBaseFromPrivilegeGroup');
     this.countBasesAtPrivilegeGroupUrl = baseGroupControllerUrl.concat('/countBaseAtPrivilegeGroup');
@@ -662,11 +664,29 @@ export class BaseGroupService extends BaseBackendService {
   public getAllBasesAtBaseGroup(parentIdentification: string, page: number | undefined, size: number | undefined): Observable<BaseGroup[]> {
     this.init();
     if (this.useMock) {
-      return this.getAllBasesAtBaseGroupMock(parentIdentification);
+      return this.getAllBasesAtBaseGroupMock(parentIdentification, true);
     }
     let url = `${this.getAllBasesAtBaseGroupUrl}/${parentIdentification}`;
 
-    return this.getAllBaseFromGroup(url, parentIdentification, undefined, page, size);
+    return this.getAllBaseFromGroup(url, parentIdentification, undefined, page, size, true);
+  }
+
+
+  /**
+   * Get all sub base group parts of an other one from the backend
+   * @param parentIdentification Id of the parent base group
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @returns the base groups
+   */
+  public getAllBasePartsAtBaseGroup(parentIdentification: string, page: number | undefined, size: number | undefined): Observable<BaseGroup[]> {
+    this.init();
+    if (this.useMock) {
+      return this.getAllBasesAtBaseGroupMock(parentIdentification, false);
+    }
+    let url = `${this.getAllBasePartsAtBaseGroupUrl}/${parentIdentification}`;
+
+    return this.getAllBaseFromGroup(url, parentIdentification, undefined, page, size, false);
   }
 
 
@@ -674,14 +694,22 @@ export class BaseGroupService extends BaseBackendService {
   /**
    * Creates mock for getting all sub base groups of an other one
    * @param parentIdentification Id of the parent base group
+   * @param isComplete indicator if the url points to the endpoint which return the complete entity or the one with reduced data
    * @returns the mocked observable of all sub base groups
    */
-  private getAllBasesAtBaseGroupMock(parentIdentification: string): Observable<BaseGroup[]> {
+  private getAllBasesAtBaseGroupMock(parentIdentification: string, isComplete: boolean): Observable<BaseGroup[]> {
     let result: BaseGroup[] = [];
     let subBaseGroupIds = BaseGroupService.getSubBaseGroupIdsFromMock(parentIdentification);
     for (let bg of this.getAllBasesAtSelectedCommonGroupFromMock()) {
       if (subBaseGroupIds.includes(bg.identification)) {
-        result.push(bg)
+        let entry = BaseGroup.map(bg);
+        if (!isComplete) {
+          entry.description = undefined;
+          entry.validFrom = undefined;
+          entry.validTo = undefined;
+        }
+        entry.isComplete = isComplete;
+        result.push(entry)
       }
     }
     return of(result);
@@ -868,7 +896,7 @@ export class BaseGroupService extends BaseBackendService {
     }
     let url = `${this.getAllBasesAtPrivilegeGroupUrl}/${parentIdentification}`;
 
-    return this.getAllBaseFromGroup(url, parentIdentification, role, page, size);
+    return this.getAllBaseFromGroup(url, parentIdentification, role, page, size, true);
   }
 
   /**
@@ -878,9 +906,10 @@ export class BaseGroupService extends BaseBackendService {
    * @param role the role which filter the base groups. If undefined all will be determined
    * @param page zero-based page index, must not be negative.
    * @param size the size of the page to be returned, must be greater than 0.
+   * @param isComplete indicator if the url points to the endpoint which return the complete entity or the one with reduced data
    * @returns the base groups
    */
-  private getAllBaseFromGroup(url: string, parentIdentification: string, role: Role | undefined, page: number | undefined, size: number | undefined): Observable<BaseGroup[]> {
+  private getAllBaseFromGroup(url: string, parentIdentification: string, role: Role | undefined, page: number | undefined, size: number | undefined, isComplete: boolean): Observable<BaseGroup[]> {
     return this.http.get<ResponseWrapper>(url, {
       headers: HTTP_URL_OPTIONS.headers,
       params: this.createPageingRoleParams(role, page, size)
@@ -890,6 +919,7 @@ export class BaseGroupService extends BaseBackendService {
         let result: BaseGroup[] = new Array(baseGroups.length);
         for (let i = 0; i < baseGroups.length; i++) {
           result[i] = BaseGroup.map(baseGroups[i]);
+          result[i].isComplete = isComplete;
         }
         return result;
       }),

@@ -1280,6 +1280,7 @@ describe('BaseGroupService', () => {
       expect(data[0].description).toEqual(mockIBaseGroup.description);
       expect(data[0].validFrom).toEqual(mockIBaseGroup.validFrom);
       expect(data[0].validTo).toBeUndefined();
+      expect(data[0].isComplete).toBeTrue();
     });
 
     const req = httpMock.expectOne(`//localhost:8080/group/base/findAllBaseAtBaseGroup/${otherBaseGroupId}`);
@@ -1307,6 +1308,7 @@ describe('BaseGroupService', () => {
       expect(data[0].description).toEqual(mockIBaseGroup.description);
       expect(data[0].validFrom).toEqual(mockIBaseGroup.validFrom);
       expect(data[0].validTo).toBeUndefined();
+      expect(data[0].isComplete).toBeTrue();
     });
 
     const req = httpMock.expectOne(`//localhost:8080/group/base/findAllBaseAtBaseGroup/${otherBaseGroupId}?page=1&size=50`);
@@ -1374,6 +1376,7 @@ describe('BaseGroupService', () => {
                 expect(getAllData).toBeTruthy();
                 expect(getAllData.length).toEqual(1);
                 expect(getAllData[0].identification).toEqual(createdData.identification);
+                expect(getAllData[0].isComplete).toBeTrue();
               },
               e => expect(e).toBeFalsy());
           },
@@ -1382,6 +1385,148 @@ describe('BaseGroupService', () => {
       e => expect(e).toBeFalsy());
 
     httpMock.expectNone(`//localhost:8080/group/base/findAllBaseAtBaseGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+
+
+
+
+  /**
+   * getAllBasePartsAtBaseGroup
+   */
+  it('getAllBasePartsAtBaseGroup - all ok', fakeAsync(() => {
+    mockIBaseGroup.description = undefined;
+    mockIBaseGroup.validFrom = undefined;
+    mockIBaseGroup.validTo = undefined;
+
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockIBaseGroup],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAllBasePartsAtBaseGroup(otherBaseGroupId, undefined, undefined).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].identification).toEqual(mockIBaseGroup.identification);
+      expect(data[0].groupName).toEqual(mockIBaseGroup.groupName);
+      expect(data[0].description).toBeUndefined();
+      expect(data[0].validFrom).toBeUndefined();
+      expect(data[0].validTo).toBeUndefined();
+      expect(data[0].isComplete).toBeFalse();
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/group/base/findAllBasePartAtBaseGroup/${otherBaseGroupId}`);
+    expect(req.request.method).toEqual("GET");
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/group/base/findAllBasePartAtBaseGroup/${otherBaseGroupId}`);
+
+    tick();
+  }));
+
+  it('getAllBasePartsAtBaseGroup - with pageing', fakeAsync(() => {
+    mockIBaseGroup.description = undefined;
+    mockIBaseGroup.validFrom = undefined;
+    mockIBaseGroup.validTo = undefined;
+
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockIBaseGroup],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAllBasePartsAtBaseGroup(otherBaseGroupId, 1, 50).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].identification).toEqual(mockIBaseGroup.identification);
+      expect(data[0].groupName).toEqual(mockIBaseGroup.groupName);
+      expect(data[0].description).toBeUndefined();
+      expect(data[0].validFrom).toBeUndefined();
+      expect(data[0].validTo).toBeUndefined();
+      expect(data[0].isComplete).toBeFalse();
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/group/base/findAllBasePartAtBaseGroup/${otherBaseGroupId}?page=1&size=50`);
+    expect(req.request.method).toEqual("GET");
+    expect(req.request.params.get('page')).toEqual('1');
+    expect(req.request.params.get('size')).toEqual('50');
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/group/base/findAllBasePartAtBaseGroup/${otherBaseGroupId}?page=1&size=50`);
+
+    tick();
+  }));
+
+  it('getAllBasePartsAtBaseGroup - with error status', fakeAsync(() => {
+    service.getAllBasePartsAtBaseGroup(otherBaseGroupId, undefined, undefined).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/group/base/findAllBasePartAtBaseGroup/${otherBaseGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockErrorResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/group/base/findAllBasePartAtBaseGroup/${otherBaseGroupId}`);
+
+    tick();
+  }));
+
+  it('getAllBasePartsAtBaseGroup - with fatal status', fakeAsync(() => {
+    service.getAllBasePartsAtBaseGroup(otherBaseGroupId, undefined, undefined).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/group/base/findAllBasePartAtBaseGroup/${otherBaseGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockFatalResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/group/base/findAllBasePartAtBaseGroup/${otherBaseGroupId}`);
+
+    tick();
+  }));
+
+  it('getAllBasePartsAtBaseGroup - mock', fakeAsync(() => {
+    service.useMock = true;
+    service.createBaseGroup('New sub base group').subscribe(
+      createdData => {
+        expect(createdData).toBeTruthy();
+        service.addBaseToBaseGroup(createdData.identification, baseGroupId).subscribe(
+          addedData => {
+            expect(addedData).toBeTruthy();
+            service.getAllBasePartsAtBaseGroup(baseGroupId, undefined, undefined).subscribe(
+              getAllData => {
+                expect(getAllData).toBeTruthy();
+                expect(getAllData.length).toEqual(1);
+                expect(getAllData[0].identification).toEqual(createdData.identification);
+                expect(getAllData[0].description).toBeUndefined();
+                expect(getAllData[0].validFrom).toBeUndefined();
+                expect(getAllData[0].validTo).toBeUndefined();
+                expect(getAllData[0].isComplete).toBeFalse();
+              },
+              e => expect(e).toBeFalsy());
+          },
+          e => expect(e).toBeFalsy());
+      },
+      e => expect(e).toBeFalsy());
+
+    httpMock.expectNone(`//localhost:8080/group/base/findAllBasePartAtBaseGroup/${baseGroupId}`);
 
     tick();
   }));
