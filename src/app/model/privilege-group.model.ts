@@ -16,7 +16,7 @@ export class PrivilegeGroup implements IPrivilegeGroup, IEqualsAndIdentifiable {
     identification: string;
     validFrom: Date | undefined;
     validTo: Date | undefined;
-    isComplente = true;
+    isComplete = true;
 
     /**
      * Creates an new PrivilegeGroup and maps the given values to the new one
@@ -29,7 +29,7 @@ export class PrivilegeGroup implements IPrivilegeGroup, IEqualsAndIdentifiable {
         result.description = privilege.description;
         result.validFrom = privilege.validFrom;
         result.validTo = privilege.validTo;
-        result.isComplente = privilege.isComplente;
+        result.isComplete = privilege.isComplete;
 
         return result;
     }
@@ -51,7 +51,7 @@ export class PrivilegeGroup implements IPrivilegeGroup, IEqualsAndIdentifiable {
             && this.description == other.description
             && this.validFrom?.getTime() == other.validFrom?.getTime()
             && this.validTo?.getTime() == other.validTo?.getTime()
-            && this.isComplente == other.isComplente;
+            && this.isComplete == other.isComplete;
     }
 
 

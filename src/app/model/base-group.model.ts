@@ -16,7 +16,7 @@ export class BaseGroup implements IBaseGroup, IEqualsAndIdentifiable {
     identification: string;
     validFrom: Date | undefined;
     validTo: Date | undefined;
-    isComplente = true;
+    isComplete = true;
 
 
     /**
@@ -30,7 +30,7 @@ export class BaseGroup implements IBaseGroup, IEqualsAndIdentifiable {
         result.description = base.description;
         result.validFrom = base.validFrom;
         result.validTo = base.validTo;
-        result.isComplente = base.isComplente;
+        result.isComplete = base.isComplete;
 
         return result;
     }
@@ -52,7 +52,7 @@ export class BaseGroup implements IBaseGroup, IEqualsAndIdentifiable {
             && this.description == other.description
             && this.validFrom?.getTime() == other.validFrom?.getTime()
             && this.validTo?.getTime() == other.validTo?.getTime()
-            && this.isComplente == other.isComplente;
+            && this.isComplete == other.isComplete;
     }
 
 

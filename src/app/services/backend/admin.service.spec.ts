@@ -37,7 +37,7 @@ describe('AdminService', () => {
     identification: adminGroupId,
     validFrom: new Date(2021, 9, 1),
     validTo: undefined,
-    isComplente: true
+    isComplete: true
   }
 
   const modifiedAdminGroup = AdminGroup.map({

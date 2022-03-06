@@ -38,7 +38,7 @@ describe('CommonGroupService', () => {
     validFrom: new Date(2021, 9, 1),
     validTo: undefined,
     defaultRole: Role.VISITOR,
-    isComplente: true
+    isComplete: true
   }
 
   const modifiedCommonGroup = CommonGroup.map({

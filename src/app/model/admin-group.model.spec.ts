@@ -71,13 +71,13 @@ describe('AdminGroup', () => {
     });
 
     it('equal - AdminGroup not completed', () => {
-        otherAdminGroup.isComplente = false;
-        expect(adminGroup.isComplente).not.toEqual(otherAdminGroup.isComplente);
+        otherAdminGroup.isComplete = false;
+        expect(adminGroup.isComplete).not.toEqual(otherAdminGroup.isComplete);
         expect(adminGroup.equals(otherAdminGroup)).toBeFalse();
     });
 
     it('map - should have equal values', () => {
-        adminGroup.isComplente = false;
+        adminGroup.isComplete = false;
         let mappedAdminGroup = AdminGroup.map(adminGroup);
 
         expect(mappedAdminGroup).toBeInstanceOf(AdminGroup);
@@ -86,7 +86,7 @@ describe('AdminGroup', () => {
         expect(mappedAdminGroup.description).toEqual(adminGroup.description);
         expect(mappedAdminGroup.validFrom).toEqual(adminGroup.validFrom);
         expect(mappedAdminGroup.validTo).toEqual(adminGroup.validTo);
-        expect(mappedAdminGroup.isComplente).toEqual(adminGroup.isComplente);
+        expect(mappedAdminGroup.isComplete).toEqual(adminGroup.isComplete);
 
         expect(adminGroup.equals(mappedAdminGroup)).toBeTrue();
     });

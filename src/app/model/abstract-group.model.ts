@@ -27,5 +27,5 @@ export interface IAbstractGroup {
     /**
      * Indicator whether this instance is loaded completly from backend or loaded in parts
      */
-    isComplente: boolean;
+    isComplete: boolean;
 }

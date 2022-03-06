@@ -71,13 +71,13 @@ describe('BaseGroup', () => {
     });
 
     it('equal - BaseGroup not completed', () => {
-        otherBaseGroup.isComplente = false;
-        expect(baseGroup.isComplente).not.toEqual(otherBaseGroup.isComplente);
+        otherBaseGroup.isComplete = false;
+        expect(baseGroup.isComplete).not.toEqual(otherBaseGroup.isComplete);
         expect(baseGroup.equals(otherBaseGroup)).toBeFalse();
     });
 
     it('map - should have equal values', () => {
-        baseGroup.isComplente = false;
+        baseGroup.isComplete = false;
         let mappedBaseGroup = BaseGroup.map(baseGroup);
 
         expect(mappedBaseGroup).toBeInstanceOf(BaseGroup);
@@ -86,7 +86,7 @@ describe('BaseGroup', () => {
         expect(mappedBaseGroup.description).toEqual(baseGroup.description);
         expect(mappedBaseGroup.validFrom).toEqual(baseGroup.validFrom);
         expect(mappedBaseGroup.validTo).toEqual(baseGroup.validTo);
-        expect(mappedBaseGroup.isComplente).toEqual(baseGroup.isComplente);
+        expect(mappedBaseGroup.isComplete).toEqual(baseGroup.isComplete);
 
         expect(baseGroup.equals(mappedBaseGroup)).toBeTrue();
     });

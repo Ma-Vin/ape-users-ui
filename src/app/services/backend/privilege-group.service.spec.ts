@@ -49,7 +49,7 @@ describe('PrivilegeGroupService', () => {
     identification: privilegeGroupId,
     validFrom: new Date(2021, 9, 1),
     validTo: undefined,
-    isComplente: true
+    isComplete: true
   }
 
   const modifiedPrivilegeGroup = PrivilegeGroup.map({

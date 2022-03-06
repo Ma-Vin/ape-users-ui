@@ -19,7 +19,7 @@ export class CommonGroup implements ICommonGroup, IEqualsAndIdentifiable {
     identification: string;
     validFrom: Date | undefined;
     validTo: Date | undefined;
-    isComplente = true;
+    isComplete = true;
 
     /**
      * Creates an new CommonGroup and maps the given values to the new one
@@ -33,7 +33,7 @@ export class CommonGroup implements ICommonGroup, IEqualsAndIdentifiable {
         result.validFrom = common.validFrom;
         result.validTo = common.validTo;
         result.defaultRole = common.defaultRole;
-        result.isComplente = common.isComplente;
+        result.isComplete = common.isComplete;
 
         return result;
     }
@@ -54,7 +54,7 @@ export class CommonGroup implements ICommonGroup, IEqualsAndIdentifiable {
             && this.validFrom?.getTime() == other.validFrom?.getTime()
             && this.validTo?.getTime() == other.validTo?.getTime()
             && this.defaultRole == other.defaultRole
-            && this.isComplente == other.isComplente;
+            && this.isComplete == other.isComplete;
     }
 
     getIdentification(): string {

@@ -10,7 +10,7 @@ export class AdminGroup implements IAdminGroup, IEqualsAndIdentifiable {
     identification: string;
     validFrom: Date | undefined;
     validTo: Date | undefined;
-    isComplente = true;
+    isComplete = true;
 
     constructor(groupName: string, identification: string) {
         this.groupName = groupName;
@@ -23,7 +23,7 @@ export class AdminGroup implements IAdminGroup, IEqualsAndIdentifiable {
         result.description = admin.description;
         result.validFrom = admin.validFrom;
         result.validTo = admin.validTo;
-        result.isComplente = admin.isComplente;
+        result.isComplete = admin.isComplete;
 
         return result;
     }
@@ -45,7 +45,7 @@ export class AdminGroup implements IAdminGroup, IEqualsAndIdentifiable {
             && this.description == other.description
             && this.validFrom?.getTime() == other.validFrom?.getTime()
             && this.validTo?.getTime() == other.validTo?.getTime()
-            && this.isComplente == other.isComplente;
+            && this.isComplete == other.isComplete;
     }
 
 

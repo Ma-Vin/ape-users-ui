@@ -85,8 +85,8 @@ describe('CommonGroup', () => {
     });
 
     it('equal - CommonGroup not equal isComlete', () => {
-        otherCommonGroup.isComplente = false;
-        expect(commonGroup.isComplente).not.toEqual(otherCommonGroup.isComplente);
+        otherCommonGroup.isComplete = false;
+        expect(commonGroup.isComplete).not.toEqual(otherCommonGroup.isComplete);
         expect(commonGroup.equals(otherCommonGroup)).toBeFalse();
     });
 
@@ -95,7 +95,7 @@ describe('CommonGroup', () => {
      * map
      */
     it('map - should have equal values', () => {
-        commonGroup.isComplente = false;
+        commonGroup.isComplete = false;
         let mappedCommonGroup = CommonGroup.map(commonGroup);
 
         expect(mappedCommonGroup).toBeInstanceOf(CommonGroup);
@@ -106,7 +106,7 @@ describe('CommonGroup', () => {
         expect(mappedCommonGroup.defaultRole).toEqual(commonGroup.defaultRole);
         expect(mappedCommonGroup.validFrom).toEqual(commonGroup.validFrom);
         expect(mappedCommonGroup.validTo).toEqual(commonGroup.validTo);
-        expect(mappedCommonGroup.isComplente).toEqual(commonGroup.isComplente);
+        expect(mappedCommonGroup.isComplete).toEqual(commonGroup.isComplete);
 
         expect(commonGroup.equals(mappedCommonGroup)).toBeTrue();
     });

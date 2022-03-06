@@ -88,7 +88,7 @@ describe('BaseGroupService', () => {
       identification: baseGroupId,
       validFrom: new Date(2021, 9, 1),
       validTo: undefined,
-      isComplente: true
+      isComplete: true
     } as IBaseGroup;
 
     modifiedBaseGroup = BaseGroup.map({
@@ -257,7 +257,7 @@ describe('BaseGroupService', () => {
       expect(data[0].description).toEqual(mockIBaseGroup.description);
       expect(data[0].validFrom).toEqual(mockIBaseGroup.validFrom);
       expect(data[0].validTo).toBeUndefined();
-      expect(data[0].isComplente).toBeTrue();
+      expect(data[0].isComplete).toBeTrue();
     });
 
     const req = httpMock.expectOne(`//localhost:8080/group/base/getAllBaseGroups`);
@@ -285,7 +285,7 @@ describe('BaseGroupService', () => {
       expect(data[0].description).toEqual(mockIBaseGroup.description);
       expect(data[0].validFrom).toEqual(mockIBaseGroup.validFrom);
       expect(data[0].validTo).toBeUndefined();
-      expect(data[0].isComplente).toBeTrue();
+      expect(data[0].isComplete).toBeTrue();
     });
 
     const req = httpMock.expectOne(`//localhost:8080/group/base/getAllBaseGroups?page=1&size=50`);
@@ -346,7 +346,7 @@ describe('BaseGroupService', () => {
       expect(data).toBeTruthy();
       expect(data.length).toEqual(1);
       expect(data[0].identification).toEqual(baseGroupId);
-      expect(data[0].isComplente).toBeTrue();
+      expect(data[0].isComplete).toBeTrue();
     });
 
     httpMock.expectNone(`//localhost:8080/group/base/getAllBaseGroups`);
@@ -380,7 +380,7 @@ describe('BaseGroupService', () => {
       expect(data[0].description).toBeUndefined();
       expect(data[0].validFrom).toBeUndefined();
       expect(data[0].validTo).toBeUndefined();
-      expect(data[0].isComplente).toBeFalse();
+      expect(data[0].isComplete).toBeFalse();
     });
 
     const req = httpMock.expectOne(`//localhost:8080/group/base/getAllBaseGroupParts`);
@@ -412,7 +412,7 @@ describe('BaseGroupService', () => {
       expect(data[0].description).toBeUndefined();
       expect(data[0].validFrom).toBeUndefined();
       expect(data[0].validTo).toBeUndefined();
-      expect(data[0].isComplente).toBeFalse();
+      expect(data[0].isComplete).toBeFalse();
     });
 
     const req = httpMock.expectOne(`//localhost:8080/group/base/getAllBaseGroupParts?page=1&size=50`);
@@ -476,7 +476,7 @@ describe('BaseGroupService', () => {
       expect(data[0].description).toBeUndefined();
       expect(data[0].validFrom).toBeUndefined();
       expect(data[0].validTo).toBeUndefined();
-      expect(data[0].isComplente).toBeFalse();
+      expect(data[0].isComplete).toBeFalse();
     });
 
     httpMock.expectNone(`//localhost:8080/group/base/getAllBaseGroupParts`);

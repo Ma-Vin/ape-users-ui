@@ -278,7 +278,7 @@ export class BaseGroupService extends BaseBackendService {
         let result: BaseGroup[] = new Array(baseGroups.length);
         for (let i = 0; i < baseGroups.length; i++) {
           result[i] = BaseGroup.map(baseGroups[i]);
-          result[i].isComplente = isComplete;
+          result[i].isComplete = isComplete;
         }
         return result;
       }),
@@ -303,7 +303,7 @@ export class BaseGroupService extends BaseBackendService {
         entry.validFrom = undefined;
         entry.validTo = undefined;
       }
-      entry.isComplente = isComplete;
+      entry.isComplete = isComplete;
       copy.push(entry)
     }
     return of(copy);
