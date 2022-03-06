@@ -2128,4 +2128,245 @@ describe('BaseGroupService', () => {
   }));
 
 
+
+
+  /**
+   * getAllBasePartsAtPrivilegeGroup
+   */
+  it('getAllBasePartsAtPrivilegeGroup - all ok', fakeAsync(() => {
+    mockIBaseGroup.description = undefined;
+    mockIBaseGroup.validFrom = undefined;
+    mockIBaseGroup.validTo = undefined;
+
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockIBaseGroup],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAllBasePartsAtPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].identification).toEqual(mockIBaseGroup.identification);
+      expect(data[0].groupName).toEqual(mockIBaseGroup.groupName);
+      expect(data[0].description).toBeUndefined();
+      expect(data[0].validFrom).toBeUndefined();
+      expect(data[0].validTo).toBeUndefined();
+      expect(data[0].isComplete).toBeFalse();
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/group/base/findAllBasePartAtPrivilegeGroup/${privilegeGroupId}`);
+    expect(req.request.method).toEqual("GET");
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/group/base/findAllBasePartAtPrivilegeGroup/${privilegeGroupId}`);
+
+    tick();
+  }));
+
+  it('getAllBasePartsAtPrivilegeGroup - with pageing', fakeAsync(() => {
+    mockIBaseGroup.description = undefined;
+    mockIBaseGroup.validFrom = undefined;
+    mockIBaseGroup.validTo = undefined;
+
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockIBaseGroup],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAllBasePartsAtPrivilegeGroup(privilegeGroupId, undefined, 1, 50).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].identification).toEqual(mockIBaseGroup.identification);
+      expect(data[0].groupName).toEqual(mockIBaseGroup.groupName);
+      expect(data[0].description).toBeUndefined();
+      expect(data[0].validFrom).toBeUndefined();
+      expect(data[0].validTo).toBeUndefined();
+      expect(data[0].isComplete).toBeFalse();
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/group/base/findAllBasePartAtPrivilegeGroup/${privilegeGroupId}?page=1&size=50`);
+    expect(req.request.method).toEqual("GET");
+    expect(req.request.params.get('page')).toEqual('1');
+    expect(req.request.params.get('size')).toEqual('50');
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/group/base/findAllBasePartAtPrivilegeGroup/${privilegeGroupId}?page=1&size=50`);
+
+    tick();
+  }));
+
+  it('getAllBasePartsAtPrivilegeGroup - with pageing and role', fakeAsync(() => {
+    mockIBaseGroup.description = undefined;
+    mockIBaseGroup.validFrom = undefined;
+    mockIBaseGroup.validTo = undefined;
+
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockIBaseGroup],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAllBasePartsAtPrivilegeGroup(privilegeGroupId, Role.CONTRIBUTOR, 1, 50).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].identification).toEqual(mockIBaseGroup.identification);
+      expect(data[0].groupName).toEqual(mockIBaseGroup.groupName);
+      expect(data[0].description).toBeUndefined();
+      expect(data[0].validFrom).toBeUndefined();
+      expect(data[0].validTo).toBeUndefined();
+      expect(data[0].isComplete).toBeFalse();
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/group/base/findAllBasePartAtPrivilegeGroup/${privilegeGroupId}?page=1&size=50&role=${Role.CONTRIBUTOR}`);
+    expect(req.request.method).toEqual("GET");
+    expect(req.request.params.get('page')).toEqual('1');
+    expect(req.request.params.get('size')).toEqual('50');
+    expect(req.request.params.get('role')).toEqual(Role.CONTRIBUTOR);
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/group/base/findAllBasePartAtPrivilegeGroup/${privilegeGroupId}?page=1&size=50&role=${Role.CONTRIBUTOR}`);
+
+    tick();
+  }));
+
+
+  it('getAllBasePartsAtPrivilegeGroup - with role', fakeAsync(() => {
+    mockIBaseGroup.description = undefined;
+    mockIBaseGroup.validFrom = undefined;
+    mockIBaseGroup.validTo = undefined;
+
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockIBaseGroup],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAllBasePartsAtPrivilegeGroup(privilegeGroupId, Role.CONTRIBUTOR, undefined, undefined).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].identification).toEqual(mockIBaseGroup.identification);
+      expect(data[0].groupName).toEqual(mockIBaseGroup.groupName);
+      expect(data[0].description).toBeUndefined();
+      expect(data[0].validFrom).toBeUndefined();
+      expect(data[0].validTo).toBeUndefined();
+      expect(data[0].isComplete).toBeFalse();
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/group/base/findAllBasePartAtPrivilegeGroup/${privilegeGroupId}?role=${Role.CONTRIBUTOR}`);
+    expect(req.request.method).toEqual("GET");
+    expect(req.request.params.get('role')).toEqual(Role.CONTRIBUTOR);
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/group/base/findAllBasePartAtPrivilegeGroup/${privilegeGroupId}?role=${Role.CONTRIBUTOR}`);
+
+    tick();
+  }));
+
+  it('getAllBasePartsAtPrivilegeGroup - with error status', fakeAsync(() => {
+    service.getAllBasePartsAtPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/group/base/findAllBasePartAtPrivilegeGroup/${privilegeGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockErrorResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/group/base/findAllBasePartAtPrivilegeGroup/${privilegeGroupId}`);
+
+    tick();
+  }));
+
+  it('getAllBasePartsAtPrivilegeGroup - with fatal status', fakeAsync(() => {
+    service.getAllBasePartsAtPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/group/base/findAllBasePartAtPrivilegeGroup/${privilegeGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockFatalResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/group/base/findAllBaseAtPrivilegeGroup/${privilegeGroupId}`);
+
+    tick();
+  }));
+
+  it('getAllBasePartsAtPrivilegeGroup - mock with role', fakeAsync(() => {
+    service.useMock = true;
+
+    service.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
+      addedData => {
+        expect(addedData).toBeTruthy();
+
+        service.getAllBasePartsAtPrivilegeGroup(privilegeGroupId, Role.CONTRIBUTOR, undefined, undefined).subscribe(
+          getAllData => {
+            expect(getAllData).toBeTruthy();
+            expect(getAllData.length).toEqual(1);
+            expect(getAllData[0].identification).toEqual(baseGroupId);
+            expect(getAllData[0].description).toBeUndefined();
+            expect(getAllData[0].validFrom).toBeUndefined();
+            expect(getAllData[0].validTo).toBeUndefined();
+            expect(getAllData[0].isComplete).toBeFalse();
+          },
+          e => expect(e).toBeFalsy());
+
+        service.getAllBasePartsAtPrivilegeGroup(privilegeGroupId, Role.MANAGER, undefined, undefined).subscribe(
+          getAllData => {
+            expect(getAllData).toBeTruthy();
+            expect(getAllData.length).toEqual(0);
+          },
+          e => expect(e).toBeFalsy());
+      },
+      e => expect(e).toBeFalsy()
+    );
+
+    httpMock.expectNone(`//localhost:8080/group/base/findAllBasePartAtPrivilegeGroup/${privilegeGroupId}?role=${Role.CONTRIBUTOR}`);
+
+    tick();
+  }));
+
+  it('getAllBasePartsAtPrivilegeGroup - mock without role', fakeAsync(() => {
+    service.useMock = true;
+
+    service.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
+      addedData => {
+        expect(addedData).toBeTruthy();
+        service.getAllBasePartsAtPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined).subscribe(
+          getAllData => {
+            expect(getAllData).toBeTruthy();
+            expect(getAllData.length).toEqual(1);
+            expect(getAllData[0].identification).toEqual(baseGroupId);
+            expect(getAllData[0].description).toBeUndefined();
+            expect(getAllData[0].validFrom).toBeUndefined();
+            expect(getAllData[0].validTo).toBeUndefined();
+            expect(getAllData[0].isComplete).toBeFalse();
+          },
+          e => expect(e).toBeFalsy());
+      },
+      e => expect(e).toBeFalsy()
+    );
+
+    httpMock.expectNone(`//localhost:8080/group/base/findAllBasePartAtPrivilegeGroup/${privilegeGroupId}`);
+
+    tick();
+  }));
+
+
 });

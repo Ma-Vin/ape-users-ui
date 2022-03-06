@@ -42,6 +42,7 @@ export class BaseGroupService extends BaseBackendService {
   private removeBaseFromPrivilegeGroupUrl: string | undefined;
   private countBasesAtPrivilegeGroupUrl: string | undefined;
   private getAllBasesAtPrivilegeGroupUrl: string | undefined;
+  private getAllBasePartsAtPrivilegeGroupUrl: string | undefined;
 
 
   constructor(private http: HttpClient, configService: ConfigService, private selectionService: SelectionService) {
@@ -73,6 +74,7 @@ export class BaseGroupService extends BaseBackendService {
     this.removeBaseFromPrivilegeGroupUrl = baseGroupControllerUrl.concat('/removeBaseFromPrivilegeGroup');
     this.countBasesAtPrivilegeGroupUrl = baseGroupControllerUrl.concat('/countBaseAtPrivilegeGroup');
     this.getAllBasesAtPrivilegeGroupUrl = baseGroupControllerUrl.concat('/findAllBaseAtPrivilegeGroup');
+    this.getAllBasePartsAtPrivilegeGroupUrl = baseGroupControllerUrl.concat('/findAllBasePartAtPrivilegeGroup');
 
     return true;
   }
@@ -892,12 +894,34 @@ export class BaseGroupService extends BaseBackendService {
   public getAllBasesAtPrivilegeGroup(parentIdentification: string, role: Role | undefined, page: number | undefined, size: number | undefined): Observable<BaseGroup[]> {
     this.init();
     if (this.useMock) {
-      return this.getAllBasesAtrivilegeGroupMock(parentIdentification, role);
+      return this.getAllBasesAtrivilegeGroupMock(parentIdentification, role, true);
     }
     let url = `${this.getAllBasesAtPrivilegeGroupUrl}/${parentIdentification}`;
 
     return this.getAllBaseFromGroup(url, parentIdentification, role, page, size, true);
   }
+
+
+
+  /**
+   * Get all sub base groups of a privilege one from the backend
+   * @param parentIdentification Id of the parent base group
+   * @param role the role which filter the base groups. If undefined all will be determined
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @returns the base groups
+   */
+  public getAllBasePartsAtPrivilegeGroup(parentIdentification: string, role: Role | undefined, page: number | undefined, size: number | undefined): Observable<BaseGroup[]> {
+    this.init();
+    if (this.useMock) {
+      return this.getAllBasesAtrivilegeGroupMock(parentIdentification, role, false);
+    }
+    let url = `${this.getAllBasePartsAtPrivilegeGroupUrl}/${parentIdentification}`;
+
+    return this.getAllBaseFromGroup(url, parentIdentification, role, page, size, false);
+  }
+
+
 
   /**
    * Get all base groups of an other parent group from the backend
@@ -934,9 +958,10 @@ export class BaseGroupService extends BaseBackendService {
    * Creates mock for getting all sub base groups of a privilege one
    * @param parentIdentification Id of the parent base group
    * @param role the role which filter the base groups. If undefined all will be determined
+   * @param isComplete indicator if the url points to the endpoint which return the complete entity or the one with reduced data
    * @returns the mocked observable of all sub base groups
    */
-  private getAllBasesAtrivilegeGroupMock(parentIdentification: string, role: Role | undefined): Observable<BaseGroup[]> {
+  private getAllBasesAtrivilegeGroupMock(parentIdentification: string, role: Role | undefined, isComplete: boolean): Observable<BaseGroup[]> {
     this.initMocks();
     let result: BaseGroup[] = [];
     let baseGroups = this.getAllBasesAtSelectedCommonGroupFromMock();
@@ -947,8 +972,14 @@ export class BaseGroupService extends BaseBackendService {
       }
       for (let bg of baseGroups) {
         if (bg.identification == br.baseGroupIdentification) {
-          result.push(bg);
-          break;
+          let entry = BaseGroup.map(bg);
+          if (!isComplete) {
+            entry.description = undefined;
+            entry.validFrom = undefined;
+            entry.validTo = undefined;
+          }
+          entry.isComplete = isComplete;
+          result.push(entry)
         }
       }
     }
