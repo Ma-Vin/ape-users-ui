@@ -240,6 +240,34 @@ describe('BaseGroupPermissionsService', () => {
 
 
   /**
+   * isAllowedToGetAllBaseGroupParts
+   */
+  it('isAllowedToGetAllBaseGroupParts - authorized', () => {
+    activeUser.isGlobalAdmin = true;
+    expect(service.isAllowedToGetAllBaseGroupParts()).toBeTrue();
+    activeUser.isGlobalAdmin = false;
+    activeUser.role = Role.ADMIN;
+    expect(service.isAllowedToGetAllBaseGroupParts()).toBeTrue();
+    activeUser.role = Role.MANAGER;
+    expect(service.isAllowedToGetAllBaseGroupParts()).toBeTrue();
+    activeUser.role = Role.CONTRIBUTOR;
+    expect(service.isAllowedToGetAllBaseGroupParts()).toBeTrue();
+    activeUser.role = Role.VISITOR;
+    expect(service.isAllowedToGetAllBaseGroupParts()).toBeTrue();
+  });
+
+  it('isAllowedToGetAllBaseGroupParts - unauthorized', () => {
+    activeUser.isGlobalAdmin = false;
+    activeUser.role = Role.NOT_RELEVANT;
+    expect(service.isAllowedToGetAllBaseGroupParts()).toBeFalse();
+    activeUser.role = Role.BLOCKED;
+    expect(service.isAllowedToGetAllBaseGroupParts()).toBeFalse();
+  });
+
+
+
+
+  /**
    * isAllowedToAddBaseToBaseGroup
    */
   it('isAllowedToAddBaseToBaseGroup - authorized', () => {
@@ -352,6 +380,34 @@ describe('BaseGroupPermissionsService', () => {
 
 
   /**
+   * isAllowedToGetAllBasePartsAtBaseGroup
+   */
+  it('isAllowedToGetAllBasePartsAtBaseGroup - authorized', () => {
+    activeUser.isGlobalAdmin = true;
+    expect(service.isAllowedToGetAllBasePartsAtBaseGroup()).toBeTrue();
+    activeUser.isGlobalAdmin = false;
+    activeUser.role = Role.ADMIN;
+    expect(service.isAllowedToGetAllBasePartsAtBaseGroup()).toBeTrue();
+    activeUser.role = Role.MANAGER;
+    expect(service.isAllowedToGetAllBasePartsAtBaseGroup()).toBeTrue();
+    activeUser.role = Role.CONTRIBUTOR;
+    expect(service.isAllowedToGetAllBasePartsAtBaseGroup()).toBeTrue();
+    activeUser.role = Role.VISITOR;
+    expect(service.isAllowedToGetAllBasePartsAtBaseGroup()).toBeTrue();
+  });
+
+  it('isAllowedToGetAllBasePartsAtBaseGroup - unauthorized', () => {
+    activeUser.isGlobalAdmin = false;
+    activeUser.role = Role.NOT_RELEVANT;
+    expect(service.isAllowedToGetAllBasePartsAtBaseGroup()).toBeFalse();
+    activeUser.role = Role.BLOCKED;
+    expect(service.isAllowedToGetAllBasePartsAtBaseGroup()).toBeFalse();
+  });
+
+
+
+
+  /**
    * isAllowedToAddBaseToPrivilegeGroup
    */
   it('isAllowedToAddBaseToPrivilegeGroup - authorized', () => {
@@ -458,5 +514,33 @@ describe('BaseGroupPermissionsService', () => {
     expect(service.isAllowedToGetAllBasesAtPrivilegeGroup()).toBeFalse();
     activeUser.role = Role.BLOCKED;
     expect(service.isAllowedToGetAllBasesAtPrivilegeGroup()).toBeFalse();
+  });
+
+
+
+
+  /**
+   * isAllowedToGetAllBasePartsAtPrivilegeGroup
+   */
+  it('isAllowedToGetAllBasePartsAtPrivilegeGroup - authorized', () => {
+    activeUser.isGlobalAdmin = true;
+    expect(service.isAllowedToGetAllBasePartsAtPrivilegeGroup()).toBeTrue();
+    activeUser.isGlobalAdmin = false;
+    activeUser.role = Role.ADMIN;
+    expect(service.isAllowedToGetAllBasePartsAtPrivilegeGroup()).toBeTrue();
+    activeUser.role = Role.MANAGER;
+    expect(service.isAllowedToGetAllBasePartsAtPrivilegeGroup()).toBeTrue();
+    activeUser.role = Role.CONTRIBUTOR;
+    expect(service.isAllowedToGetAllBasePartsAtPrivilegeGroup()).toBeTrue();
+    activeUser.role = Role.VISITOR;
+    expect(service.isAllowedToGetAllBasePartsAtPrivilegeGroup()).toBeTrue();
+  });
+
+  it('isAllowedToGetAllBasePartsAtPrivilegeGroup - unauthorized', () => {
+    activeUser.isGlobalAdmin = false;
+    activeUser.role = Role.NOT_RELEVANT;
+    expect(service.isAllowedToGetAllBasePartsAtPrivilegeGroup()).toBeFalse();
+    activeUser.role = Role.BLOCKED;
+    expect(service.isAllowedToGetAllBasePartsAtPrivilegeGroup()).toBeFalse();
   });
 });

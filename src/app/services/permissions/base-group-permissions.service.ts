@@ -63,6 +63,14 @@ export class BaseGroupPermissionsService extends BasePermissionsService {
 
 
   /**
+   * @returns true if the active user is allowed to get all base group parts. Otherwise false.
+   */
+  isAllowedToGetAllBaseGroupParts(): boolean {
+    return this.isAllowedToGetAllBaseGroups();
+  }
+
+
+  /**
    * @returns true if the active user is allowed to add a base group to an other one. Otherwise false.
    */
   isAllowedToAddBaseToBaseGroup() {
@@ -96,6 +104,14 @@ export class BaseGroupPermissionsService extends BasePermissionsService {
 
 
   /**
+   * @returns true if the active user is allowed to get all base group parts from an other one. Otherwise false.
+   */
+  isAllowedToGetAllBasePartsAtBaseGroup(): boolean {
+    return this.isAllowedToGetAllBasesAtBaseGroup();
+  }
+
+
+  /**
    * @returns true if the active user is allowed to add a base group to a privilege one. Otherwise false.
    */
   isAllowedToAddBaseToPrivilegeGroup() {
@@ -124,6 +140,14 @@ export class BaseGroupPermissionsService extends BasePermissionsService {
    */
   isAllowedToGetAllBasesAtPrivilegeGroup(): boolean {
     return this.isAllowedToGetBaseGroup();
+  }
+
+  
+  /**
+   * @returns true if the active user is allowed to get all base group parts from a privilege one. Otherwise false.
+   */
+   isAllowedToGetAllBasePartsAtPrivilegeGroup(): boolean {
+    return this.isAllowedToGetAllBasesAtPrivilegeGroup();
   }
 
 }
