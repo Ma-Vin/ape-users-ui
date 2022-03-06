@@ -53,7 +53,8 @@ describe('UserService', () => {
     lastLogin: new Date(2021, 9, 25, 20, 15, 1),
     validFrom: new Date(2021, 9, 1),
     validTo: undefined,
-    role: Role.VISITOR
+    role: Role.VISITOR,
+    isComplente: true
   }
 
   const modifiedUser = User.map({
@@ -2130,14 +2131,14 @@ describe('UserService', () => {
   it('getAllUsersFromPrivilegeGroup - mock with role', fakeAsync(() => {
     service.useMock = true;
     baseGroupService.useMock = true;
-   
+
 
     baseGroupService.createBaseGroup('subgroub').subscribe(
       createdSubBaseGroup => {
         baseGroupService.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.MANAGER).subscribe(
           addBaseGroup => {
             expect(addBaseGroup).toBeTrue();
-            
+
             baseGroupService.addBaseToBaseGroup(createdSubBaseGroup.identification, baseGroupId).subscribe(
               addSubBaseGroup => {
                 expect(addSubBaseGroup).toBeTrue();
@@ -2185,7 +2186,7 @@ describe('UserService', () => {
         baseGroupService.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.MANAGER).subscribe(
           addBaseGroup => {
             expect(addBaseGroup).toBeTrue();
-            
+
             baseGroupService.addBaseToBaseGroup(createdSubBaseGroup.identification, baseGroupId).subscribe(
               addSubBaseGroup => {
                 expect(addSubBaseGroup).toBeTrue();
@@ -2223,14 +2224,14 @@ describe('UserService', () => {
   it('getAllUsersFromPrivilegeGroup - mock with role and dissolve subgroups', fakeAsync(() => {
     service.useMock = true;
     baseGroupService.useMock = true;
-   
+
 
     baseGroupService.createBaseGroup('subgroub').subscribe(
       createdSubBaseGroup => {
         baseGroupService.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
           addBaseGroup => {
             expect(addBaseGroup).toBeTrue();
-            
+
             baseGroupService.addBaseToBaseGroup(createdSubBaseGroup.identification, baseGroupId).subscribe(
               addSubBaseGroup => {
                 expect(addSubBaseGroup).toBeTrue();
@@ -2279,7 +2280,7 @@ describe('UserService', () => {
         baseGroupService.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.MANAGER).subscribe(
           addBaseGroup => {
             expect(addBaseGroup).toBeTrue();
-            
+
             baseGroupService.addBaseToBaseGroup(createdSubBaseGroup.identification, baseGroupId).subscribe(
               addSubBaseGroup => {
                 expect(addSubBaseGroup).toBeTrue();

@@ -14,6 +14,10 @@ export interface IUser {
     validFrom: Date | undefined;
     validTo: Date | undefined;
     role: Role | undefined;
+    /**
+     * Indicator whether this instance is loaded completly from backend or loaded in parts
+     */
+    isComplente: boolean;
 }
 
 export class User implements IUser, IEqualsAndIdentifiable {
@@ -29,6 +33,7 @@ export class User implements IUser, IEqualsAndIdentifiable {
     validTo: Date | undefined;
     isGlobalAdmin = false;
     role: Role | undefined;
+    isComplente = true;
 
     constructor(identification: string, firstName: string, lastName: string) {
         this.identification = identification;
@@ -38,20 +43,21 @@ export class User implements IUser, IEqualsAndIdentifiable {
 
     /**
      * Creates an new User and maps the given values to the new one
-     * @param base the structure which is to map to a User
+     * @param user the structure which is to map to a User
      * @returns the new created User instance
      */
-    public static map(base: IUser): User {
-        let result = new User(base.identification, base.firstName, base.lastName);
+    public static map(user: IUser): User {
+        let result = new User(user.identification, user.firstName, user.lastName);
 
-        result.mail = base.mail;
-        result.image = UserResource.map(base.image);
-        result.smallImage = UserResource.map(base.smallImage);
-        result.lastLogin = base.lastLogin;
-        result.validFrom = base.validFrom;
-        result.validTo = base.validTo;
-        result.isGlobalAdmin = (base as User).isGlobalAdmin != undefined && (base as User).isGlobalAdmin;
-        result.role = base.role;
+        result.mail = user.mail;
+        result.image = UserResource.map(user.image);
+        result.smallImage = UserResource.map(user.smallImage);
+        result.lastLogin = user.lastLogin;
+        result.validFrom = user.validFrom;
+        result.validTo = user.validTo;
+        result.isGlobalAdmin = (user as User).isGlobalAdmin != undefined && (user as User).isGlobalAdmin;
+        result.role = user.role;
+        result.isComplente = user.isComplente;
 
         return result;
     }
@@ -79,7 +85,8 @@ export class User implements IUser, IEqualsAndIdentifiable {
             && ((this.image != undefined && this.image.equals(other.image)) || (this.image == undefined && other.image == undefined))
             && ((this.smallImage != undefined && this.smallImage.equals(other.smallImage)) || (this.smallImage == undefined && other.smallImage == undefined))
             && this.isGlobalAdmin == other.isGlobalAdmin
-            && this.role == other.role;
+            && this.role == other.role
+            && this.isComplente == other.isComplente;
     }
 
 

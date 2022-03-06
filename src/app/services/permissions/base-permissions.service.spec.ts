@@ -66,7 +66,8 @@ describe('BasePermissionsService', () => {
       validFrom: new Date(2021, 9, 1),
       validTo: undefined,
       role: Role.VISITOR,
-      isGlobalAdmin: false
+      isGlobalAdmin: false,
+      isComplente: true
     } as IUser);
 
     otherUser = User.map({
@@ -80,7 +81,8 @@ describe('BasePermissionsService', () => {
       validFrom: new Date(2021, 10, 1),
       validTo: undefined,
       role: Role.VISITOR,
-      isGlobalAdmin: false
+      isGlobalAdmin: false,
+      isComplente: true
     } as IUser);
 
     commonGroup = CommonGroup.map({

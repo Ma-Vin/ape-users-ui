@@ -117,6 +117,12 @@ describe('User', () => {
         expect(user.equals(otherUser)).toBeFalse();
     });
 
+    it('equal - User not equal isComplete', () => {
+        otherUser.isComplente = !otherUser.isComplente;
+        expect(user.isComplente).not.toEqual(otherUser.isComplente);
+        expect(user.equals(otherUser)).toBeFalse();
+    });
+
     it('map - should have equal values', () => {
         let mappedUser = User.map(user);
 

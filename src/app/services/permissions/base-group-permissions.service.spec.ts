@@ -57,7 +57,8 @@ describe('BaseGroupPermissionsService', () => {
       validFrom: new Date(2021, 9, 1),
       validTo: undefined,
       role: Role.VISITOR,
-      isGlobalAdmin: false
+      isGlobalAdmin: false,
+      isComplente: true
     } as IUser);
   }
 

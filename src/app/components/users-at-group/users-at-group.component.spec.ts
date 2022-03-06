@@ -61,7 +61,8 @@ describe('UsersAtGroupComponent', () => {
     validFrom: new Date(2021, 9, 1),
     validTo: undefined,
     role: Role.VISITOR,
-    isGlobalAdmin: false
+    isGlobalAdmin: false,
+    isComplente: true
   } as IUser);
 
   const secondUser = User.map({
@@ -75,7 +76,8 @@ describe('UsersAtGroupComponent', () => {
     validFrom: new Date(2021, 9, 1),
     validTo: undefined,
     role: Role.VISITOR,
-    isGlobalAdmin: false
+    isGlobalAdmin: false,
+    isComplente: true
   } as IUser);
 
   const baseGroup = BaseGroup.map({

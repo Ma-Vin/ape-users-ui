@@ -893,7 +893,8 @@ describe('AllUsersComponent', () => {
       validFrom: new Date(2021, 9, 1),
       validTo: undefined,
       isGlobalAdmin: false,
-      role: Role.VISITOR
+      role: Role.VISITOR,
+      isComplente: true
     } as IUser);
 
     otherUser = User.map({
@@ -907,7 +908,8 @@ describe('AllUsersComponent', () => {
       validFrom: new Date(2021, 9, 1),
       validTo: undefined,
       isGlobalAdmin: false,
-      role: Role.VISITOR
+      role: Role.VISITOR,
+      isComplente: true
     } as IUser);
 
     commonGroup = CommonGroup.map({
