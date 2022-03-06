@@ -17,7 +17,7 @@ export interface IUser {
     /**
      * Indicator whether this instance is loaded completly from backend or loaded in parts
      */
-    isComplente: boolean;
+    isComplete: boolean;
 }
 
 export class User implements IUser, IEqualsAndIdentifiable {
@@ -33,7 +33,7 @@ export class User implements IUser, IEqualsAndIdentifiable {
     validTo: Date | undefined;
     isGlobalAdmin = false;
     role: Role | undefined;
-    isComplente = true;
+    isComplete = true;
 
     constructor(identification: string, firstName: string, lastName: string) {
         this.identification = identification;
@@ -57,7 +57,7 @@ export class User implements IUser, IEqualsAndIdentifiable {
         result.validTo = user.validTo;
         result.isGlobalAdmin = (user as User).isGlobalAdmin != undefined && (user as User).isGlobalAdmin;
         result.role = user.role;
-        result.isComplente = user.isComplente;
+        result.isComplete = user.isComplete;
 
         return result;
     }
@@ -86,7 +86,7 @@ export class User implements IUser, IEqualsAndIdentifiable {
             && ((this.smallImage != undefined && this.smallImage.equals(other.smallImage)) || (this.smallImage == undefined && other.smallImage == undefined))
             && this.isGlobalAdmin == other.isGlobalAdmin
             && this.role == other.role
-            && this.isComplente == other.isComplente;
+            && this.isComplete == other.isComplete;
     }
 
 

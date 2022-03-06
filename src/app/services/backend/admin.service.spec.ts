@@ -59,7 +59,7 @@ describe('AdminService', () => {
     validFrom: new Date(2021, 9, 1),
     validTo: undefined,
     role: undefined,
-    isComplente: true
+    isComplete: true
   }
 
   const modifiedUserAdmin = User.map({

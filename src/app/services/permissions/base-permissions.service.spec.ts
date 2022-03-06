@@ -67,7 +67,7 @@ describe('BasePermissionsService', () => {
       validTo: undefined,
       role: Role.VISITOR,
       isGlobalAdmin: false,
-      isComplente: true
+      isComplete: true
     } as IUser);
 
     otherUser = User.map({
@@ -82,7 +82,7 @@ describe('BasePermissionsService', () => {
       validTo: undefined,
       role: Role.VISITOR,
       isGlobalAdmin: false,
-      isComplente: true
+      isComplete: true
     } as IUser);
 
     commonGroup = CommonGroup.map({

@@ -894,7 +894,7 @@ describe('AllUsersComponent', () => {
       validTo: undefined,
       isGlobalAdmin: false,
       role: Role.VISITOR,
-      isComplente: true
+      isComplete: true
     } as IUser);
 
     otherUser = User.map({
@@ -909,7 +909,7 @@ describe('AllUsersComponent', () => {
       validTo: undefined,
       isGlobalAdmin: false,
       role: Role.VISITOR,
-      isComplente: true
+      isComplete: true
     } as IUser);
 
     commonGroup = CommonGroup.map({

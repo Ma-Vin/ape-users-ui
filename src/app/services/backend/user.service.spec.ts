@@ -54,7 +54,7 @@ describe('UserService', () => {
     validFrom: new Date(2021, 9, 1),
     validTo: undefined,
     role: Role.VISITOR,
-    isComplente: true
+    isComplete: true
   }
 
   const modifiedUser = User.map({

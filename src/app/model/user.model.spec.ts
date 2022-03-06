@@ -118,8 +118,8 @@ describe('User', () => {
     });
 
     it('equal - User not equal isComplete', () => {
-        otherUser.isComplente = !otherUser.isComplente;
-        expect(user.isComplente).not.toEqual(otherUser.isComplente);
+        otherUser.isComplete = !otherUser.isComplete;
+        expect(user.isComplete).not.toEqual(otherUser.isComplete);
         expect(user.equals(otherUser)).toBeFalse();
     });
 

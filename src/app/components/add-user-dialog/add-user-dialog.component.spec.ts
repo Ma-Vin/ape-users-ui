@@ -55,7 +55,7 @@ const user = User.map({
   validTo: undefined,
   role: Role.VISITOR,
   isGlobalAdmin: false,
-  isComplente: true
+  isComplete: true
 } as IUser);
 
 const secondUser = User.map({
@@ -70,7 +70,7 @@ const secondUser = User.map({
   validTo: undefined,
   role: Role.VISITOR,
   isGlobalAdmin: false,
-  isComplente: true
+  isComplete: true
 } as IUser);
 
 const commonGroup = CommonGroup.map({

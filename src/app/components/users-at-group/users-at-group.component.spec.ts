@@ -62,7 +62,7 @@ describe('UsersAtGroupComponent', () => {
     validTo: undefined,
     role: Role.VISITOR,
     isGlobalAdmin: false,
-    isComplente: true
+    isComplete: true
   } as IUser);
 
   const secondUser = User.map({
@@ -77,7 +77,7 @@ describe('UsersAtGroupComponent', () => {
     validTo: undefined,
     role: Role.VISITOR,
     isGlobalAdmin: false,
-    isComplente: true
+    isComplete: true
   } as IUser);
 
   const baseGroup = BaseGroup.map({

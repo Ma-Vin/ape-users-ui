@@ -63,7 +63,7 @@ describe('PermissionsService', () => {
       validTo: undefined,
       role: Role.VISITOR,
       isGlobalAdmin: false,
-      isComplente: true
+      isComplete: true
     } as IUser);
 
     otherUser = User.map({
@@ -78,7 +78,7 @@ describe('PermissionsService', () => {
       validTo: undefined,
       role: Role.VISITOR,
       isGlobalAdmin: false,
-      isComplente: true
+      isComplete: true
     } as IUser);
   }
 
