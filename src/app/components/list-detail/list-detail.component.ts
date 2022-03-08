@@ -4,6 +4,8 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatTableDataSource } from "@angular/material/table";
 import { ActivatedRoute } from "@angular/router";
 import { IEqualsAndIdentifiable } from "src/app/model/equals-identifiable";
+import { environment } from "src/environments/environment";
+import { Observable } from "rxjs";
 
 @Component({ template: '' })
 export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> implements OnInit {
@@ -14,6 +16,7 @@ export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> impl
     showObjectDetail: boolean;
     isNewObject = false;
     disableUpdate = false;
+    areOnlyPartsToLoadAtList: boolean;
 
 
     allObjectsfilterDataSource: MatTableDataSource<T> = new MatTableDataSource<T>([]);
@@ -22,13 +25,18 @@ export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> impl
     constructor(protected route: ActivatedRoute, protected location: Location, protected snackBar: MatSnackBar) {
         this.selectedObject = this.createNewEmptyObject();
         this.showObjectDetail = false;
+        this.areOnlyPartsToLoadAtList = environment.loadObjectParts;
     }
 
     /**
      * Init this component and should be called at ngOnInit
      */
     ngOnInit(): void {
-        this.loadAllObjects();
+        if (this.areOnlyPartsToLoadAtList) {
+            this.loadAllObjectParts();
+        } else {
+            this.loadAllObjects();
+        }
         this.isNewObject = false;
     }
 
@@ -42,6 +50,19 @@ export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> impl
      * Loads all objects and adds them to the filtered datasource
      */
     protected abstract loadAllObjects(): void;
+
+
+    /**
+     * Loads all object parts and adds them to the filtered datasource
+     */
+    protected abstract loadAllObjectParts(): void;
+
+
+    /**
+     * Loads an object for detail view. Is used if areOnlyPartsToLoadAtList is equal to true 
+     */
+    protected abstract loadObject(identification: string): Observable<T>;
+
 
     /**
      * Creates a new objects and maps the attributes
@@ -75,6 +96,18 @@ export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> impl
      * @param objectToSelect the object to select
      */
     onSelectObject(objectToSelect: T): void {
+        if (this.areOnlyPartsToLoadAtList) {
+            this.loadObject(objectToSelect.getIdentification()).subscribe(o => this.onSelectObjectInternal(o))
+        } else {
+            this.onSelectObjectInternal(objectToSelect);
+        }
+    }
+
+    /**
+     * Selects a given object
+     * @param objectToSelect the object to select
+     */
+    private onSelectObjectInternal(objectToSelect: T): void {
         if (this.selectedObject.getIdentification() != objectToSelect.getIdentification()) {
             console.info(`${this.getBaseRoute()}/${objectToSelect.getIdentification()}`)
             this.location.replaceState(`${this.getBaseRoute()}/${objectToSelect.getIdentification()}`)

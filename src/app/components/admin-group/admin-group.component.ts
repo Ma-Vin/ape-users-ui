@@ -9,6 +9,7 @@ import { SelectionService } from '../../services/util/selection.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ListDetailComponent } from '../list-detail/list-detail.component';
 import { ToolbarSite } from '../toolbar/toolbar-site';
+import { Observable } from 'rxjs';
 
 
 const placeHolderAdmin = {
@@ -72,6 +73,15 @@ export class AdminGroupComponent extends ListDetailComponent<User> {
         this.checkUrlId();
       }
     );
+  }
+
+  protected loadAllObjectParts(): void {
+    this.loadAllObjects();
+  }
+
+  protected loadObject(identification: string): Observable<User> {
+    console.debug("AdminGroupComponent: get admin from service");
+    return this.adminService.getAdmin(identification);
   }
 
   mapObject(source: User) {

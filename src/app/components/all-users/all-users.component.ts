@@ -10,6 +10,7 @@ import { USERS_PATH } from '../../app-routing.module';
 import { Role } from '../../model/role.model';
 import { ToolbarSite } from '../toolbar/toolbar-site';
 import { UserPermissionsService } from '../../services/permissions/user-permissions.service';
+import { Observable } from 'rxjs';
 
 
 interface RoleWithText {
@@ -76,6 +77,15 @@ export class AllUsersComponent extends ListDetailComponent<User> {
         this.checkUrlId();
       }
     );
+  }
+
+  protected loadAllObjectParts(): void {
+    this.loadAllObjects();
+  }
+
+  protected loadObject(identification: string): Observable<User> {
+    console.debug("AllUsersComponent: get user from service");
+    return this.userService.getUser(identification);
   }
 
   mapObject(source: User): User {

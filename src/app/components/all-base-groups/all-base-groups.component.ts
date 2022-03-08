@@ -8,6 +8,7 @@ import { ListDetailComponent } from '../list-detail/list-detail.component';
 import { BaseGroupPermissionsService } from 'src/app/services/permissions/base-group-permissions.service';
 import { BASE_GROUPS_PATH } from 'src/app/app-routing.module';
 import { ToolbarSite } from '../toolbar/toolbar-site';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-all-base-groups',
@@ -43,6 +44,22 @@ export class AllBaseGroupsComponent extends ListDetailComponent<BaseGroup> {
         this.checkUrlId();
       }
     );
+  }
+
+  protected loadAllObjectParts(): void {
+    console.debug("AllBaseGroupsComponent: get all base group parts from service");
+    this.baseGroupService.getAllBaseGroupParts(undefined, undefined).subscribe(
+      allBaseGroups => {
+        console.debug("AllBaseGroupsComponent: store all base group parts from service");
+        this.allObjectsfilterDataSource.data = allBaseGroups;
+        this.checkUrlId();
+      }
+    );
+  }
+
+  protected loadObject(identification: string): Observable<BaseGroup> {
+    console.debug("AllBaseGroupsComponent: get base group from service");
+    return this.baseGroupService.getBaseGroup(identification);
   }
 
 

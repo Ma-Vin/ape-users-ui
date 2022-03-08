@@ -10,6 +10,7 @@ import { COMMON_GROUPS_PATH } from '../../app-routing.module';
 import { ListDetailComponent } from '../list-detail/list-detail.component';
 import { ToolbarSite } from '../toolbar/toolbar-site';
 import { CommonGroupPermissionsService } from '../../services/permissions/common-group-permissions.service';
+import { Observable } from 'rxjs';
 
 
 interface RoleWithText {
@@ -63,6 +64,15 @@ export class AllCommonGroupsComponent extends ListDetailComponent<CommonGroup>{
         this.checkUrlId();
       }
     );
+  }
+
+  protected loadAllObjectParts(): void {
+    this.loadAllObjects();
+  }
+
+  protected loadObject(identification: string): Observable<CommonGroup> {
+    console.debug("CommonGroupComponent: get  common group from service");
+    return this.commonGroupService.getCommonGroup(identification);
   }
 
 

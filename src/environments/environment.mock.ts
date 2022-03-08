@@ -1,4 +1,5 @@
 export const environment = {
-    production: false,
-    useMock: true
-  };
+  production: false,
+  useMock: true,
+  loadObjectParts: true
+};

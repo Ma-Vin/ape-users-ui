@@ -90,6 +90,7 @@ describe('CommonGroupComponent', () => {
    * ngOnInit
    */
   it('ngOnInit - without id at route', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     let getAllCommonGroupsSpy = spyOn(commonGroupService, 'getAllCommonGroups').and.returnValue(of([otherCommonGroup, commonGroup]));
 
     component.ngOnInit();
@@ -104,6 +105,7 @@ describe('CommonGroupComponent', () => {
   }));
 
   it('ngOnInit - with id at route', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     let getAllCommonGroupsSpy = spyOn(commonGroupService, 'getAllCommonGroups').and.returnValue(of([otherCommonGroup, commonGroup]));
 
     spyOn(route.snapshot.paramMap, 'has').and.returnValue(true);
@@ -126,6 +128,7 @@ describe('CommonGroupComponent', () => {
    * onSelectObject
    */
   it('onSelectObject - non selected before', () => {
+    component.areOnlyPartsToLoadAtList = false;
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
     let selectionSpy = spyOn(selectionService, 'setSelectedCommonGroup').and.callFake(() => { });
     let isAllowedToUpdateCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToUpdateCommonGroup').and.returnValue(true);
@@ -145,6 +148,7 @@ describe('CommonGroupComponent', () => {
   });
 
   it('onSelectObject - same selected before', () => {
+    component.areOnlyPartsToLoadAtList = false;
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
     let selectionSpy = spyOn(selectionService, 'setSelectedCommonGroup').and.callFake(() => { });
     let isAllowedToUpdateCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToUpdateCommonGroup').and.returnValue(true);
@@ -166,6 +170,7 @@ describe('CommonGroupComponent', () => {
   });
 
   it('onSelectObject - other selected before', () => {
+    component.areOnlyPartsToLoadAtList = false;
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
     let selectionSpy = spyOn(selectionService, 'setSelectedCommonGroup').and.callFake(() => { });
     let isAllowedToUpdateCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToUpdateCommonGroup').and.returnValue(true);
@@ -187,6 +192,7 @@ describe('CommonGroupComponent', () => {
   });
 
   it('onSelectObject - not allowed to update', () => {
+    component.areOnlyPartsToLoadAtList = false;
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
     let selectionSpy = spyOn(selectionService, 'setSelectedCommonGroup').and.callFake(() => { });
     let isAllowedToUpdateCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToUpdateCommonGroup').and.returnValue(false);
@@ -240,6 +246,7 @@ describe('CommonGroupComponent', () => {
    * onAccept
    */
   it('onAccept - create new common group', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     component.showObjectDetail = true;
     component.isNewObject = true;
     component.selectedObject = otherCommonGroup;
@@ -262,6 +269,7 @@ describe('CommonGroupComponent', () => {
   }));
 
   it('onAccept - update existing common group', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     component.showObjectDetail = true;
     component.isNewObject = false;
     let modfiedCommonGroup = CommonGroup.map(otherCommonGroup);
@@ -284,6 +292,7 @@ describe('CommonGroupComponent', () => {
   }));
 
   it('onAccept - accept disabled', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     component.showObjectDetail = true;
     component.isNewObject = false;
     let modfiedCommonGroup = CommonGroup.map(otherCommonGroup);
@@ -312,6 +321,7 @@ describe('CommonGroupComponent', () => {
    * onAcceptCallBack
    */
   it('onAcceptCallBack - create new common group', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     component.showObjectDetail = true;
     component.isNewObject = true;
     component.selectedObject = otherCommonGroup;

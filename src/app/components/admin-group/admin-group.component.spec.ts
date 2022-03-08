@@ -112,6 +112,7 @@ describe('AdminGroupComponent', () => {
    * ngOnInit
    */
   it('ngOnInit - without id at route', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     spyOn(configService, 'getConfig').and.returnValue(mockConfig);
     spyOn(adminService, 'getAdminGroup').and.returnValue(of({ identification: adminGroupId } as AdminGroup));
     let getAllAdminsSpy = spyOn(adminService, 'getAllAdmins').and.returnValue(of([otherAdmin, admin]));
@@ -130,6 +131,7 @@ describe('AdminGroupComponent', () => {
   }));
 
   it('ngOnInit - with id at route', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     spyOn(configService, 'getConfig').and.returnValue(mockConfig);
     spyOn(adminService, 'getAdminGroup').and.returnValue(of({ identification: adminGroupId } as AdminGroup));
     let getAllAdminsSpy = spyOn(adminService, 'getAllAdmins').and.returnValue(of([otherAdmin, admin]));
@@ -151,6 +153,7 @@ describe('AdminGroupComponent', () => {
   }));
 
   it('ngOnInit - missing config', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     spyOn(adminService, 'getAdminGroup').and.returnValue(of({ identification: adminGroupId } as AdminGroup));
     let getAllAdminsSpy = spyOn(adminService, 'getAllAdmins').and.returnValue(of([otherAdmin, admin]));
     let setSelectedAdminGroupSpy = spyOn(selectionService, 'setSelectedAdminGroup');
@@ -172,6 +175,7 @@ describe('AdminGroupComponent', () => {
    * onSelectObject
    */
   it('onSelectObject - non selected before', () => {
+    component.areOnlyPartsToLoadAtList = false;
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
 
     component.onSelectObject(admin);
@@ -187,6 +191,7 @@ describe('AdminGroupComponent', () => {
   });
 
   it('onSelectObject - same selected before', () => {
+    component.areOnlyPartsToLoadAtList = false;
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
     component.selectedObject = admin;
 
@@ -203,6 +208,7 @@ describe('AdminGroupComponent', () => {
   });
 
   it('onSelectObject - other selected before', () => {
+    component.areOnlyPartsToLoadAtList = false;
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
     component.selectedObject = otherAdmin;
 
@@ -274,6 +280,7 @@ describe('AdminGroupComponent', () => {
    * onAccept
    */
   it('onAccept - create new admin', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     component.showObjectDetail = true;
     component.isNewObject = true;
     component.selectedObject = otherAdmin;
@@ -297,6 +304,7 @@ describe('AdminGroupComponent', () => {
   }));
 
   it('onAccept - create new admin, but missing admin group', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     component.showObjectDetail = true;
     component.isNewObject = true;
     component.selectedObject = otherAdmin;
@@ -320,6 +328,7 @@ describe('AdminGroupComponent', () => {
   }));
 
   it('onAccept - update existing admin', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     component.showObjectDetail = true;
     component.isNewObject = false;
     let modfiedUser = User.map(otherAdmin);
@@ -343,6 +352,7 @@ describe('AdminGroupComponent', () => {
   }));
 
   it('onAccept - accept disabled', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     component.showObjectDetail = true;
     component.isNewObject = false;
     let modfiedUser = User.map(otherAdmin);
@@ -372,6 +382,7 @@ describe('AdminGroupComponent', () => {
    * onAcceptCallBack
    */
   it('onAcceptCallBack - create new admin', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     component.showObjectDetail = true;
     component.isNewObject = true;
     component.selectedObject = otherAdmin;

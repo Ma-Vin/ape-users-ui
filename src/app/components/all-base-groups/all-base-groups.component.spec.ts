@@ -38,21 +38,9 @@ describe('AllBaseGroupsComponent', () => {
   const otherBaseGroupId = 'BGAA00002';
   const baseGroupName = 'Name of the group';
 
-  const baseGroup = BaseGroup.map({
-    identification: baseGroupId,
-    groupName: baseGroupName,
-    validFrom: new Date(2021, 9, 1),
-    validTo: undefined,
-    description: 'Bam!'
-  } as IBaseGroup);
+  let baseGroup: BaseGroup;
 
-  const otherBaseGroup = BaseGroup.map({
-    identification: otherBaseGroupId,
-    groupName: baseGroupName,
-    validFrom: new Date(2021, 9, 1),
-    validTo: undefined,
-    description: 'Bam!'
-  } as IBaseGroup);
+  let otherBaseGroup: BaseGroup;
 
 
   beforeEach(async () => {
@@ -77,9 +65,30 @@ describe('AllBaseGroupsComponent', () => {
 
     fixture = TestBed.createComponent(AllBaseGroupsComponent);
     component = fixture.componentInstance;
+
+    initMockData();
+
     fixture.detectChanges();
   });
 
+
+  function initMockData() {
+    baseGroup = BaseGroup.map({
+      identification: baseGroupId,
+      groupName: baseGroupName,
+      validFrom: new Date(2021, 9, 1),
+      validTo: undefined,
+      description: 'Bam!'
+    } as IBaseGroup);
+
+    otherBaseGroup = BaseGroup.map({
+      identification: otherBaseGroupId,
+      groupName: baseGroupName,
+      validFrom: new Date(2021, 9, 1),
+      validTo: undefined,
+      description: 'Bam!'
+    } as IBaseGroup);
+  }
 
 
   it('should create', () => {
@@ -93,6 +102,7 @@ describe('AllBaseGroupsComponent', () => {
    * ngOnInit
    */
   it('ngOnInit - without id at route', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     let getAllBaseGroupsSpy = spyOn(baseGroupService, 'getAllBaseGroups').and.returnValue(of([otherBaseGroup, baseGroup]));
 
     component.ngOnInit();
@@ -107,6 +117,7 @@ describe('AllBaseGroupsComponent', () => {
   }));
 
   it('ngOnInit - with id at route', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     let getAllBaseGroupsSpy = spyOn(baseGroupService, 'getAllBaseGroups').and.returnValue(of([otherBaseGroup, baseGroup]));
 
     spyOn(route.snapshot.paramMap, 'has').and.returnValue(true);
@@ -123,6 +134,26 @@ describe('AllBaseGroupsComponent', () => {
     expect(component.allObjectsfilterDataSource.data.includes(otherBaseGroup)).toBeTrue();
   }));
 
+  it('ngOnInit - parts, with id at route', fakeAsync(() => {
+    baseGroup.isComplete = false;
+    otherBaseGroup.isComplete = false;
+    let getAllBaseGroupsSpy = spyOn(baseGroupService, 'getAllBaseGroupParts').and.returnValue(of([otherBaseGroup, baseGroup]));
+    let getBaseGroupSpy = spyOn(baseGroupService, 'getBaseGroup').and.returnValue(of(baseGroup));
+
+    spyOn(route.snapshot.paramMap, 'has').and.returnValue(true);
+    spyOn(route.snapshot.paramMap, 'get').and.returnValue(baseGroupId);
+
+    component.ngOnInit();
+
+    tick()
+
+    expect(getAllBaseGroupsSpy).toHaveBeenCalled();
+    expect(getBaseGroupSpy).toHaveBeenCalled();
+    expect(component.selectedObject.equals(baseGroup)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
+    expect(component.allObjectsfilterDataSource.data.includes(baseGroup)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.includes(otherBaseGroup)).toBeTrue();
+  }));
 
 
 
@@ -130,6 +161,7 @@ describe('AllBaseGroupsComponent', () => {
    * onSelectObject
    */
   it('onSelectObject - non selected before', () => {
+    component.areOnlyPartsToLoadAtList = false;
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
     let isAllowedToUpdateBaseGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToUpdateBaseGroup').and.returnValue(true);
 
@@ -146,7 +178,28 @@ describe('AllBaseGroupsComponent', () => {
     expect(component.disableUpdate).toBeFalse();
   });
 
+  it('onSelectObject - part, non selected before', () => {
+    let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
+    let isAllowedToUpdateBaseGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToUpdateBaseGroup').and.returnValue(true);
+    let getBaseGroupSpy = spyOn(baseGroupService, 'getBaseGroup').and.returnValue(of(baseGroup));
+
+    component.onSelectObject(baseGroup);
+
+    expect(loactionSpy).toHaveBeenCalledOnceWith(`${BASE_GROUPS_PATH}/${baseGroup.identification}`);
+    expect(isAllowedToUpdateBaseGroupSpy).toHaveBeenCalled();
+    expect(getBaseGroupSpy).toHaveBeenCalled();
+
+    expect(component.isNewObject).toBeFalse();
+    expect(component.showObjectDetail).toBeTrue();
+    expect(component.selectedObject === baseGroup).toBeFalse();
+    expect(component.selectedObject.equals(baseGroup)).toBeTrue();
+    expect(component.selectedObjectIdentification).toEqual(baseGroupId);
+    expect(component.disableUpdate).toBeFalse();
+  });
+
   it('onSelectObject - same selected before', () => {
+    baseGroup.isComplete = false;
+    component.areOnlyPartsToLoadAtList = false;
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
     let isAllowedToUpdateBaseGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToUpdateBaseGroup').and.returnValue(true);
 
@@ -166,6 +219,7 @@ describe('AllBaseGroupsComponent', () => {
   });
 
   it('onSelectObject - other selected before', () => {
+    component.areOnlyPartsToLoadAtList = false;
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
     let isAllowedToUpdateBaseGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToUpdateBaseGroup').and.returnValue(true);
 
@@ -185,6 +239,7 @@ describe('AllBaseGroupsComponent', () => {
   });
 
   it('onSelectObject - not allowed to update', () => {
+    component.areOnlyPartsToLoadAtList = false;
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { });
     let isAllowedToUpdateBaseGroupSpy = spyOn(baseGroupPermissionsService, 'isAllowedToUpdateBaseGroup').and.returnValue(false);
 
@@ -242,6 +297,7 @@ describe('AllBaseGroupsComponent', () => {
    * onAccept
    */
   it('onAccept - create new base group', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     component.showObjectDetail = true;
     component.isNewObject = true;
     component.selectedObject = otherBaseGroup;
@@ -264,6 +320,7 @@ describe('AllBaseGroupsComponent', () => {
   }));
 
   it('onAccept - update existing base group', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     component.showObjectDetail = true;
     component.isNewObject = false;
     let modfiedBaseGroup = BaseGroup.map(otherBaseGroup);
@@ -286,6 +343,7 @@ describe('AllBaseGroupsComponent', () => {
   }));
 
   it('onAccept - accept disabled', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     component.showObjectDetail = true;
     component.isNewObject = false;
     let modfiedBaseGroup = BaseGroup.map(otherBaseGroup);
@@ -315,6 +373,7 @@ describe('AllBaseGroupsComponent', () => {
    * onAcceptCallBack
    */
   it('onAcceptCallBack - create new base group', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     component.showObjectDetail = true;
     component.isNewObject = true;
     component.selectedObject = otherBaseGroup;

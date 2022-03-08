@@ -95,6 +95,7 @@ describe('AllUsersComponent', () => {
    * ngOnInit
    */
   it('ngOnInit - without id at route', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     let getAllUsersSpy = spyOn(userService, 'getAllUsers').and.returnValue(of([otherUser, user]));
     let getSelectedCommonGroupSpy = spyOn(selectionService, 'getSelectedCommonGroup').and.returnValue(commonGroup);
 
@@ -111,6 +112,7 @@ describe('AllUsersComponent', () => {
   }));
 
   it('ngOnInit - with id at route', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     let getAllUsersSpy = spyOn(userService, 'getAllUsers').and.returnValue(of([otherUser, user]));
     let getSelectedCommonGroupSpy = spyOn(selectionService, 'getSelectedCommonGroup').and.returnValue(commonGroup);
 
@@ -130,6 +132,7 @@ describe('AllUsersComponent', () => {
   }));
 
   it('ngOnInit - missing common group', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     let getAllUsersSpy = spyOn(userService, 'getAllUsers').and.returnValue(of([otherUser, user]));
     let getSelectedCommonGroupSpy = spyOn(selectionService, 'getSelectedCommonGroup').and.returnValue(undefined);
 
@@ -151,6 +154,7 @@ describe('AllUsersComponent', () => {
    * onSelectObject
    */
   it('onSelectObject - non selected before', () => {
+    component.areOnlyPartsToLoadAtList = false;
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
 
     component.onSelectObject(user);
@@ -165,6 +169,7 @@ describe('AllUsersComponent', () => {
   });
 
   it('onSelectObject - same selected before', () => {
+    component.areOnlyPartsToLoadAtList = false;
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
 
     component.selectedObject = user;
@@ -181,6 +186,7 @@ describe('AllUsersComponent', () => {
   });
 
   it('onSelectObject - other selected before', () => {
+    component.areOnlyPartsToLoadAtList = false;
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
 
     component.selectedObject = otherUser;
@@ -197,6 +203,7 @@ describe('AllUsersComponent', () => {
   });
 
   it('onSelectObject - allowed to update', () => {
+    component.areOnlyPartsToLoadAtList = false;
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
     let isAllowedToUpdateUserSpy = spyOn(userPermissionSerivce, 'isAllowedToUpdateUser').and.returnValue(true);
     let isAllowedToSetRoleOfUserSpy = spyOn(userPermissionSerivce, 'isAllowedToSetRoleOfUser').and.returnValue(true);
@@ -218,6 +225,7 @@ describe('AllUsersComponent', () => {
   });
 
   it('onSelectObject - not allowed to update', () => {
+    component.areOnlyPartsToLoadAtList = false;
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
     let isAllowedToUpdateUserSpy = spyOn(userPermissionSerivce, 'isAllowedToUpdateUser').and.returnValue(false);
     let isAllowedToSetRoleOfUserSpy = spyOn(userPermissionSerivce, 'isAllowedToSetRoleOfUser').and.returnValue(false);
@@ -303,6 +311,7 @@ describe('AllUsersComponent', () => {
    * onAccept
    */
   it('onAccept - create new user', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     component.showObjectDetail = true;
     component.isNewObject = true;
     component.selectedObject = otherUser;
@@ -327,6 +336,7 @@ describe('AllUsersComponent', () => {
   }));
 
   it('onAccept - create new user without default role', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     component.showObjectDetail = true;
     component.isNewObject = true;
     component.selectedObject = User.map(otherUser);
@@ -353,6 +363,7 @@ describe('AllUsersComponent', () => {
   }));
 
   it('onAccept - create new user, without default role, but unsuccessful', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     component.showObjectDetail = true;
     component.isNewObject = true;
     component.selectedObject = User.map(otherUser);
@@ -379,6 +390,7 @@ describe('AllUsersComponent', () => {
   }));
 
   it('onAccept - update existing user', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     component.showObjectDetail = true;
     component.isNewObject = false;
     let modfiedUser = User.map(otherUser);
@@ -403,6 +415,7 @@ describe('AllUsersComponent', () => {
   }));
 
   it('onAccept - update existing user, but different role', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     component.showObjectDetail = true;
     component.isNewObject = false;
     let modfiedUser = User.map(otherUser);
@@ -430,6 +443,7 @@ describe('AllUsersComponent', () => {
   }));
 
   it('onAccept - update existing user, but different role and unsuccessful', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     component.showObjectDetail = true;
     component.isNewObject = false;
     let modfiedUser = User.map(otherUser);
@@ -458,6 +472,7 @@ describe('AllUsersComponent', () => {
 
 
   it('onAccept - accept disabled', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     component.showObjectDetail = true;
     component.isNewObject = false;
     let modfiedUser = User.map(otherUser);
@@ -485,6 +500,7 @@ describe('AllUsersComponent', () => {
    * onAcceptCallBack
    */
   it('onAcceptCallBack - create new user', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     component.showObjectDetail = true;
     component.isNewObject = true;
     component.selectedObject = otherUser;

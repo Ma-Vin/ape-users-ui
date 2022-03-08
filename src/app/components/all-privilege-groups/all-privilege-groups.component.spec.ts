@@ -89,6 +89,7 @@ describe('AllPrivilegeGroupsComponent', () => {
    * ngOnInit
    */
   it('ngOnInit - without id at route', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     let getAllPrivilegeGroupsSpy = spyOn(privilegeGroupService, 'getAllPrivilegeGroups').and.returnValue(of([otherPrivilegeGroup, privilegeGroup]));
 
     component.ngOnInit();
@@ -103,6 +104,7 @@ describe('AllPrivilegeGroupsComponent', () => {
   }));
 
   it('ngOnInit - with id at route', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     let getAllPrivilegeGroupsSpy = spyOn(privilegeGroupService, 'getAllPrivilegeGroups').and.returnValue(of([otherPrivilegeGroup, privilegeGroup]));
 
     spyOn(route.snapshot.paramMap, 'has').and.returnValue(true);
@@ -126,6 +128,7 @@ describe('AllPrivilegeGroupsComponent', () => {
    * onSelectObject
    */
   it('onSelectObject - non selected before', () => {
+    component.areOnlyPartsToLoadAtList = false;
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
     let isAllowedToUpdatePrivilegeGroupSpy = spyOn(privilegeGroupPermissionsService, 'isAllowedToUpdatePrivilegeGroup').and.returnValue(true);
 
@@ -143,6 +146,7 @@ describe('AllPrivilegeGroupsComponent', () => {
   });
 
   it('onSelectObject - same selected before', () => {
+    component.areOnlyPartsToLoadAtList = false;
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
     let isAllowedToUpdatePrivilegeGroupSpy = spyOn(privilegeGroupPermissionsService, 'isAllowedToUpdatePrivilegeGroup').and.returnValue(true);
 
@@ -162,6 +166,7 @@ describe('AllPrivilegeGroupsComponent', () => {
   });
 
   it('onSelectObject - other selected before', () => {
+    component.areOnlyPartsToLoadAtList = false;
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
     let isAllowedToUpdatePrivilegeGroupSpy = spyOn(privilegeGroupPermissionsService, 'isAllowedToUpdatePrivilegeGroup').and.returnValue(true);
 
@@ -181,6 +186,7 @@ describe('AllPrivilegeGroupsComponent', () => {
   });
 
   it('onSelectObject - not allowed to update', () => {
+    component.areOnlyPartsToLoadAtList = false;
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { });
     let isAllowedToUpdatePrivilegeGroupSpy = spyOn(privilegeGroupPermissionsService, 'isAllowedToUpdatePrivilegeGroup').and.returnValue(false);
 
@@ -238,6 +244,7 @@ describe('AllPrivilegeGroupsComponent', () => {
    * onAccept
    */
   it('onAccept - create new privilege group', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     component.showObjectDetail = true;
     component.isNewObject = true;
     component.selectedObject = otherPrivilegeGroup;
@@ -260,6 +267,7 @@ describe('AllPrivilegeGroupsComponent', () => {
   }));
 
   it('onAccept - update existing privilege group', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     component.showObjectDetail = true;
     component.isNewObject = false;
     let modfiedPrivilegeGroup = PrivilegeGroup.map(otherPrivilegeGroup);
@@ -282,6 +290,7 @@ describe('AllPrivilegeGroupsComponent', () => {
   }));
 
   it('onAccept - accept disabled', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     component.showObjectDetail = true;
     component.isNewObject = false;
     let modfiedPrivilegeGroup = PrivilegeGroup.map(otherPrivilegeGroup);
@@ -311,6 +320,7 @@ describe('AllPrivilegeGroupsComponent', () => {
    * onAcceptCallBack
    */
   it('onAcceptCallBack - create new privilege group', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     component.showObjectDetail = true;
     component.isNewObject = true;
     component.selectedObject = otherPrivilegeGroup;

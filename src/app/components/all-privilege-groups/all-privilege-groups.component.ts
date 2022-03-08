@@ -9,6 +9,7 @@ import { PrivilegeGroupService } from '../../services/backend/privilege-group.se
 import { PrivilegeGroupPermissionsService } from '../../services/permissions/privilege-group-permissions.service';
 import { PRIVILEGE_GROUPS_PATH } from '../../app-routing.module';
 import { Role } from '../../model/role.model';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-all-privilege-groups',
@@ -46,6 +47,14 @@ export class AllPrivilegeGroupsComponent extends ListDetailComponent<PrivilegeGr
     );
   }
 
+  protected loadAllObjectParts(): void {
+    this.loadAllObjects();
+  }
+
+  protected loadObject(identification: string): Observable<PrivilegeGroup> {
+    console.debug("AllPrivilegeGroupsComponent: get privilege group from service");
+    return this.privilegeGroupService.getPrivilegeGroup(identification);
+  }
 
   mapObject(source: PrivilegeGroup): PrivilegeGroup {
     return PrivilegeGroup.map(source);
