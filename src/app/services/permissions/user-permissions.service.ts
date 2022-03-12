@@ -136,6 +136,14 @@ export class UserPermissionsService extends BasePermissionsService {
 
 
   /**
+   * @returns true if the active user is allowed to get all user parts from a base group. Otherwise false.
+   */
+  isAllowedToGetAllUserPartsAtBaseGroup(): boolean {
+    return this.isAllowedToGetAllUsersAtBaseGroup();
+  }
+
+
+  /**
    * @returns true if the active user is allowed to add an user to a privilege group. Otherwise false.
    */
   isAllowedToAddUserToPrivilegeGroup() {

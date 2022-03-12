@@ -670,6 +670,41 @@ describe('PermissionsService', () => {
 
 
   /**
+   * isAllowedToGetAllUserPartsAtBaseGroup
+   */
+  it('isAllowedToGetAllUserPartsAtBaseGroup - authorized', () => {
+    activeUser.role = Role.NOT_RELEVANT;
+    activeUser.isGlobalAdmin = true;
+    expect(service.isAllowedToGetAllUserPartsAtBaseGroup()).toBeTrue();
+    activeUser.role = Role.VISITOR;
+    activeUser.isGlobalAdmin = false;
+    expect(service.isAllowedToGetAllUserPartsAtBaseGroup()).toBeTrue();
+    activeUser.role = Role.CONTRIBUTOR;
+    expect(service.isAllowedToGetAllUserPartsAtBaseGroup()).toBeTrue();
+    activeUser.role = Role.MANAGER;
+    expect(service.isAllowedToGetAllUserPartsAtBaseGroup()).toBeTrue();
+    activeUser.role = Role.ADMIN;
+    expect(service.isAllowedToGetAllUserPartsAtBaseGroup()).toBeTrue();
+    activeUser.role = undefined;
+    expect(service.isAllowedToGetAllUserPartsAtBaseGroup()).toBeTrue();
+
+    expect(selectionServiceSpy).toHaveBeenCalledTimes(6);
+  });
+
+  it('isAllowedToGetAllUserPartsAtBaseGroup -  unauthorized', () => {
+    activeUser.role = Role.BLOCKED;
+    expect(service.isAllowedToGetAllUserPartsAtBaseGroup()).toBeFalse();
+    activeUser.role = Role.NOT_RELEVANT;
+    expect(service.isAllowedToGetAllUserPartsAtBaseGroup()).toBeFalse();
+    selectionServiceSpy.and.returnValue(undefined);
+    expect(service.isAllowedToGetAllUserPartsAtBaseGroup()).toBeFalse();
+
+    expect(selectionServiceSpy).toHaveBeenCalledTimes(3);
+  });
+
+
+
+  /**
    * isAllowedToAddUserToPrivilegeGroup
    */
   it('isAllowedToAddUserToPrivilegeGroup - authorized', () => {
