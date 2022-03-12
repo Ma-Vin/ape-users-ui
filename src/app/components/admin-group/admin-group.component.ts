@@ -76,7 +76,14 @@ export class AdminGroupComponent extends ListDetailComponent<User> {
   }
 
   protected loadAllObjectParts(): void {
-    this.loadAllObjects();
+    console.debug("AdminGroupComponent: get all admin parts from service");
+    this.adminService.getAllAdminParts(this.adminGroupId, undefined, undefined).subscribe(
+      allAdmins => {
+        console.debug("AdminGroupComponent: store all admin parts from service");
+        this.allObjectsfilterDataSource.data = allAdmins;
+        this.checkUrlId();
+      }
+    );
   }
 
   protected loadObject(identification: string): Observable<User> {

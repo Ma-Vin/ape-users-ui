@@ -117,12 +117,14 @@ describe('AdminGroupComponent', () => {
     spyOn(adminService, 'getAdminGroup').and.returnValue(of({ identification: adminGroupId } as AdminGroup));
     let getAllAdminsSpy = spyOn(adminService, 'getAllAdmins').and.returnValue(of([otherAdmin, admin]));
     let setSelectedAdminGroupSpy = spyOn(selectionService, 'setSelectedAdminGroup');
+    let getAdminSpy = spyOn(adminService, 'getAdmin').and.returnValue(of(admin));
 
     component.ngOnInit();
 
     tick()
 
     expect(getAllAdminsSpy).toHaveBeenCalled();
+    expect(getAdminSpy).not.toHaveBeenCalled();
     expect(setSelectedAdminGroupSpy).toHaveBeenCalled();
     expect(component.selectedObject.identification).toEqual('');
     expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
@@ -136,6 +138,7 @@ describe('AdminGroupComponent', () => {
     spyOn(adminService, 'getAdminGroup').and.returnValue(of({ identification: adminGroupId } as AdminGroup));
     let getAllAdminsSpy = spyOn(adminService, 'getAllAdmins').and.returnValue(of([otherAdmin, admin]));
     let setSelectedAdminGroupSpy = spyOn(selectionService, 'setSelectedAdminGroup');
+    let getAdminSpy = spyOn(adminService, 'getAdmin').and.returnValue(of(admin));
 
     spyOn(route.snapshot.paramMap, 'has').and.returnValue(true);
     spyOn(route.snapshot.paramMap, 'get').and.returnValue(adminId);
@@ -145,6 +148,30 @@ describe('AdminGroupComponent', () => {
     tick()
 
     expect(getAllAdminsSpy).toHaveBeenCalled();
+    expect(getAdminSpy).not.toHaveBeenCalled();
+    expect(setSelectedAdminGroupSpy).toHaveBeenCalled();
+    expect(component.selectedObject.equals(admin)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
+    expect(component.allObjectsfilterDataSource.data.includes(admin)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.includes(otherAdmin)).toBeTrue();
+  }));
+
+  it('ngOnInit - parts, with id at route', fakeAsync(() => {
+    spyOn(configService, 'getConfig').and.returnValue(mockConfig);
+    spyOn(adminService, 'getAdminGroup').and.returnValue(of({ identification: adminGroupId } as AdminGroup));
+    let getAllAdminPartsSpy = spyOn(adminService, 'getAllAdminParts').and.returnValue(of([otherAdmin, admin]));
+    let setSelectedAdminGroupSpy = spyOn(selectionService, 'setSelectedAdminGroup');
+    let getAdminSpy = spyOn(adminService, 'getAdmin').and.returnValue(of(admin));
+
+    spyOn(route.snapshot.paramMap, 'has').and.returnValue(true);
+    spyOn(route.snapshot.paramMap, 'get').and.returnValue(adminId);
+
+    component.ngOnInit();
+
+    tick()
+
+    expect(getAllAdminPartsSpy).toHaveBeenCalled();
+    expect(getAdminSpy).toHaveBeenCalled();
     expect(setSelectedAdminGroupSpy).toHaveBeenCalled();
     expect(component.selectedObject.equals(admin)).toBeTrue();
     expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
@@ -157,6 +184,7 @@ describe('AdminGroupComponent', () => {
     spyOn(adminService, 'getAdminGroup').and.returnValue(of({ identification: adminGroupId } as AdminGroup));
     let getAllAdminsSpy = spyOn(adminService, 'getAllAdmins').and.returnValue(of([otherAdmin, admin]));
     let setSelectedAdminGroupSpy = spyOn(selectionService, 'setSelectedAdminGroup');
+    let getAdminSpy = spyOn(adminService, 'getAdmin').and.returnValue(of(admin));
 
     spyOn(configService, 'getConfig').and.returnValue(undefined);
 
@@ -165,6 +193,7 @@ describe('AdminGroupComponent', () => {
     tick()
 
     expect(getAllAdminsSpy).toHaveBeenCalled();
+    expect(getAdminSpy).not.toHaveBeenCalled();
     expect(setSelectedAdminGroupSpy).not.toHaveBeenCalled();
     expect(component.selectedObject.identification).toEqual('');
   }));
@@ -176,11 +205,13 @@ describe('AdminGroupComponent', () => {
    */
   it('onSelectObject - non selected before', () => {
     component.areOnlyPartsToLoadAtList = false;
-    let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
+    let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { });
+    let getAdminSpy = spyOn(adminService, 'getAdmin').and.returnValue(of(admin));
 
     component.onSelectObject(admin);
 
     expect(loactionSpy).toHaveBeenCalledOnceWith(`${ADMIN_GROUP_PATH}/${admin.identification}`);
+    expect(getAdminSpy).not.toHaveBeenCalled();
 
     expect(component.isNewObject).toBeFalse();
     expect(component.showObjectDetail).toBeTrue();
@@ -190,14 +221,34 @@ describe('AdminGroupComponent', () => {
     expect(component.disableUpdate).toBeFalse();
   });
 
+  it('onSelectObject - parts, non selected before', () => {
+    let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { });
+    let getAdminSpy = spyOn(adminService, 'getAdmin').and.returnValue(of(admin));
+
+    component.onSelectObject(admin);
+
+    expect(loactionSpy).toHaveBeenCalledOnceWith(`${ADMIN_GROUP_PATH}/${admin.identification}`);
+    expect(getAdminSpy).toHaveBeenCalled();
+
+    expect(component.isNewObject).toBeFalse();
+    expect(component.showObjectDetail).toBeTrue();
+    expect(component.selectedObject === admin).toBeFalse();
+    expect(component.selectedObject.equals(admin)).toBeTrue();
+    expect(component.selectedObjectIdentification).toEqual(adminId);
+    expect(component.disableUpdate).toBeFalse();
+  });
+
+
   it('onSelectObject - same selected before', () => {
     component.areOnlyPartsToLoadAtList = false;
-    let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
+    let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { });
+    let getAdminSpy = spyOn(adminService, 'getAdmin').and.returnValue(of(admin));
     component.selectedObject = admin;
 
     component.onSelectObject(admin);
 
     expect(loactionSpy).not.toHaveBeenCalledOnceWith(`${ADMIN_GROUP_PATH}/${admin.identification}`);
+    expect(getAdminSpy).not.toHaveBeenCalled();
 
     expect(component.isNewObject).toBeFalse();
     expect(component.showObjectDetail).toBeTrue();
@@ -209,12 +260,14 @@ describe('AdminGroupComponent', () => {
 
   it('onSelectObject - other selected before', () => {
     component.areOnlyPartsToLoadAtList = false;
-    let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
+    let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { });
+    let getAdminSpy = spyOn(adminService, 'getAdmin').and.returnValue(of(admin));
     component.selectedObject = otherAdmin;
 
     component.onSelectObject(admin);
 
     expect(loactionSpy).toHaveBeenCalledOnceWith(`${ADMIN_GROUP_PATH}/${admin.identification}`);
+    expect(getAdminSpy).not.toHaveBeenCalled();
 
     expect(component.isNewObject).toBeFalse();
     expect(component.showObjectDetail).toBeTrue();
