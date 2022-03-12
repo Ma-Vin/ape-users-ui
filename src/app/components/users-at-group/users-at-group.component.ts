@@ -48,7 +48,7 @@ export class UsersAtGroupComponent extends ElementsAtGroupComponent<User, AddUse
 
 
   protected loadAllElementPartsFromBaseGroup(identification: string): Observable<User[]> {
-    return this.userService.getAllUsersFromBaseGroup(identification, undefined, undefined);
+    return this.userService.getAllUserPartsFromBaseGroup(identification, undefined, undefined);
   }
 
 
@@ -74,7 +74,7 @@ export class UsersAtGroupComponent extends ElementsAtGroupComponent<User, AddUse
 
 
   protected isAllowedToGetAllElementPartsFromBaseGroup(): boolean {
-    return this.userPermissionsService.isAllowedToGetAllUsersAtBaseGroup();
+    return this.userPermissionsService.isAllowedToGetAllUserPartsAtBaseGroup();
   }
 
 
