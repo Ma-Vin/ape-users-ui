@@ -203,6 +203,29 @@ describe('CommonGroupPermissionsService', () => {
 
 
   /**
+   * isAllowedToGetAllCommonGroupParts
+   */
+  it('isAllowedToGetAllCommonGroupParts - global admin', () => {
+    activeUser.isGlobalAdmin = true;
+    expect(service.isAllowedToGetAllCommonGroupParts()).toBeTrue();
+  });
+
+  it('isAllowedToGetAllCommonGroupParts - non global admin', () => {
+    activeUser.isGlobalAdmin = false;
+    expect(service.isAllowedToGetAllCommonGroupParts()).toBeFalse();
+  });
+
+  it('isAllowedToGetAllCommonGroupParts - undefined active user', () => {
+    activeUser.isGlobalAdmin = true;
+    getActiveUserSpy.and.returnValue(undefined);
+    expect(service.isAllowedToGetAllCommonGroupParts()).toBeFalse();
+  });
+
+
+
+
+
+  /**
    * isAllowedToUpdateCommonGroup
    */
   it('isAllowedToUpdateCommonGroup - global admin', () => {

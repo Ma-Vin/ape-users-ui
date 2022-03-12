@@ -59,6 +59,15 @@ export class CommonGroupPermissionsService extends BasePermissionsService {
 
 
   /**
+   * @returns true if the active user is allowed to get a all common group parts. Otherwise false.
+   */
+  isAllowedToGetAllCommonGroupParts(): boolean {
+    return this.isAllowedToGetAllCommonGroup();
+  }
+
+
+
+  /**
    * @param identification the identification of the common group which is asked for
    * @returns true if the active user is allowed to update a common group. Otherwise false.
    */
