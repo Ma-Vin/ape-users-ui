@@ -92,12 +92,14 @@ describe('CommonGroupComponent', () => {
   it('ngOnInit - without id at route', fakeAsync(() => {
     component.areOnlyPartsToLoadAtList = false;
     let getAllCommonGroupsSpy = spyOn(commonGroupService, 'getAllCommonGroups').and.returnValue(of([otherCommonGroup, commonGroup]));
+    let getCommonGroupSpy = spyOn(commonGroupService, 'getCommonGroup').and.returnValue(of(commonGroup));
 
     component.ngOnInit();
 
     tick()
 
     expect(getAllCommonGroupsSpy).toHaveBeenCalled();
+    expect(getCommonGroupSpy).not.toHaveBeenCalled();
     expect(component.selectedObject.identification).toEqual('');
     expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
     expect(component.allObjectsfilterDataSource.data.includes(commonGroup)).toBeTrue();
@@ -107,6 +109,7 @@ describe('CommonGroupComponent', () => {
   it('ngOnInit - with id at route', fakeAsync(() => {
     component.areOnlyPartsToLoadAtList = false;
     let getAllCommonGroupsSpy = spyOn(commonGroupService, 'getAllCommonGroups').and.returnValue(of([otherCommonGroup, commonGroup]));
+    let getCommonGroupSpy = spyOn(commonGroupService, 'getCommonGroup').and.returnValue(of(commonGroup));
 
     spyOn(route.snapshot.paramMap, 'has').and.returnValue(true);
     spyOn(route.snapshot.paramMap, 'get').and.returnValue(commonGroupId);
@@ -116,6 +119,26 @@ describe('CommonGroupComponent', () => {
     tick()
 
     expect(getAllCommonGroupsSpy).toHaveBeenCalled();
+    expect(getCommonGroupSpy).not.toHaveBeenCalled();
+    expect(component.selectedObject.equals(commonGroup)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
+    expect(component.allObjectsfilterDataSource.data.includes(commonGroup)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.includes(otherCommonGroup)).toBeTrue();
+  }));
+
+  it('ngOnInit - parts, with id at route', fakeAsync(() => {
+    let getAllCommonGroupPartsSpy = spyOn(commonGroupService, 'getAllCommonGroupParts').and.returnValue(of([otherCommonGroup, commonGroup]));
+    let getCommonGroupSpy = spyOn(commonGroupService, 'getCommonGroup').and.returnValue(of(commonGroup));
+
+    spyOn(route.snapshot.paramMap, 'has').and.returnValue(true);
+    spyOn(route.snapshot.paramMap, 'get').and.returnValue(commonGroupId);
+
+    component.ngOnInit();
+
+    tick()
+
+    expect(getAllCommonGroupPartsSpy).toHaveBeenCalled();
+    expect(getCommonGroupSpy).toHaveBeenCalled();
     expect(component.selectedObject.equals(commonGroup)).toBeTrue();
     expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
     expect(component.allObjectsfilterDataSource.data.includes(commonGroup)).toBeTrue();
@@ -132,12 +155,14 @@ describe('CommonGroupComponent', () => {
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
     let selectionSpy = spyOn(selectionService, 'setSelectedCommonGroup').and.callFake(() => { });
     let isAllowedToUpdateCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToUpdateCommonGroup').and.returnValue(true);
+    let getCommonGroupSpy = spyOn(commonGroupService, 'getCommonGroup').and.returnValue(of(commonGroup));
 
     component.onSelectObject(commonGroup);
 
     expect(loactionSpy).toHaveBeenCalledOnceWith(`${COMMON_GROUPS_PATH}/${commonGroup.identification}`);
     expect(selectionSpy).toHaveBeenCalledOnceWith(commonGroup);
     expect(isAllowedToUpdateCommonGroupSpy).toHaveBeenCalled();
+    expect(getCommonGroupSpy).not.toHaveBeenCalled();
 
     expect(component.isNewObject).toBeFalse();
     expect(component.showObjectDetail).toBeTrue();
@@ -147,11 +172,34 @@ describe('CommonGroupComponent', () => {
     expect(component.disableUpdate).toBeFalse();
   });
 
+  it('onSelectObject - parts, non selected before', () => {
+    let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
+    let selectionSpy = spyOn(selectionService, 'setSelectedCommonGroup').and.callFake(() => { });
+    let isAllowedToUpdateCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToUpdateCommonGroup').and.returnValue(true);
+    let getCommonGroupSpy = spyOn(commonGroupService, 'getCommonGroup').and.returnValue(of(commonGroup));
+
+    component.onSelectObject(commonGroup);
+
+    expect(loactionSpy).toHaveBeenCalledOnceWith(`${COMMON_GROUPS_PATH}/${commonGroup.identification}`);
+    expect(selectionSpy).toHaveBeenCalledOnceWith(commonGroup);
+    expect(isAllowedToUpdateCommonGroupSpy).toHaveBeenCalled();
+    expect(getCommonGroupSpy).toHaveBeenCalled();
+
+    expect(component.isNewObject).toBeFalse();
+    expect(component.showObjectDetail).toBeTrue();
+    expect(component.selectedObject === commonGroup).toBeFalse();
+    expect(component.selectedObject.equals(commonGroup)).toBeTrue();
+    expect(component.selectedObjectIdentification).toEqual(commonGroupId);
+    expect(component.disableUpdate).toBeFalse();
+  });
+
+
   it('onSelectObject - same selected before', () => {
     component.areOnlyPartsToLoadAtList = false;
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
     let selectionSpy = spyOn(selectionService, 'setSelectedCommonGroup').and.callFake(() => { });
     let isAllowedToUpdateCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToUpdateCommonGroup').and.returnValue(true);
+    let getCommonGroupSpy = spyOn(commonGroupService, 'getCommonGroup').and.returnValue(of(commonGroup));
 
     component.selectedObject = commonGroup;
 
@@ -160,6 +208,7 @@ describe('CommonGroupComponent', () => {
     expect(loactionSpy).not.toHaveBeenCalledOnceWith(`${COMMON_GROUPS_PATH}/${commonGroup.identification}`);
     expect(selectionSpy).toHaveBeenCalledOnceWith(commonGroup);
     expect(isAllowedToUpdateCommonGroupSpy).toHaveBeenCalled();
+    expect(getCommonGroupSpy).not.toHaveBeenCalled();
 
     expect(component.isNewObject).toBeFalse();
     expect(component.showObjectDetail).toBeTrue();
@@ -174,6 +223,7 @@ describe('CommonGroupComponent', () => {
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
     let selectionSpy = spyOn(selectionService, 'setSelectedCommonGroup').and.callFake(() => { });
     let isAllowedToUpdateCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToUpdateCommonGroup').and.returnValue(true);
+    let getCommonGroupSpy = spyOn(commonGroupService, 'getCommonGroup').and.returnValue(of(commonGroup));
 
     component.selectedObject = otherCommonGroup;
 
@@ -182,6 +232,7 @@ describe('CommonGroupComponent', () => {
     expect(loactionSpy).toHaveBeenCalledOnceWith(`${COMMON_GROUPS_PATH}/${commonGroup.identification}`);
     expect(selectionSpy).toHaveBeenCalledOnceWith(commonGroup);
     expect(isAllowedToUpdateCommonGroupSpy).toHaveBeenCalled();
+    expect(getCommonGroupSpy).not.toHaveBeenCalled();
 
     expect(component.isNewObject).toBeFalse();
     expect(component.showObjectDetail).toBeTrue();
@@ -196,12 +247,14 @@ describe('CommonGroupComponent', () => {
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
     let selectionSpy = spyOn(selectionService, 'setSelectedCommonGroup').and.callFake(() => { });
     let isAllowedToUpdateCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToUpdateCommonGroup').and.returnValue(false);
+    let getCommonGroupSpy = spyOn(commonGroupService, 'getCommonGroup').and.returnValue(of(commonGroup));
 
     component.onSelectObject(commonGroup);
 
     expect(loactionSpy).toHaveBeenCalledOnceWith(`${COMMON_GROUPS_PATH}/${commonGroup.identification}`);
     expect(selectionSpy).toHaveBeenCalledOnceWith(commonGroup);
     expect(isAllowedToUpdateCommonGroupSpy).toHaveBeenCalled();
+    expect(getCommonGroupSpy).not.toHaveBeenCalled();
 
     expect(component.isNewObject).toBeFalse();
     expect(component.showObjectDetail).toBeTrue();

@@ -11,6 +11,6 @@ export class CommonGroupsGuardService {
 
 
   canActivate(): Observable<boolean> {
-    return of(this.commonGroupPermissionsService.isAllowedToGetAllCommonGroup());
+    return of(this.commonGroupPermissionsService.isAllowedToGetAllCommonGroup() && this.commonGroupPermissionsService.isAllowedToGetAllCommonGroupParts());
   }
 }

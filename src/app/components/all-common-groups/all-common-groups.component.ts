@@ -67,7 +67,14 @@ export class AllCommonGroupsComponent extends ListDetailComponent<CommonGroup>{
   }
 
   protected loadAllObjectParts(): void {
-    this.loadAllObjects();
+    console.debug("CommonGroupComponent: get all common group parts from service");
+    this.commonGroupService.getAllCommonGroupParts(undefined, undefined).subscribe(
+      allCommonGroups => {
+        console.debug("CommonGroupComponent: store all common group parts from service");
+        this.allObjectsfilterDataSource.data = allCommonGroups;
+        this.checkUrlId();
+      }
+    );
   }
 
   protected loadObject(identification: string): Observable<CommonGroup> {
