@@ -2185,6 +2185,8 @@ describe('UserService', () => {
       expect(data.length).toEqual(1);
       expect(data[0].identification).toEqual(mockIUser.identification);
       expect(data[0].validTo).toBeUndefined();
+      expect(data[0].isComplete).toBeTrue();
+      expect(data[0].isGlobalAdmin).toBeFalse();
     });
 
     const req = httpMock.expectOne(`//localhost:8080/user/getAllUsersFromPrivilegeGroup/${privilegeGroupId}`);
@@ -2214,6 +2216,8 @@ describe('UserService', () => {
       expect(data.length).toEqual(1);
       expect(data[0].identification).toEqual(mockIUser.identification);
       expect(data[0].validTo).toBeUndefined();
+      expect(data[0].isComplete).toBeTrue();
+      expect(data[0].isGlobalAdmin).toBeFalse();
     });
 
     const req = httpMock.expectOne(`//localhost:8080/user/getAllUsersFromPrivilegeGroup/${privilegeGroupId}?dissolveSubgroups=true`);
@@ -2241,6 +2245,8 @@ describe('UserService', () => {
       expect(data).toBeTruthy();
       expect(data.length).toEqual(1);
       expect(data[0].identification).toEqual(mockIUser.identification);
+      expect(data[0].isComplete).toBeTrue();
+      expect(data[0].isGlobalAdmin).toBeFalse();
     });
 
     const req = httpMock.expectOne(`//localhost:8080/user/getAllUsersFromPrivilegeGroup/${privilegeGroupId}?page=1&size=50`);
@@ -2268,6 +2274,8 @@ describe('UserService', () => {
       expect(data).toBeTruthy();
       expect(data.length).toEqual(1);
       expect(data[0].identification).toEqual(mockIUser.identification);
+      expect(data[0].isComplete).toBeTrue();
+      expect(data[0].isGlobalAdmin).toBeFalse();
     });
 
     const req = httpMock.expectOne(`//localhost:8080/user/getAllUsersFromPrivilegeGroup/${privilegeGroupId}?page=1&size=50&dissolveSubgroups=true`);
@@ -2294,6 +2302,8 @@ describe('UserService', () => {
       expect(data).toBeTruthy();
       expect(data.length).toEqual(1);
       expect(data[0].identification).toEqual(mockIUser.identification);
+      expect(data[0].isComplete).toBeTrue();
+      expect(data[0].isGlobalAdmin).toBeFalse();
     });
 
     const req = httpMock.expectOne(`//localhost:8080/user/getAllUsersFromPrivilegeGroup/${privilegeGroupId}?page=1&size=50&role=${Role.CONTRIBUTOR}`);
@@ -2321,6 +2331,8 @@ describe('UserService', () => {
       expect(data).toBeTruthy();
       expect(data.length).toEqual(1);
       expect(data[0].identification).toEqual(mockIUser.identification);
+      expect(data[0].isComplete).toBeTrue();
+      expect(data[0].isGlobalAdmin).toBeFalse();
     });
 
     const req = httpMock.expectOne(`//localhost:8080/user/getAllUsersFromPrivilegeGroup/${privilegeGroupId}?page=1&size=50&role=${Role.CONTRIBUTOR}&dissolveSubgroups=true`);
@@ -2349,6 +2361,8 @@ describe('UserService', () => {
       expect(data).toBeTruthy();
       expect(data.length).toEqual(1);
       expect(data[0].identification).toEqual(mockIUser.identification);
+      expect(data[0].isComplete).toBeTrue();
+      expect(data[0].isGlobalAdmin).toBeFalse();
     });
 
     const req = httpMock.expectOne(`//localhost:8080/user/getAllUsersFromPrivilegeGroup/${privilegeGroupId}?role=${Role.CONTRIBUTOR}`);
@@ -2376,6 +2390,8 @@ describe('UserService', () => {
       expect(data).toBeTruthy();
       expect(data.length).toEqual(1);
       expect(data[0].identification).toEqual(mockIUser.identification);
+      expect(data[0].isComplete).toBeTrue();
+      expect(data[0].isGlobalAdmin).toBeFalse();
     });
 
     const req = httpMock.expectOne(`//localhost:8080/user/getAllUsersFromPrivilegeGroup/${privilegeGroupId}?role=${Role.CONTRIBUTOR}&dissolveSubgroups=true`);
@@ -2463,6 +2479,8 @@ describe('UserService', () => {
                                 expect(getAllData).toBeTruthy();
                                 expect(getAllData.length).toEqual(1);
                                 expect(getAllData[0].identification).toEqual(userId);
+                                expect(getAllData[0].isComplete).toBeTrue();
+                                expect(getAllData[0].isGlobalAdmin).toBeFalse();
                               }, e => expect(e).toBeFalsy());
 
                             service.getAllUsersFromPrivilegeGroup(privilegeGroupId, false, Role.MANAGER, undefined, undefined).subscribe(
@@ -2511,6 +2529,8 @@ describe('UserService', () => {
                                 expect(getAllData).toBeTruthy();
                                 expect(getAllData.length).toEqual(1);
                                 expect(getAllData[0].identification).toEqual(userId);
+                                expect(getAllData[0].isComplete).toBeTrue();
+                                expect(getAllData[0].isGlobalAdmin).toBeFalse();
                               }, e => expect(e).toBeFalsy());
 
                           }, e => expect(e).toBeFalsy());
@@ -2556,7 +2576,11 @@ describe('UserService', () => {
                                 expect(getAllData).toBeTruthy();
                                 expect(getAllData.length).toEqual(2);
                                 expect(getAllData[0].identification).toEqual(userId);
+                                expect(getAllData[0].isComplete).toBeTrue();
+                                expect(getAllData[0].isGlobalAdmin).toBeFalse();
                                 expect(getAllData[1].identification).toEqual(createdSubUser.identification);
+                                expect(getAllData[1].isComplete).toBeTrue();
+                                expect(getAllData[1].isGlobalAdmin).toBeFalse();
                               }, e => expect(e).toBeFalsy());
 
                             service.getAllUsersFromPrivilegeGroup(privilegeGroupId, true, Role.MANAGER, undefined, undefined).subscribe(
@@ -2605,7 +2629,11 @@ describe('UserService', () => {
                                 expect(getAllData).toBeTruthy();
                                 expect(getAllData.length).toEqual(2);
                                 expect(getAllData[0].identification).toEqual(userId);
+                                expect(getAllData[0].isComplete).toBeTrue();
+                                expect(getAllData[0].isGlobalAdmin).toBeFalse();
                                 expect(getAllData[1].identification).toEqual(createdSubUser.identification);
+                                expect(getAllData[1].isComplete).toBeTrue();
+                                expect(getAllData[1].isGlobalAdmin).toBeFalse();
                               }, e => expect(e).toBeFalsy());
 
                           }, e => expect(e).toBeFalsy());
@@ -2617,6 +2645,488 @@ describe('UserService', () => {
 
 
     httpMock.expectNone(`//localhost:8080/user/getAllUsersFromPrivilegeGroup/${privilegeGroupId}&dissolveSubgroups=true`);
+
+    tick();
+  }));
+
+
+
+
+
+  /**
+   * getAllUserPartsFromPrivilegeGroup
+   */
+  it('getAllUserPartsFromPrivilegeGroup - all ok', fakeAsync(() => {
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockIUser],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined, undefined).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].identification).toEqual(mockIUser.identification);
+      expect(data[0].validTo).toBeUndefined();
+      expect(data[0].isComplete).toBeFalse();
+      expect(data[0].isGlobalAdmin).toBeFalse();
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}`);
+    expect(req.request.method).toEqual("GET");
+    expect(req.request.params.get('page')).toBeNull();
+    expect(req.request.params.get('size')).toBeNull();
+    expect(req.request.params.get('role')).toBeNull();
+    expect(req.request.params.get('dissolveSubgroups')).toBeNull();
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}`);
+
+    tick();
+  }));
+
+
+  it('getAllUserPartsFromPrivilegeGroup - dissolve subgroups', fakeAsync(() => {
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockIUser],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, true, undefined, undefined, undefined).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].identification).toEqual(mockIUser.identification);
+      expect(data[0].validTo).toBeUndefined();
+      expect(data[0].isComplete).toBeFalse();
+      expect(data[0].isGlobalAdmin).toBeFalse();
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}?dissolveSubgroups=true`);
+    expect(req.request.method).toEqual("GET");
+    expect(req.request.params.get('page')).toBeNull();
+    expect(req.request.params.get('size')).toBeNull();
+    expect(req.request.params.get('role')).toBeNull();
+    expect(req.request.params.get('dissolveSubgroups')).toEqual('true');
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}?dissolveSubgroups=true`);
+
+    tick();
+  }));
+
+  it('getAllUserPartsFromPrivilegeGroup - with pageing', fakeAsync(() => {
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockIUser],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, undefined, undefined, 1, 50).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].identification).toEqual(mockIUser.identification);
+      expect(data[0].isComplete).toBeFalse();
+      expect(data[0].isGlobalAdmin).toBeFalse();
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}?page=1&size=50`);
+    expect(req.request.method).toEqual("GET");
+    expect(req.request.params.get('page')).toEqual('1');
+    expect(req.request.params.get('size')).toEqual('50');
+    expect(req.request.params.get('role')).toBeNull();
+    expect(req.request.params.get('dissolveSubgroups')).toBeNull();
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}?page=1&size=50`);
+
+    tick();
+  }));
+
+  it('getAllUserPartsFromPrivilegeGroup - with pageing and dissolve subgroups', fakeAsync(() => {
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockIUser],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, true, undefined, 1, 50).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].identification).toEqual(mockIUser.identification);
+      expect(data[0].isComplete).toBeFalse();
+      expect(data[0].isGlobalAdmin).toBeFalse();
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}?page=1&size=50&dissolveSubgroups=true`);
+    expect(req.request.method).toEqual("GET");
+    expect(req.request.params.get('page')).toEqual('1');
+    expect(req.request.params.get('size')).toEqual('50');
+    expect(req.request.params.get('role')).toBeNull();
+    expect(req.request.params.get('dissolveSubgroups')).toEqual('true');
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}?page=1&size=50&dissolveSubgroups=true`);
+
+    tick();
+  }));
+
+  it('getAllUserPartsFromPrivilegeGroup - with pageing and role', fakeAsync(() => {
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockIUser],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, undefined, Role.CONTRIBUTOR, 1, 50).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].identification).toEqual(mockIUser.identification);
+      expect(data[0].isComplete).toBeFalse();
+      expect(data[0].isGlobalAdmin).toBeFalse();
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}?page=1&size=50&role=${Role.CONTRIBUTOR}`);
+    expect(req.request.method).toEqual("GET");
+    expect(req.request.params.get('page')).toEqual('1');
+    expect(req.request.params.get('size')).toEqual('50');
+    expect(req.request.params.get('role')).toEqual(Role.CONTRIBUTOR);
+    expect(req.request.params.get('dissolveSubgroups')).toBeNull();
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}?page=1&size=50&role=${Role.CONTRIBUTOR}`);
+
+    tick();
+  }));
+
+  it('getAllUserPartsFromPrivilegeGroup - with pageing, role and dissolve subgroups', fakeAsync(() => {
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockIUser],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, true, Role.CONTRIBUTOR, 1, 50).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].identification).toEqual(mockIUser.identification);
+      expect(data[0].isComplete).toBeFalse();
+      expect(data[0].isGlobalAdmin).toBeFalse();
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}?page=1&size=50&role=${Role.CONTRIBUTOR}&dissolveSubgroups=true`);
+    expect(req.request.method).toEqual("GET");
+    expect(req.request.params.get('page')).toEqual('1');
+    expect(req.request.params.get('size')).toEqual('50');
+    expect(req.request.params.get('role')).toEqual(Role.CONTRIBUTOR);
+    expect(req.request.params.get('dissolveSubgroups')).toEqual('true');
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}?page=1&size=50&role=${Role.CONTRIBUTOR}&dissolveSubgroups=true`);
+
+    tick();
+  }));
+
+
+  it('getAllUserPartsFromPrivilegeGroup - with role', fakeAsync(() => {
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockIUser],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, undefined, Role.CONTRIBUTOR, undefined, undefined).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].identification).toEqual(mockIUser.identification);
+      expect(data[0].isComplete).toBeFalse();
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}?role=${Role.CONTRIBUTOR}`);
+    expect(req.request.method).toEqual("GET");
+    expect(req.request.params.get('page')).toBeNull();
+    expect(req.request.params.get('size')).toBeNull();
+    expect(req.request.params.get('role')).toEqual(Role.CONTRIBUTOR);
+    expect(req.request.params.get('dissolveSubgroups')).toBeNull();
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}?role=${Role.CONTRIBUTOR}`);
+
+    tick();
+  }));
+
+  it('getAllUserPartsFromPrivilegeGroup - with role and dissolve subgroups', fakeAsync(() => {
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockIUser],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, true, Role.CONTRIBUTOR, undefined, undefined).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].identification).toEqual(mockIUser.identification);
+      expect(data[0].isComplete).toBeFalse();
+      expect(data[0].isGlobalAdmin).toBeFalse();
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}?role=${Role.CONTRIBUTOR}&dissolveSubgroups=true`);
+    expect(req.request.method).toEqual("GET");
+    expect(req.request.params.get('page')).toBeNull();
+    expect(req.request.params.get('size')).toBeNull();
+    expect(req.request.params.get('role')).toEqual(Role.CONTRIBUTOR);
+    expect(req.request.params.get('dissolveSubgroups')).toEqual('true');
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}?role=${Role.CONTRIBUTOR}&dissolveSubgroups=true`);
+
+    tick();
+  }));
+
+
+  it('getAllUserPartsFromPrivilegeGroup - with error status', fakeAsync(() => {
+    service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined, undefined).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockErrorResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}`);
+
+    tick();
+  }));
+
+  it('getAllUserPartsFromPrivilegeGroup - with fatal status', fakeAsync(() => {
+    service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined, undefined).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockFatalResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}`);
+
+    tick();
+  }));
+
+  it('getAllUserPartsFromPrivilegeGroup - mock with role', fakeAsync(() => {
+    service.useMock = true;
+    baseGroupService.useMock = true;
+
+
+    baseGroupService.createBaseGroup('subgroub').subscribe(
+      createdSubBaseGroup => {
+        baseGroupService.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.MANAGER).subscribe(
+          addBaseGroup => {
+            expect(addBaseGroup).toBeTrue();
+
+            baseGroupService.addBaseToBaseGroup(createdSubBaseGroup.identification, baseGroupId).subscribe(
+              addSubBaseGroup => {
+                expect(addSubBaseGroup).toBeTrue();
+
+                service.createUser(commonGroupId, 'sub', 'user').subscribe(
+                  createdSubUser => {
+                    service.addUserToBaseGroup(createdSubUser.identification, createdSubBaseGroup.identification).subscribe(
+                      addSubUser => {
+                        expect(addSubUser).toBeTrue();
+
+                        service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
+                          addUser => {
+                            expect(addUser).toBeTrue();
+
+                            service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, false, Role.CONTRIBUTOR, undefined, undefined).subscribe(
+                              getAllData => {
+                                expect(getAllData).toBeTruthy();
+                                expect(getAllData.length).toEqual(1);
+                                expect(getAllData[0].identification).toEqual(userId);
+                                expect(getAllData[0].isComplete).toBeFalse();
+                                expect(getAllData[0].isGlobalAdmin).toBeFalse();
+                              }, e => expect(e).toBeFalsy());
+
+                            service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, false, Role.MANAGER, undefined, undefined).subscribe(
+                              getAllData => {
+                                expect(getAllData).toBeTruthy();
+                                expect(getAllData.length).toEqual(0);
+                              }, e => expect(e).toBeFalsy());
+                          }, e => expect(e).toBeFalsy());
+                      }, e => expect(e).toBeFalsy());
+                  }, e => expect(e).toBeFalsy());
+              }, e => expect(e).toBeFalsy());
+          }, e => expect(e).toBeFalsy());
+      }, e => expect(e).toBeFalsy());
+
+    httpMock.expectNone(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}?role=${Role.CONTRIBUTOR}&dissolveSubgroups=false`);
+
+    tick();
+  }));
+
+  it('getAllUserPartsFromPrivilegeGroup - mock without role', fakeAsync(() => {
+    service.useMock = true;
+    baseGroupService.useMock = true;
+
+    baseGroupService.createBaseGroup('subgroub').subscribe(
+      createdSubBaseGroup => {
+        baseGroupService.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.MANAGER).subscribe(
+          addBaseGroup => {
+            expect(addBaseGroup).toBeTrue();
+
+            baseGroupService.addBaseToBaseGroup(createdSubBaseGroup.identification, baseGroupId).subscribe(
+              addSubBaseGroup => {
+                expect(addSubBaseGroup).toBeTrue();
+
+                service.createUser(commonGroupId, 'sub', 'user').subscribe(
+                  createdSubUser => {
+                    service.addUserToBaseGroup(createdSubUser.identification, createdSubBaseGroup.identification).subscribe(
+                      addSubUser => {
+                        expect(addSubUser).toBeTrue();
+
+                        service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
+                          addUser => {
+                            expect(addUser).toBeTrue();
+
+                            service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, false, undefined, undefined, undefined).subscribe(
+                              getAllData => {
+                                expect(getAllData).toBeTruthy();
+                                expect(getAllData.length).toEqual(1);
+                                expect(getAllData[0].identification).toEqual(userId);
+                                expect(getAllData[0].isComplete).toBeFalse();
+                                expect(getAllData[0].isGlobalAdmin).toBeFalse();
+                              }, e => expect(e).toBeFalsy());
+
+                          }, e => expect(e).toBeFalsy());
+                      }, e => expect(e).toBeFalsy());
+                  }, e => expect(e).toBeFalsy());
+              }, e => expect(e).toBeFalsy());
+          }, e => expect(e).toBeFalsy());
+      }, e => expect(e).toBeFalsy());
+
+
+    httpMock.expectNone(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}&dissolveSubgroups=false`);
+
+    tick();
+  }));
+
+  it('getAllUserPartsFromPrivilegeGroup - mock with role and dissolve subgroups', fakeAsync(() => {
+    service.useMock = true;
+    baseGroupService.useMock = true;
+
+
+    baseGroupService.createBaseGroup('subgroub').subscribe(
+      createdSubBaseGroup => {
+        baseGroupService.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
+          addBaseGroup => {
+            expect(addBaseGroup).toBeTrue();
+
+            baseGroupService.addBaseToBaseGroup(createdSubBaseGroup.identification, baseGroupId).subscribe(
+              addSubBaseGroup => {
+                expect(addSubBaseGroup).toBeTrue();
+
+                service.createUser(commonGroupId, 'sub', 'user').subscribe(
+                  createdSubUser => {
+                    service.addUserToBaseGroup(createdSubUser.identification, createdSubBaseGroup.identification).subscribe(
+                      addSubUser => {
+                        expect(addSubUser).toBeTrue();
+
+                        service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
+                          addUser => {
+                            expect(addUser).toBeTrue();
+
+                            service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, true, Role.CONTRIBUTOR, undefined, undefined).subscribe(
+                              getAllData => {
+                                expect(getAllData).toBeTruthy();
+                                expect(getAllData.length).toEqual(2);
+                                expect(getAllData[0].identification).toEqual(userId);
+                                expect(getAllData[0].isComplete).toBeFalse();
+                                expect(getAllData[0].isGlobalAdmin).toBeFalse();
+                                expect(getAllData[1].identification).toEqual(createdSubUser.identification);
+                                expect(getAllData[1].isComplete).toBeFalse();
+                                expect(getAllData[1].isGlobalAdmin).toBeFalse();
+                              }, e => expect(e).toBeFalsy());
+
+                            service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, true, Role.MANAGER, undefined, undefined).subscribe(
+                              getAllData => {
+                                expect(getAllData).toBeTruthy();
+                                expect(getAllData.length).toEqual(0);
+                              }, e => expect(e).toBeFalsy());
+                          }, e => expect(e).toBeFalsy());
+                      }, e => expect(e).toBeFalsy());
+                  }, e => expect(e).toBeFalsy());
+              }, e => expect(e).toBeFalsy());
+          }, e => expect(e).toBeFalsy());
+      }, e => expect(e).toBeFalsy());
+
+    httpMock.expectNone(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}?role=${Role.CONTRIBUTOR}&dissolveSubgroups=true`);
+
+    tick();
+  }));
+
+  it('getAllUserPartsFromPrivilegeGroup - mock without role and dissolve subgroups', fakeAsync(() => {
+    service.useMock = true;
+    baseGroupService.useMock = true;
+
+    baseGroupService.createBaseGroup('subgroub').subscribe(
+      createdSubBaseGroup => {
+        baseGroupService.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.MANAGER).subscribe(
+          addBaseGroup => {
+            expect(addBaseGroup).toBeTrue();
+
+            baseGroupService.addBaseToBaseGroup(createdSubBaseGroup.identification, baseGroupId).subscribe(
+              addSubBaseGroup => {
+                expect(addSubBaseGroup).toBeTrue();
+
+                service.createUser(commonGroupId, 'sub', 'user').subscribe(
+                  createdSubUser => {
+                    service.addUserToBaseGroup(createdSubUser.identification, createdSubBaseGroup.identification).subscribe(
+                      addSubUser => {
+                        expect(addSubUser).toBeTrue();
+
+                        service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
+                          addUser => {
+                            expect(addUser).toBeTrue();
+
+                            service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, true, undefined, undefined, undefined).subscribe(
+                              getAllData => {
+                                expect(getAllData).toBeTruthy();
+                                expect(getAllData.length).toEqual(2);
+                                expect(getAllData[0].identification).toEqual(userId);
+                                expect(getAllData[0].isComplete).toBeFalse();
+                                expect(getAllData[0].isGlobalAdmin).toBeFalse();
+                                expect(getAllData[1].identification).toEqual(createdSubUser.identification);
+                                expect(getAllData[1].isComplete).toBeFalse();
+                                expect(getAllData[1].isGlobalAdmin).toBeFalse();
+                              }, e => expect(e).toBeFalsy());
+
+                          }, e => expect(e).toBeFalsy());
+                      }, e => expect(e).toBeFalsy());
+                  }, e => expect(e).toBeFalsy());
+              }, e => expect(e).toBeFalsy());
+          }, e => expect(e).toBeFalsy());
+      }, e => expect(e).toBeFalsy());
+
+
+    httpMock.expectNone(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}&dissolveSubgroups=true`);
 
     tick();
   }));

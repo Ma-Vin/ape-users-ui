@@ -42,6 +42,7 @@ export class UserService extends BaseBackendService {
   private removeUserFromPrivilegeGroupUrl: string | undefined;
   private countUsersAtPrivilegeGroupUrl: string | undefined;
   private getAllUsersFromPrivilegeGroupUrl: string | undefined;
+  private getAllUserPartsFromPrivilegeGroupUrl: string | undefined;
 
   constructor(private http: HttpClient, configService: ConfigService, private selectionService: SelectionService) {
     super('UserService', configService);
@@ -72,6 +73,7 @@ export class UserService extends BaseBackendService {
     this.removeUserFromPrivilegeGroupUrl = userControllerUrl.concat('/removeUserFromPrivilegeGroup');
     this.countUsersAtPrivilegeGroupUrl = userControllerUrl.concat('/countUsersAtPrivilegeGroup');
     this.getAllUsersFromPrivilegeGroupUrl = userControllerUrl.concat('/getAllUsersFromPrivilegeGroup');
+    this.getAllUserPartsFromPrivilegeGroupUrl = userControllerUrl.concat('/getAllUserPartsFromPrivilegeGroup');
 
     return true;
   }
@@ -355,17 +357,7 @@ export class UserService extends BaseBackendService {
   private getAllUsersMock(isComplete: boolean): Observable<User[]> {
     let copy: User[] = [];
     for (let u of this.getAllUsersAtSelectedCommonGroupFromMock()) {
-      let entry = User.map(u);
-      if (!isComplete) {
-        entry.mail = undefined;
-        entry.image = undefined;
-        entry.smallImage = undefined;
-        entry.lastLogin = undefined;
-        entry.validFrom = undefined;
-        entry.validTo = undefined;
-        entry.role = undefined;
-      }
-      entry.isComplete = isComplete;
+      let entry = this.mapUserForMock(u, isComplete);
       copy.push(entry);
     }
     return of(copy);
@@ -861,17 +853,7 @@ export class UserService extends BaseBackendService {
     let userIds = UserService.getUserIdsAtBaseGroupFromMock(baseGroupIdentification);
     for (let u of this.getAllUsersAtSelectedCommonGroupFromMock()) {
       if (userIds.includes(u.identification)) {
-        let entry = User.map(u);
-        if (!isComplete) {
-          entry.mail = undefined;
-          entry.image = undefined;
-          entry.smallImage = undefined;
-          entry.lastLogin = undefined;
-          entry.validFrom = undefined;
-          entry.validTo = undefined;
-          entry.role = undefined;
-        }
-        entry.isComplete = isComplete;
+        let entry = this.mapUserForMock(u, isComplete);
         result.push(entry);
       }
     }
@@ -1056,12 +1038,45 @@ export class UserService extends BaseBackendService {
     , page: number | undefined, size: number | undefined): Observable<User[]> {
 
     this.init();
-    if (this.useMock) {
-      return this.getAllUsersFromPrivilegeGroupMock(privilegeGroupIdentification, dissolveSubgroups, role);
-    }
-    let url = `${this.getAllUsersFromPrivilegeGroupUrl}/${privilegeGroupIdentification}`;
+    return this.getAllUsersFromPrivilegeGroupWithUrl(privilegeGroupIdentification, dissolveSubgroups, role, page, size, `${this.getAllUsersFromPrivilegeGroupUrl}`, true);
+  }
 
-    return this.http.get<ResponseWrapper>(url, {
+
+  /**
+   * Get all user parts at a privilege group from the backend
+   * @param privilegeGroupIdentification Id of the parent privilege group
+   * @param dissolveSubgroups indicator if the users of subgroups should also be added 
+   * @param role the role which filter the users. If undefined all will be determined
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @returns the users
+   */
+  public getAllUserPartsFromPrivilegeGroup(privilegeGroupIdentification: string, dissolveSubgroups: boolean | undefined, role: Role | undefined
+    , page: number | undefined, size: number | undefined): Observable<User[]> {
+
+    this.init();
+    return this.getAllUsersFromPrivilegeGroupWithUrl(privilegeGroupIdentification, dissolveSubgroups, role, page, size, `${this.getAllUserPartsFromPrivilegeGroupUrl}`, false);
+  }
+
+
+  /**
+   * Get all users at a privilege group from the backend
+   * @param privilegeGroupIdentification Id of the parent privilege group
+   * @param dissolveSubgroups indicator if the users of subgroups should also be added 
+   * @param role the role which filter the users. If undefined all will be determined
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @param url the url where to get the data from backend
+   * @param isComplete indicator if the url points to the endpoint which return the complete entity or the one with reduced data
+   * @returns the users
+   */
+  private getAllUsersFromPrivilegeGroupWithUrl(privilegeGroupIdentification: string, dissolveSubgroups: boolean | undefined, role: Role | undefined
+    , page: number | undefined, size: number | undefined, url: string, isComplete: boolean): Observable<User[]> {
+
+    if (this.useMock) {
+      return this.getAllUsersFromPrivilegeGroupMock(privilegeGroupIdentification, dissolveSubgroups, role, isComplete);
+    }
+    return this.http.get<ResponseWrapper>(`${url}/${privilegeGroupIdentification}`, {
       headers: HTTP_URL_OPTIONS.headers,
       params: this.createParams(dissolveSubgroups, role, page, size)
     }).pipe(
@@ -1070,6 +1085,8 @@ export class UserService extends BaseBackendService {
         let result: User[] = new Array(baseGroups.length);
         for (let i = 0; i < baseGroups.length; i++) {
           result[i] = User.map(baseGroups[i]);
+          result[i].isGlobalAdmin = false;
+          result[i].isComplete = isComplete;
         }
         return result;
       }),
@@ -1079,15 +1096,15 @@ export class UserService extends BaseBackendService {
   }
 
 
-
   /**
    * Creates mock for getting all users groups of a privilege group
    * @param privilegeGroupIdentification Id of the parent base group
    * @param dissolveSubgroups indicator if the users of subgroups should also be added
    * @param role the role which filter the base groups. If undefined all will be determined
+   * @param isComplete indicator if the url points to the endpoint which return the complete entity or the one with reduced data
    * @returns the mocked observable of all users
    */
-  private getAllUsersFromPrivilegeGroupMock(privilegeGroupIdentification: string, dissolveSubgroups: boolean | undefined, role: Role | undefined): Observable<User[]> {
+  private getAllUsersFromPrivilegeGroupMock(privilegeGroupIdentification: string, dissolveSubgroups: boolean | undefined, role: Role | undefined, isComplete: boolean): Observable<User[]> {
     this.initMocks();
     let result: User[] = [];
     let users = this.getAllUsersAtSelectedCommonGroupFromMock();
@@ -1104,7 +1121,11 @@ export class UserService extends BaseBackendService {
       }
     }
 
-    this.getUsersAtSubBaseGroups(privilegeGroupIdentification, dissolveSubgroups, role).forEach(u => { if (!result.includes(u)) { result.push(u) } });
+    this.getUsersAtSubBaseGroups(privilegeGroupIdentification, dissolveSubgroups, role, isComplete).forEach(u => { if (!result.includes(u)) { result.push(u) } });
+
+    for (let i = 0; i < result.length; i++) {
+      result[i] = this.mapUserForMock(result[i], isComplete);
+    }
 
     return of(result);
   }
@@ -1114,9 +1135,10 @@ export class UserService extends BaseBackendService {
    * @param privilegeGroupIdentification id of the privilege group
    * @param dissolveSubgroups indicator if the users of subgroups should also be added
    * @param role the role which filter the base groups. If undefined all will be determined
+   * @param isComplete indicator if the url points to the endpoint which return the complete entity or the one with reduced data
    * @returns list of users
    */
-  private getUsersAtSubBaseGroups(privilegeGroupIdentification: string, dissolveSubgroups: boolean | undefined, role: Role | undefined): User[] {
+  private getUsersAtSubBaseGroups(privilegeGroupIdentification: string, dissolveSubgroups: boolean | undefined, role: Role | undefined, isComplete: boolean): User[] {
     let result: User[] = [];
     if (dissolveSubgroups) {
       let users = this.getAllUsersAtSelectedCommonGroupFromMock();
@@ -1157,6 +1179,21 @@ export class UserService extends BaseBackendService {
   }
 
 
+  private mapUserForMock(userToMap: User, isComplete: boolean) {
+    let user = User.map(userToMap);
+    if (!isComplete) {
+      user.mail = undefined;
+      user.image = undefined;
+      user.smallImage = undefined;
+      user.lastLogin = undefined;
+      user.validFrom = undefined;
+      user.validTo = undefined;
+      user.role = undefined;
+    }
+    user.isComplete = isComplete;
+    user.isGlobalAdmin = false;
+    return user;
+  }
 
   /**
    * creates the pageing params with role
