@@ -234,4 +234,31 @@ describe('PrivilegeGroupPermissionsService', () => {
   });
 
 
+
+
+  /**
+   * isAllowedToGetAllPrivilegeGroupParts
+   */
+  it('isAllowedToGetAllPrivilegeGroupParts - authorized', () => {
+    activeUser.isGlobalAdmin = true;
+    expect(service.isAllowedToGetAllPrivilegeGroupParts()).toBeTrue();
+    activeUser.isGlobalAdmin = false;
+    activeUser.role = Role.ADMIN;
+    expect(service.isAllowedToGetAllPrivilegeGroupParts()).toBeTrue();
+    activeUser.role = Role.MANAGER;
+    expect(service.isAllowedToGetAllPrivilegeGroupParts()).toBeTrue();
+    activeUser.role = Role.CONTRIBUTOR;
+    expect(service.isAllowedToGetAllPrivilegeGroupParts()).toBeTrue();
+    activeUser.role = Role.VISITOR;
+    expect(service.isAllowedToGetAllPrivilegeGroupParts()).toBeTrue();
+  });
+
+  it('isAllowedToGetAllPrivilegeGroupParts - unauthorized', () => {
+    activeUser.isGlobalAdmin = false;
+    activeUser.role = Role.NOT_RELEVANT;
+    expect(service.isAllowedToGetAllPrivilegeGroupParts()).toBeFalse();
+    activeUser.role = Role.BLOCKED;
+    expect(service.isAllowedToGetAllPrivilegeGroupParts()).toBeFalse();
+  });
+
 });

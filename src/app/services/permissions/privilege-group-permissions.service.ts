@@ -59,4 +59,11 @@ export class PrivilegeGroupPermissionsService extends BasePermissionsService {
   isAllowedToGetAllPrivilegeGroups(): boolean {
     return this.isAllowedToGetPrivilegeGroup();
   }
+
+  /**
+   * @returns true if the active user is allowed to get all privilege group parts. Otherwise false.
+   */
+  isAllowedToGetAllPrivilegeGroupParts(): boolean {
+    return this.isAllowedToGetAllPrivilegeGroups();
+  }
 }
