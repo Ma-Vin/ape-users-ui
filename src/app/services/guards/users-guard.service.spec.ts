@@ -45,23 +45,52 @@ describe('UsersGuardService', () => {
   /**
    * canActivate
    */
-  it('canActivate - allowed to get all users', fakeAsync(() => {
-    let isAllowedToGetAllCommonGroupSpy = spyOn(userPermissionsService, 'isAllowedToGetAllUsers').and.returnValue(true);
+  it('canActivate - allowed to get all users and parts', fakeAsync(() => {
+    let isAllowedToGetAllUsersSpy = spyOn(userPermissionsService, 'isAllowedToGetAllUsers').and.returnValue(true);
+    let isAllowedToGetAllUserPartsSpy = spyOn(userPermissionsService, 'isAllowedToGetAllUserParts').and.returnValue(true);
 
     service.canActivate().subscribe(data => expect(data).toBeTrue());
 
-    expect(isAllowedToGetAllCommonGroupSpy).toHaveBeenCalled();
+    expect(isAllowedToGetAllUsersSpy).toHaveBeenCalled();
+    expect(isAllowedToGetAllUserPartsSpy).toHaveBeenCalled();
 
     tick();
   }));
 
 
-  it('canActivate - not allowed to get all users', fakeAsync(() => {
-    let isAllowedToGetAllCommonGroupSpy = spyOn(userPermissionsService, 'isAllowedToGetAllUsers').and.returnValue(false);
+  it('canActivate - not allowed to get all users, but parts', fakeAsync(() => {
+    let isAllowedToGetAllUsersSpy = spyOn(userPermissionsService, 'isAllowedToGetAllUsers').and.returnValue(false);
+    let isAllowedToGetAllUserPartsSpy = spyOn(userPermissionsService, 'isAllowedToGetAllUserParts').and.returnValue(true);
 
     service.canActivate().subscribe(data => expect(data).toBeFalse());
 
-    expect(isAllowedToGetAllCommonGroupSpy).toHaveBeenCalled();
+    expect(isAllowedToGetAllUsersSpy).toHaveBeenCalled();
+    expect(isAllowedToGetAllUserPartsSpy).not.toHaveBeenCalled();
+
+    tick();
+  }));
+
+  it('canActivate - not allowed to get all user parts, but users', fakeAsync(() => {
+    let isAllowedToGetAllUsersSpy = spyOn(userPermissionsService, 'isAllowedToGetAllUsers').and.returnValue(true);
+    let isAllowedToGetAllUserPartsSpy = spyOn(userPermissionsService, 'isAllowedToGetAllUserParts').and.returnValue(false);
+
+    service.canActivate().subscribe(data => expect(data).toBeFalse());
+
+    expect(isAllowedToGetAllUsersSpy).toHaveBeenCalled();
+    expect(isAllowedToGetAllUserPartsSpy).toHaveBeenCalled();
+
+    tick();
+  }));
+
+
+  it('canActivate - not allowed to get all users and parts', fakeAsync(() => {
+    let isAllowedToGetAllUsersSpy = spyOn(userPermissionsService, 'isAllowedToGetAllUsers').and.returnValue(false);
+    let isAllowedToGetAllUserPartsSpy = spyOn(userPermissionsService, 'isAllowedToGetAllUserParts').and.returnValue(false);
+
+    service.canActivate().subscribe(data => expect(data).toBeFalse());
+
+    expect(isAllowedToGetAllUsersSpy).toHaveBeenCalled();
+    expect(isAllowedToGetAllUserPartsSpy).not.toHaveBeenCalled();
 
     tick();
   }));

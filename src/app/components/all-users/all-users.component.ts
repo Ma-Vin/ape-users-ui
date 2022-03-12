@@ -80,7 +80,14 @@ export class AllUsersComponent extends ListDetailComponent<User> {
   }
 
   protected loadAllObjectParts(): void {
-    this.loadAllObjects();
+    console.debug("AllUsersComponent: get all user parts from service");
+    this.userService.getAllUserParts(this.commonGroupId, undefined, undefined).subscribe(
+      allUsers => {
+        console.debug("AllUsersComponent: store all user parts from service");
+        this.allObjectsfilterDataSource.data = allUsers;
+        this.checkUrlId();
+      }
+    );
   }
 
   protected loadObject(identification: string): Observable<User> {

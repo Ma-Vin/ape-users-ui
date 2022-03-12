@@ -114,6 +114,7 @@ describe('AllUsersComponent', () => {
   it('ngOnInit - with id at route', fakeAsync(() => {
     component.areOnlyPartsToLoadAtList = false;
     let getAllUsersSpy = spyOn(userService, 'getAllUsers').and.returnValue(of([otherUser, user]));
+    let getUserSpy = spyOn(userService, 'getUser').and.returnValue(of(user));
     let getSelectedCommonGroupSpy = spyOn(selectionService, 'getSelectedCommonGroup').and.returnValue(commonGroup);
 
     spyOn(route.snapshot.paramMap, 'has').and.returnValue(true);
@@ -124,6 +125,28 @@ describe('AllUsersComponent', () => {
     tick()
 
     expect(getAllUsersSpy).toHaveBeenCalled();
+    expect(getUserSpy).not.toHaveBeenCalled();
+    expect(getSelectedCommonGroupSpy).toHaveBeenCalled();
+    expect(component.selectedObject.equals(user)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
+    expect(component.allObjectsfilterDataSource.data.includes(user)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.includes(otherUser)).toBeTrue();
+  }));
+
+  it('ngOnInit - parts, with id at route', fakeAsync(() => {
+    let getAllUserPartsSpy = spyOn(userService, 'getAllUserParts').and.returnValue(of([otherUser, user]));
+    let getUserSpy = spyOn(userService, 'getUser').and.returnValue(of(user));
+    let getSelectedCommonGroupSpy = spyOn(selectionService, 'getSelectedCommonGroup').and.returnValue(commonGroup);
+
+    spyOn(route.snapshot.paramMap, 'has').and.returnValue(true);
+    spyOn(route.snapshot.paramMap, 'get').and.returnValue(userId);
+
+    component.ngOnInit();
+
+    tick()
+
+    expect(getAllUserPartsSpy).toHaveBeenCalled();
+    expect(getUserSpy).toHaveBeenCalled();
     expect(getSelectedCommonGroupSpy).toHaveBeenCalled();
     expect(component.selectedObject.equals(user)).toBeTrue();
     expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
@@ -134,6 +157,7 @@ describe('AllUsersComponent', () => {
   it('ngOnInit - missing common group', fakeAsync(() => {
     component.areOnlyPartsToLoadAtList = false;
     let getAllUsersSpy = spyOn(userService, 'getAllUsers').and.returnValue(of([otherUser, user]));
+    let getUserSpy = spyOn(userService, 'getUser').and.returnValue(of(user));
     let getSelectedCommonGroupSpy = spyOn(selectionService, 'getSelectedCommonGroup').and.returnValue(undefined);
 
     component.ngOnInit();
@@ -141,6 +165,7 @@ describe('AllUsersComponent', () => {
     tick()
 
     expect(getAllUsersSpy).toHaveBeenCalled();
+    expect(getUserSpy).not.toHaveBeenCalled();
     expect(getSelectedCommonGroupSpy).toHaveBeenCalled();
     expect(component.selectedObject.identification).toEqual('');
     expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
@@ -155,11 +180,29 @@ describe('AllUsersComponent', () => {
    */
   it('onSelectObject - non selected before', () => {
     component.areOnlyPartsToLoadAtList = false;
-    let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
+    let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { });
+    let getUserSpy = spyOn(userService, 'getUser').and.returnValue(of(user));
 
     component.onSelectObject(user);
 
     expect(loactionSpy).toHaveBeenCalledOnceWith(`${USERS_PATH}/${user.identification}`);
+    expect(getUserSpy).not.toHaveBeenCalled();
+
+    expect(component.isNewObject).toBeFalse();
+    expect(component.showObjectDetail).toBeTrue();
+    expect(component.selectedObject === user).toBeFalse();
+    expect(component.selectedObject.equals(user)).toBeTrue();
+    expect(component.selectedObjectIdentification).toEqual(userId);
+  });
+
+  it('onSelectObject - parts, non selected before', () => {
+    let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { });
+    let getUserSpy = spyOn(userService, 'getUser').and.returnValue(of(user));
+
+    component.onSelectObject(user);
+
+    expect(loactionSpy).toHaveBeenCalledOnceWith(`${USERS_PATH}/${user.identification}`);
+    expect(getUserSpy).toHaveBeenCalled();
 
     expect(component.isNewObject).toBeFalse();
     expect(component.showObjectDetail).toBeTrue();
@@ -170,13 +213,15 @@ describe('AllUsersComponent', () => {
 
   it('onSelectObject - same selected before', () => {
     component.areOnlyPartsToLoadAtList = false;
-    let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
+    let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { });
+    let getUserSpy = spyOn(userService, 'getUser').and.returnValue(of(user));
 
     component.selectedObject = user;
 
     component.onSelectObject(user);
 
     expect(loactionSpy).not.toHaveBeenCalledOnceWith(`${USERS_PATH}/${user.identification}`);
+    expect(getUserSpy).not.toHaveBeenCalled();
 
     expect(component.isNewObject).toBeFalse();
     expect(component.showObjectDetail).toBeTrue();
@@ -187,13 +232,15 @@ describe('AllUsersComponent', () => {
 
   it('onSelectObject - other selected before', () => {
     component.areOnlyPartsToLoadAtList = false;
-    let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
+    let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { });
+    let getUserSpy = spyOn(userService, 'getUser').and.returnValue(of(user));
 
     component.selectedObject = otherUser;
 
     component.onSelectObject(user);
 
     expect(loactionSpy).toHaveBeenCalledOnceWith(`${USERS_PATH}/${user.identification}`);
+    expect(getUserSpy).not.toHaveBeenCalled();
 
     expect(component.isNewObject).toBeFalse();
     expect(component.showObjectDetail).toBeTrue();
@@ -204,7 +251,8 @@ describe('AllUsersComponent', () => {
 
   it('onSelectObject - allowed to update', () => {
     component.areOnlyPartsToLoadAtList = false;
-    let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
+    let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { });
+    let getUserSpy = spyOn(userService, 'getUser').and.returnValue(of(user));
     let isAllowedToUpdateUserSpy = spyOn(userPermissionSerivce, 'isAllowedToUpdateUser').and.returnValue(true);
     let isAllowedToSetRoleOfUserSpy = spyOn(userPermissionSerivce, 'isAllowedToSetRoleOfUser').and.returnValue(true);
 
@@ -213,6 +261,7 @@ describe('AllUsersComponent', () => {
     expect(loactionSpy).toHaveBeenCalledOnceWith(`${USERS_PATH}/${user.identification}`);
     expect(isAllowedToUpdateUserSpy).toHaveBeenCalled();
     expect(isAllowedToSetRoleOfUserSpy).toHaveBeenCalled();
+    expect(getUserSpy).not.toHaveBeenCalled();
 
     expect(component.isNewObject).toBeFalse();
     expect(component.showObjectDetail).toBeTrue();
@@ -226,7 +275,8 @@ describe('AllUsersComponent', () => {
 
   it('onSelectObject - not allowed to update', () => {
     component.areOnlyPartsToLoadAtList = false;
-    let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
+    let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { });
+    let getUserSpy = spyOn(userService, 'getUser').and.returnValue(of(user));
     let isAllowedToUpdateUserSpy = spyOn(userPermissionSerivce, 'isAllowedToUpdateUser').and.returnValue(false);
     let isAllowedToSetRoleOfUserSpy = spyOn(userPermissionSerivce, 'isAllowedToSetRoleOfUser').and.returnValue(false);
 
@@ -235,6 +285,7 @@ describe('AllUsersComponent', () => {
     expect(loactionSpy).toHaveBeenCalledOnceWith(`${USERS_PATH}/${user.identification}`);
     expect(isAllowedToUpdateUserSpy).toHaveBeenCalled();
     expect(isAllowedToSetRoleOfUserSpy).toHaveBeenCalled();
+    expect(getUserSpy).not.toHaveBeenCalled();
 
     expect(component.isNewObject).toBeFalse();
     expect(component.showObjectDetail).toBeTrue();

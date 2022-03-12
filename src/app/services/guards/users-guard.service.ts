@@ -11,6 +11,6 @@ export class UsersGuardService {
 
 
   canActivate(): Observable<boolean> {
-    return of(this.userPermissionsService.isAllowedToGetAllUsers());
+    return of(this.userPermissionsService.isAllowedToGetAllUsers() && this.userPermissionsService.isAllowedToGetAllUserParts());
   }
 }
