@@ -24,6 +24,7 @@ export class CommonGroupService extends BaseBackendService {
   private getCommonGroupUrl: string | undefined;
   private getParentCommonGroupOfUserUrl: string | undefined;
   private getAllCommonGroupUrl: string | undefined;
+  private getAllCommonGroupPartsUrl: string | undefined;
   private updateCommonGroupUrl: string | undefined;
 
 
@@ -43,6 +44,7 @@ export class CommonGroupService extends BaseBackendService {
     this.getCommonGroupUrl = commonGroupControllerUrl.concat('/getCommonGroup');
     this.getParentCommonGroupOfUserUrl = commonGroupControllerUrl.concat('/getParentCommonGroupOfUser');
     this.getAllCommonGroupUrl = commonGroupControllerUrl.concat('/getAllCommonGroups');
+    this.getAllCommonGroupPartsUrl = commonGroupControllerUrl.concat('/getAllCommonGroupParts');
     this.updateCommonGroupUrl = commonGroupControllerUrl.concat('/updateCommonGroup');
 
     return true;
@@ -123,20 +125,44 @@ export class CommonGroupService extends BaseBackendService {
    */
   public getAllCommonGroups(page: number | undefined, size: number | undefined): Observable<CommonGroup[]> {
     this.init();
+    return this.getAllCommonGroupGroupsWithUrl(page, size, `${this.getAllCommonGroupUrl}`, true);
+  }
+
+
+  /**
+   * Get all common group parts from the backend
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @returns the common group pars
+   */
+  public getAllCommonGroupParts(page: number | undefined, size: number | undefined): Observable<CommonGroup[]> {
+    this.init();
+    return this.getAllCommonGroupGroupsWithUrl(page, size, `${this.getAllCommonGroupPartsUrl}`, false);
+  }
+
+  /**
+ * Get all common group or group parts with reduced data from the backend
+ * @param page zero-based page index, must not be negative.
+ * @param size the size of the page to be returned, must be greater than 0.
+ * @param url the url where to get the data from backend
+ * @param isComplete indicator if the url points to the endpoint which return the complete entity or the one with reduced data
+ * @returns the common groups
+ */
+  private getAllCommonGroupGroupsWithUrl(page: number | undefined, size: number | undefined, url: string, isComplete: boolean): Observable<CommonGroup[]> {
     if (this.useMock) {
-      return this.getAllCommonGroupsMock();
+      return this.getAllCommonGroupsMock(isComplete);
     }
-    let url = `${this.getAllCommonGroupUrl}`;
 
     return this.http.get<ResponseWrapper>(url, {
       headers: HTTP_URL_OPTIONS.headers,
       params: this.createPageingParams(page, size)
     }).pipe(
       map(data => {
-        let commonGroups = this.checkErrorAndGetResponse<ICommonGroup[]>(data, `occurs while getting all common groups from backend`);
+        let commonGroups = this.checkErrorAndGetResponse<ICommonGroup[]>(data, `ooccurs while getting all common groups from backend`);
         let result: CommonGroup[] = new Array(commonGroups.length);
         for (let i = 0; i < commonGroups.length; i++) {
           result[i] = CommonGroup.map(commonGroups[i]);
+          result[i].isComplete = isComplete;
         }
         return result;
       }),
@@ -148,12 +174,20 @@ export class CommonGroupService extends BaseBackendService {
 
   /**
    * Creates mock for getting all common groups
+   * @param isComplete indicator if the url points to the endpoint which return the complete entity or the one with reduced data
    * @returns the mocked observable of all common groups
    */
-  private getAllCommonGroupsMock(): Observable<CommonGroup[]> {
+  private getAllCommonGroupsMock(isComplete: boolean): Observable<CommonGroup[]> {
     let copy: CommonGroup[] = [];
     for (let cg of this.getAllCommonGroupsFromMock()) {
-      copy.push(cg)
+      let entry = CommonGroup.map(cg);
+      if (!isComplete) {
+        entry.description = undefined;
+        entry.validFrom = undefined;
+        entry.validTo = undefined;
+      }
+      entry.isComplete = isComplete;
+      copy.push(entry);
     }
     return of(copy);
   }

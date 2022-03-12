@@ -31,24 +31,8 @@ describe('CommonGroupService', () => {
     adminGroupId: 'AGAA00001'
   };
 
-  const mockICommonGroup: ICommonGroup = {
-    description: 'some description',
-    groupName: commonGroupName,
-    identification: commonGroupId,
-    validFrom: new Date(2021, 9, 1),
-    validTo: undefined,
-    defaultRole: Role.VISITOR,
-    isComplete: true
-  }
-
-  const modifiedCommonGroup = CommonGroup.map({
-    description: 'some description',
-    groupName: commonGroupName,
-    identification: commonGroupId,
-    validFrom: new Date(2021, 9, 1),
-    validTo: undefined,
-    defaultRole: Role.VISITOR
-  } as ICommonGroup);
+  let mockICommonGroup: ICommonGroup;
+  let modifiedCommonGroup: CommonGroup;
 
   const mockErrorResponseWrapper: ResponseWrapper = {
     response: undefined,
@@ -71,10 +55,35 @@ describe('CommonGroupService', () => {
     configService = TestBed.inject(ConfigService);
     service = TestBed.inject(CommonGroupService);
 
+    initMockData();
+  });
+
+
+  function initMockData() {
+    mockICommonGroup = {
+      description: 'some description',
+      groupName: commonGroupName,
+      identification: commonGroupId,
+      validFrom: new Date(2021, 9, 1),
+      validTo: undefined,
+      defaultRole: Role.VISITOR,
+      isComplete: true
+    } as ICommonGroup;
+
+    modifiedCommonGroup = CommonGroup.map({
+      description: 'some description',
+      groupName: commonGroupName,
+      identification: commonGroupId,
+      validFrom: new Date(2021, 9, 1),
+      validTo: undefined,
+      defaultRole: Role.VISITOR
+    } as ICommonGroup);
+
+
     BaseBackendService.clearMockData();
 
     spyOn(configService, 'getConfig').and.returnValue(mockConfig);
-  });
+  }
 
 
   it('should be created', () => {
@@ -203,6 +212,7 @@ describe('CommonGroupService', () => {
       expect(data[0].validFrom).toEqual(mockICommonGroup.validFrom);
       expect(data[0].validTo).toBeUndefined();
       expect(data[0].defaultRole).toEqual(mockICommonGroup.defaultRole);
+      expect(data[0].isComplete).toBeTrue();
     });
 
     const req = httpMock.expectOne(`//localhost:8080/group/common/getAllCommonGroups`);
@@ -231,6 +241,7 @@ describe('CommonGroupService', () => {
       expect(data[0].validFrom).toEqual(mockICommonGroup.validFrom);
       expect(data[0].validTo).toBeUndefined();
       expect(data[0].defaultRole).toEqual(mockICommonGroup.defaultRole);
+      expect(data[0].isComplete).toBeTrue();
     });
 
     const req = httpMock.expectOne(`//localhost:8080/group/common/getAllCommonGroups?page=1&size=50`);
@@ -291,12 +302,143 @@ describe('CommonGroupService', () => {
       expect(data).toBeTruthy();
       expect(data.length).toEqual(1);
       expect(data[0].identification).toEqual(commonGroupId);
+      expect(data[0].isComplete).toBeTrue();
     });
 
     httpMock.expectNone(`//localhost:8080/group/common/getAllCommonGroups`);
 
     tick();
   }));
+
+
+
+
+  /**
+   * getAllCommonGroupParts
+   */
+  it('getAllCommonGroupParts - all ok', fakeAsync(() => {
+    mockICommonGroup.description = undefined;
+    mockICommonGroup.validFrom = undefined;
+    mockICommonGroup.validTo = undefined;
+
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockICommonGroup],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAllCommonGroupParts(undefined, undefined).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].identification).toEqual(mockICommonGroup.identification);
+      expect(data[0].groupName).toEqual(mockICommonGroup.groupName);
+      expect(data[0].description).toBeUndefined();
+      expect(data[0].validFrom).toBeUndefined();
+      expect(data[0].validTo).toBeUndefined();
+      expect(data[0].isComplete).toBeFalse();
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/group/common/getAllCommonGroupParts`);
+    expect(req.request.method).toEqual("GET");
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/group/common/getAllCommonGroupParts`);
+
+    tick();
+  }));
+
+  it('getAllCommonGroupParts - with pageing', fakeAsync(() => {
+    mockICommonGroup.description = undefined;
+    mockICommonGroup.validFrom = undefined;
+    mockICommonGroup.validTo = undefined;
+
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockICommonGroup],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAllCommonGroupParts(1, 50).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].identification).toEqual(mockICommonGroup.identification);
+      expect(data[0].groupName).toEqual(mockICommonGroup.groupName);
+      expect(data[0].description).toBeUndefined();
+      expect(data[0].validFrom).toBeUndefined();
+      expect(data[0].validTo).toBeUndefined();
+      expect(data[0].isComplete).toBeFalse();
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/group/common/getAllCommonGroupParts?page=1&size=50`);
+    expect(req.request.method).toEqual("GET");
+    expect(req.request.params.get('page')).toEqual('1');
+    expect(req.request.params.get('size')).toEqual('50');
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/group/common/getAllCommonGroupParts?page=1&size=50`);
+
+    tick();
+  }));
+
+  it('getAllCommonGroupParts - with error status', fakeAsync(() => {
+    service.getAllCommonGroupParts(undefined, undefined).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/group/common/getAllCommonGroupParts`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockErrorResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/group/common/getAllCommonGroupParts`);
+
+    tick();
+  }));
+
+  it('getAllCommonGroupParts - with fatal status', fakeAsync(() => {
+    service.getAllCommonGroupParts(undefined, undefined).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/group/common/getAllCommonGroupParts`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockFatalResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/group/common/getAllCommonGroupParts`);
+
+    tick();
+  }));
+
+  it('getAllCommonGroupParts - mock', fakeAsync(() => {
+    service.useMock = true;
+    service.getAllCommonGroupParts(undefined, undefined).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].identification).toEqual(commonGroupId);
+      expect(data[0].description).toBeUndefined();
+      expect(data[0].validFrom).toBeUndefined();
+      expect(data[0].validTo).toBeUndefined();
+      expect(data[0].isComplete).toBeFalse();
+    });
+
+    httpMock.expectNone(`//localhost:8080/group/common/getAllCommonGroupParts`);
+
+    tick();
+  }));
+
 
 
 
