@@ -88,6 +88,14 @@ export class UserPermissionsService extends BasePermissionsService {
 
 
   /**
+   * @returns true if the active user is allowed to get all other user parts. Otherwise false.
+   */
+  isAllowedToGetAllUserParts(): boolean {
+    return this.isAllowedToGetAllUsers();
+  }
+
+
+  /**
    * @returns true if the active user is allowed to count other users. Otherwise false.
    */
   isAllowedToCountUsers(): boolean {
