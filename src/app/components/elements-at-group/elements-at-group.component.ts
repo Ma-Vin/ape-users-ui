@@ -6,6 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { IAbstractGroup } from '../../model/abstract-group.model';
 import { BaseGroup } from '../../model/base-group.model';
 import { IEqualsAndIdentifiable } from '../../model/equals-identifiable';
@@ -25,6 +26,7 @@ export abstract class ElementsAtGroupComponent<T extends IEqualsAndIdentifiable,
   elementsDataSource: MatTableDataSource<T> = new MatTableDataSource<T>([]);
   private elementsSort: MatSort | undefined;
   private elementPaginator!: MatPaginator | undefined;
+  areOnlyPartsToLoadAtList: boolean;
 
   private elementText: string;
   displayedColumns: string[] = ['identification', 'groupName'];
@@ -32,6 +34,7 @@ export abstract class ElementsAtGroupComponent<T extends IEqualsAndIdentifiable,
   constructor(public dialog: MatDialog, protected snackBar: MatSnackBar) {
     this.elementText = this.getElementText();
     this.displayedColumns = this.getDisplayedColumns();
+    this.areOnlyPartsToLoadAtList = environment.loadObjectParts;
   }
 
   public ngOnInit() {
@@ -73,16 +76,16 @@ export abstract class ElementsAtGroupComponent<T extends IEqualsAndIdentifiable,
 
 
   /**
-   * Loads all relevant sub groubs either from the selected base or privilege group
+   * Loads all relevant sub elements either from the selected base or privilege group
    */
   protected loadAllElements(): void {
     if (this.selectedBaseGroup != undefined) {
-      this.loadAllElementsFromBaseGroup(this.selectedBaseGroup.identification).subscribe(
+      this.loadAllElementsFromBaseGroupInternal(this.selectedBaseGroup.identification).subscribe(
         elements => this.takeOverElements(elements)
       );
     }
     if (this.selectedPrivilegeGroup != undefined && this.role != undefined) {
-      this.loadAllElementsFromPrivilegeGroup(this.selectedPrivilegeGroup.identification, this.role).subscribe(
+      this.loadAllElementsFromPrivilegeGroupInternal(this.selectedPrivilegeGroup.identification, this.role).subscribe(
         elements => this.takeOverElements(elements)
       );
     }
@@ -90,13 +93,37 @@ export abstract class ElementsAtGroupComponent<T extends IEqualsAndIdentifiable,
 
 
   /**
-   * Sets a given base group array to the data source 
-   * @param groups the base goups to set
+   * Sets a given elements array to the data source 
+   * @param elements the base goups to set
    */
-  private takeOverElements(groups: T[]): void {
-    this.elementsDataSource = new MatTableDataSource(groups);
+  private takeOverElements(elements: T[]): void {
+    this.elementsDataSource = new MatTableDataSource(elements);
     this.elementsDataSource.paginator = this.elementPaginator!;
     this.elementsDataSource.sort = this.elementsSort!;
+  }
+
+
+  /**
+ * Loads all sub elements or element parts from a base group
+ * @param identification the identification of the parent group
+ * @returns an obeservable of all elements at base group
+ */
+  private loadAllElementsFromBaseGroupInternal(identification: string): Observable<T[]> {
+    return this.areOnlyPartsToLoadAtList ?
+      this.loadAllElementPartsFromBaseGroup(identification) :
+      this.loadAllElementsFromBaseGroup(identification);
+  }
+
+  /**
+   * Loads all sub elements or parts of a given role from a privilege one
+   * @param identification the identification of the parent privilege group
+   * @param role the role to load
+   * @returns an obeservable of all elements at privilege group
+   */
+  private loadAllElementsFromPrivilegeGroupInternal(identification: string, role: Role): Observable<T[]> {
+    return this.areOnlyPartsToLoadAtList ?
+      this.loadAllElementPartsFromPrivilegeGroup(identification, role) :
+      this.loadAllElementsFromPrivilegeGroup(identification, role);
   }
 
 
@@ -108,8 +135,17 @@ export abstract class ElementsAtGroupComponent<T extends IEqualsAndIdentifiable,
   protected abstract loadAllElementsFromBaseGroup(identification: string): Observable<T[]>;
 
 
+
   /**
-   * Loads all sub base groups of a given role from a privilege one
+   * Loads all sub elements group parts from a base group
+   * @param identification the identification of the parent group
+   * @returns an obeservable of all element parts at base group
+   */
+  protected abstract loadAllElementPartsFromBaseGroup(identification: string): Observable<T[]>;
+
+
+  /**
+   * Loads all sub elements of a given role from a privilege one
    * @param identification the identification of the parent privilege group
    * @param role the role to load
    * @returns an obeservable of all elements at privilege group
@@ -118,11 +154,29 @@ export abstract class ElementsAtGroupComponent<T extends IEqualsAndIdentifiable,
 
 
   /**
+   * Loads all sub element parts of a given role from a privilege one
+   * @param identification the identification of the parent privilege group
+   * @param role the role to load
+   * @returns an obeservable of all element parts at privilege group
+   */
+  protected abstract loadAllElementPartsFromPrivilegeGroup(identification: string, role: Role): Observable<T[]>;
+
+
+  /**
    * @returns true if the user is allowed to see sub base groups. Otherwise false
    */
   public showElements(): boolean {
-    return (this.selectedBaseGroup != undefined && this.isAllowedToGetAllElementsFromBaseGroup())
-      || (this.selectedPrivilegeGroup != undefined && this.role != undefined && this.isAllowedToGetAllElementsFromPrivilegeGroup());
+    return (this.selectedBaseGroup != undefined && this.isAllowedToGetAllElementsFromBaseGroupInternal())
+      || (this.selectedPrivilegeGroup != undefined && this.role != undefined && this.isAllowedToGetAllElementsFromPrivilegeGroupInternal());
+  }
+
+
+  /**
+   * @returns true if the active user is allowed to get all elements or element parts from base group. Otherwise false
+   */
+  private isAllowedToGetAllElementsFromBaseGroupInternal(): boolean {
+    return (this.areOnlyPartsToLoadAtList && this.isAllowedToGetAllElementPartsFromBaseGroup())
+      || (!this.areOnlyPartsToLoadAtList && this.isAllowedToGetAllElementsFromBaseGroup())
   }
 
 
@@ -133,9 +187,30 @@ export abstract class ElementsAtGroupComponent<T extends IEqualsAndIdentifiable,
 
 
   /**
+   * @returns true if the active user is allowed to get all elements from base group. Otherwise false
+   */
+  protected abstract isAllowedToGetAllElementPartsFromBaseGroup(): boolean;
+
+
+  /**
+   * @returns true if the active user is allowed to get all elements or element parts privilege base group. Otherwise false
+   */
+  private isAllowedToGetAllElementsFromPrivilegeGroupInternal(): boolean {
+    return (this.areOnlyPartsToLoadAtList && this.isAllowedToGetAllElementPartsFromPrivilegeGroup())
+      || (!this.areOnlyPartsToLoadAtList && this.isAllowedToGetAllElementsFromPrivilegeGroup())
+  }
+
+
+  /**
    * @returns true if the active user is allowed to get all elements from privilege group. Otherwise false
    */
   protected abstract isAllowedToGetAllElementsFromPrivilegeGroup(): boolean;
+
+
+  /**
+   * @returns true if the active user is allowed to get all elements from privilege group. Otherwise false
+   */
+  protected abstract isAllowedToGetAllElementPartsFromPrivilegeGroup(): boolean;
 
 
   /**

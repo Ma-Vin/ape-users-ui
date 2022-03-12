@@ -47,7 +47,20 @@ export class UsersAtGroupComponent extends ElementsAtGroupComponent<User, AddUse
   }
 
 
+  protected loadAllElementPartsFromBaseGroup(identification: string): Observable<User[]> {
+    return this.userService.getAllUsersFromBaseGroup(identification, undefined, undefined);
+  }
+
+
   protected loadAllElementsFromPrivilegeGroup(identification: string, role: Role): Observable<User[]> {
+    if (!this.flatSubgroupsView || this.flattenSubgroups) {
+      return this.userService.getAllUsersFromPrivilegeGroup(identification, this.flatSubgroupsView, role, undefined, undefined);
+    }
+    return of([]);
+  }
+
+
+  protected loadAllElementPartsFromPrivilegeGroup(identification: string, role: Role): Observable<User[]> {
     if (!this.flatSubgroupsView || this.flattenSubgroups) {
       return this.userService.getAllUsersFromPrivilegeGroup(identification, this.flatSubgroupsView, role, undefined, undefined);
     }
@@ -60,7 +73,17 @@ export class UsersAtGroupComponent extends ElementsAtGroupComponent<User, AddUse
   }
 
 
+  protected isAllowedToGetAllElementPartsFromBaseGroup(): boolean {
+    return this.userPermissionsService.isAllowedToGetAllUsersAtBaseGroup();
+  }
+
+
   protected isAllowedToGetAllElementsFromPrivilegeGroup(): boolean {
+    return this.userPermissionsService.isAllowedToGetAllUsersAtPrivilegeGroup();
+  }
+
+
+  protected isAllowedToGetAllElementPartsFromPrivilegeGroup(): boolean {
     return this.userPermissionsService.isAllowedToGetAllUsersAtPrivilegeGroup();
   }
 

@@ -38,8 +38,18 @@ export class SubBaseGroupsComponent extends ElementsAtGroupComponent<BaseGroup, 
   }
 
 
+  protected loadAllElementPartsFromBaseGroup(identification: string): Observable<BaseGroup[]> {
+    return this.baseGroupService.getAllBasePartsAtBaseGroup(identification, undefined, undefined);
+  }
+
+
   protected loadAllElementsFromPrivilegeGroup(identification: string, role: Role): Observable<BaseGroup[]> {
     return this.baseGroupService.getAllBasesAtPrivilegeGroup(identification, role, undefined, undefined);
+  }
+
+
+  protected loadAllElementPartsFromPrivilegeGroup(identification: string, role: Role): Observable<BaseGroup[]> {
+    return this.baseGroupService.getAllBasePartsAtPrivilegeGroup(identification, role, undefined, undefined);
   }
 
 
@@ -48,8 +58,18 @@ export class SubBaseGroupsComponent extends ElementsAtGroupComponent<BaseGroup, 
   }
 
 
+  protected isAllowedToGetAllElementPartsFromBaseGroup(): boolean {
+    return this.baseGroupPermissionsService.isAllowedToGetAllBasePartsAtBaseGroup();
+  }
+
+
   protected isAllowedToGetAllElementsFromPrivilegeGroup(): boolean {
     return this.baseGroupPermissionsService.isAllowedToGetAllBasesAtPrivilegeGroup();
+  }
+
+
+  protected isAllowedToGetAllElementPartsFromPrivilegeGroup(): boolean {
+    return this.baseGroupPermissionsService.isAllowedToGetAllBasePartsAtPrivilegeGroup();
   }
 
 
