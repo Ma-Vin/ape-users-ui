@@ -62,7 +62,7 @@ export class UsersAtGroupComponent extends ElementsAtGroupComponent<User, AddUse
 
   protected loadAllElementPartsFromPrivilegeGroup(identification: string, role: Role): Observable<User[]> {
     if (!this.flatSubgroupsView || this.flattenSubgroups) {
-      return this.userService.getAllUsersFromPrivilegeGroup(identification, this.flatSubgroupsView, role, undefined, undefined);
+      return this.userService.getAllUserPartsFromPrivilegeGroup(identification, this.flatSubgroupsView, role, undefined, undefined);
     }
     return of([]);
   }
@@ -84,7 +84,7 @@ export class UsersAtGroupComponent extends ElementsAtGroupComponent<User, AddUse
 
 
   protected isAllowedToGetAllElementPartsFromPrivilegeGroup(): boolean {
-    return this.userPermissionsService.isAllowedToGetAllUsersAtPrivilegeGroup();
+    return this.userPermissionsService.isAllowedToGetAllUserPartsAtPrivilegeGroup();
   }
 
 

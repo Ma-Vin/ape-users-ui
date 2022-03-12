@@ -143,6 +143,7 @@ describe('UsersAtGroupComponent', () => {
     let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([secondUser]));
     let getAllUserPartsFromBaseGroupSpy = spyOn(userService, 'getAllUserPartsFromBaseGroup').and.returnValue(of([]));
     let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([]));
+    let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([]));
 
     component.selectedBaseGroup = baseGroup;
     component.selectedPrivilegeGroup = undefined;
@@ -158,12 +159,14 @@ describe('UsersAtGroupComponent', () => {
     expect(getAllUsersFromBaseGroupSpy).toHaveBeenCalled();
     expect(getAllUserPartsFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(getAllUsersFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromPrivilegeGroupSpy).not.toHaveBeenCalled();
   }));
 
   it('ngOnInit - parts, base group selected', fakeAsync(() => {
     let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([]));
     let getAllUserPartsFromBaseGroupSpy = spyOn(userService, 'getAllUserPartsFromBaseGroup').and.returnValue(of([secondUser]));
     let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([]));
+    let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([]));
 
     component.selectedBaseGroup = baseGroup;
     component.selectedPrivilegeGroup = undefined;
@@ -179,6 +182,7 @@ describe('UsersAtGroupComponent', () => {
     expect(getAllUsersFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(getAllUserPartsFromBaseGroupSpy).toHaveBeenCalled();
     expect(getAllUsersFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromPrivilegeGroupSpy).not.toHaveBeenCalled();
   }));
 
   it('ngOnInit - privilege group with role selected', fakeAsync(() => {
@@ -186,6 +190,7 @@ describe('UsersAtGroupComponent', () => {
     let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([]));
     let getAllUserPartsFromBaseGroupSpy = spyOn(userService, 'getAllUserPartsFromBaseGroup').and.returnValue(of([]));
     let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([secondUser]));
+    let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([]));
 
     component.selectedBaseGroup = undefined;
     component.selectedPrivilegeGroup = privilegeGroup;
@@ -201,6 +206,30 @@ describe('UsersAtGroupComponent', () => {
     expect(getAllUsersFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(getAllUserPartsFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(getAllUsersFromPrivilegeGroupSpy).toHaveBeenCalled();
+    expect(getAllUserPartsFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+  }));
+
+  it('ngOnInit - parts, privilege group with role selected', fakeAsync(() => {
+    let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([]));
+    let getAllUserPartsFromBaseGroupSpy = spyOn(userService, 'getAllUserPartsFromBaseGroup').and.returnValue(of([]));
+    let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([]));
+    let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([secondUser]));
+
+    component.selectedBaseGroup = undefined;
+    component.selectedPrivilegeGroup = privilegeGroup;
+    component.role = Role.ADMIN;
+
+    component.ngOnInit()
+
+    tick();
+
+    expect(component.elementsDataSource.data.length).toEqual(1);
+    expect(component.elementsDataSource.data[0].identification).toEqual(secondUserId);
+
+    expect(getAllUsersFromBaseGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromBaseGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUsersFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromPrivilegeGroupSpy).toHaveBeenCalled();
   }));
 
   it('ngOnInit - privilege group, flattenedView but not to flatten', fakeAsync(() => {
@@ -208,6 +237,7 @@ describe('UsersAtGroupComponent', () => {
     let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([]));
     let getAllUserPartsFromBaseGroupSpy = spyOn(userService, 'getAllUserPartsFromBaseGroup').and.returnValue(of([]));
     let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([secondUser]));
+    let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([]));
 
     component.selectedBaseGroup = undefined;
     component.selectedPrivilegeGroup = privilegeGroup;
@@ -224,6 +254,31 @@ describe('UsersAtGroupComponent', () => {
     expect(getAllUsersFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(getAllUserPartsFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(getAllUsersFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+  }));
+
+  it('ngOnInit - parts, privilege group, flattenedView but not to flatten', fakeAsync(() => {
+    let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([]));
+    let getAllUserPartsFromBaseGroupSpy = spyOn(userService, 'getAllUserPartsFromBaseGroup').and.returnValue(of([]));
+    let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([]));
+    let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([secondUser]));
+
+    component.selectedBaseGroup = undefined;
+    component.selectedPrivilegeGroup = privilegeGroup;
+    component.role = Role.ADMIN;
+    component.flatSubgroupsView = true;
+    component.flattenSubgroups = false;
+
+    component.ngOnInit()
+
+    tick();
+
+    expect(component.elementsDataSource.data.length).toEqual(0);
+
+    expect(getAllUsersFromBaseGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromBaseGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUsersFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromPrivilegeGroupSpy).not.toHaveBeenCalled();
   }));
 
   it('ngOnInit - privilege group, flattenedView and to flatten', fakeAsync(() => {
@@ -231,6 +286,7 @@ describe('UsersAtGroupComponent', () => {
     let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([]));
     let getAllUserPartsFromBaseGroupSpy = spyOn(userService, 'getAllUserPartsFromBaseGroup').and.returnValue(of([]));
     let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([secondUser]));
+    let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([]));
 
     component.selectedBaseGroup = undefined;
     component.selectedPrivilegeGroup = privilegeGroup;
@@ -248,6 +304,32 @@ describe('UsersAtGroupComponent', () => {
     expect(getAllUsersFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(getAllUserPartsFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(getAllUsersFromPrivilegeGroupSpy).toHaveBeenCalled();
+    expect(getAllUserPartsFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+  }));
+
+  it('ngOnInit - parts, privilege group, flattenedView and to flatten', fakeAsync(() => {
+    let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([]));
+    let getAllUserPartsFromBaseGroupSpy = spyOn(userService, 'getAllUserPartsFromBaseGroup').and.returnValue(of([]));
+    let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([]));
+    let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([secondUser]));
+
+    component.selectedBaseGroup = undefined;
+    component.selectedPrivilegeGroup = privilegeGroup;
+    component.role = Role.ADMIN;
+    component.flatSubgroupsView = true;
+    component.flattenSubgroups = true;
+
+    component.ngOnInit()
+
+    tick();
+
+    expect(component.elementsDataSource.data.length).toEqual(1);
+    expect(component.elementsDataSource.data[0].identification).toEqual(secondUserId);
+
+    expect(getAllUsersFromBaseGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromBaseGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUsersFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromPrivilegeGroupSpy).toHaveBeenCalled();
   }));
 
   it('ngOnInit - privilege group without role selected', fakeAsync(() => {
@@ -255,6 +337,7 @@ describe('UsersAtGroupComponent', () => {
     let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([]));
     let getAllUserPartsFromBaseGroupSpy = spyOn(userService, 'getAllUserPartsFromBaseGroup').and.returnValue(of([]));
     let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([]));
+    let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([]));
 
     component.selectedBaseGroup = undefined;
     component.selectedPrivilegeGroup = privilegeGroup;
@@ -269,6 +352,7 @@ describe('UsersAtGroupComponent', () => {
     expect(getAllUsersFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(getAllUserPartsFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(getAllUsersFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromPrivilegeGroupSpy).not.toHaveBeenCalled();
   }));
 
 
@@ -282,6 +366,7 @@ describe('UsersAtGroupComponent', () => {
     let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([secondUser]));
     let getAllUserPartsFromBaseGroupSpy = spyOn(userService, 'getAllUserPartsFromBaseGroup').and.returnValue(of([]));
     let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([]));
+    let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([]));
 
     component.selectedBaseGroup = baseGroup;
     component.selectedPrivilegeGroup = undefined;
@@ -297,12 +382,14 @@ describe('UsersAtGroupComponent', () => {
     expect(getAllUsersFromBaseGroupSpy).toHaveBeenCalled();
     expect(getAllUserPartsFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(getAllUsersFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromPrivilegeGroupSpy).not.toHaveBeenCalled();
   }));
 
   it('ngOnChanges - parts, base group selected', fakeAsync(() => {
     let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([]));
     let getAllUserPartsFromBaseGroupSpy = spyOn(userService, 'getAllUserPartsFromBaseGroup').and.returnValue(of([secondUser]));
     let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([]));
+    let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([]));
 
     component.selectedBaseGroup = baseGroup;
     component.selectedPrivilegeGroup = undefined;
@@ -318,6 +405,7 @@ describe('UsersAtGroupComponent', () => {
     expect(getAllUsersFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(getAllUserPartsFromBaseGroupSpy).toHaveBeenCalled();
     expect(getAllUsersFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromPrivilegeGroupSpy).not.toHaveBeenCalled();
   }));
 
   it('ngOnChanges - privilege group with role selected', fakeAsync(() => {
@@ -325,6 +413,7 @@ describe('UsersAtGroupComponent', () => {
     let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([]));
     let getAllUserPartsFromBaseGroupSpy = spyOn(userService, 'getAllUserPartsFromBaseGroup').and.returnValue(of([]));
     let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([secondUser]));
+    let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([]));
 
     component.selectedBaseGroup = undefined;
     component.selectedPrivilegeGroup = privilegeGroup;
@@ -340,6 +429,30 @@ describe('UsersAtGroupComponent', () => {
     expect(getAllUsersFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(getAllUserPartsFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(getAllUsersFromPrivilegeGroupSpy).toHaveBeenCalled();
+    expect(getAllUserPartsFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+  }));
+
+  it('ngOnChanges - parts, privilege group with role selected', fakeAsync(() => {
+    let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([]));
+    let getAllUserPartsFromBaseGroupSpy = spyOn(userService, 'getAllUserPartsFromBaseGroup').and.returnValue(of([]));
+    let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([]));
+    let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([secondUser]));
+
+    component.selectedBaseGroup = undefined;
+    component.selectedPrivilegeGroup = privilegeGroup;
+    component.role = Role.ADMIN;
+
+    component.ngOnChanges({} as SimpleChanges)
+
+    tick();
+
+    expect(component.elementsDataSource.data.length).toEqual(1);
+    expect(component.elementsDataSource.data[0].identification).toEqual(secondUserId);
+
+    expect(getAllUsersFromBaseGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromBaseGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUsersFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromPrivilegeGroupSpy).toHaveBeenCalled();
   }));
 
   it('ngOnChanges - privilege group without role selected', fakeAsync(() => {
@@ -347,6 +460,7 @@ describe('UsersAtGroupComponent', () => {
     let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([]));
     let getAllUserPartsFromBaseGroupSpy = spyOn(userService, 'getAllUserPartsFromBaseGroup').and.returnValue(of([]));
     let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([]));
+    let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([]));
 
     component.selectedBaseGroup = undefined;
     component.selectedPrivilegeGroup = privilegeGroup;
@@ -361,12 +475,37 @@ describe('UsersAtGroupComponent', () => {
     expect(getAllUsersFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(getAllUserPartsFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(getAllUsersFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+  }));
+
+  it('ngOnChanges - parts, privilege group without role selected', fakeAsync(() => {
+    let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([]));
+    let getAllUserPartsFromBaseGroupSpy = spyOn(userService, 'getAllUserPartsFromBaseGroup').and.returnValue(of([]));
+    let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([]));
+    let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([]));
+
+    component.selectedBaseGroup = undefined;
+    component.selectedPrivilegeGroup = privilegeGroup;
+    component.role = undefined;
+
+    component.ngOnChanges({} as SimpleChanges)
+
+    tick();
+
+    expect(component.elementsDataSource.data.length).toEqual(0);
+
+    expect(getAllUsersFromBaseGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromBaseGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUsersFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromPrivilegeGroupSpy).not.toHaveBeenCalled();
   }));
 
   it('ngOnChanges - privilege group flatten view without trigger', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([]));
     let getAllUserPartsFromBaseGroupSpy = spyOn(userService, 'getAllUserPartsFromBaseGroup').and.returnValue(of([]));
     let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([secondUser]));
+    let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([]));
 
     component.flatSubgroupsView = true;
     component.flattenSubgroups = true;
@@ -385,13 +524,41 @@ describe('UsersAtGroupComponent', () => {
     expect(getAllUsersFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(getAllUserPartsFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(getAllUsersFromPrivilegeGroupSpy).toHaveBeenCalled();
+    expect(getAllUserPartsFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+  }));
+
+  it('ngOnChanges - parts, privilege group flatten view without trigger', fakeAsync(() => {
+    let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([]));
+    let getAllUserPartsFromBaseGroupSpy = spyOn(userService, 'getAllUserPartsFromBaseGroup').and.returnValue(of([]));
+    let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([]));
+    let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([secondUser]));
+
+    component.flatSubgroupsView = true;
+    component.flattenSubgroups = true;
+    component.selectedBaseGroup = undefined;
+    component.selectedPrivilegeGroup = privilegeGroup;
+    component.role = Role.ADMIN;
+
+    component.ngOnChanges({} as SimpleChanges)
+
+    tick();
+
+    expect(component.elementsDataSource.data.length).toEqual(1);
+    expect(component.elementsDataSource.data[0].identification).toEqual(secondUserId);
+    expect(component.flattenSubgroups).toBeTrue();
+
+    expect(getAllUsersFromBaseGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromBaseGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUsersFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromPrivilegeGroupSpy).toHaveBeenCalled();
   }));
 
   it('ngOnChanges - privilege group flatten view with trigger', fakeAsync(() => {
     component.areOnlyPartsToLoadAtList = false
     let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([]));
     let getAllUserPartsFromBaseGroupSpy = spyOn(userService, 'getAllUserPartsFromBaseGroup').and.returnValue(of([]));
-    let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([secondUser]));
+    let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([]));
+    let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([]));
 
     component.flatSubgroupsView = true;
     component.flattenSubgroups = true;
@@ -411,6 +578,7 @@ describe('UsersAtGroupComponent', () => {
     expect(getAllUsersFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(getAllUserPartsFromBaseGroupSpy).not.toHaveBeenCalled();
     expect(getAllUsersFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromPrivilegeGroupSpy).not.toHaveBeenCalled();
   }));
 
 
@@ -425,6 +593,7 @@ describe('UsersAtGroupComponent', () => {
     let isAllowedToGetAllUsersAtBaseGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUsersAtBaseGroup').and.returnValue(true);
     let isAllowedToGetAllUserPartsAtBaseGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUserPartsAtBaseGroup').and.returnValue(false);
     let isAllowedToGetAllUsersAtPrivilegeGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUsersAtPrivilegeGroup').and.returnValue(false);
+    let isAllowedToGetAllUserPartsAtPrivilegeGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUserPartsAtPrivilegeGroup').and.returnValue(false);
 
     component.selectedBaseGroup = baseGroup;
     component.selectedPrivilegeGroup = undefined;
@@ -435,12 +604,14 @@ describe('UsersAtGroupComponent', () => {
     expect(isAllowedToGetAllUsersAtBaseGroupSpy).toHaveBeenCalled();
     expect(isAllowedToGetAllUserPartsAtBaseGroupSpy).not.toHaveBeenCalled();
     expect(isAllowedToGetAllUsersAtPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(isAllowedToGetAllUserPartsAtPrivilegeGroupSpy).not.toHaveBeenCalled();
   });
 
   it('showElements - parts, base group and allowed', () => {
     let isAllowedToGetAllUsersAtBaseGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUsersAtBaseGroup').and.returnValue(false);
     let isAllowedToGetAllUserPartsAtBaseGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUserPartsAtBaseGroup').and.returnValue(true);
     let isAllowedToGetAllUsersAtPrivilegeGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUsersAtPrivilegeGroup').and.returnValue(false);
+    let isAllowedToGetAllUserPartsAtPrivilegeGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUserPartsAtPrivilegeGroup').and.returnValue(false);
 
     component.selectedBaseGroup = baseGroup;
     component.selectedPrivilegeGroup = undefined;
@@ -451,6 +622,7 @@ describe('UsersAtGroupComponent', () => {
     expect(isAllowedToGetAllUsersAtBaseGroupSpy).not.toHaveBeenCalled();
     expect(isAllowedToGetAllUserPartsAtBaseGroupSpy).toHaveBeenCalled();
     expect(isAllowedToGetAllUsersAtPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(isAllowedToGetAllUserPartsAtPrivilegeGroupSpy).not.toHaveBeenCalled();
   });
 
   it('showElements - base group and not allowed', () => {
@@ -458,6 +630,7 @@ describe('UsersAtGroupComponent', () => {
     let isAllowedToGetAllUsersAtBaseGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUsersAtBaseGroup').and.returnValue(false);
     let isAllowedToGetAllUserPartsAtBaseGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUserPartsAtBaseGroup').and.returnValue(false);
     let isAllowedToGetAllUsersAtPrivilegeGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUsersAtPrivilegeGroup').and.returnValue(false);
+    let isAllowedToGetAllUserPartsAtPrivilegeGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUserPartsAtPrivilegeGroup').and.returnValue(false);
 
     component.selectedBaseGroup = baseGroup;
     component.selectedPrivilegeGroup = undefined;
@@ -468,12 +641,14 @@ describe('UsersAtGroupComponent', () => {
     expect(isAllowedToGetAllUsersAtBaseGroupSpy).toHaveBeenCalled();
     expect(isAllowedToGetAllUserPartsAtBaseGroupSpy).not.toHaveBeenCalled();
     expect(isAllowedToGetAllUsersAtPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(isAllowedToGetAllUserPartsAtPrivilegeGroupSpy).not.toHaveBeenCalled();
   });
 
   it('showElements - parts, base group and not allowed', () => {
     let isAllowedToGetAllUsersAtBaseGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUsersAtBaseGroup').and.returnValue(false);
     let isAllowedToGetAllUserPartsAtBaseGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUserPartsAtBaseGroup').and.returnValue(false);
     let isAllowedToGetAllUsersAtPrivilegeGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUsersAtPrivilegeGroup').and.returnValue(false);
+    let isAllowedToGetAllUserPartsAtPrivilegeGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUserPartsAtPrivilegeGroup').and.returnValue(false);
 
     component.selectedBaseGroup = baseGroup;
     component.selectedPrivilegeGroup = undefined;
@@ -484,6 +659,7 @@ describe('UsersAtGroupComponent', () => {
     expect(isAllowedToGetAllUsersAtBaseGroupSpy).not.toHaveBeenCalled();
     expect(isAllowedToGetAllUserPartsAtBaseGroupSpy).toHaveBeenCalled();
     expect(isAllowedToGetAllUsersAtPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(isAllowedToGetAllUserPartsAtPrivilegeGroupSpy).not.toHaveBeenCalled();
   });
 
   it('showElements - privilege group and allowed', () => {
@@ -491,6 +667,7 @@ describe('UsersAtGroupComponent', () => {
     let isAllowedToGetAllUsersAtBaseGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUsersAtBaseGroup').and.returnValue(false);
     let isAllowedToGetAllUserPartsAtBaseGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUserPartsAtBaseGroup').and.returnValue(false);
     let isAllowedToGetAllUsersAtPrivilegeGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUsersAtPrivilegeGroup').and.returnValue(true);
+    let isAllowedToGetAllUserPartsAtPrivilegeGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUserPartsAtPrivilegeGroup').and.returnValue(false);
 
     component.selectedBaseGroup = undefined;
     component.selectedPrivilegeGroup = privilegeGroup;
@@ -501,14 +678,33 @@ describe('UsersAtGroupComponent', () => {
     expect(isAllowedToGetAllUsersAtBaseGroupSpy).not.toHaveBeenCalled();
     expect(isAllowedToGetAllUserPartsAtBaseGroupSpy).not.toHaveBeenCalled();
     expect(isAllowedToGetAllUsersAtPrivilegeGroupSpy).toHaveBeenCalled();
+    expect(isAllowedToGetAllUserPartsAtPrivilegeGroupSpy).not.toHaveBeenCalled();
   });
 
+  it('showElements - parts, privilege group and allowed', () => {
+    let isAllowedToGetAllUsersAtBaseGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUsersAtBaseGroup').and.returnValue(false);
+    let isAllowedToGetAllUserPartsAtBaseGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUserPartsAtBaseGroup').and.returnValue(false);
+    let isAllowedToGetAllUsersAtPrivilegeGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUsersAtPrivilegeGroup').and.returnValue(false);
+    let isAllowedToGetAllUserPartsAtPrivilegeGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUserPartsAtPrivilegeGroup').and.returnValue(true);
+
+    component.selectedBaseGroup = undefined;
+    component.selectedPrivilegeGroup = privilegeGroup;
+    component.role = Role.ADMIN;
+
+    expect(component.showElements()).toBeTrue();
+
+    expect(isAllowedToGetAllUsersAtBaseGroupSpy).not.toHaveBeenCalled();
+    expect(isAllowedToGetAllUserPartsAtBaseGroupSpy).not.toHaveBeenCalled();
+    expect(isAllowedToGetAllUsersAtPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(isAllowedToGetAllUserPartsAtPrivilegeGroupSpy).toHaveBeenCalled();
+  });
 
   it('showElements - privilege group and allowed, but missing role', () => {
     component.areOnlyPartsToLoadAtList = false
     let isAllowedToGetAllUsersAtBaseGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUsersAtBaseGroup').and.returnValue(false);
     let isAllowedToGetAllUserPartsAtBaseGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUserPartsAtBaseGroup').and.returnValue(false);
     let isAllowedToGetAllUsersAtPrivilegeGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUsersAtPrivilegeGroup').and.returnValue(true);
+    let isAllowedToGetAllUserPartsAtPrivilegeGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUserPartsAtPrivilegeGroup').and.returnValue(false);
 
     component.selectedBaseGroup = undefined;
     component.selectedPrivilegeGroup = privilegeGroup;
@@ -519,6 +715,25 @@ describe('UsersAtGroupComponent', () => {
     expect(isAllowedToGetAllUsersAtBaseGroupSpy).not.toHaveBeenCalled();
     expect(isAllowedToGetAllUserPartsAtBaseGroupSpy).not.toHaveBeenCalled();
     expect(isAllowedToGetAllUsersAtPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(isAllowedToGetAllUserPartsAtPrivilegeGroupSpy).not.toHaveBeenCalled();
+  });
+
+  it('showElements - parts privilege group and allowed, but missing role', () => {
+    let isAllowedToGetAllUsersAtBaseGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUsersAtBaseGroup').and.returnValue(false);
+    let isAllowedToGetAllUserPartsAtBaseGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUserPartsAtBaseGroup').and.returnValue(false);
+    let isAllowedToGetAllUsersAtPrivilegeGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUsersAtPrivilegeGroup').and.returnValue(false);
+    let isAllowedToGetAllUserPartsAtPrivilegeGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUserPartsAtPrivilegeGroup').and.returnValue(true);
+
+    component.selectedBaseGroup = undefined;
+    component.selectedPrivilegeGroup = privilegeGroup;
+    component.role = undefined;
+
+    expect(component.showElements()).toBeFalse();
+
+    expect(isAllowedToGetAllUsersAtBaseGroupSpy).not.toHaveBeenCalled();
+    expect(isAllowedToGetAllUserPartsAtBaseGroupSpy).not.toHaveBeenCalled();
+    expect(isAllowedToGetAllUsersAtPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(isAllowedToGetAllUserPartsAtPrivilegeGroupSpy).not.toHaveBeenCalled();
   });
 
   it('showElements - privilege group and not allowed', () => {
@@ -526,6 +741,7 @@ describe('UsersAtGroupComponent', () => {
     let isAllowedToGetAllUsersAtBaseGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUsersAtBaseGroup').and.returnValue(false);
     let isAllowedToGetAllUserPartsAtBaseGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUserPartsAtBaseGroup').and.returnValue(false);
     let isAllowedToGetAllUsersAtPrivilegeGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUsersAtPrivilegeGroup').and.returnValue(false);
+    let isAllowedToGetAllUserPartsAtPrivilegeGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUserPartsAtPrivilegeGroup').and.returnValue(false);
 
     component.selectedBaseGroup = undefined;
     component.selectedPrivilegeGroup = privilegeGroup;
@@ -536,6 +752,25 @@ describe('UsersAtGroupComponent', () => {
     expect(isAllowedToGetAllUsersAtBaseGroupSpy).not.toHaveBeenCalled();
     expect(isAllowedToGetAllUserPartsAtBaseGroupSpy).not.toHaveBeenCalled();
     expect(isAllowedToGetAllUsersAtPrivilegeGroupSpy).toHaveBeenCalled();
+    expect(isAllowedToGetAllUserPartsAtPrivilegeGroupSpy).not.toHaveBeenCalled();
+  });
+
+  it('showElements - parts privilege group and not allowed', () => {
+    let isAllowedToGetAllUsersAtBaseGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUsersAtBaseGroup').and.returnValue(false);
+    let isAllowedToGetAllUserPartsAtBaseGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUserPartsAtBaseGroup').and.returnValue(false);
+    let isAllowedToGetAllUsersAtPrivilegeGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUsersAtPrivilegeGroup').and.returnValue(false);
+    let isAllowedToGetAllUserPartsAtPrivilegeGroupSpy = spyOn(userPermissionService, 'isAllowedToGetAllUserPartsAtPrivilegeGroup').and.returnValue(false);
+
+    component.selectedBaseGroup = undefined;
+    component.selectedPrivilegeGroup = privilegeGroup;
+    component.role = Role.ADMIN;
+
+    expect(component.showElements()).toBeFalse();
+
+    expect(isAllowedToGetAllUsersAtBaseGroupSpy).not.toHaveBeenCalled();
+    expect(isAllowedToGetAllUserPartsAtBaseGroupSpy).not.toHaveBeenCalled();
+    expect(isAllowedToGetAllUsersAtPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(isAllowedToGetAllUserPartsAtPrivilegeGroupSpy).toHaveBeenCalled();
   });
 
 
@@ -1035,7 +1270,9 @@ describe('UsersAtGroupComponent', () => {
    * onFlattenSubgroups
    */
   it('onFlattenSubgroups - not flatten before', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([secondUser]));
+    let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([]));
 
     component.selectedBaseGroup = undefined;
     component.selectedPrivilegeGroup = privilegeGroup;
@@ -1052,10 +1289,35 @@ describe('UsersAtGroupComponent', () => {
     expect(component.elementsDataSource.data[0].identification).toEqual(secondUserId);
 
     expect(getAllUsersFromPrivilegeGroupSpy).toHaveBeenCalled();
+    expect(getAllUserPartsFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+  }));
+
+  it('onFlattenSubgroups - parts not flatten before', fakeAsync(() => {
+    let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([]));
+    let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([secondUser]));
+
+    component.selectedBaseGroup = undefined;
+    component.selectedPrivilegeGroup = privilegeGroup;
+    component.role = Role.ADMIN;
+    component.flatSubgroupsView = true;
+    component.flattenSubgroups = false;
+
+    component.onFlattenSubgroups()
+
+    tick();
+
+    expect(component.flattenSubgroups).toBeTrue();
+    expect(component.elementsDataSource.data.length).toEqual(1);
+    expect(component.elementsDataSource.data[0].identification).toEqual(secondUserId);
+
+    expect(getAllUsersFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromPrivilegeGroupSpy).toHaveBeenCalled();
   }));
 
   it('onFlattenSubgroups - flattenn before', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
     let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([secondUser]));
+    let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([]));
 
     component.selectedBaseGroup = undefined;
     component.selectedPrivilegeGroup = privilegeGroup;
@@ -1071,5 +1333,27 @@ describe('UsersAtGroupComponent', () => {
     expect(component.elementsDataSource.data.length).toEqual(0);
 
     expect(getAllUsersFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+  }));
+
+  it('onFlattenSubgroups - parts, flattenn before', fakeAsync(() => {
+    let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([]));
+    let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([secondUser]));
+
+    component.selectedBaseGroup = undefined;
+    component.selectedPrivilegeGroup = privilegeGroup;
+    component.role = Role.ADMIN;
+    component.flatSubgroupsView = true;
+    component.flattenSubgroups = true;
+
+    component.onFlattenSubgroups()
+
+    tick();
+
+    expect(component.flattenSubgroups).toBeFalse();
+    expect(component.elementsDataSource.data.length).toEqual(0);
+
+    expect(getAllUsersFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromPrivilegeGroupSpy).not.toHaveBeenCalled();
   }));
 });
