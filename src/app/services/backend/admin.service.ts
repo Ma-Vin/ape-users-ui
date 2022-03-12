@@ -24,6 +24,7 @@ export class AdminService extends BaseBackendService {
   private getAdminUrl: string | undefined;
   private countAdminUrl: string | undefined;
   private getAllAdminsUrl: string | undefined;
+  private getAllAdminPartsUrl: string | undefined;
   private updateAdminUrl: string | undefined;
   private setAdminPasswordUrl: string | undefined;
 
@@ -55,6 +56,7 @@ export class AdminService extends BaseBackendService {
     this.getAdminUrl = adminControllerUrl.concat('/getAdmin');
     this.countAdminUrl = adminControllerUrl.concat('/countAdmins');
     this.getAllAdminsUrl = adminControllerUrl.concat('/getAllAdmins');
+    this.getAllAdminPartsUrl = adminControllerUrl.concat('/getAllAdminParts');
     this.updateAdminUrl = adminControllerUrl.concat('/updateAdmin');
     this.setAdminPasswordUrl = adminControllerUrl.concat('/setAdminPassword');
     return true;
@@ -79,11 +81,22 @@ export class AdminService extends BaseBackendService {
    * Determines all admins at mock data
    * @returns array of all admins
    */
-  private getAllAdminsFromMock(): User[] {
+  private getAllAdminsFromMock(isComplete: boolean): User[] {
     let result: User[] = [];
     for (let u of this.getAllUsersFromMock()) {
       if (u.isGlobalAdmin) {
-        result.push(u);
+        let entry = User.map(u);
+        if (!isComplete) {
+          entry.mail = undefined;
+          entry.image = undefined;
+          entry.smallImage = undefined;
+          entry.lastLogin = undefined;
+          entry.validFrom = undefined;
+          entry.validTo = undefined;
+          entry.role = undefined;
+        }
+        entry.isComplete = isComplete;
+        result.push(entry);
       }
     }
     return result;
@@ -165,7 +178,7 @@ export class AdminService extends BaseBackendService {
    * @returns the mocked observable of the admin
    */
   private getAdminMock(identification: string): Observable<User> {
-    for (let a of this.getAllAdminsFromMock()) {
+    for (let a of this.getAllAdminsFromMock(true)) {
       if (a.identification == identification) {
         return of(User.map(a));
       }
@@ -183,12 +196,40 @@ export class AdminService extends BaseBackendService {
    */
   public getAllAdmins(identification: string, page: number | undefined, size: number | undefined): Observable<User[]> {
     this.init();
-    if (this.useMock) {
-      return this.getAllAdminsMock();
-    }
-    let url = `${this.getAllAdminsUrl}/${identification}`;
+    return this.getAllAdminsWithUrl(identification, page, size, `${this.getAllAdminsUrl}`, true);
+  }
 
-    return this.http.get<ResponseWrapper>(url, {
+
+
+  /**
+   * Get all admin parts at a group from the backend
+   * @param identification id of the admin group
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @returns the admin parts
+   */
+  public getAllAdminParts(identification: string, page: number | undefined, size: number | undefined): Observable<User[]> {
+    this.init();
+    return this.getAllAdminsWithUrl(identification, page, size, `${this.getAllAdminPartsUrl}`, false);
+  }
+
+
+
+  /**
+   * Get all admins or admin parts with reduced data from the backend
+   * @param identification id of the admin group
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @param url the url where to get the data from backend
+   * @param isComplete indicator if the url points to the endpoint which return the complete entity or the one with reduced data
+   * @returns the admins
+   */
+  private getAllAdminsWithUrl(identification: string, page: number | undefined, size: number | undefined, url: string, isComplete: boolean): Observable<User[]> {
+    if (this.useMock) {
+      return this.getAllAdminsMock(isComplete);
+    }
+
+    return this.http.get<ResponseWrapper>(`${url}/${identification}`, {
       headers: HTTP_URL_OPTIONS.headers,
       params: this.createPageingParams(page, size)
     }).pipe(
@@ -197,6 +238,8 @@ export class AdminService extends BaseBackendService {
         let result: User[] = new Array(users.length);
         for (let i = 0; i < users.length; i++) {
           result[i] = User.map(users[i]);
+          result[i].isGlobalAdmin = true;
+          result[i].isComplete = isComplete;
         }
         return result;
       }),
@@ -206,12 +249,13 @@ export class AdminService extends BaseBackendService {
   }
 
 
+
   /**
    * Creates mock for getting all admins
    * @returns the mocked observable of all admins
    */
-  private getAllAdminsMock(): Observable<User[]> {
-    return of(this.getAllAdminsFromMock());
+  private getAllAdminsMock(isComplete: boolean): Observable<User[]> {
+    return of(this.getAllAdminsFromMock(isComplete));
   }
 
 
@@ -426,7 +470,7 @@ export class AdminService extends BaseBackendService {
    * @returns the number of admins at mock
    */
   private countAdminsMock(): Observable<number> {
-    return of(this.getAllAdminsFromMock().length);
+    return of(this.getAllAdminsFromMock(false).length);
   }
 
 
@@ -461,7 +505,7 @@ export class AdminService extends BaseBackendService {
    * @returns mocked reponse of updating password
    */
   private setPasswordMock(identification: string): Observable<boolean> {
-    for (let a of this.getAllAdminsFromMock()) {
+    for (let a of this.getAllAdminsFromMock(true)) {
       if (a.identification == identification) {
         return of(true);
       }

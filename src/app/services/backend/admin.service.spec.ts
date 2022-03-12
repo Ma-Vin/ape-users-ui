@@ -31,50 +31,10 @@ describe('AdminService', () => {
     adminGroupId: adminGroupId
   };
 
-  const mockIAdminGroup: IAdminGroup = {
-    description: 'some description',
-    groupName: 'Name of the group',
-    identification: adminGroupId,
-    validFrom: new Date(2021, 9, 1),
-    validTo: undefined,
-    isComplete: true
-  }
-
-  const modifiedAdminGroup = AdminGroup.map({
-    description: 'some description',
-    groupName: 'Name of the group',
-    identification: adminGroupId,
-    validFrom: new Date(2021, 9, 1),
-    validTo: undefined
-  } as IAdminGroup)
-
-  const mockIUserAdmin: IUser = {
-    identification: adminId,
-    firstName: firstName,
-    lastName: lastName,
-    mail: 'max.power@ma-vin.de',
-    image: undefined,
-    smallImage: undefined,
-    lastLogin: new Date(2021, 9, 25, 20, 15, 1),
-    validFrom: new Date(2021, 9, 1),
-    validTo: undefined,
-    role: undefined,
-    isComplete: true
-  }
-
-  const modifiedUserAdmin = User.map({
-    identification: adminId,
-    firstName: firstName,
-    lastName: lastName,
-    mail: 'max.power@ma-vin.de',
-    image: undefined,
-    smallImage: undefined,
-    lastLogin: new Date(2021, 9, 25, 20, 15, 1),
-    validFrom: new Date(2021, 9, 1),
-    validTo: undefined,
-    isGlobalAdmin: true,
-    role: undefined
-  } as User)
+  let mockIAdminGroup: IAdminGroup;
+  let modifiedAdminGroup: AdminGroup;
+  let mockIUserAdmin: IUser;
+  let modifiedUserAdmin: User;
 
   const mockErrorResponseWrapper: ResponseWrapper = {
     response: undefined,
@@ -96,10 +56,61 @@ describe('AdminService', () => {
     configService = TestBed.inject(ConfigService);
     service = TestBed.inject(AdminService);
 
+    initMockData();
+  });
+
+
+  function initMockData() {
+    mockIAdminGroup = {
+      description: 'some description',
+      groupName: 'Name of the group',
+      identification: adminGroupId,
+      validFrom: new Date(2021, 9, 1),
+      validTo: undefined,
+      isComplete: true
+    } as IAdminGroup;
+
+    modifiedAdminGroup = AdminGroup.map({
+      description: 'some description',
+      groupName: 'Name of the group',
+      identification: adminGroupId,
+      validFrom: new Date(2021, 9, 1),
+      validTo: undefined
+    } as IAdminGroup);
+
+    mockIUserAdmin = {
+      identification: adminId,
+      firstName: firstName,
+      lastName: lastName,
+      mail: 'max.power@ma-vin.de',
+      image: undefined,
+      smallImage: undefined,
+      lastLogin: new Date(2021, 9, 25, 20, 15, 1),
+      validFrom: new Date(2021, 9, 1),
+      validTo: undefined,
+      role: undefined,
+      isComplete: true
+    } as IUser;
+
+    modifiedUserAdmin = User.map({
+      identification: adminId,
+      firstName: firstName,
+      lastName: lastName,
+      mail: 'max.power@ma-vin.de',
+      image: undefined,
+      smallImage: undefined,
+      lastLogin: new Date(2021, 9, 25, 20, 15, 1),
+      validFrom: new Date(2021, 9, 1),
+      validTo: undefined,
+      isGlobalAdmin: true,
+      role: undefined
+    } as User);
+
+
     BaseBackendService.clearMockData();
 
     spyOn(configService, 'getConfig').and.returnValue(mockConfig);
-  });
+  }
 
 
   it('should be created', () => {
@@ -309,6 +320,11 @@ describe('AdminService', () => {
   }));
 
 
+
+
+  /**
+   * getAllAdmins
+   */
   it('getAllAdmins - all ok', fakeAsync(() => {
     let mockResponseWrapper: ResponseWrapper = {
       response: [mockIUserAdmin],
@@ -327,6 +343,7 @@ describe('AdminService', () => {
       expect(data[0].lastLogin).toEqual(mockIUserAdmin.lastLogin);
       expect(data[0].validFrom).toEqual(mockIUserAdmin.validFrom);
       expect(data[0].validTo).toBeUndefined();
+      expect(data[0].isComplete).toBeTrue();
     });
 
     const req = httpMock.expectOne(`//localhost:8080/admin/getAllAdmins/${adminGroupId}`);
@@ -357,6 +374,7 @@ describe('AdminService', () => {
       expect(data[0].lastLogin).toEqual(mockIUserAdmin.lastLogin);
       expect(data[0].validFrom).toEqual(mockIUserAdmin.validFrom);
       expect(data[0].validTo).toBeUndefined();
+      expect(data[0].isComplete).toBeTrue();
     });
 
     const req = httpMock.expectOne(`//localhost:8080/admin/getAllAdmins/${adminGroupId}?page=1&size=50`);
@@ -420,6 +438,7 @@ describe('AdminService', () => {
       expect(data).toBeTruthy();
       expect(data.length).toEqual(1);
       expect(data[0].identification).toEqual(adminId);
+      expect(data[0].isComplete).toBeTrue();
     });
 
     httpMock.expectNone(`//localhost:8080/admin/getAllAdmins/${adminGroupId}`);
@@ -428,6 +447,155 @@ describe('AdminService', () => {
   }));
 
 
+
+  
+  /**
+   * getAllAdminParts
+   */
+   it('getAllAdminParts - all ok', fakeAsync(() => {
+    mockIUserAdmin.image = undefined;
+    mockIUserAdmin.smallImage = undefined;
+    mockIUserAdmin.lastLogin = undefined;
+    mockIUserAdmin.validFrom = undefined;
+    mockIUserAdmin.validTo = undefined;
+
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockIUserAdmin],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAllAdminParts(adminGroupId, undefined, undefined).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].identification).toEqual(mockIUserAdmin.identification);
+      expect(data[0].firstName).toEqual(mockIUserAdmin.firstName);
+      expect(data[0].lastName).toEqual(mockIUserAdmin.lastName);
+      expect(data[0].image).toBeUndefined();
+      expect(data[0].smallImage).toBeUndefined();
+      expect(data[0].lastLogin).toBeUndefined();
+      expect(data[0].validFrom).toBeUndefined();
+      expect(data[0].validTo).toBeUndefined();
+      expect(data[0].isComplete).toBeFalse();
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/admin/getAllAdminParts/${adminGroupId}`);
+    expect(req.request.method).toEqual("GET");
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/admin/getAllAdminParts/${adminGroupId}`);
+
+    tick();
+  }));
+
+  it('getAllAdminParts - with pageing', fakeAsync(() => {
+    mockIUserAdmin.image = undefined;
+    mockIUserAdmin.smallImage = undefined;
+    mockIUserAdmin.lastLogin = undefined;
+    mockIUserAdmin.validFrom = undefined;
+    mockIUserAdmin.validTo = undefined;
+
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockIUserAdmin],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAllAdminParts(adminGroupId, 1, 50).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].identification).toEqual(mockIUserAdmin.identification);
+      expect(data[0].firstName).toEqual(mockIUserAdmin.firstName);
+      expect(data[0].lastName).toEqual(mockIUserAdmin.lastName);
+      expect(data[0].image).toBeUndefined();
+      expect(data[0].smallImage).toBeUndefined();
+      expect(data[0].lastLogin).toBeUndefined();
+      expect(data[0].validFrom).toBeUndefined();
+      expect(data[0].validTo).toBeUndefined();
+      expect(data[0].isComplete).toBeFalse();
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/admin/getAllAdminParts/${adminGroupId}?page=1&size=50`);
+    expect(req.request.method).toEqual("GET");
+    expect(req.request.params.get('page')).toEqual('1');
+    expect(req.request.params.get('size')).toEqual('50');
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/admin/getAllAdminParts/${adminGroupId}?page=1&size=50`);
+
+    tick();
+  }));
+
+
+  it('getAllAdminParts - with error status', fakeAsync(() => {
+    service.getAllAdminParts(adminGroupId, undefined, undefined).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/admin/getAllAdminParts/${adminGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockErrorResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/admin/getAllAdminParts/${adminGroupId}`);
+
+    tick();
+  }));
+
+
+  it('getAllAdminParts - with fatal status', fakeAsync(() => {
+    service.getAllAdminParts(adminGroupId, undefined, undefined).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/admin/getAllAdminParts/${adminGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockFatalResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/admin/getAllAdminParts/${adminGroupId}`);
+
+    tick();
+  }));
+
+
+  it('getAllAdminParts - mock', fakeAsync(() => {
+    service.useMock = true;
+    service.getAllAdminParts(adminGroupId, undefined, undefined).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].identification).toEqual(adminId);
+      expect(data[0].image).toBeUndefined();
+      expect(data[0].smallImage).toBeUndefined();
+      expect(data[0].lastLogin).toBeUndefined();
+      expect(data[0].validFrom).toBeUndefined();
+      expect(data[0].validTo).toBeUndefined();
+      expect(data[0].isComplete).toBeFalse();
+    });
+
+    httpMock.expectNone(`//localhost:8080/admin/getAllAdminParts/${adminGroupId}`);
+
+    tick();
+  }));
+
+
+
+
+  /**
+   * updateAdminGroup
+   */
   it('updateAdminGroup - all ok', fakeAsync(() => {
     let mockResponseWrapper: ResponseWrapper = {
       response: mockIAdminGroup,
