@@ -37,6 +37,7 @@ export class UserService extends BaseBackendService {
   private removeUserFromBaseGroupUrl: string | undefined;
   private countUsersAtBaseGroupUrl: string | undefined;
   private getAllUsersFromBaseGroupUrl: string | undefined;
+  private getAllUserPartsFromBaseGroupUrl: string | undefined;
   private addUserToPrivilegeGroupUrl: string | undefined;
   private removeUserFromPrivilegeGroupUrl: string | undefined;
   private countUsersAtPrivilegeGroupUrl: string | undefined;
@@ -66,6 +67,7 @@ export class UserService extends BaseBackendService {
     this.removeUserFromBaseGroupUrl = userControllerUrl.concat('/removeUserFromBaseGroup');
     this.countUsersAtBaseGroupUrl = userControllerUrl.concat('/countUsersAtBaseGroup');
     this.getAllUsersFromBaseGroupUrl = userControllerUrl.concat('/getAllUsersFromBaseGroup');
+    this.getAllUserPartsFromBaseGroupUrl = userControllerUrl.concat('/getAllUserPartsFromBaseGroup');
     this.addUserToPrivilegeGroupUrl = userControllerUrl.concat('/addUserToPrivilegeGroup');
     this.removeUserFromPrivilegeGroupUrl = userControllerUrl.concat('/removeUserFromPrivilegeGroup');
     this.countUsersAtPrivilegeGroupUrl = userControllerUrl.concat('/countUsersAtPrivilegeGroup');
@@ -299,7 +301,7 @@ export class UserService extends BaseBackendService {
 
 
   /**
-   * Get all users or user parts with reduced data from the backend
+   * Get all users or user parts with reduced data from the backend or mock
    * @param identification id of the common group
    * @param page zero-based page index, must not be negative.
    * @param size the size of the page to be returned, must be greater than 0.
@@ -311,7 +313,20 @@ export class UserService extends BaseBackendService {
     if (this.useMock) {
       return this.getAllUsersMock(isComplete);
     }
+    return this.getAllUsersWithUrlNoMock(identification, page, size, url, isComplete);
+  }
 
+
+  /**
+   * Get all users or user parts with reduced data from the backend
+   * @param identification id of the common group
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @param url the url where to get the data from backend
+   * @param isComplete indicator if the url points to the endpoint which return the complete entity or the one with reduced data
+   * @returns the users
+   */
+  private getAllUsersWithUrlNoMock(identification: string, page: number | undefined, size: number | undefined, url: string, isComplete: boolean): Observable<User[]> {
     return this.http.get<ResponseWrapper>(`${url}/${identification}`, {
       headers: HTTP_URL_OPTIONS.headers,
       params: this.createPageingParams(page, size)
@@ -796,27 +811,40 @@ export class UserService extends BaseBackendService {
    */
   public getAllUsersFromBaseGroup(baseGroupIdentification: string, page: number | undefined, size: number | undefined): Observable<User[]> {
     this.init();
-    if (this.useMock) {
-      return this.getAllUsersFromBaseGroupMock(baseGroupIdentification);
-    }
-    let url = `${this.getAllUsersFromBaseGroupUrl}/${baseGroupIdentification}`;
+    return this.getAllUsersFromBaseGroupWithUrl(baseGroupIdentification, page, size, `${this.getAllUsersFromBaseGroupUrl}`, true);
+  }
 
-    return this.http.get<ResponseWrapper>(url, {
-      headers: HTTP_URL_OPTIONS.headers,
-      params: this.createPageingParams(page, size)
-    }).pipe(
-      map(data => {
-        let users = this.checkErrorAndGetResponse<IUser[]>(data, `occurs while getting all users of ${baseGroupIdentification} from backend`);
-        let result: User[] = new Array(users.length);
-        for (let i = 0; i < users.length; i++) {
-          result[i] = User.map(users[i]);
-          result[i].isGlobalAdmin = false;
-        }
-        return result;
-      }),
-      retry(RETRIES),
-      catchError(this.handleError)
-    );
+
+
+  /**
+   * Get all users of a base group from the backend
+   * @param baseGroupIdentification Id of the parent base group
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @returns the users
+   */
+  public getAllUserPartsFromBaseGroup(baseGroupIdentification: string, page: number | undefined, size: number | undefined): Observable<User[]> {
+    this.init();
+    return this.getAllUsersFromBaseGroupWithUrl(baseGroupIdentification, page, size, `${this.getAllUserPartsFromBaseGroupUrl}`, false);
+  }
+
+
+
+  /**
+   * Get all users of a base group from the backend
+   * @param baseGroupIdentification Id of the parent base group
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @param url the url where to get the data from backend
+   * @param isComplete indicator if the url points to the endpoint which return the complete entity or the one with reduced data
+   * @returns the users
+   */
+  public getAllUsersFromBaseGroupWithUrl(baseGroupIdentification: string, page: number | undefined, size: number | undefined, url: string, isComplete: boolean): Observable<User[]> {
+    this.init();
+    if (this.useMock) {
+      return this.getAllUsersFromBaseGroupMock(baseGroupIdentification, isComplete);
+    }
+    return this.getAllUsersWithUrlNoMock(baseGroupIdentification, page, size, url, isComplete);
   }
 
 
@@ -824,15 +852,27 @@ export class UserService extends BaseBackendService {
   /**
    * Creates mock for getting all users of a base group
    * @param baseGroupIdentification Id of the parent base group
+   * @param isComplete indicator if the url points to the endpoint which return the complete entity or the one with reduced data
    * @returns the mocked observable of all users
    */
-  private getAllUsersFromBaseGroupMock(baseGroupIdentification: string): Observable<User[]> {
+  private getAllUsersFromBaseGroupMock(baseGroupIdentification: string, isComplete: boolean): Observable<User[]> {
     this.initMocks();
     let result: User[] = [];
     let userIds = UserService.getUserIdsAtBaseGroupFromMock(baseGroupIdentification);
     for (let u of this.getAllUsersAtSelectedCommonGroupFromMock()) {
       if (userIds.includes(u.identification)) {
-        result.push(u)
+        let entry = User.map(u);
+        if (!isComplete) {
+          entry.mail = undefined;
+          entry.image = undefined;
+          entry.smallImage = undefined;
+          entry.lastLogin = undefined;
+          entry.validFrom = undefined;
+          entry.validTo = undefined;
+          entry.role = undefined;
+        }
+        entry.isComplete = isComplete;
+        result.push(entry);
       }
     }
     return of(result);
