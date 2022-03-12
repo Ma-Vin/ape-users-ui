@@ -121,6 +121,28 @@ describe('AllPrivilegeGroupsComponent', () => {
     expect(component.allObjectsfilterDataSource.data.includes(otherPrivilegeGroup)).toBeTrue();
   }));
 
+  it('ngOnInit - parts, with id at route', fakeAsync(() => {
+    privilegeGroup.isComplete = false;
+    otherPrivilegeGroup.isComplete = false;
+    let getAllPrivilegeGroupPartsSpy = spyOn(privilegeGroupService, 'getAllPrivilegeGroupParts').and.returnValue(of([otherPrivilegeGroup, privilegeGroup]));
+    let getPrivilegeGroupSpy = spyOn(privilegeGroupService, 'getPrivilegeGroup').and.returnValue(of(privilegeGroup));
+
+    spyOn(route.snapshot.paramMap, 'has').and.returnValue(true);
+    spyOn(route.snapshot.paramMap, 'get').and.returnValue(privilegeGroupId);
+
+    component.ngOnInit();
+
+    tick()
+
+    expect(getAllPrivilegeGroupPartsSpy).toHaveBeenCalled();
+    expect(getPrivilegeGroupSpy).toHaveBeenCalled();
+    expect(component.selectedObject.equals(privilegeGroup)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
+    expect(component.allObjectsfilterDataSource.data.includes(privilegeGroup)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.includes(otherPrivilegeGroup)).toBeTrue();
+  }));
+
+
 
 
 
@@ -131,11 +153,33 @@ describe('AllPrivilegeGroupsComponent', () => {
     component.areOnlyPartsToLoadAtList = false;
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
     let isAllowedToUpdatePrivilegeGroupSpy = spyOn(privilegeGroupPermissionsService, 'isAllowedToUpdatePrivilegeGroup').and.returnValue(true);
+    let getPrivilegeGroupSpy = spyOn(privilegeGroupService, 'getPrivilegeGroup').and.returnValue(of(privilegeGroup));
 
     component.onSelectObject(privilegeGroup);
 
     expect(loactionSpy).toHaveBeenCalledOnceWith(`${PRIVILEGE_GROUPS_PATH}/${privilegeGroup.identification}`);
     expect(isAllowedToUpdatePrivilegeGroupSpy).toHaveBeenCalled();
+    expect(getPrivilegeGroupSpy).not.toHaveBeenCalled();
+
+    expect(component.isNewObject).toBeFalse();
+    expect(component.showObjectDetail).toBeTrue();
+    expect(component.selectedObject === privilegeGroup).toBeFalse();
+    expect(component.selectedObject.equals(privilegeGroup)).toBeTrue();
+    expect(component.selectedObjectIdentification).toEqual(privilegeGroupId);
+    expect(component.disableUpdate).toBeFalse();
+  });
+
+  it('onSelectObject - parts, non selected before', () => {
+    let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
+    let isAllowedToUpdatePrivilegeGroupSpy = spyOn(privilegeGroupPermissionsService, 'isAllowedToUpdatePrivilegeGroup').and.returnValue(true);
+    let getPrivilegeGroupSpy = spyOn(privilegeGroupService, 'getPrivilegeGroup').and.returnValue(of(privilegeGroup));
+
+
+    component.onSelectObject(privilegeGroup);
+
+    expect(loactionSpy).toHaveBeenCalledOnceWith(`${PRIVILEGE_GROUPS_PATH}/${privilegeGroup.identification}`);
+    expect(isAllowedToUpdatePrivilegeGroupSpy).toHaveBeenCalled();
+    expect(getPrivilegeGroupSpy).toHaveBeenCalled();
 
     expect(component.isNewObject).toBeFalse();
     expect(component.showObjectDetail).toBeTrue();
@@ -149,6 +193,7 @@ describe('AllPrivilegeGroupsComponent', () => {
     component.areOnlyPartsToLoadAtList = false;
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
     let isAllowedToUpdatePrivilegeGroupSpy = spyOn(privilegeGroupPermissionsService, 'isAllowedToUpdatePrivilegeGroup').and.returnValue(true);
+    let getPrivilegeGroupSpy = spyOn(privilegeGroupService, 'getPrivilegeGroup').and.returnValue(of(privilegeGroup));
 
     component.selectedObject = privilegeGroup;
 
@@ -156,6 +201,7 @@ describe('AllPrivilegeGroupsComponent', () => {
 
     expect(loactionSpy).not.toHaveBeenCalledOnceWith(`${PRIVILEGE_GROUPS_PATH}/${privilegeGroup.identification}`);
     expect(isAllowedToUpdatePrivilegeGroupSpy).toHaveBeenCalled();
+    expect(getPrivilegeGroupSpy).not.toHaveBeenCalled();
 
     expect(component.isNewObject).toBeFalse();
     expect(component.showObjectDetail).toBeTrue();
@@ -169,6 +215,7 @@ describe('AllPrivilegeGroupsComponent', () => {
     component.areOnlyPartsToLoadAtList = false;
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { })
     let isAllowedToUpdatePrivilegeGroupSpy = spyOn(privilegeGroupPermissionsService, 'isAllowedToUpdatePrivilegeGroup').and.returnValue(true);
+    let getPrivilegeGroupSpy = spyOn(privilegeGroupService, 'getPrivilegeGroup').and.returnValue(of(privilegeGroup));
 
     component.selectedObject = otherPrivilegeGroup;
 
@@ -176,6 +223,7 @@ describe('AllPrivilegeGroupsComponent', () => {
 
     expect(loactionSpy).toHaveBeenCalledOnceWith(`${PRIVILEGE_GROUPS_PATH}/${privilegeGroup.identification}`);
     expect(isAllowedToUpdatePrivilegeGroupSpy).toHaveBeenCalled();
+    expect(getPrivilegeGroupSpy).not.toHaveBeenCalled();
 
     expect(component.isNewObject).toBeFalse();
     expect(component.showObjectDetail).toBeTrue();
@@ -189,11 +237,13 @@ describe('AllPrivilegeGroupsComponent', () => {
     component.areOnlyPartsToLoadAtList = false;
     let loactionSpy = spyOn(location, 'replaceState').and.callFake(() => { });
     let isAllowedToUpdatePrivilegeGroupSpy = spyOn(privilegeGroupPermissionsService, 'isAllowedToUpdatePrivilegeGroup').and.returnValue(false);
+    let getPrivilegeGroupSpy = spyOn(privilegeGroupService, 'getPrivilegeGroup').and.returnValue(of(privilegeGroup));
 
     component.onSelectObject(privilegeGroup);
 
     expect(loactionSpy).toHaveBeenCalledOnceWith(`${PRIVILEGE_GROUPS_PATH}/${privilegeGroup.identification}`);
     expect(isAllowedToUpdatePrivilegeGroupSpy).toHaveBeenCalled();
+    expect(getPrivilegeGroupSpy).not.toHaveBeenCalled();
 
     expect(component.isNewObject).toBeFalse();
     expect(component.showObjectDetail).toBeTrue();

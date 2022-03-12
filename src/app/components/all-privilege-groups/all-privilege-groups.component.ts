@@ -48,7 +48,14 @@ export class AllPrivilegeGroupsComponent extends ListDetailComponent<PrivilegeGr
   }
 
   protected loadAllObjectParts(): void {
-    this.loadAllObjects();
+    console.debug("AllPrivilegeGroupsComponent: get all privilege group parts from service");
+    this.privilegeGroupService.getAllPrivilegeGroupParts(undefined, undefined).subscribe(
+      allBaseGroups => {
+        console.debug("AllPrivilegeGroupsComponent: store all privilege group parts from service");
+        this.allObjectsfilterDataSource.data = allBaseGroups;
+        this.checkUrlId();
+      }
+    );
   }
 
   protected loadObject(identification: string): Observable<PrivilegeGroup> {

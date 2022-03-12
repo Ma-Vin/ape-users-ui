@@ -45,23 +45,52 @@ describe('PrivilegeGroupGuardService', () => {
   /**
    * canActivate
    */
-  it('canActivate - allowed to get all privilege groups', fakeAsync(() => {
+  it('canActivate - allowed to get all privilege groups and parts', fakeAsync(() => {
     let isAllowedToGetAllPrivilegeGroupsSpy = spyOn(privilegeGroupPermissionService, 'isAllowedToGetAllPrivilegeGroups').and.returnValue(true);
+    let isAllowedToGetAllPrivilegeGroupPartsSpy = spyOn(privilegeGroupPermissionService, 'isAllowedToGetAllPrivilegeGroupParts').and.returnValue(true);
 
     service.canActivate().subscribe(data => expect(data).toBeTrue());
 
     expect(isAllowedToGetAllPrivilegeGroupsSpy).toHaveBeenCalled();
+    expect(isAllowedToGetAllPrivilegeGroupPartsSpy).toHaveBeenCalled();
 
     tick();
   }));
 
 
-  it('canActivate - not allowed to get all privilege groups', fakeAsync(() => {
+  it('canActivate - not allowed to get all privilege groups, but parts', fakeAsync(() => {
     let isAllowedToGetAllPrivilegeGroupsSpy = spyOn(privilegeGroupPermissionService, 'isAllowedToGetAllPrivilegeGroups').and.returnValue(false);
+    let isAllowedToGetAllPrivilegeGroupPartsSpy = spyOn(privilegeGroupPermissionService, 'isAllowedToGetAllPrivilegeGroupParts').and.returnValue(true);
 
     service.canActivate().subscribe(data => expect(data).toBeFalse());
 
     expect(isAllowedToGetAllPrivilegeGroupsSpy).toHaveBeenCalled();
+    expect(isAllowedToGetAllPrivilegeGroupPartsSpy).not.toHaveBeenCalled();
+
+    tick();
+  }));
+
+  it('canActivate - not allowed to get all privilege group parts, but base groups', fakeAsync(() => {
+    let isAllowedToGetAllPrivilegeGroupsSpy = spyOn(privilegeGroupPermissionService, 'isAllowedToGetAllPrivilegeGroups').and.returnValue(true);
+    let isAllowedToGetAllPrivilegeGroupPartsSpy = spyOn(privilegeGroupPermissionService, 'isAllowedToGetAllPrivilegeGroupParts').and.returnValue(false);
+
+    service.canActivate().subscribe(data => expect(data).toBeFalse());
+
+    expect(isAllowedToGetAllPrivilegeGroupsSpy).toHaveBeenCalled();
+    expect(isAllowedToGetAllPrivilegeGroupPartsSpy).toHaveBeenCalled();
+
+    tick();
+  }));
+
+
+  it('canActivate - not allowed to get all privilege group and parts', fakeAsync(() => {
+    let isAllowedToGetAllPrivilegeGroupsSpy = spyOn(privilegeGroupPermissionService, 'isAllowedToGetAllPrivilegeGroups').and.returnValue(false);
+    let isAllowedToGetAllPrivilegeGroupPartsSpy = spyOn(privilegeGroupPermissionService, 'isAllowedToGetAllPrivilegeGroupParts').and.returnValue(false);
+
+    service.canActivate().subscribe(data => expect(data).toBeFalse());
+
+    expect(isAllowedToGetAllPrivilegeGroupsSpy).toHaveBeenCalled();
+    expect(isAllowedToGetAllPrivilegeGroupPartsSpy).not.toHaveBeenCalled();
 
     tick();
   }));

@@ -10,6 +10,6 @@ export class PrivilegeGroupGuardService {
   constructor(private privilegeGroupPermissionService: PrivilegeGroupPermissionsService) { }
 
   canActivate(): Observable<boolean> {
-    return of(this.privilegeGroupPermissionService.isAllowedToGetAllPrivilegeGroups());
+    return of(this.privilegeGroupPermissionService.isAllowedToGetAllPrivilegeGroups() && this.privilegeGroupPermissionService.isAllowedToGetAllPrivilegeGroupParts());
   }
 }
