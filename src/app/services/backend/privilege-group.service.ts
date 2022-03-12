@@ -23,6 +23,7 @@ export class PrivilegeGroupService extends BaseBackendService {
 
   private getPrivilegeGroupUrl: string | undefined;
   private getAllPrivilegeGroupsUrl: string | undefined;
+  private getAllPrivilegeGroupPartsUrl: string | undefined;
   private updatePrivilegeGroupUrl: string | undefined;
   private createPrivilegeGroupUrl: string | undefined;
   private deletePrivilegeGroupUrl: string | undefined;
@@ -45,6 +46,7 @@ export class PrivilegeGroupService extends BaseBackendService {
 
     this.getPrivilegeGroupUrl = privilegeGroupControllerUrl.concat('/getPrivilegeGroup');
     this.getAllPrivilegeGroupsUrl = privilegeGroupControllerUrl.concat('/getAllPrivilegeGroups');
+    this.getAllPrivilegeGroupPartsUrl = privilegeGroupControllerUrl.concat('/getAllPrivilegeGroupParts');
     this.updatePrivilegeGroupUrl = privilegeGroupControllerUrl.concat('/updatePrivilegeGroup');
     this.createPrivilegeGroupUrl = privilegeGroupControllerUrl.concat('/createPrivilegeGroup');
     this.deletePrivilegeGroupUrl = privilegeGroupControllerUrl.concat('/deletePrivilegeGroup');
@@ -172,20 +174,47 @@ export class PrivilegeGroupService extends BaseBackendService {
    */
   public getAllPrivilegeGroups(page: number | undefined, size: number | undefined): Observable<PrivilegeGroup[]> {
     this.init();
+    return this.getAllPrivilegeGroupsWithUrl(page, size, `${this.getAllPrivilegeGroupsUrl}`, true);
+  }
+
+
+
+  /**
+   * Get all privilege group parts from the backend
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @returns the privilege group parts
+   */
+  public getAllPrivilegeGroupParts(page: number | undefined, size: number | undefined): Observable<PrivilegeGroup[]> {
+    this.init();
+    return this.getAllPrivilegeGroupsWithUrl(page, size, `${this.getAllPrivilegeGroupPartsUrl}`, false);
+  }
+
+
+
+  /**
+   * Get all privilege group or group parts with reduced data from the backend
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @param url the url where to get the data from backend
+   * @param isComplete indicator if the url points to the endpoint which return the complete entity or the one with reduced data
+   * @returns the privilege groups
+   */
+  private getAllPrivilegeGroupsWithUrl(page: number | undefined, size: number | undefined, url: string, isComplete: boolean): Observable<PrivilegeGroup[]> {
     if (this.useMock) {
-      return this.getAllPrivilegeGroupsMock();
+      return this.getAllPrivilegeGroupsMock(isComplete);
     }
-    let url = `${this.getAllPrivilegeGroupsUrl}`;
 
     return this.http.get<ResponseWrapper>(url, {
       headers: HTTP_URL_OPTIONS.headers,
       params: this.createPageingParams(page, size)
     }).pipe(
       map(data => {
-        let privilegeGroups = this.checkErrorAndGetResponse<IPrivilegeGroup[]>(data, `occurs while getting all privilege groups from backend`);
+        let privilegeGroups = this.checkErrorAndGetResponse<IPrivilegeGroup[]>(data, `ooccurs while getting all privilege groups from backend`);
         let result: PrivilegeGroup[] = new Array(privilegeGroups.length);
         for (let i = 0; i < privilegeGroups.length; i++) {
           result[i] = PrivilegeGroup.map(privilegeGroups[i]);
+          result[i].isComplete = isComplete;
         }
         return result;
       }),
@@ -195,15 +224,22 @@ export class PrivilegeGroupService extends BaseBackendService {
   }
 
 
-
   /**
    * Creates mock for getting all privilege groups
+   * @param isComplete indicator whether return privilege groups completly or with reduced data
    * @returns the mocked observable of all privilege groups
    */
-  private getAllPrivilegeGroupsMock(): Observable<PrivilegeGroup[]> {
+  private getAllPrivilegeGroupsMock(isComplete: boolean): Observable<PrivilegeGroup[]> {
     let copy: PrivilegeGroup[] = [];
     for (let bg of this.getAllPrivilegesAtSelectedCommonGroupFromMock()) {
-      copy.push(bg)
+      let entry = PrivilegeGroup.map(bg);
+      if (!isComplete) {
+        entry.description = undefined;
+        entry.validFrom = undefined;
+        entry.validTo = undefined;
+      }
+      entry.isComplete = isComplete;
+      copy.push(entry);
     }
     return of(copy);
   }
