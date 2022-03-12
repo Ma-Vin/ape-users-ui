@@ -26,6 +26,7 @@ export const INITIAL_USER_ID_AT_MOCK = 'UAA00002';
 export class UserService extends BaseBackendService {
   private getUserUrl: string | undefined;
   private getAllUsersUrl: string | undefined;
+  private getAllUserPartsUrl: string | undefined;
   private updateUserUrl: string | undefined;
   private createUserUrl: string | undefined;
   private deleteUserUrl: string | undefined;
@@ -54,6 +55,7 @@ export class UserService extends BaseBackendService {
 
     this.getUserUrl = userControllerUrl.concat('/getUser');
     this.getAllUsersUrl = userControllerUrl.concat('/getAllUsers');
+    this.getAllUserPartsUrl = userControllerUrl.concat('/getAllUserParts');
     this.updateUserUrl = userControllerUrl.concat('/updateUser');
     this.createUserUrl = userControllerUrl.concat('/createUser');
     this.deleteUserUrl = userControllerUrl.concat('/deleteUser');
@@ -267,6 +269,7 @@ export class UserService extends BaseBackendService {
   }
 
 
+
   /**
    * Get all users at a common group from the backend
    * @param commonGroupIdentification id of the common group
@@ -276,21 +279,50 @@ export class UserService extends BaseBackendService {
    */
   public getAllUsers(commonGroupIdentification: string, page: number | undefined, size: number | undefined): Observable<User[]> {
     this.init();
-    if (this.useMock) {
-      return this.getAllUsersMock();
-    }
-    let url = `${this.getAllUsersUrl}/${commonGroupIdentification}`;
+    return this.getAllUsersWithUrl(commonGroupIdentification, page, size, `${this.getAllUsersUrl}`, true);
+  }
 
-    return this.http.get<ResponseWrapper>(url, {
+
+
+  /**
+   * Get all user parts at a common group from the backend
+   * @param commonGroupIdentification id of the common group
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @returns the user parts
+   */
+  public getAllUserParts(commonGroupIdentification: string, page: number | undefined, size: number | undefined): Observable<User[]> {
+    this.init();
+    return this.getAllUsersWithUrl(commonGroupIdentification, page, size, `${this.getAllUserPartsUrl}`, false);
+  }
+
+
+
+  /**
+   * Get all users or user parts with reduced data from the backend
+   * @param identification id of the common group
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @param url the url where to get the data from backend
+   * @param isComplete indicator if the url points to the endpoint which return the complete entity or the one with reduced data
+   * @returns the users
+   */
+  private getAllUsersWithUrl(identification: string, page: number | undefined, size: number | undefined, url: string, isComplete: boolean): Observable<User[]> {
+    if (this.useMock) {
+      return this.getAllUsersMock(isComplete);
+    }
+
+    return this.http.get<ResponseWrapper>(`${url}/${identification}`, {
       headers: HTTP_URL_OPTIONS.headers,
       params: this.createPageingParams(page, size)
     }).pipe(
       map(data => {
-        let users = this.checkErrorAndGetResponse<IUser[]>(data, `occurs while getting all users at ${commonGroupIdentification} from backend`);
+        let users = this.checkErrorAndGetResponse<IUser[]>(data, `occurs while getting all users at ${identification} from backend`);
         let result: User[] = new Array(users.length);
         for (let i = 0; i < users.length; i++) {
           result[i] = User.map(users[i]);
           result[i].isGlobalAdmin = false;
+          result[i].isComplete = isComplete;
         }
         return result;
       }),
@@ -299,14 +331,27 @@ export class UserService extends BaseBackendService {
     );
   }
 
+
   /**
    * Creates mock for getting all users
+   * @param isComplete indicator if the url points to the endpoint which return the complete entity or the one with reduced data
    * @returns the mocked observable of all users
    */
-  private getAllUsersMock(): Observable<User[]> {
+  private getAllUsersMock(isComplete: boolean): Observable<User[]> {
     let copy: User[] = [];
     for (let u of this.getAllUsersAtSelectedCommonGroupFromMock()) {
-      copy.push(u)
+      let entry = User.map(u);
+      if (!isComplete) {
+        entry.mail = undefined;
+        entry.image = undefined;
+        entry.smallImage = undefined;
+        entry.lastLogin = undefined;
+        entry.validFrom = undefined;
+        entry.validTo = undefined;
+        entry.role = undefined;
+      }
+      entry.isComplete = isComplete;
+      copy.push(entry);
     }
     return of(copy);
   }

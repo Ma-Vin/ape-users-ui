@@ -43,42 +43,9 @@ describe('UserService', () => {
     adminGroupId: 'AGAA00001'
   };
 
-  const mockIUser: IUser = {
-    identification: userId,
-    firstName: firstName,
-    lastName: lastName,
-    mail: `${firstName.toLocaleLowerCase()}.${lastName.toLocaleLowerCase()}@ma-vin.de`,
-    image: undefined,
-    smallImage: undefined,
-    lastLogin: new Date(2021, 9, 25, 20, 15, 1),
-    validFrom: new Date(2021, 9, 1),
-    validTo: undefined,
-    role: Role.VISITOR,
-    isComplete: true
-  }
-
-  const modifiedUser = User.map({
-    identification: userId,
-    firstName: firstName,
-    lastName: lastName,
-    mail: 'max.power@ma-vin.de',
-    image: undefined,
-    smallImage: undefined,
-    lastLogin: new Date(2021, 9, 25, 20, 15, 1),
-    validFrom: new Date(2021, 9, 1),
-    validTo: undefined,
-    isGlobalAdmin: false,
-    role: Role.VISITOR
-  } as User);
-
-  const mockCommonGroup = CommonGroup.map({
-    description: 'some description',
-    groupName: 'commonGroupName',
-    identification: commonGroupId,
-    validFrom: new Date(2021, 9, 1),
-    validTo: undefined,
-    defaultRole: Role.VISITOR
-  } as ICommonGroup);
+  let mockIUser: IUser;
+  let modifiedUser: User;
+  let mockCommonGroup: CommonGroup;
 
   const mockErrorResponseWrapper: ResponseWrapper = {
     response: undefined,
@@ -108,7 +75,45 @@ describe('UserService', () => {
     BaseBackendService.clearMockData();
   });
 
+
   function initMockData() {
+    mockIUser = {
+      identification: userId,
+      firstName: firstName,
+      lastName: lastName,
+      mail: `${firstName.toLocaleLowerCase()}.${lastName.toLocaleLowerCase()}@ma-vin.de`,
+      image: undefined,
+      smallImage: undefined,
+      lastLogin: new Date(2021, 9, 25, 20, 15, 1),
+      validFrom: new Date(2021, 9, 1),
+      validTo: undefined,
+      role: Role.VISITOR,
+      isComplete: true
+    } as IUser;
+
+    modifiedUser = User.map({
+      identification: userId,
+      firstName: firstName,
+      lastName: lastName,
+      mail: 'max.power@ma-vin.de',
+      image: undefined,
+      smallImage: undefined,
+      lastLogin: new Date(2021, 9, 25, 20, 15, 1),
+      validFrom: new Date(2021, 9, 1),
+      validTo: undefined,
+      isGlobalAdmin: false,
+      role: Role.VISITOR
+    } as User);
+
+    mockCommonGroup = CommonGroup.map({
+      description: 'some description',
+      groupName: 'commonGroupName',
+      identification: commonGroupId,
+      validFrom: new Date(2021, 9, 1),
+      validTo: undefined,
+      defaultRole: Role.VISITOR
+    } as ICommonGroup);
+
     BaseBackendService.clearMockData();
 
     spyOn(configService, 'getConfig').and.returnValue(mockConfig);
@@ -243,8 +248,10 @@ describe('UserService', () => {
   }));
 
 
+
+
   /**
-   * 
+   * getAllUsers
    */
   it('getAllUsers - all ok', fakeAsync(() => {
     let mockResponseWrapper: ResponseWrapper = {
@@ -265,6 +272,7 @@ describe('UserService', () => {
       expect(data[0].validFrom).toEqual(mockIUser.validFrom);
       expect(data[0].validTo).toBeUndefined();
       expect(data[0].isGlobalAdmin).toBeFalse();
+      expect(data[0].isComplete).toBeTrue();
     });
 
     const req = httpMock.expectOne(`//localhost:8080/user/getAllUsers/${commonGroupId}`);
@@ -296,6 +304,7 @@ describe('UserService', () => {
       expect(data[0].validFrom).toEqual(mockIUser.validFrom);
       expect(data[0].validTo).toBeUndefined();
       expect(data[0].isGlobalAdmin).toBeFalse();
+      expect(data[0].isComplete).toBeTrue();
     });
 
     const req = httpMock.expectOne(`//localhost:8080/user/getAllUsers/${commonGroupId}?page=1&size=50`);
@@ -359,6 +368,7 @@ describe('UserService', () => {
       expect(data).toBeTruthy();
       expect(data.length).toEqual(1);
       expect(data[0].identification).toEqual(userId);
+      expect(data[0].isComplete).toBeTrue();
     });
 
     httpMock.expectNone(`//localhost:8080/user/getAllUsers/${commonGroupId}`);
@@ -366,6 +376,152 @@ describe('UserService', () => {
     tick();
   }));
 
+
+
+
+  /**
+   * getAllUserParts
+   */
+  it('getAllUserParts - all ok', fakeAsync(() => {
+    mockIUser.image = undefined;
+    mockIUser.smallImage = undefined;
+    mockIUser.lastLogin = undefined;
+    mockIUser.validFrom = undefined;
+    mockIUser.validTo = undefined;
+
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockIUser],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAllUserParts(commonGroupId, undefined, undefined).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].identification).toEqual(mockIUser.identification);
+      expect(data[0].firstName).toEqual(mockIUser.firstName);
+      expect(data[0].lastName).toEqual(mockIUser.lastName);
+      expect(data[0].image).toBeUndefined();
+      expect(data[0].smallImage).toBeUndefined();
+      expect(data[0].lastLogin).toBeUndefined();
+      expect(data[0].validFrom).toBeUndefined();
+      expect(data[0].validTo).toBeUndefined();
+      expect(data[0].isComplete).toBeFalse();
+      expect(data[0].isGlobalAdmin).toBeFalse();
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/user/getAllUserParts/${commonGroupId}`);
+    expect(req.request.method).toEqual("GET");
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/user/getAllUserParts/${commonGroupId}`);
+
+    tick();
+  }));
+
+  it('getAllUserParts - with pageing', fakeAsync(() => {
+    mockIUser.image = undefined;
+    mockIUser.smallImage = undefined;
+    mockIUser.lastLogin = undefined;
+    mockIUser.validFrom = undefined;
+    mockIUser.validTo = undefined;
+
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockIUser],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAllUserParts(commonGroupId, 1, 50).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].identification).toEqual(mockIUser.identification);
+      expect(data[0].firstName).toEqual(mockIUser.firstName);
+      expect(data[0].lastName).toEqual(mockIUser.lastName);
+      expect(data[0].image).toBeUndefined();
+      expect(data[0].smallImage).toBeUndefined();
+      expect(data[0].lastLogin).toBeUndefined();
+      expect(data[0].validFrom).toBeUndefined();
+      expect(data[0].validTo).toBeUndefined();
+      expect(data[0].isComplete).toBeFalse();
+      expect(data[0].isGlobalAdmin).toBeFalse();
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/user/getAllUserParts/${commonGroupId}?page=1&size=50`);
+    expect(req.request.method).toEqual("GET");
+    expect(req.request.params.get('page')).toEqual('1');
+    expect(req.request.params.get('size')).toEqual('50');
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/user/getAllUserParts/${commonGroupId}?page=1&size=50`);
+
+    tick();
+  }));
+
+
+  it('getAllUserParts - with error status', fakeAsync(() => {
+    service.getAllUserParts(commonGroupId, undefined, undefined).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/user/getAllUserParts/${commonGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockErrorResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/user/getAllUserParts/${commonGroupId}`);
+
+    tick();
+  }));
+
+
+  it('getAllUserParts - with fatal status', fakeAsync(() => {
+    service.getAllUserParts(commonGroupId, undefined, undefined).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/user/getAllUserParts/${commonGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockFatalResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/user/getAllUserParts/${commonGroupId}`);
+
+    tick();
+  }));
+
+
+  it('getAllUserParts - mock', fakeAsync(() => {
+    service.useMock = true;
+    service.getAllUserParts(commonGroupId, undefined, undefined).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].identification).toEqual(userId);
+      expect(data[0].image).toBeUndefined();
+      expect(data[0].smallImage).toBeUndefined();
+      expect(data[0].lastLogin).toBeUndefined();
+      expect(data[0].validFrom).toBeUndefined();
+      expect(data[0].validTo).toBeUndefined();
+      expect(data[0].isComplete).toBeFalse();
+      expect(data[0].isGlobalAdmin).toBeFalse();
+    });
+
+    httpMock.expectNone(`//localhost:8080/user/getAllUserParts/${commonGroupId}`);
+
+    tick();
+  }));
 
 
   /**
