@@ -843,4 +843,38 @@ describe('PermissionsService', () => {
   });
 
 
+
+  /**
+   * isAllowedToGetAllUserPartsAtPrivilegeGroup
+   */
+  it('isAllowedToGetAllUserPartsAtPrivilegeGroup - authorized', () => {
+    activeUser.role = Role.NOT_RELEVANT;
+    activeUser.isGlobalAdmin = true;
+    expect(service.isAllowedToGetAllUserPartsAtPrivilegeGroup()).toBeTrue();
+    activeUser.role = Role.VISITOR;
+    activeUser.isGlobalAdmin = false;
+    expect(service.isAllowedToGetAllUserPartsAtPrivilegeGroup()).toBeTrue();
+    activeUser.role = Role.CONTRIBUTOR;
+    expect(service.isAllowedToGetAllUserPartsAtPrivilegeGroup()).toBeTrue();
+    activeUser.role = Role.MANAGER;
+    expect(service.isAllowedToGetAllUserPartsAtPrivilegeGroup()).toBeTrue();
+    activeUser.role = Role.ADMIN;
+    expect(service.isAllowedToGetAllUserPartsAtPrivilegeGroup()).toBeTrue();
+    activeUser.role = undefined;
+    expect(service.isAllowedToGetAllUserPartsAtPrivilegeGroup()).toBeTrue();
+
+    expect(selectionServiceSpy).toHaveBeenCalledTimes(6);
+  });
+
+  it('isAllowedToGetAllUserPartsAtPrivilegeGroup -  unauthorized', () => {
+    activeUser.role = Role.BLOCKED;
+    expect(service.isAllowedToGetAllUserPartsAtPrivilegeGroup()).toBeFalse();
+    activeUser.role = Role.NOT_RELEVANT;
+    expect(service.isAllowedToGetAllUserPartsAtPrivilegeGroup()).toBeFalse();
+    selectionServiceSpy.and.returnValue(undefined);
+    expect(service.isAllowedToGetAllUserPartsAtPrivilegeGroup()).toBeFalse();
+
+    expect(selectionServiceSpy).toHaveBeenCalledTimes(3);
+  });
+
 });
