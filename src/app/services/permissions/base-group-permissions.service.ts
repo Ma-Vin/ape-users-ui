@@ -112,6 +112,30 @@ export class BaseGroupPermissionsService extends BasePermissionsService {
 
 
   /**
+   * @returns true if the active user is allowed to count available base groups for an other one. Otherwise false.
+   */
+  isAllowedToCountAvailableBasesForBaseGroup(): boolean {
+    return this.isAllowedToGetAvailableBasesForBaseGroup();
+  }
+
+
+  /**
+   * @returns true if the active user is allowed to get available base groups for an other one. Otherwise false.
+   */
+  isAllowedToGetAvailableBasesForBaseGroup(): boolean {
+    return this.isAllowedToGetAllBasesAtBaseGroup();
+  }
+
+
+  /**
+   * @returns true if the active user is allowed to get available base group parts for an other one. Otherwise false.
+   */
+  isAllowedToGetAvailableBasePartsForBaseGroup(): boolean {
+    return this.isAllowedToGetAvailableBasesForBaseGroup();
+  }
+
+
+  /**
    * @returns true if the active user is allowed to add a base group to a privilege one. Otherwise false.
    */
   isAllowedToAddBaseToPrivilegeGroup() {
@@ -142,12 +166,36 @@ export class BaseGroupPermissionsService extends BasePermissionsService {
     return this.isAllowedToGetBaseGroup();
   }
 
-  
+
   /**
    * @returns true if the active user is allowed to get all base group parts from a privilege one. Otherwise false.
    */
-   isAllowedToGetAllBasePartsAtPrivilegeGroup(): boolean {
+  isAllowedToGetAllBasePartsAtPrivilegeGroup(): boolean {
     return this.isAllowedToGetAllBasesAtPrivilegeGroup();
+  }
+
+
+  /**
+   * @returns true if the active user is allowed to count available base groups for a privilege one. Otherwise false.
+   */
+  isAllowedToCountAvailableBasesForPrivilegeGroup(): boolean {
+    return this.isAllowedToGetAvailableBasesForPrivilegeGroup();
+  }
+
+
+  /**
+   * @returns true if the active user is allowed to get available base groups for a privilege one. Otherwise false.
+   */
+  isAllowedToGetAvailableBasesForPrivilegeGroup(): boolean {
+    return this.isAllowedToGetAllBasesAtPrivilegeGroup();
+  }
+
+
+  /**
+   * @returns true if the active user is allowed to get available base group parts for a privilege one. Otherwise false.
+   */
+  isAllowedToGetAvailableBasePartsForPrivilegeGroup(): boolean {
+    return this.isAllowedToGetAvailableBasesForPrivilegeGroup();
   }
 
 }
