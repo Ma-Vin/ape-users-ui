@@ -47,6 +47,9 @@ export class BaseGroupService extends BaseBackendService {
   private countAvailableBasesForPrivilegeGroupUrl: string | undefined;
   private getAvailableBasesForBaseGroupUrl: string | undefined;
   private getAvailableBasePartsForBaseGroupUrl: string | undefined;
+  private getAvailableBasesForPrivilegeGroupUrl: string | undefined;
+  private getAvailableBasePartsForPrivilegeGroupUrl: string | undefined;
+
 
 
   constructor(private http: HttpClient, configService: ConfigService, private selectionService: SelectionService) {
@@ -83,6 +86,8 @@ export class BaseGroupService extends BaseBackendService {
     this.countAvailableBasesForPrivilegeGroupUrl = baseGroupControllerUrl.concat('/countAvailableBasesForPrivilegeGroup');
     this.getAvailableBasesForBaseGroupUrl = baseGroupControllerUrl.concat('/getAllAvailableBasesForBaseGroup');
     this.getAvailableBasePartsForBaseGroupUrl = baseGroupControllerUrl.concat('/getAllAvailableBasePartsForBaseGroup');
+    this.getAvailableBasesForPrivilegeGroupUrl = baseGroupControllerUrl.concat('/getAllAvailableBasesForPrivilegeGroup');
+    this.getAvailableBasePartsForPrivilegeGroupUrl = baseGroupControllerUrl.concat('/getAllAvailableBasePartsForPrivilegeGroup');
 
     return true;
   }
@@ -699,7 +704,7 @@ export class BaseGroupService extends BaseBackendService {
 
   /**
    * Get all sub base group parts of an other one from the backend
-   * @param url url of the get target, including parameters
+   * @param url url of the get target
    * @param parentIdentification Id of the parent base group
    * @param page zero-based page index, must not be negative.
    * @param size the size of the page to be returned, must be greater than 0.
@@ -789,7 +794,7 @@ export class BaseGroupService extends BaseBackendService {
 
   /**
    * Get available base groups for an other one from the backend
-   * @param url url of the get target, including parameters
+   * @param url url of the get target
    * @param parentIdentification Id of the parent base group
    * @param page zero-based page index, must not be negative.
    * @param size the size of the page to be returned, must be greater than 0.
@@ -999,10 +1004,7 @@ export class BaseGroupService extends BaseBackendService {
    */
   public getAllBasesAtPrivilegeGroup(parentIdentification: string, role: Role | undefined, page: number | undefined, size: number | undefined): Observable<BaseGroup[]> {
     this.init();
-    if (this.useMock) {
-      return this.getAllBasesAtrivilegeGroupMock(parentIdentification, role, true);
-    }
-    return this.getAllBaseFromGroupWithUrlNoMock(`${this.getAllBasesAtPrivilegeGroupUrl}`, parentIdentification, role, page, size, true);
+    return this.getAllBasePartsAtPrivilegeGroupWithUrl(`${this.getAllBasesAtPrivilegeGroupUrl}`, parentIdentification, role, page, size, true);
   }
 
 
@@ -1017,12 +1019,26 @@ export class BaseGroupService extends BaseBackendService {
    */
   public getAllBasePartsAtPrivilegeGroup(parentIdentification: string, role: Role | undefined, page: number | undefined, size: number | undefined): Observable<BaseGroup[]> {
     this.init();
-    if (this.useMock) {
-      return this.getAllBasesAtrivilegeGroupMock(parentIdentification, role, false);
-    }
-    return this.getAllBaseFromGroupWithUrlNoMock(`${this.getAllBasePartsAtPrivilegeGroupUrl}`, parentIdentification, role, page, size, false);
+    return this.getAllBasePartsAtPrivilegeGroupWithUrl(`${this.getAllBasePartsAtPrivilegeGroupUrl}`, parentIdentification, role, page, size, false);
   }
 
+  /**
+   * Get all sub base groups of a privilege one from the backend
+   * @param url — url of the get target
+   * @param parentIdentification Id of the parent base group
+   * @param role the role which filter the base groups. If undefined all will be determined
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @param isComplete — indicator if the url points to the endpoint which return the complete entity or the one with reduced data
+   * @returns the base groups
+   */
+  public getAllBasePartsAtPrivilegeGroupWithUrl(url: string, parentIdentification: string, role: Role | undefined, page: number | undefined, size: number | undefined, isComplete: boolean): Observable<BaseGroup[]> {
+    this.init();
+    if (this.useMock) {
+      return this.getAllBasesAtPrivilegeGroupMock(parentIdentification, role, isComplete);
+    }
+    return this.getAllBaseFromGroupWithUrlNoMock(url, parentIdentification, role, page, size, isComplete);
+  }
 
 
 
@@ -1052,11 +1068,75 @@ export class BaseGroupService extends BaseBackendService {
   }
 
 
+  /**
+   * Get available base groups for a privilege group from the backend
+   * @param parentIdentification Id of the parent privilege group
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @returns the base groups
+   */
+  public getAvailableBasesForPrivilegeGroup(parentIdentification: string, page: number | undefined, size: number | undefined): Observable<BaseGroup[]> {
+    this.init();
+    return this.getAvailableBasesForPrivilegeGroupWithUrl(`${this.getAvailableBasesForPrivilegeGroupUrl}`, parentIdentification, page, size, true);
+  }
+
+
+  /**
+   * Get available base group parts for a privilege group from the backend
+   * @param parentIdentification Id of the parent privilege group
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @returns the base groups
+   */
+  public getAvailableBasePartsForPrivilegeGroup(parentIdentification: string, page: number | undefined, size: number | undefined): Observable<BaseGroup[]> {
+    this.init();
+    return this.getAvailableBasesForPrivilegeGroupWithUrl(`${this.getAvailableBasePartsForPrivilegeGroupUrl}`, parentIdentification, page, size, false);
+  }
+
+
+  /**
+   * Get available base groups for a privilege group from the backend
+   * @param url url of the get target
+   * @param parentIdentification Id of the parent privilege group
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @param isComplete indicator if the url points to the endpoint which
+   * @returns the base groups
+   */
+  private getAvailableBasesForPrivilegeGroupWithUrl(url: string, parentIdentification: string, page: number | undefined, size: number | undefined, isComplete: boolean): Observable<BaseGroup[]> {
+    this.init();
+    if (this.useMock) {
+      return this.gettAvailableBasesForPrivilegeGroupMock(parentIdentification, isComplete);
+    }
+    return this.getAllBaseFromGroupWithUrlNoMock(url, parentIdentification, undefined, page, size, isComplete);
+  }
+
+
+  /**
+   * Creates mock for gettingavailable base groups for a privilege group
+   * @param parentIdentification Id of the parent base group
+   * @param isComplete indicator if the url points to the endpoint which return the complete entity or the one with reduced data
+   * @returns the mocked observable of available base groups
+   */
+  private gettAvailableBasesForPrivilegeGroupMock(parentIdentification: string, isComplete: boolean): Observable<BaseGroup[]> {
+    let result: BaseGroup[] = [];
+    let subBaseGroupIds: string[] = [];
+    BaseGroupService.getBaseGroupIdRolesAtPrivilegeFromMock(parentIdentification).forEach(br => subBaseGroupIds.push(br.baseGroupIdentification));
+    for (let bg of this.getAllBasesAtSelectedCommonGroupFromMock()) {
+      if (!subBaseGroupIds.includes(bg.identification)) {
+        let entry = this.mapBaseGroupForMock(bg, isComplete);
+        result.push(entry)
+      }
+    }
+    return of(result);
+  }
+
+
 
 
   /**
    * Get all base groups of an other parent group from the backend
-   * @param url url of the get target, including parameters
+   * @param url url of the get target
    * @param parentIdentification Id of the parent base group
    * @param role the role which filter the base groups. If undefined all will be determined
    * @param page zero-based page index, must not be negative.
@@ -1103,7 +1183,7 @@ export class BaseGroupService extends BaseBackendService {
    * @param isComplete indicator if the url points to the endpoint which return the complete entity or the one with reduced data
    * @returns the mocked observable of all sub base groups
    */
-  private getAllBasesAtrivilegeGroupMock(parentIdentification: string, role: Role | undefined, isComplete: boolean): Observable<BaseGroup[]> {
+  private getAllBasesAtPrivilegeGroupMock(parentIdentification: string, role: Role | undefined, isComplete: boolean): Observable<BaseGroup[]> {
     this.initMocks();
     let result: BaseGroup[] = [];
     let baseGroups = this.getAllBasesAtSelectedCommonGroupFromMock();
