@@ -12,7 +12,7 @@ import { BaseBackendService, RETRIES } from '../base/base-backend.service';
 import { SelectionService } from '../util/selection.service';
 import { INITIAL_COMMON_GROUP_ID_AT_MOCK } from './common-group.service';
 import { BaseGroupService, INITIAL_BASE_GROUP_ID_AT_MOCK } from './base-group.service';
-import { INITIAL_USER_ID_AT_MOCK, UserService } from './user.service';
+import { INITIAL_USER_ID_AT_MOCK, UserService, USERS_AT_COMMON_GROUP } from './user.service';
 import { UserIdRole } from '../../model/user-id-role.model';
 import { INITIAL_PRIVILEGE_GROUP_ID_AT_MOCK } from './privilege-group.service';
 
@@ -28,6 +28,7 @@ describe('UserService', () => {
 
 
   const userId = INITIAL_USER_ID_AT_MOCK;
+  const secondUserId = INITIAL_USER_ID_AT_MOCK + "2";
   const firstName = 'Lower';
   const lastName = 'Power';
 
@@ -45,6 +46,7 @@ describe('UserService', () => {
 
   let mockIUser: IUser;
   let modifiedUser: User;
+  let secondUser: User;
   let mockCommonGroup: CommonGroup;
 
   const mockErrorResponseWrapper: ResponseWrapper = {
@@ -103,6 +105,20 @@ describe('UserService', () => {
       validTo: undefined,
       isGlobalAdmin: false,
       role: Role.VISITOR
+    } as User);
+
+    secondUser = User.map({
+      identification: secondUserId,
+      firstName: firstName + '2',
+      lastName: lastName + '2',
+      mail: 'max.power@ma-vin.de',
+      image: undefined,
+      smallImage: undefined,
+      lastLogin: new Date(2021, 9, 25, 20, 15, 1),
+      validFrom: new Date(2021, 9, 1),
+      validTo: undefined,
+      isGlobalAdmin: false,
+      role: Role.MANAGER
     } as User);
 
     mockCommonGroup = CommonGroup.map({
@@ -1781,6 +1797,91 @@ describe('UserService', () => {
     tick();
   }));
 
+
+
+  /**
+   * countAvailableUsersForBaseGroup
+   */
+  it('countAvailableUsersForBaseGroup - all ok', fakeAsync(() => {
+    let mockResponseWrapper: ResponseWrapper = {
+      response: 42,
+      status: Status.OK,
+      messages: []
+    }
+
+    service.countAvailableUsersForBaseGroup(baseGroupId).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data).toEqual(42);
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/user/countAvailableUsersForBaseGroup/${baseGroupId}`);
+    expect(req.request.method).toEqual("GET");
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/user/countAvailableUsersForBaseGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+  it('countAvailableUsersForBaseGroup - with error status', fakeAsync(() => {
+    service.countAvailableUsersForBaseGroup(baseGroupId).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/user/countAvailableUsersForBaseGroup/${baseGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockErrorResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/user/countAvailableUsersForBaseGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+  it('countAvailableUsersForBaseGroup - with fatal status', fakeAsync(() => {
+    service.countAvailableUsersForBaseGroup(baseGroupId).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/user/countAvailableUsersForBaseGroup/${baseGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockFatalResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/user/countAvailableUsersForBaseGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+  it('countAvailableUsersForBaseGroup - mock', fakeAsync(() => {
+    service.useMock = true;
+
+    service.countAvailableUsersForBaseGroup(baseGroupId).subscribe(data => {
+      expect(data).toBeFalsy();
+      expect(data).toEqual(0);
+    });
+    service.addUserToMock(secondUser, commonGroupId);
+
+    service.countAvailableUsersForBaseGroup(baseGroupId).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data).toEqual(1);
+    });
+
+    httpMock.expectNone(`//localhost:8080/user/countAvailableUsersForBaseGroup/${baseGroupId}`);
+
+    tick();
+  }));
 
 
 

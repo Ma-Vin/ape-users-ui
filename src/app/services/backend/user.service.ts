@@ -15,7 +15,7 @@ import { INITIAL_COMMON_GROUP_ID_AT_MOCK } from './common-group.service';
 import { INITIAL_PRIVILEGE_GROUP_ID_AT_MOCK, PrivilegeGroupService, PRIVILEGES_AT_COMMON_GROUP } from './privilege-group.service';
 
 
-const USERS_AT_COMMON_GROUP = 'usersAtCommonGroup'
+export const USERS_AT_COMMON_GROUP = 'usersAtCommonGroup'
 const USERS_AT_BASE_GROUP = 'usersAtBaseGroup'
 const USERS_AT_PRIVILEGE_GROUP = 'usersAtPrivilegeGroup'
 export const INITIAL_USER_ID_AT_MOCK = 'UAA00002';
@@ -43,6 +43,7 @@ export class UserService extends BaseBackendService {
   private countUsersAtPrivilegeGroupUrl: string | undefined;
   private getAllUsersFromPrivilegeGroupUrl: string | undefined;
   private getAllUserPartsFromPrivilegeGroupUrl: string | undefined;
+  private countAvailableUsersForBaseGroupUrl: string | undefined;
 
   constructor(private http: HttpClient, configService: ConfigService, private selectionService: SelectionService) {
     super('UserService', configService);
@@ -74,12 +75,13 @@ export class UserService extends BaseBackendService {
     this.countUsersAtPrivilegeGroupUrl = userControllerUrl.concat('/countUsersAtPrivilegeGroup');
     this.getAllUsersFromPrivilegeGroupUrl = userControllerUrl.concat('/getAllUsersFromPrivilegeGroup');
     this.getAllUserPartsFromPrivilegeGroupUrl = userControllerUrl.concat('/getAllUserPartsFromPrivilegeGroup');
+    this.countAvailableUsersForBaseGroupUrl = userControllerUrl.concat('/countAvailableUsersForBaseGroup');
 
     return true;
   }
 
   protected initServiceMocks(): void {
-    (BaseBackendService.mockData.get(ALL_USERS_MOCK_KEY) as User[]).push(User.map({
+    this.addUserToMock(User.map({
       identification: INITIAL_USER_ID_AT_MOCK,
       firstName: 'Lower',
       lastName: 'Power',
@@ -91,9 +93,7 @@ export class UserService extends BaseBackendService {
       validTo: undefined,
       isGlobalAdmin: false,
       role: Role.ADMIN
-    } as User));
-
-    BaseBackendService.addEntryToStringToStringArrayMap(USERS_AT_COMMON_GROUP, INITIAL_COMMON_GROUP_ID_AT_MOCK, INITIAL_USER_ID_AT_MOCK);
+    } as User), INITIAL_COMMON_GROUP_ID_AT_MOCK);
     BaseBackendService.addEntryToStringToStringArrayMap(USERS_AT_BASE_GROUP, INITIAL_BASE_GROUP_ID_AT_MOCK, INITIAL_USER_ID_AT_MOCK);
     BaseBackendService.addEntryToStringToStringArrayMap(BASES_AT_COMMON_GROUP, INITIAL_COMMON_GROUP_ID_AT_MOCK, INITIAL_BASE_GROUP_ID_AT_MOCK);
     BaseBackendService.addEntryToStringToStringArrayMap(PRIVILEGES_AT_COMMON_GROUP, INITIAL_COMMON_GROUP_ID_AT_MOCK, INITIAL_PRIVILEGE_GROUP_ID_AT_MOCK);
@@ -101,6 +101,11 @@ export class UserService extends BaseBackendService {
     if (!BaseBackendService.mockData.has(USERS_AT_PRIVILEGE_GROUP)) {
       BaseBackendService.mockData.set(USERS_AT_PRIVILEGE_GROUP, new Map<string, UserIdRole[]>());
     }
+  }
+
+  public addUserToMock(userToAdd: User, commonGroupId: string) {
+    (BaseBackendService.mockData.get(ALL_USERS_MOCK_KEY) as User[]).push(userToAdd);
+    BaseBackendService.addEntryToStringToStringArrayMap(USERS_AT_COMMON_GROUP, commonGroupId, userToAdd.identification);
   }
 
   /**
@@ -551,16 +556,26 @@ export class UserService extends BaseBackendService {
     if (this.useMock) {
       return this.countUsersMock();
     }
-    let url = `${this.countUsersUrl}/${identification}`;
+    return this.countUsersWithUrl(identification, this.countUsersUrl);
+  }
 
-    return this.http.get<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
+
+  /**
+   * Counts the users at a group in the backend
+   * @param groupIdentification identification of the group
+   * @param url the url to the backend
+   * @returns the number of users
+   */
+  private countUsersWithUrl(groupIdentification: string, url: string | undefined) {
+    return this.http.get<ResponseWrapper>(`${url}/${groupIdentification}`, HTTP_URL_OPTIONS).pipe(
       map(data => {
-        return this.checkErrorAndGetResponse<number>(data, `occurs while counting users at group ${identification} at backend`);
+        return this.checkErrorAndGetResponse<number>(data, `occurs while counting users at group ${groupIdentification} at backend`);
       }),
       retry(RETRIES),
       catchError(this.handleError)
     );
   }
+
 
   /**
    * Counts users at mock
@@ -768,15 +783,7 @@ export class UserService extends BaseBackendService {
     if (this.useMock) {
       return this.countUsersAtBaseGroupMock(baseGroupIdentification);
     }
-    let url = `${this.countUsersAtBaseGroupUrl}/${baseGroupIdentification}`;
-
-    return this.http.get<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
-      map(data => {
-        return this.checkErrorAndGetResponse<number>(data, `occurs while counting users at ${baseGroupIdentification} at backend`);
-      }),
-      retry(RETRIES),
-      catchError(this.handleError)
-    );
+    return this.countUsersWithUrl(baseGroupIdentification, this.countUsersAtBaseGroupUrl);
   }
 
 
@@ -860,6 +867,31 @@ export class UserService extends BaseBackendService {
     return of(result);
   }
 
+
+
+  /**
+   * Count available users for a base group at the backend
+   * @param baseGroupIdentification the id of the base group whose available users are to count
+   * @returns the number of users which can be added to the base group
+   */
+  public countAvailableUsersForBaseGroup(baseGroupIdentification: string): Observable<number> {
+    this.init();
+    if (this.useMock) {
+      return this.countAvailableUsersAtBaseGroupMock(baseGroupIdentification);
+    }
+    return this.countUsersWithUrl(baseGroupIdentification, this.countAvailableUsersForBaseGroupUrl);
+  }
+
+
+  /**
+   * Counts the available users for a given base group at mock
+   * @param baseGroupIdentification the id of the base group whose available users are to count
+   * @returns the number of users which can be added to the base group
+   */
+  private countAvailableUsersAtBaseGroupMock(baseGroupIdentification: string): Observable<number> {
+    this.initMocks();
+    return of(this.getAllUserIdsAtSelectedCommonGroupFromMock().length - UserService.getUserIdsAtBaseGroupFromMock(baseGroupIdentification).length);
+  }
 
 
   /**
