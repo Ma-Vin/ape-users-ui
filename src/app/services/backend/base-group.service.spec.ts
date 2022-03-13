@@ -48,6 +48,7 @@ describe('BaseGroupService', () => {
 
   let mockIBaseGroup: IBaseGroup;
   let modifiedBaseGroup: BaseGroup;
+  let otherBaseGroup: BaseGroup;
   let mockCommonGroup: CommonGroup;
 
   const mockErrorResponseWrapper: ResponseWrapper = {
@@ -95,6 +96,14 @@ describe('BaseGroupService', () => {
       description: 'some description',
       groupName: baseGroupName,
       identification: baseGroupId,
+      validFrom: new Date(2021, 9, 1),
+      validTo: undefined
+    } as IBaseGroup);
+
+    otherBaseGroup = BaseGroup.map({
+      description: 'some description',
+      groupName: baseGroupName + '2',
+      identification: otherBaseGroupId,
       validFrom: new Date(2021, 9, 1),
       validTo: undefined
     } as IBaseGroup);
@@ -1527,6 +1536,96 @@ describe('BaseGroupService', () => {
       e => expect(e).toBeFalsy());
 
     httpMock.expectNone(`//localhost:8080/group/base/findAllBasePartAtBaseGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+
+
+
+  /**
+   * countAvailableBasesForBaseGroup
+   */
+  it('countAvailableBasesForBaseGroup - all ok', fakeAsync(() => {
+    let mockResponseWrapper: ResponseWrapper = {
+      response: 42,
+      status: Status.OK,
+      messages: []
+    }
+
+    service.countAvailableBasesForBaseGroup(baseGroupId).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data).toEqual(42);
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/group/base/countAvailableBasesForBaseGroup/${baseGroupId}`);
+    expect(req.request.method).toEqual("GET");
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/group/base/countAvailableBasesForBaseGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+  it('countAvailableBasesForBaseGroup - with error status', fakeAsync(() => {
+    service.countAvailableBasesForBaseGroup(baseGroupId).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/group/base/countAvailableBasesForBaseGroup/${baseGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockErrorResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/group/base/countAvailableBasesForBaseGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+  it('countAvailableBasesForBaseGroup - with fatal status', fakeAsync(() => {
+    service.countAvailableBasesForBaseGroup(baseGroupId).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/group/base/countAvailableBasesForBaseGroup/${baseGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockFatalResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/group/base/countAvailableBasesForBaseGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+  it('countAvailableBasesForBaseGroup - mock', fakeAsync(() => {
+    service.useMock = true;
+    service.countAvailableBasesForBaseGroup(baseGroupId).subscribe(
+      data => {
+        expect(data).toBeFalsy();
+        expect(data).toEqual(0);
+      });
+
+    service.addBaseGroupToMock(otherBaseGroup, commonGroupId);
+
+    service.countAvailableBasesForBaseGroup(baseGroupId).subscribe(
+      data => {
+        expect(data).toBeTruthy();
+        expect(data).toEqual(1);
+      });
+
+
+    httpMock.expectNone(`//localhost:8080/group/base/countAvailableBasesForBaseGroup/${baseGroupId}`);
 
     tick();
   }));

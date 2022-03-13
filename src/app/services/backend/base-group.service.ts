@@ -43,6 +43,7 @@ export class BaseGroupService extends BaseBackendService {
   private countBasesAtPrivilegeGroupUrl: string | undefined;
   private getAllBasesAtPrivilegeGroupUrl: string | undefined;
   private getAllBasePartsAtPrivilegeGroupUrl: string | undefined;
+  private countAvailableBasesForBaseGroupUrl: string | undefined;
 
 
   constructor(private http: HttpClient, configService: ConfigService, private selectionService: SelectionService) {
@@ -75,6 +76,7 @@ export class BaseGroupService extends BaseBackendService {
     this.countBasesAtPrivilegeGroupUrl = baseGroupControllerUrl.concat('/countBaseAtPrivilegeGroup');
     this.getAllBasesAtPrivilegeGroupUrl = baseGroupControllerUrl.concat('/findAllBaseAtPrivilegeGroup');
     this.getAllBasePartsAtPrivilegeGroupUrl = baseGroupControllerUrl.concat('/findAllBasePartAtPrivilegeGroup');
+    this.countAvailableBasesForBaseGroupUrl = baseGroupControllerUrl.concat('/countAvailableBasesForBaseGroup');
 
     return true;
   }
@@ -85,13 +87,14 @@ export class BaseGroupService extends BaseBackendService {
     if (!BaseBackendService.mockData.has(ALL_BASE_GOUPS_MOCK_KEY)) {
       BaseBackendService.mockData.set(ALL_BASE_GOUPS_MOCK_KEY, [] as BaseGroup[]);
     }
-    (BaseBackendService.mockData.get(ALL_BASE_GOUPS_MOCK_KEY) as BaseGroup[]).push(
+    this.addBaseGroupToMock(
       BaseGroup.map({
         groupName: 'Mocked',
-        identification: 'BGAA00001',
+        identification: INITIAL_BASE_GROUP_ID_AT_MOCK,
         description: 'A base group from the mock'
       } as BaseGroup)
-    );
+      , INITIAL_COMMON_GROUP_ID_AT_MOCK);
+
     if (!BaseBackendService.mockData.has(NEXT_BASE_GOUP_ID_MOCK_KEY)) {
       BaseBackendService.mockData.set(NEXT_BASE_GOUP_ID_MOCK_KEY, 2);
     }
@@ -102,6 +105,17 @@ export class BaseGroupService extends BaseBackendService {
     }
     if (!BaseBackendService.mockData.has(BASES_AT_PRIVILEGE_GROUP)) {
       BaseBackendService.mockData.set(BASES_AT_PRIVILEGE_GROUP, new Map<string, BaseGroupIdRole[]>());
+    }
+  }
+
+
+  public addBaseGroupToMock(baseGroupToAdd: BaseGroup, commonGroupId: string) {
+    (BaseBackendService.mockData.get(ALL_BASE_GOUPS_MOCK_KEY) as BaseGroup[]).push(baseGroupToAdd);
+    BaseBackendService.addEntryToStringToStringArrayMap(BASES_AT_COMMON_GROUP, commonGroupId, baseGroupToAdd.identification);
+    if (!BaseBackendService.mockData.has(NEXT_BASE_GOUP_ID_MOCK_KEY)) {
+      BaseBackendService.mockData.set(NEXT_BASE_GOUP_ID_MOCK_KEY, 2);
+    } else {
+      BaseBackendService.mockData.set(NEXT_BASE_GOUP_ID_MOCK_KEY, BaseBackendService.mockData.get(NEXT_BASE_GOUP_ID_MOCK_KEY) + 1);
     }
   }
 
@@ -325,11 +339,20 @@ export class BaseGroupService extends BaseBackendService {
     if (this.useMock) {
       return this.countBaseGroupsMock(commonGroupIdentification);
     }
-    let url = `${this.countBaseGroupsUrl}/${commonGroupIdentification}`;
+    return this.countBaseGroupsWithUrl(commonGroupIdentification, this.countBaseGroupsUrl);
+  }
 
-    return this.http.get<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
+
+  /**
+   * Counts the base groups at a group in the backend
+   * @param groupIdentification identification of the parent group
+   * @param url the url to the backend
+   * @returns the number of base groups
+   */
+  private countBaseGroupsWithUrl(groupIdentification: string, url: string | undefined) {
+    return this.http.get<ResponseWrapper>(`${url}/${groupIdentification}`, HTTP_URL_OPTIONS).pipe(
       map(data => {
-        return this.checkErrorAndGetResponse<number>(data, `occurs while counting base groups at ${commonGroupIdentification} at backend`);
+        return this.checkErrorAndGetResponse<number>(data, `occurs while counting base groups at/for group ${groupIdentification} at backend: ${url}`);
       }),
       retry(RETRIES),
       catchError(this.handleError)
@@ -631,15 +654,7 @@ export class BaseGroupService extends BaseBackendService {
     if (this.useMock) {
       return this.countBasesAtBaseGroupMock(baseGroupIdentification);
     }
-    let url = `${this.countBasesAtBaseGroupUrl}/${baseGroupIdentification}`;
-
-    return this.http.get<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
-      map(data => {
-        return this.checkErrorAndGetResponse<number>(data, `occurs while counting base groups at ${baseGroupIdentification} at backend`);
-      }),
-      retry(RETRIES),
-      catchError(this.handleError)
-    );
+    return this.countBaseGroupsWithUrl(baseGroupIdentification, this.countBasesAtBaseGroupUrl);
   }
 
 
@@ -715,6 +730,33 @@ export class BaseGroupService extends BaseBackendService {
       }
     }
     return of(result);
+  }
+
+
+
+  /**
+   * Count available base groups for an other one at the backend
+   * @param baseGroupIdentification the id of the base group whose available base group to count at
+   * @returns the number available base groups for the base group
+   */
+  public countAvailableBasesForBaseGroup(baseGroupIdentification: string): Observable<number> {
+    this.init();
+    if (this.useMock) {
+      return this.countAvailableBasesAtBaseGroupMock(baseGroupIdentification);
+    }
+    return this.countBaseGroupsWithUrl(baseGroupIdentification, this.countAvailableBasesForBaseGroupUrl);
+  }
+
+
+
+  /**
+   * Creates mock for counting available base groups for an other one
+   * @param baseGroupIdentification the id of the base group whose available base group to count at
+   * @returns the mocked observable of the counted number
+   */
+  private countAvailableBasesAtBaseGroupMock(baseGroupIdentification: string): Observable<number> {
+    this.initMocks();
+    return of(this.getAllBaseIdsAtSelectedCommonGroupFromMock().length - BaseGroupService.getSubBaseGroupIdsFromMock(baseGroupIdentification).length - 1);
   }
 
 
