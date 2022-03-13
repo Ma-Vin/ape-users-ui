@@ -44,6 +44,8 @@ export class UserService extends BaseBackendService {
   private getAllUsersFromPrivilegeGroupUrl: string | undefined;
   private getAllUserPartsFromPrivilegeGroupUrl: string | undefined;
   private countAvailableUsersForBaseGroupUrl: string | undefined;
+  private getAvailableUsersForBaseGroupUrl: string | undefined;
+  private getAvailableUserPartsForBaseGroupUrl: string | undefined;
   private countAvailableUsersForPrivilegeGroupUrl: string | undefined;
 
   constructor(private http: HttpClient, configService: ConfigService, private selectionService: SelectionService) {
@@ -77,6 +79,8 @@ export class UserService extends BaseBackendService {
     this.getAllUsersFromPrivilegeGroupUrl = userControllerUrl.concat('/getAllUsersFromPrivilegeGroup');
     this.getAllUserPartsFromPrivilegeGroupUrl = userControllerUrl.concat('/getAllUserPartsFromPrivilegeGroup');
     this.countAvailableUsersForBaseGroupUrl = userControllerUrl.concat('/countAvailableUsersForBaseGroup');
+    this.getAvailableUsersForBaseGroupUrl = userControllerUrl.concat('/getAvailableUsersForBaseGroup');
+    this.getAvailableUserPartsForBaseGroupUrl = userControllerUrl.concat('/getAvailableUserPartsForBaseGroup');
     this.countAvailableUsersForPrivilegeGroupUrl = userControllerUrl.concat('/countAvailableUsersForPrivilegeGroup');
 
     return true;
@@ -341,7 +345,7 @@ export class UserService extends BaseBackendService {
       params: this.createPageingParams(page, size)
     }).pipe(
       map(data => {
-        let users = this.checkErrorAndGetResponse<IUser[]>(data, `occurs while getting all users at ${identification} from backend`);
+        let users = this.checkErrorAndGetResponse<IUser[]>(data, `occurs while getting users at/for ${identification} from backend ${url}`);
         let result: User[] = new Array(users.length);
         for (let i = 0; i < users.length; i++) {
           result[i] = User.map(users[i]);
@@ -893,6 +897,70 @@ export class UserService extends BaseBackendService {
   private countAvailableUsersAtBaseGroupMock(baseGroupIdentification: string): Observable<number> {
     this.initMocks();
     return of(this.getAllUserIdsAtSelectedCommonGroupFromMock().length - UserService.getUserIdsAtBaseGroupFromMock(baseGroupIdentification).length);
+  }
+
+
+  /**
+   * Get available users for a base group from the backend
+   * @param baseGroupIdentification Id of the parent base group
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @returns the available users
+   */
+  public getAvailableUsersForBaseGroup(baseGroupIdentification: string, page: number | undefined, size: number | undefined): Observable<User[]> {
+    this.init();
+    return this.getAvailableUsersForBaseGroupWithUrl(baseGroupIdentification, page, size, `${this.getAvailableUsersForBaseGroupUrl}`, true);
+  }
+
+
+  /**
+   * Get available users for a base group from the backend
+   * @param baseGroupIdentification Id of the parent base group
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @returns the available users
+   */
+  public getAvailableUserPartsForBaseGroup(baseGroupIdentification: string, page: number | undefined, size: number | undefined): Observable<User[]> {
+    this.init();
+    return this.getAvailableUsersForBaseGroupWithUrl(baseGroupIdentification, page, size, `${this.getAvailableUserPartsForBaseGroupUrl}`, false);
+  }
+
+
+  /**
+   * Get available users forof a base group from the backend
+   * @param baseGroupIdentification Id of the parent base group
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @param url the url where to get the data from backend
+   * @param isComplete indicator if the url points to the endpoint which return the complete entity or the one with reduced data
+   * @returns the available users
+   */
+  public getAvailableUsersForBaseGroupWithUrl(baseGroupIdentification: string, page: number | undefined, size: number | undefined, url: string, isComplete: boolean): Observable<User[]> {
+    this.init();
+    if (this.useMock) {
+      return this.getAvailableUsersForBaseGroupMock(baseGroupIdentification, isComplete);
+    }
+    return this.getAllUsersWithUrlNoMock(baseGroupIdentification, page, size, url, isComplete);
+  }
+
+
+  /**
+   * Creates mock for getting available users for a base group
+   * @param baseGroupIdentification Id of the parent base group
+   * @param isComplete indicator if the url points to the endpoint which return the complete entity or the one with reduced data
+   * @returns the mocked observable of available users
+   */
+  private getAvailableUsersForBaseGroupMock(baseGroupIdentification: string, isComplete: boolean): Observable<User[]> {
+    this.initMocks();
+    let result: User[] = [];
+    let userIdsAtBaseGroup = UserService.getUserIdsAtBaseGroupFromMock(baseGroupIdentification);
+    for (let u of this.getAllUsersAtSelectedCommonGroupFromMock()) {
+      if (!userIdsAtBaseGroup.includes(u.identification)) {
+        let entry = this.mapUserForMock(u, isComplete);
+        result.push(entry);
+      }
+    }
+    return of(result);
   }
 
 
