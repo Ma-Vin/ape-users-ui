@@ -45,6 +45,8 @@ export class BaseGroupService extends BaseBackendService {
   private getAllBasePartsAtPrivilegeGroupUrl: string | undefined;
   private countAvailableBasesForBaseGroupUrl: string | undefined;
   private countAvailableBasesForPrivilegeGroupUrl: string | undefined;
+  private getAvailableBasesForBaseGroupUrl: string | undefined;
+  private getAvailableBasePartsForBaseGroupUrl: string | undefined;
 
 
   constructor(private http: HttpClient, configService: ConfigService, private selectionService: SelectionService) {
@@ -79,6 +81,8 @@ export class BaseGroupService extends BaseBackendService {
     this.getAllBasePartsAtPrivilegeGroupUrl = baseGroupControllerUrl.concat('/findAllBasePartAtPrivilegeGroup');
     this.countAvailableBasesForBaseGroupUrl = baseGroupControllerUrl.concat('/countAvailableBasesForBaseGroup');
     this.countAvailableBasesForPrivilegeGroupUrl = baseGroupControllerUrl.concat('/countAvailableBasesForPrivilegeGroup');
+    this.getAvailableBasesForBaseGroupUrl = baseGroupControllerUrl.concat('/getAllAvailableBasesForBaseGroup');
+    this.getAvailableBasePartsForBaseGroupUrl = baseGroupControllerUrl.concat('/getAllAvailableBasePartsForBaseGroup');
 
     return true;
   }
@@ -317,13 +321,7 @@ export class BaseGroupService extends BaseBackendService {
   private getAllBaseGroupsMock(isComplete: boolean): Observable<BaseGroup[]> {
     let copy: BaseGroup[] = [];
     for (let bg of this.getAllBasesAtSelectedCommonGroupFromMock()) {
-      let entry = BaseGroup.map(bg);
-      if (!isComplete) {
-        entry.description = undefined;
-        entry.validFrom = undefined;
-        entry.validTo = undefined;
-      }
-      entry.isComplete = isComplete;
+      let entry = this.mapBaseGroupForMock(bg, isComplete);
       copy.push(entry)
     }
     return of(copy);
@@ -682,12 +680,7 @@ export class BaseGroupService extends BaseBackendService {
    */
   public getAllBasesAtBaseGroup(parentIdentification: string, page: number | undefined, size: number | undefined): Observable<BaseGroup[]> {
     this.init();
-    if (this.useMock) {
-      return this.getAllBasesAtBaseGroupMock(parentIdentification, true);
-    }
-    let url = `${this.getAllBasesAtBaseGroupUrl}/${parentIdentification}`;
-
-    return this.getAllBaseFromGroup(url, parentIdentification, undefined, page, size, true);
+    return this.getAllBasesAtBaseGroupWithUrl(`${this.getAllBasesAtBaseGroupUrl}`, parentIdentification, page, size, true);
   }
 
 
@@ -700,15 +693,26 @@ export class BaseGroupService extends BaseBackendService {
    */
   public getAllBasePartsAtBaseGroup(parentIdentification: string, page: number | undefined, size: number | undefined): Observable<BaseGroup[]> {
     this.init();
-    if (this.useMock) {
-      return this.getAllBasesAtBaseGroupMock(parentIdentification, false);
-    }
-    let url = `${this.getAllBasePartsAtBaseGroupUrl}/${parentIdentification}`;
-
-    return this.getAllBaseFromGroup(url, parentIdentification, undefined, page, size, false);
+    return this.getAllBasesAtBaseGroupWithUrl(`${this.getAllBasePartsAtBaseGroupUrl}`, parentIdentification, page, size, false);
   }
 
 
+  /**
+   * Get all sub base group parts of an other one from the backend
+   * @param url url of the get target, including parameters
+   * @param parentIdentification Id of the parent base group
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @param isComplete indicator if the url points to the endpoint which
+   * @returns the base groups
+   */
+  private getAllBasesAtBaseGroupWithUrl(url: string, parentIdentification: string, page: number | undefined, size: number | undefined, isComplete: boolean): Observable<BaseGroup[]> {
+    this.init();
+    if (this.useMock) {
+      return this.getAllBasesAtBaseGroupMock(parentIdentification, isComplete);
+    }
+    return this.getAllBaseFromGroupWithUrlNoMock(url, parentIdentification, undefined, page, size, isComplete);
+  }
 
   /**
    * Creates mock for getting all sub base groups of an other one
@@ -721,13 +725,7 @@ export class BaseGroupService extends BaseBackendService {
     let subBaseGroupIds = BaseGroupService.getSubBaseGroupIdsFromMock(parentIdentification);
     for (let bg of this.getAllBasesAtSelectedCommonGroupFromMock()) {
       if (subBaseGroupIds.includes(bg.identification)) {
-        let entry = BaseGroup.map(bg);
-        if (!isComplete) {
-          entry.description = undefined;
-          entry.validFrom = undefined;
-          entry.validTo = undefined;
-        }
-        entry.isComplete = isComplete;
+        let entry = this.mapBaseGroupForMock(bg, isComplete);
         result.push(entry)
       }
     }
@@ -759,6 +757,70 @@ export class BaseGroupService extends BaseBackendService {
   private countAvailableBasesAtBaseGroupMock(baseGroupIdentification: string): Observable<number> {
     this.initMocks();
     return of(this.getAllBaseIdsAtSelectedCommonGroupFromMock().length - BaseGroupService.getSubBaseGroupIdsFromMock(baseGroupIdentification).length - 1);
+  }
+
+
+
+  /**
+   * Get available base groups for an other one from the backend
+   * @param parentIdentification Id of the parent base group
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @returns the base groups
+   */
+  public getAvailableBasesForBaseGroup(parentIdentification: string, page: number | undefined, size: number | undefined): Observable<BaseGroup[]> {
+    this.init();
+    return this.getAvailableBasesForBaseGroupWithUrl(`${this.getAvailableBasesForBaseGroupUrl}`, parentIdentification, page, size, true);
+  }
+
+
+  /**
+   * Get available base group parts for an other one from the backend
+   * @param parentIdentification Id of the parent base group
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @returns the base groups
+   */
+  public getAvailableBasePartsForBaseGroup(parentIdentification: string, page: number | undefined, size: number | undefined): Observable<BaseGroup[]> {
+    this.init();
+    return this.getAvailableBasesForBaseGroupWithUrl(`${this.getAvailableBasePartsForBaseGroupUrl}`, parentIdentification, page, size, false);
+  }
+
+
+  /**
+   * Get available base groups for an other one from the backend
+   * @param url url of the get target, including parameters
+   * @param parentIdentification Id of the parent base group
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @param isComplete indicator if the url points to the endpoint which
+   * @returns the base groups
+   */
+  private getAvailableBasesForBaseGroupWithUrl(url: string, parentIdentification: string, page: number | undefined, size: number | undefined, isComplete: boolean): Observable<BaseGroup[]> {
+    this.init();
+    if (this.useMock) {
+      return this.gettAvailableBasesForBaseGroupMock(parentIdentification, isComplete);
+    }
+    return this.getAllBaseFromGroupWithUrlNoMock(url, parentIdentification, undefined, page, size, isComplete);
+  }
+
+
+  /**
+   * Creates mock for gettingavailable base groups for an other one
+   * @param parentIdentification Id of the parent base group
+   * @param isComplete indicator if the url points to the endpoint which return the complete entity or the one with reduced data
+   * @returns the mocked observable of available base groups
+   */
+  private gettAvailableBasesForBaseGroupMock(parentIdentification: string, isComplete: boolean): Observable<BaseGroup[]> {
+    let result: BaseGroup[] = [];
+    let subBaseGroupIds = BaseGroupService.getSubBaseGroupIdsFromMock(parentIdentification);
+    for (let bg of this.getAllBasesAtSelectedCommonGroupFromMock()) {
+      if (!subBaseGroupIds.includes(bg.identification) && bg.identification != parentIdentification) {
+        let entry = this.mapBaseGroupForMock(bg, isComplete);
+        result.push(entry)
+      }
+    }
+    return of(result);
   }
 
 
@@ -940,9 +1002,7 @@ export class BaseGroupService extends BaseBackendService {
     if (this.useMock) {
       return this.getAllBasesAtrivilegeGroupMock(parentIdentification, role, true);
     }
-    let url = `${this.getAllBasesAtPrivilegeGroupUrl}/${parentIdentification}`;
-
-    return this.getAllBaseFromGroup(url, parentIdentification, role, page, size, true);
+    return this.getAllBaseFromGroupWithUrlNoMock(`${this.getAllBasesAtPrivilegeGroupUrl}`, parentIdentification, role, page, size, true);
   }
 
 
@@ -960,9 +1020,7 @@ export class BaseGroupService extends BaseBackendService {
     if (this.useMock) {
       return this.getAllBasesAtrivilegeGroupMock(parentIdentification, role, false);
     }
-    let url = `${this.getAllBasePartsAtPrivilegeGroupUrl}/${parentIdentification}`;
-
-    return this.getAllBaseFromGroup(url, parentIdentification, role, page, size, false);
+    return this.getAllBaseFromGroupWithUrlNoMock(`${this.getAllBasePartsAtPrivilegeGroupUrl}`, parentIdentification, role, page, size, false);
   }
 
 
@@ -1006,13 +1064,13 @@ export class BaseGroupService extends BaseBackendService {
    * @param isComplete indicator if the url points to the endpoint which return the complete entity or the one with reduced data
    * @returns the base groups
    */
-  private getAllBaseFromGroup(url: string, parentIdentification: string, role: Role | undefined, page: number | undefined, size: number | undefined, isComplete: boolean): Observable<BaseGroup[]> {
-    return this.http.get<ResponseWrapper>(url, {
+  private getAllBaseFromGroupWithUrlNoMock(url: string, parentIdentification: string, role: Role | undefined, page: number | undefined, size: number | undefined, isComplete: boolean): Observable<BaseGroup[]> {
+    return this.http.get<ResponseWrapper>(`${url}/${parentIdentification}`, {
       headers: HTTP_URL_OPTIONS.headers,
       params: this.createPageingRoleParams(role, page, size)
     }).pipe(
       map(data => {
-        let baseGroups = this.checkErrorAndGetResponse<IBaseGroup[]>(data, `occurs while getting all sub base groups of ${parentIdentification} from backend`);
+        let baseGroups = this.checkErrorAndGetResponse<IBaseGroup[]>(data, `occurs while getting all sub base groups of/for ${parentIdentification} from backend: ${url}`);
         let result: BaseGroup[] = new Array(baseGroups.length);
         for (let i = 0; i < baseGroups.length; i++) {
           result[i] = BaseGroup.map(baseGroups[i]);
@@ -1025,6 +1083,17 @@ export class BaseGroupService extends BaseBackendService {
     );
   }
 
+
+  private mapBaseGroupForMock(baseGroupToMap: BaseGroup, isComplete: boolean) {
+    let baseGroup = BaseGroup.map(baseGroupToMap);
+    if (!isComplete) {
+      baseGroup.description = undefined;
+      baseGroup.validFrom = undefined;
+      baseGroup.validTo = undefined;
+    }
+    baseGroup.isComplete = isComplete;
+    return baseGroup;
+  }
 
 
   /**
@@ -1045,13 +1114,7 @@ export class BaseGroupService extends BaseBackendService {
       }
       for (let bg of baseGroups) {
         if (bg.identification == br.baseGroupIdentification) {
-          let entry = BaseGroup.map(bg);
-          if (!isComplete) {
-            entry.description = undefined;
-            entry.validFrom = undefined;
-            entry.validTo = undefined;
-          }
-          entry.isComplete = isComplete;
+          let entry = this.mapBaseGroupForMock(bg, isComplete);
           result.push(entry)
         }
       }
