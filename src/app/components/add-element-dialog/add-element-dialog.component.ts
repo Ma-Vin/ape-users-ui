@@ -39,63 +39,39 @@ export abstract class AddElementDialogComponent<T extends IEqualsAndIdentifiable
    * Loads all relevant elements, which can be added to the selected base or privielege group
    */
   private loadAllRelevantElements(): void {
-    this.getAllElements().subscribe(
-      allElements => {
-        this.loadAllElementsFromGroup().subscribe(
-          alreadyAddedElements => {
-            let relevantElements: T[] = []
-
-            for (let g of allElements) {
-              if (this.isElementRelevant(g, alreadyAddedElements)) {
-                relevantElements.push(g);
-              }
-            }
-
-            this.dataSource = new MatTableDataSource(relevantElements);
-            this.dataSource.sort = this.sort;
-          });
+    this.loadAvailableElementsForGroup().subscribe(
+      availableElements => {
+        this.dataSource = new MatTableDataSource(availableElements);
+        this.dataSource.sort = this.sort;
       });
   }
 
-  protected abstract getAllElements(): Observable<T[]>;
-
-
   /**
-   * Depending of the type of this.data.selectedGroup different services are to called to get all sub elements
-   * @returns An observable of all sub elements
+   * Depending of the type of this.data.selectedGroup different services are to called to get all available elements
+   * @returns An observable of all available elements
    */
-  private loadAllElementsFromGroup(): Observable<T[]> {
+  private loadAvailableElementsForGroup(): Observable<T[]> {
     if (this.data.selectedGroup instanceof BaseGroup) {
-      return this.getAllElementsFromBaseGroup(this.data.selectedGroup.identification);
+      return this.getAvailableElementsForBaseGroup(this.data.selectedGroup.identification);
     }
     if (this.data.selectedGroup instanceof PrivilegeGroup) {
-      return this.getAllElementsFromPrivilegeGroup(this.data.selectedGroup.identification);
+      return this.getAvailableElementsForPrivilegeGroup(this.data.selectedGroup.identification);
     }
     return NEVER;
   }
 
-  protected abstract getAllElementsFromBaseGroup(identification: string): Observable<T[]>;
-
-  protected abstract getAllElementsFromPrivilegeGroup(identification: string): Observable<T[]>;
+  /**
+   * gets the available elements for a parent base group
+   * @param identification identification of the parent base group
+   */
+  protected abstract getAvailableElementsForBaseGroup(identification: string): Observable<T[]>;
 
 
   /**
-   * Checks whether the element is already added or the selected one itself
-   * @param elementToCheck the element to check
-   * @param existingElementsAtGroup an array of already existing elements at the selected group
-   * @returns true if the element can be added. Otherwise false
+   * gets the available elements for a parent privilege group
+   * @param identification identification of the parent privilege group
    */
-  private isElementRelevant(elementToCheck: T, existingElementsAtGroup: T[]): boolean {
-    if (elementToCheck.getIdentification() == this.data.selectedGroup.identification) {
-      return false;
-    }
-    for (let g of existingElementsAtGroup) {
-      if (elementToCheck.getIdentification() == g.getIdentification()) {
-        return false;
-      }
-    }
-    return true;
-  }
+  protected abstract getAvailableElementsForPrivilegeGroup(identification: string): Observable<T[]>;
 
 
   /**

@@ -7,7 +7,6 @@ import { of } from 'rxjs';
 import { ConfigService } from 'src/app/config/config.service';
 import { MaterialModule } from 'src/app/material/material.module';
 import { BaseGroup, IBaseGroup } from 'src/app/model/base-group.model';
-import { CommonGroup, ICommonGroup } from 'src/app/model/common-group.model';
 import { IPrivilegeGroup, PrivilegeGroup } from 'src/app/model/privilege-group.model';
 import { Role } from 'src/app/model/role.model';
 import { IUser, User } from 'src/app/model/user.model';
@@ -31,17 +30,13 @@ let userService: UserService;
 let commonGroupService: CommonGroupService;
 let selectionService: SelectionService;
 
-const commonGroupId = 'CGAA00001';
 const baseGroupId = 'BGAA00001';
 const baseGroupName = 'Name of the base group';
 const privilegeGroupId = 'PGAA00001';
 const privilegeGroupName = 'Name of the privilege group';
 const userId = 'UAA00001';
-const secondUserId = 'UAA00002';
 const firstName = 'Max';
-const secondFirstName = 'Lower';
 const lastName = 'Power';
-const secondLastName = 'Power';
 
 const user = User.map({
   identification: userId,
@@ -57,31 +52,6 @@ const user = User.map({
   isGlobalAdmin: false,
   isComplete: true
 } as IUser);
-
-const secondUser = User.map({
-  identification: secondUserId,
-  firstName: secondFirstName,
-  lastName: secondLastName,
-  mail: `${secondFirstName.toLocaleLowerCase()}.${secondLastName.toLocaleLowerCase()}@ma-vin.de`,
-  image: undefined,
-  smallImage: undefined,
-  lastLogin: new Date(2021, 9, 25, 20, 15, 1),
-  validFrom: new Date(2021, 9, 1),
-  validTo: undefined,
-  role: Role.VISITOR,
-  isGlobalAdmin: false,
-  isComplete: true
-} as IUser);
-
-const commonGroup = CommonGroup.map({
-  description: 'some description',
-  groupName: 'commonGroupName',
-  identification: commonGroupId,
-  validFrom: new Date(2021, 9, 1),
-  validTo: undefined,
-  defaultRole: Role.VISITOR
-} as ICommonGroup);
-
 
 const baseGroup = BaseGroup.map({
   identification: baseGroupId,
@@ -142,10 +112,8 @@ describe('AddUserDialogComponent - Base Group, but with type independent test', 
     * ngOnInit
     */
   it('ngOnInit', fakeAsync(() => {
-    let getAllUsersSpy = spyOn(userService, 'getAllUsers').and.returnValue(of([user, secondUser]));
-    let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([user]));
-    let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([]));
-    let getSelectedCommonGroupSpy = spyOn(selectionService, 'getSelectedCommonGroup').and.returnValue(commonGroup);
+    let getAvailableUserPartsForBaseGroupSpy = spyOn(userService, 'getAvailableUserPartsForBaseGroup').and.returnValue(of([user]));
+    let getAvailableUserPartsForPrivilegeGroupSpy = spyOn(userService, 'getAvailableUserPartsForPrivilegeGroup').and.returnValue(of([]));
 
     component.ngOnInit();
 
@@ -153,12 +121,10 @@ describe('AddUserDialogComponent - Base Group, but with type independent test', 
 
     expect(component.dataSource.data).toBeDefined();
     expect(component.dataSource.data.length).toEqual(1);
-    expect(component.dataSource.data[0].identification).toEqual(secondUserId);
+    expect(component.dataSource.data[0].identification).toEqual(userId);
 
-    expect(getAllUsersSpy).toHaveBeenCalled();
-    expect(getAllUsersFromBaseGroupSpy).toHaveBeenCalled();
-    expect(getAllUsersFromPrivilegeGroupSpy).not.toHaveBeenCalled();
-    expect(getSelectedCommonGroupSpy).toHaveBeenCalled();
+    expect(getAvailableUserPartsForBaseGroupSpy).toHaveBeenCalled();
+    expect(getAvailableUserPartsForPrivilegeGroupSpy).not.toHaveBeenCalled();
   }));
 
 
@@ -323,9 +289,8 @@ describe('AddUserDialogComponent - Privilege Group, but without type independent
    * ngOnInit
    */
   it('ngOnInit', fakeAsync(() => {
-    let getAllUsersSpy = spyOn(userService, 'getAllUsers').and.returnValue(of([user, secondUser]));
-    let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([]));
-    let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([secondUser]));
+    let getAvailableUserPartsForBaseGroupSpy = spyOn(userService, 'getAvailableUserPartsForBaseGroup').and.returnValue(of([]));
+    let getAvailableUserPartsForPrivilegeGroupSpy = spyOn(userService, 'getAvailableUserPartsForPrivilegeGroup').and.returnValue(of([user]));
 
     component.ngOnInit();
 
@@ -335,9 +300,8 @@ describe('AddUserDialogComponent - Privilege Group, but without type independent
     expect(component.dataSource.data.length).toEqual(1);
     expect(component.dataSource.data[0].identification).toEqual(userId);
 
-    expect(getAllUsersSpy).toHaveBeenCalled();
-    expect(getAllUsersFromBaseGroupSpy).not.toHaveBeenCalled();
-    expect(getAllUsersFromPrivilegeGroupSpy).toHaveBeenCalled();
+    expect(getAvailableUserPartsForBaseGroupSpy).not.toHaveBeenCalled();
+    expect(getAvailableUserPartsForPrivilegeGroupSpy).toHaveBeenCalled();
   }));
 
 

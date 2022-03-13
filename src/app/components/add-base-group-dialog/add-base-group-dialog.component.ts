@@ -37,19 +37,14 @@ export class AddBaseGroupDialogComponent extends AddElementDialogComponent<BaseG
     return ['select', 'identification', 'groupName'];
   }
 
-  
-  protected getAllElements(): Observable<BaseGroup[]> {
-    return this.baseGroupService.getAllBaseGroups(undefined, undefined);
+
+  protected getAvailableElementsForBaseGroup(identification: string): Observable<BaseGroup[]> {
+    return this.baseGroupService.getAvailableBasePartsForBaseGroup(identification, undefined, undefined);
   }
 
 
-  protected getAllElementsFromBaseGroup(identification: string): Observable<BaseGroup[]> {
-    return this.baseGroupService.getAllBasesAtBaseGroup(identification, undefined, undefined);
-  }
-
-
-  protected getAllElementsFromPrivilegeGroup(identification: string): Observable<BaseGroup[]> {
-    return this.baseGroupService.getAllBasesAtPrivilegeGroup(identification, undefined, undefined, undefined);
+  protected getAvailableElementsForPrivilegeGroup(identification: string): Observable<BaseGroup[]> {
+    return this.baseGroupService.getAvailableBasePartsForPrivilegeGroup(identification, undefined, undefined);
   }
 
 }

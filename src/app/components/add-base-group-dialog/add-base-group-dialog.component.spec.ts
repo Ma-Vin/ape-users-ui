@@ -30,31 +30,12 @@ let selectionService: SelectionService;
 let baseGroupService: BaseGroupService;
 
 const baseGroupId = 'BGAA00001';
-const secondBaseGroupId = 'BGAA00002';
-const thirdBaseGroupId = 'BGAA00003';
 const baseGroupName = 'Name of the base group';
 const privilegeGroupId = 'PGAA00001';
 const privilegeGroupName = 'Name of the privilege group';
 
 const baseGroup = BaseGroup.map({
   identification: baseGroupId,
-  groupName: baseGroupName,
-  validFrom: new Date(2021, 9, 1),
-  validTo: undefined,
-  description: 'Bam!'
-} as IBaseGroup);
-
-const secondBaseGroup = BaseGroup.map({
-  identification: secondBaseGroupId,
-  groupName: baseGroupName,
-  validFrom: new Date(2021, 9, 1),
-  validTo: undefined,
-  description: 'Bam!'
-} as IBaseGroup);
-
-
-const thirdBaseGroup = BaseGroup.map({
-  identification: thirdBaseGroupId,
   groupName: baseGroupName,
   validFrom: new Date(2021, 9, 1),
   validTo: undefined,
@@ -118,9 +99,8 @@ describe('AddBaseGroupDialogComponent - Base Group, but with type independent te
    * ngOnInit
    */
   it('ngOnInit', fakeAsync(() => {
-    let getAllBaseGroupsSpy = spyOn(baseGroupService, 'getAllBaseGroups').and.returnValue(of([baseGroup, secondBaseGroup, thirdBaseGroup]));
-    let getAllBasesAtBaseGroupSpy = spyOn(baseGroupService, 'getAllBasesAtBaseGroup').and.returnValue(of([secondBaseGroup]));
-    let getAllBasesAtPrivilegeGrouSpy = spyOn(baseGroupService, 'getAllBasesAtPrivilegeGroup').and.returnValue(of([]));
+    let getAvailableBasePartsForBaseGroupSpy = spyOn(baseGroupService, 'getAvailableBasePartsForBaseGroup').and.returnValue(of([baseGroup]));
+    let getAvailableBasePartsForPrivilegeGroupSpy = spyOn(baseGroupService, 'getAvailableBasePartsForPrivilegeGroup').and.returnValue(of([]));
 
     component.ngOnInit();
 
@@ -128,11 +108,10 @@ describe('AddBaseGroupDialogComponent - Base Group, but with type independent te
 
     expect(component.dataSource.data).toBeDefined();
     expect(component.dataSource.data.length).toEqual(1);
-    expect(component.dataSource.data[0].identification).toEqual(thirdBaseGroupId);
+    expect(component.dataSource.data[0].identification).toEqual(baseGroupId);
 
-    expect(getAllBaseGroupsSpy).toHaveBeenCalled();
-    expect(getAllBasesAtBaseGroupSpy).toHaveBeenCalled();
-    expect(getAllBasesAtPrivilegeGrouSpy).not.toHaveBeenCalled();
+    expect(getAvailableBasePartsForBaseGroupSpy).toHaveBeenCalled();
+    expect(getAvailableBasePartsForPrivilegeGroupSpy).not.toHaveBeenCalled();
   }));
 
 
@@ -298,9 +277,8 @@ describe('AddBaseGroupDialogComponent - Privilege Group, but without type indepe
    * ngOnInit
    */
   it('ngOnInit', fakeAsync(() => {
-    let getAllBaseGroupsSpy = spyOn(baseGroupService, 'getAllBaseGroups').and.returnValue(of([baseGroup, secondBaseGroup]));
-    let getAllBasesAtBaseGroupSpy = spyOn(baseGroupService, 'getAllBasesAtBaseGroup').and.returnValue(of([]));
-    let getAllBasesAtPrivilegeGrouSpy = spyOn(baseGroupService, 'getAllBasesAtPrivilegeGroup').and.returnValue(of([secondBaseGroup]));
+    let getAvailableBasePartsForBaseGroupSpy = spyOn(baseGroupService, 'getAvailableBasePartsForBaseGroup').and.returnValue(of([]));
+    let getAvailableBasePartsForPrivilegeGroupSpy = spyOn(baseGroupService, 'getAvailableBasePartsForPrivilegeGroup').and.returnValue(of([baseGroup]));
 
     component.ngOnInit();
 
@@ -310,9 +288,8 @@ describe('AddBaseGroupDialogComponent - Privilege Group, but without type indepe
     expect(component.dataSource.data.length).toEqual(1);
     expect(component.dataSource.data[0].identification).toEqual(baseGroupId);
 
-    expect(getAllBaseGroupsSpy).toHaveBeenCalled();
-    expect(getAllBasesAtBaseGroupSpy).not.toHaveBeenCalled();
-    expect(getAllBasesAtPrivilegeGrouSpy).toHaveBeenCalled();
+    expect(getAvailableBasePartsForBaseGroupSpy).not.toHaveBeenCalled();
+    expect(getAvailableBasePartsForPrivilegeGroupSpy).toHaveBeenCalled();
   }));
 
 
