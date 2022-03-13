@@ -705,6 +705,111 @@ describe('PermissionsService', () => {
 
 
   /**
+   * isAllowedToCountAvailableUsersForBaseGroup
+   */
+  it('isAllowedToCountAvailableUsersForBaseGroup - authorized', () => {
+    activeUser.role = Role.NOT_RELEVANT;
+    activeUser.isGlobalAdmin = true;
+    expect(service.isAllowedToCountAvailableUsersForBaseGroup()).toBeTrue();
+    activeUser.role = Role.VISITOR;
+    activeUser.isGlobalAdmin = false;
+    expect(service.isAllowedToCountAvailableUsersForBaseGroup()).toBeTrue();
+    activeUser.role = Role.CONTRIBUTOR;
+    expect(service.isAllowedToCountAvailableUsersForBaseGroup()).toBeTrue();
+    activeUser.role = Role.MANAGER;
+    expect(service.isAllowedToCountAvailableUsersForBaseGroup()).toBeTrue();
+    activeUser.role = Role.ADMIN;
+    expect(service.isAllowedToCountAvailableUsersForBaseGroup()).toBeTrue();
+    activeUser.role = undefined;
+    expect(service.isAllowedToCountAvailableUsersForBaseGroup()).toBeTrue();
+
+    expect(selectionServiceSpy).toHaveBeenCalledTimes(6);
+  });
+
+  it('isAllowedToCountAvailableUsersForBaseGroup -  unauthorized', () => {
+    activeUser.role = Role.BLOCKED;
+    expect(service.isAllowedToCountAvailableUsersForBaseGroup()).toBeFalse();
+    activeUser.role = Role.NOT_RELEVANT;
+    expect(service.isAllowedToCountAvailableUsersForBaseGroup()).toBeFalse();
+    selectionServiceSpy.and.returnValue(undefined);
+    expect(service.isAllowedToCountAvailableUsersForBaseGroup()).toBeFalse();
+
+    expect(selectionServiceSpy).toHaveBeenCalledTimes(3);
+  });
+
+
+
+  /**
+   * isAllowedToGetAvailableUsersForBaseGroup
+   */
+  it('isAllowedToGetAvailableUsersForBaseGroup - authorized', () => {
+    activeUser.role = Role.NOT_RELEVANT;
+    activeUser.isGlobalAdmin = true;
+    expect(service.isAllowedToGetAvailableUsersForBaseGroup()).toBeTrue();
+    activeUser.role = Role.VISITOR;
+    activeUser.isGlobalAdmin = false;
+    expect(service.isAllowedToGetAvailableUsersForBaseGroup()).toBeTrue();
+    activeUser.role = Role.CONTRIBUTOR;
+    expect(service.isAllowedToGetAvailableUsersForBaseGroup()).toBeTrue();
+    activeUser.role = Role.MANAGER;
+    expect(service.isAllowedToGetAvailableUsersForBaseGroup()).toBeTrue();
+    activeUser.role = Role.ADMIN;
+    expect(service.isAllowedToGetAvailableUsersForBaseGroup()).toBeTrue();
+    activeUser.role = undefined;
+    expect(service.isAllowedToGetAvailableUsersForBaseGroup()).toBeTrue();
+
+    expect(selectionServiceSpy).toHaveBeenCalledTimes(6);
+  });
+
+  it('isAllowedToGetAvailableUsersForBaseGroup -  unauthorized', () => {
+    activeUser.role = Role.BLOCKED;
+    expect(service.isAllowedToGetAvailableUsersForBaseGroup()).toBeFalse();
+    activeUser.role = Role.NOT_RELEVANT;
+    expect(service.isAllowedToGetAvailableUsersForBaseGroup()).toBeFalse();
+    selectionServiceSpy.and.returnValue(undefined);
+    expect(service.isAllowedToGetAvailableUsersForBaseGroup()).toBeFalse();
+
+    expect(selectionServiceSpy).toHaveBeenCalledTimes(3);
+  });
+
+
+
+  /**
+   * isAllowedToGetAvailableUserPartsForBaseGroup
+   */
+  it('isAllowedToGetAvailableUserPartsForBaseGroup - authorized', () => {
+    activeUser.role = Role.NOT_RELEVANT;
+    activeUser.isGlobalAdmin = true;
+    expect(service.isAllowedToGetAvailableUserPartsForBaseGroup()).toBeTrue();
+    activeUser.role = Role.VISITOR;
+    activeUser.isGlobalAdmin = false;
+    expect(service.isAllowedToGetAvailableUserPartsForBaseGroup()).toBeTrue();
+    activeUser.role = Role.CONTRIBUTOR;
+    expect(service.isAllowedToGetAvailableUserPartsForBaseGroup()).toBeTrue();
+    activeUser.role = Role.MANAGER;
+    expect(service.isAllowedToGetAvailableUserPartsForBaseGroup()).toBeTrue();
+    activeUser.role = Role.ADMIN;
+    expect(service.isAllowedToGetAvailableUserPartsForBaseGroup()).toBeTrue();
+    activeUser.role = undefined;
+    expect(service.isAllowedToGetAvailableUserPartsForBaseGroup()).toBeTrue();
+
+    expect(selectionServiceSpy).toHaveBeenCalledTimes(6);
+  });
+
+  it('isAllowedToGetAvailableUserPartsForBaseGroup -  unauthorized', () => {
+    activeUser.role = Role.BLOCKED;
+    expect(service.isAllowedToGetAvailableUserPartsForBaseGroup()).toBeFalse();
+    activeUser.role = Role.NOT_RELEVANT;
+    expect(service.isAllowedToGetAvailableUserPartsForBaseGroup()).toBeFalse();
+    selectionServiceSpy.and.returnValue(undefined);
+    expect(service.isAllowedToGetAvailableUserPartsForBaseGroup()).toBeFalse();
+
+    expect(selectionServiceSpy).toHaveBeenCalledTimes(3);
+  });
+
+
+
+  /**
    * isAllowedToAddUserToPrivilegeGroup
    */
   it('isAllowedToAddUserToPrivilegeGroup - authorized', () => {
@@ -873,6 +978,111 @@ describe('PermissionsService', () => {
     expect(service.isAllowedToGetAllUserPartsAtPrivilegeGroup()).toBeFalse();
     selectionServiceSpy.and.returnValue(undefined);
     expect(service.isAllowedToGetAllUserPartsAtPrivilegeGroup()).toBeFalse();
+
+    expect(selectionServiceSpy).toHaveBeenCalledTimes(3);
+  });
+
+
+
+  /**
+   * isAllowedToCountAvailableUsersForPrivilegeGroup
+   */
+  it('isAllowedToCountAvailableUsersForPrivilegeGroup - authorized', () => {
+    activeUser.role = Role.NOT_RELEVANT;
+    activeUser.isGlobalAdmin = true;
+    expect(service.isAllowedToCountAvailableUsersForPrivilegeGroup()).toBeTrue();
+    activeUser.role = Role.VISITOR;
+    activeUser.isGlobalAdmin = false;
+    expect(service.isAllowedToCountAvailableUsersForPrivilegeGroup()).toBeTrue();
+    activeUser.role = Role.CONTRIBUTOR;
+    expect(service.isAllowedToCountAvailableUsersForPrivilegeGroup()).toBeTrue();
+    activeUser.role = Role.MANAGER;
+    expect(service.isAllowedToCountAvailableUsersForPrivilegeGroup()).toBeTrue();
+    activeUser.role = Role.ADMIN;
+    expect(service.isAllowedToCountAvailableUsersForPrivilegeGroup()).toBeTrue();
+    activeUser.role = undefined;
+    expect(service.isAllowedToCountAvailableUsersForPrivilegeGroup()).toBeTrue();
+
+    expect(selectionServiceSpy).toHaveBeenCalledTimes(6);
+  });
+
+  it('isAllowedToCountAvailableUsersForPrivilegeGroup -  unauthorized', () => {
+    activeUser.role = Role.BLOCKED;
+    expect(service.isAllowedToCountAvailableUsersForPrivilegeGroup()).toBeFalse();
+    activeUser.role = Role.NOT_RELEVANT;
+    expect(service.isAllowedToCountAvailableUsersForPrivilegeGroup()).toBeFalse();
+    selectionServiceSpy.and.returnValue(undefined);
+    expect(service.isAllowedToCountAvailableUsersForPrivilegeGroup()).toBeFalse();
+
+    expect(selectionServiceSpy).toHaveBeenCalledTimes(3);
+  });
+
+
+
+  /**
+   * isAllowedToGetAvailableUsersForPrivilegeGroup
+   */
+  it('isAllowedToGetAvailableUsersForPrivilegeGroup - authorized', () => {
+    activeUser.role = Role.NOT_RELEVANT;
+    activeUser.isGlobalAdmin = true;
+    expect(service.isAllowedToGetAvailableUsersForPrivilegeGroup()).toBeTrue();
+    activeUser.role = Role.VISITOR;
+    activeUser.isGlobalAdmin = false;
+    expect(service.isAllowedToGetAvailableUsersForPrivilegeGroup()).toBeTrue();
+    activeUser.role = Role.CONTRIBUTOR;
+    expect(service.isAllowedToGetAvailableUsersForPrivilegeGroup()).toBeTrue();
+    activeUser.role = Role.MANAGER;
+    expect(service.isAllowedToGetAvailableUsersForPrivilegeGroup()).toBeTrue();
+    activeUser.role = Role.ADMIN;
+    expect(service.isAllowedToGetAvailableUsersForPrivilegeGroup()).toBeTrue();
+    activeUser.role = undefined;
+    expect(service.isAllowedToGetAvailableUsersForPrivilegeGroup()).toBeTrue();
+
+    expect(selectionServiceSpy).toHaveBeenCalledTimes(6);
+  });
+
+  it('isAllowedToGetAvailableUsersForPrivilegeGroup -  unauthorized', () => {
+    activeUser.role = Role.BLOCKED;
+    expect(service.isAllowedToGetAvailableUsersForPrivilegeGroup()).toBeFalse();
+    activeUser.role = Role.NOT_RELEVANT;
+    expect(service.isAllowedToGetAvailableUsersForPrivilegeGroup()).toBeFalse();
+    selectionServiceSpy.and.returnValue(undefined);
+    expect(service.isAllowedToGetAvailableUsersForPrivilegeGroup()).toBeFalse();
+
+    expect(selectionServiceSpy).toHaveBeenCalledTimes(3);
+  });
+
+
+
+  /**
+   * isAllowedToGetAvailableUserPartsForPrivilegeGroup
+   */
+  it('isAllowedToGetAvailableUserPartsForPrivilegeGroup - authorized', () => {
+    activeUser.role = Role.NOT_RELEVANT;
+    activeUser.isGlobalAdmin = true;
+    expect(service.isAllowedToGetAvailableUserPartsForPrivilegeGroup()).toBeTrue();
+    activeUser.role = Role.VISITOR;
+    activeUser.isGlobalAdmin = false;
+    expect(service.isAllowedToGetAvailableUserPartsForPrivilegeGroup()).toBeTrue();
+    activeUser.role = Role.CONTRIBUTOR;
+    expect(service.isAllowedToGetAvailableUserPartsForPrivilegeGroup()).toBeTrue();
+    activeUser.role = Role.MANAGER;
+    expect(service.isAllowedToGetAvailableUserPartsForPrivilegeGroup()).toBeTrue();
+    activeUser.role = Role.ADMIN;
+    expect(service.isAllowedToGetAvailableUserPartsForPrivilegeGroup()).toBeTrue();
+    activeUser.role = undefined;
+    expect(service.isAllowedToGetAvailableUserPartsForPrivilegeGroup()).toBeTrue();
+
+    expect(selectionServiceSpy).toHaveBeenCalledTimes(6);
+  });
+
+  it('isAllowedToGetAvailableUserPartsForPrivilegeGroup -  unauthorized', () => {
+    activeUser.role = Role.BLOCKED;
+    expect(service.isAllowedToGetAvailableUserPartsForPrivilegeGroup()).toBeFalse();
+    activeUser.role = Role.NOT_RELEVANT;
+    expect(service.isAllowedToGetAvailableUserPartsForPrivilegeGroup()).toBeFalse();
+    selectionServiceSpy.and.returnValue(undefined);
+    expect(service.isAllowedToGetAvailableUserPartsForPrivilegeGroup()).toBeFalse();
 
     expect(selectionServiceSpy).toHaveBeenCalledTimes(3);
   });

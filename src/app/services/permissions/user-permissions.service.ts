@@ -144,6 +144,30 @@ export class UserPermissionsService extends BasePermissionsService {
 
 
   /**
+   * @returns true if the active user is allowed to count available users for a base group. Otherwise false.
+   */
+  isAllowedToCountAvailableUsersForBaseGroup(): boolean {
+    return this.isAllowedToGetAvailableUsersForBaseGroup();
+  }
+
+
+  /**
+   * @returns true if the active user is allowed to get avaiable users for a base group. Otherwise false.
+   */
+  isAllowedToGetAvailableUsersForBaseGroup(): boolean {
+    return this.isAllowedToGetAllUsersAtBaseGroup();
+  }
+
+
+  /**
+   * @returns true if the active user is allowed to get avaiable user parts for a base group. Otherwise false.
+   */
+  isAllowedToGetAvailableUserPartsForBaseGroup(): boolean {
+    return this.isAllowedToGetAvailableUsersForBaseGroup();
+  }
+
+
+  /**
    * @returns true if the active user is allowed to add an user to a privilege group. Otherwise false.
    */
   isAllowedToAddUserToPrivilegeGroup() {
@@ -182,4 +206,27 @@ export class UserPermissionsService extends BasePermissionsService {
     return this.isAllowedToGetUser();
   }
 
+
+  /**
+   * @returns true if the active user is allowed to count available users for a privilege group. Otherwise false.
+   */
+  isAllowedToCountAvailableUsersForPrivilegeGroup(): boolean {
+    return this.isAllowedToGetAvailableUsersForPrivilegeGroup();
+  }
+
+
+  /**
+   * @returns true if the active user is allowed to get avaiable users for a privilege group. Otherwise false.
+   */
+  isAllowedToGetAvailableUsersForPrivilegeGroup(): boolean {
+    return this.isAllowedToGetAllUsersAtPrivilegeGroup();
+  }
+
+
+  /**
+   * @returns true if the active user is allowed to get avaiable user parts for a privilege group. Otherwise false.
+   */
+  isAllowedToGetAvailableUserPartsForPrivilegeGroup(): boolean {
+    return this.isAllowedToGetAvailableUsersForPrivilegeGroup();
+  }
 }
