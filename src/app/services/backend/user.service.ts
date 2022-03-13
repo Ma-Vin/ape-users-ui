@@ -44,6 +44,7 @@ export class UserService extends BaseBackendService {
   private getAllUsersFromPrivilegeGroupUrl: string | undefined;
   private getAllUserPartsFromPrivilegeGroupUrl: string | undefined;
   private countAvailableUsersForBaseGroupUrl: string | undefined;
+  private countAvailableUsersForPrivilegeGroupUrl: string | undefined;
 
   constructor(private http: HttpClient, configService: ConfigService, private selectionService: SelectionService) {
     super('UserService', configService);
@@ -76,6 +77,7 @@ export class UserService extends BaseBackendService {
     this.getAllUsersFromPrivilegeGroupUrl = userControllerUrl.concat('/getAllUsersFromPrivilegeGroup');
     this.getAllUserPartsFromPrivilegeGroupUrl = userControllerUrl.concat('/getAllUserPartsFromPrivilegeGroup');
     this.countAvailableUsersForBaseGroupUrl = userControllerUrl.concat('/countAvailableUsersForBaseGroup');
+    this.countAvailableUsersForPrivilegeGroupUrl = userControllerUrl.concat('/countAvailableUsersForPrivilegeGroup');
 
     return true;
   }
@@ -1209,6 +1211,33 @@ export class UserService extends BaseBackendService {
 
     return result;
   }
+
+
+
+  /**
+   * Count available users for a privilege group at the backend
+   * @param privilegeGroupIdentification the id of the privilege group whose available users are to count
+   * @returns the number of users which can be added to the privilege group
+   */
+  public countAvailableUsersForPrivilegeGroup(privilegeGroupIdentification: string): Observable<number> {
+    this.init();
+    if (this.useMock) {
+      return this.countAvailableUsersAtPrivilegeGroupMock(privilegeGroupIdentification);
+    }
+    return this.countUsersWithUrl(privilegeGroupIdentification, this.countAvailableUsersForPrivilegeGroupUrl);
+  }
+
+
+  /**
+   * Counts the available users for a given privilege group at mock
+   * @param privilegeGroupIdentification the id of the privilege group whose available users are to count
+   * @returns the number of users which can be added to the privilege group
+   */
+  private countAvailableUsersAtPrivilegeGroupMock(privilegeGroupIdentification: string): Observable<number> {
+    this.initMocks();
+    return of(this.getAllUserIdsAtSelectedCommonGroupFromMock().length - this.getUserIdRolesAtPrivilegeFromMock(privilegeGroupIdentification).length);
+  }
+
 
 
   private mapUserForMock(userToMap: User, isComplete: boolean) {
