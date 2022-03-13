@@ -44,6 +44,7 @@ export class BaseGroupService extends BaseBackendService {
   private getAllBasesAtPrivilegeGroupUrl: string | undefined;
   private getAllBasePartsAtPrivilegeGroupUrl: string | undefined;
   private countAvailableBasesForBaseGroupUrl: string | undefined;
+  private countAvailableBasesForPrivilegeGroupUrl: string | undefined;
 
 
   constructor(private http: HttpClient, configService: ConfigService, private selectionService: SelectionService) {
@@ -77,6 +78,7 @@ export class BaseGroupService extends BaseBackendService {
     this.getAllBasesAtPrivilegeGroupUrl = baseGroupControllerUrl.concat('/findAllBaseAtPrivilegeGroup');
     this.getAllBasePartsAtPrivilegeGroupUrl = baseGroupControllerUrl.concat('/findAllBasePartAtPrivilegeGroup');
     this.countAvailableBasesForBaseGroupUrl = baseGroupControllerUrl.concat('/countAvailableBasesForBaseGroup');
+    this.countAvailableBasesForPrivilegeGroupUrl = baseGroupControllerUrl.concat('/countAvailableBasesForPrivilegeGroup');
 
     return true;
   }
@@ -962,6 +964,35 @@ export class BaseGroupService extends BaseBackendService {
 
     return this.getAllBaseFromGroup(url, parentIdentification, role, page, size, false);
   }
+
+
+
+
+  /**
+   * Count available base groups for a privilege group at the backend
+   * @param privilegeGroupIdentification the id of the privilege group whose available base group to count at
+   * @returns the number available base groups for the privilege group
+   */
+  public countAvailableBasesForPrivilegeGroup(privilegeGroupIdentification: string): Observable<number> {
+    this.init();
+    if (this.useMock) {
+      return this.countAvailableBasesAtBasePrivilegeMock(privilegeGroupIdentification);
+    }
+    return this.countBaseGroupsWithUrl(privilegeGroupIdentification, this.countAvailableBasesForPrivilegeGroupUrl);
+  }
+
+
+
+  /**
+   * Creates mock for counting available base groups for a privilege group
+   * @param privilegeGroupIdentification the id of the privilege group whose available base group to count at
+   * @returns the mocked observable of the counted number
+   */
+  private countAvailableBasesAtBasePrivilegeMock(privilegeGroupIdentification: string): Observable<number> {
+    this.initMocks();
+    return of(this.getAllBaseIdsAtSelectedCommonGroupFromMock().length - BaseGroupService.getBaseGroupIdRolesAtPrivilegeFromMock(privilegeGroupIdentification).length);
+  }
+
 
 
 

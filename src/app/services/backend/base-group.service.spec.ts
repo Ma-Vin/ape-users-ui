@@ -2468,4 +2468,93 @@ describe('BaseGroupService', () => {
   }));
 
 
+
+
+  /**
+   * countAvailableBasesForPrivilegeGroup
+   */
+  it('countAvailableBasesForPrivilegeGroup - all ok', fakeAsync(() => {
+    let mockResponseWrapper: ResponseWrapper = {
+      response: 42,
+      status: Status.OK,
+      messages: []
+    }
+
+    service.countAvailableBasesForPrivilegeGroup(privilegeGroupId).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data).toEqual(42);
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/group/base/countAvailableBasesForPrivilegeGroup/${privilegeGroupId}`);
+    expect(req.request.method).toEqual("GET");
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/group/base/countAvailableBasesForPrivilegeGroup/${privilegeGroupId}`);
+
+    tick();
+  }));
+
+  it('countAvailableBasesForPrivilegeGroup - with error status', fakeAsync(() => {
+    service.countAvailableBasesForPrivilegeGroup(privilegeGroupId).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/group/base/countAvailableBasesForPrivilegeGroup/${privilegeGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockErrorResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/group/base/countAvailableBasesForPrivilegeGroup/${privilegeGroupId}`);
+
+    tick();
+  }));
+
+  it('countAvailableBasesForPrivilegeGroup - with fatal status', fakeAsync(() => {
+    service.countAvailableBasesForPrivilegeGroup(privilegeGroupId).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/group/base/countAvailableBasesForPrivilegeGroup/${privilegeGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockFatalResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/group/base/countAvailableBasesForPrivilegeGroup/${privilegeGroupId}`);
+
+    tick();
+  }));
+
+  it('countAvailableBasesForPrivilegeGroup - mock', fakeAsync(() => {
+    service.useMock = true;
+    service.countAvailableBasesForPrivilegeGroup(privilegeGroupId).subscribe(
+      data => {
+        expect(data).toBeTruthy();
+        expect(data).toEqual(1);
+      });
+
+    service.addBaseGroupToMock(otherBaseGroup, commonGroupId);
+
+    service.countAvailableBasesForPrivilegeGroup(privilegeGroupId).subscribe(
+      data => {
+        expect(data).toBeTruthy();
+        expect(data).toEqual(2);
+      });
+
+
+    httpMock.expectNone(`//localhost:8080/group/base/countAvailableBasesForPrivilegeGroup/${privilegeGroupId}`);
+
+    tick();
+  }));
+
 });
