@@ -47,6 +47,8 @@ export class UserService extends BaseBackendService {
   private getAvailableUsersForBaseGroupUrl: string | undefined;
   private getAvailableUserPartsForBaseGroupUrl: string | undefined;
   private countAvailableUsersForPrivilegeGroupUrl: string | undefined;
+  private getAvailableUsersForPrivilegeGroupUrl: string | undefined;
+  private getAvailableUserPartsForPrivilegeGroupUrl: string | undefined;
 
   constructor(private http: HttpClient, configService: ConfigService, private selectionService: SelectionService) {
     super('UserService', configService);
@@ -82,6 +84,8 @@ export class UserService extends BaseBackendService {
     this.getAvailableUsersForBaseGroupUrl = userControllerUrl.concat('/getAvailableUsersForBaseGroup');
     this.getAvailableUserPartsForBaseGroupUrl = userControllerUrl.concat('/getAvailableUserPartsForBaseGroup');
     this.countAvailableUsersForPrivilegeGroupUrl = userControllerUrl.concat('/countAvailableUsersForPrivilegeGroup');
+    this.getAvailableUsersForPrivilegeGroupUrl = userControllerUrl.concat('/getAvailableUsersForPrivilegeGroup');
+    this.getAvailableUserPartsForPrivilegeGroupUrl = userControllerUrl.concat('/getAvailableUserPartsForPrivilegeGroup');
 
     return true;
   }
@@ -1290,7 +1294,7 @@ export class UserService extends BaseBackendService {
   public countAvailableUsersForPrivilegeGroup(privilegeGroupIdentification: string): Observable<number> {
     this.init();
     if (this.useMock) {
-      return this.countAvailableUsersAtPrivilegeGroupMock(privilegeGroupIdentification);
+      return this.countAvailableUsersForPrivilegeGroupMock(privilegeGroupIdentification);
     }
     return this.countUsersWithUrl(privilegeGroupIdentification, this.countAvailableUsersForPrivilegeGroupUrl);
   }
@@ -1301,9 +1305,75 @@ export class UserService extends BaseBackendService {
    * @param privilegeGroupIdentification the id of the privilege group whose available users are to count
    * @returns the number of users which can be added to the privilege group
    */
-  private countAvailableUsersAtPrivilegeGroupMock(privilegeGroupIdentification: string): Observable<number> {
+  private countAvailableUsersForPrivilegeGroupMock(privilegeGroupIdentification: string): Observable<number> {
     this.initMocks();
     return of(this.getAllUserIdsAtSelectedCommonGroupFromMock().length - this.getUserIdRolesAtPrivilegeFromMock(privilegeGroupIdentification).length);
+  }
+
+
+
+  /**
+   * Get available users for a privilege group from the backend
+   * @param baseGroupIdentification Id of the parent privilege group
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @returns the available users
+   */
+  public getAvailableUsersForPrivilegeGroup(baseGroupIdentification: string, page: number | undefined, size: number | undefined): Observable<User[]> {
+    this.init();
+    return this.getAvailableUsersForPrivilegeGroupWithUrl(baseGroupIdentification, page, size, `${this.getAvailableUsersForPrivilegeGroupUrl}`, true);
+  }
+
+
+  /**
+   * Get available users for a privilege group from the backend
+   * @param baseGroupIdentification Id of the parent privilege group
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @returns the available users
+   */
+  public getAvailableUserPartsForPrivilegeGroup(baseGroupIdentification: string, page: number | undefined, size: number | undefined): Observable<User[]> {
+    this.init();
+    return this.getAvailableUsersForPrivilegeGroupWithUrl(baseGroupIdentification, page, size, `${this.getAvailableUserPartsForPrivilegeGroupUrl}`, false);
+  }
+
+
+  /**
+   * Get available users for a privilege group from the backend
+   * @param privilegeGroupIdentification Id of the parent privilege group
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0.
+   * @param url the url where to get the data from backend
+   * @param isComplete indicator if the url points to the endpoint which return the complete entity or the one with reduced data
+   * @returns the available users
+   */
+  public getAvailableUsersForPrivilegeGroupWithUrl(privilegeGroupIdentification: string, page: number | undefined, size: number | undefined, url: string, isComplete: boolean): Observable<User[]> {
+    this.init();
+    if (this.useMock) {
+      return this.getAvailableUsersForPrivilegeGroupMock(privilegeGroupIdentification, isComplete);
+    }
+    return this.getAllUsersWithUrlNoMock(privilegeGroupIdentification, page, size, url, isComplete);
+  }
+
+
+  /**
+   * Creates mock for getting available users for a base group
+   * @param privilegeGroupIdentification Id of the parent base group
+   * @param isComplete indicator if the url points to the endpoint which return the complete entity or the one with reduced data
+   * @returns the mocked observable of available users
+   */
+  private getAvailableUsersForPrivilegeGroupMock(privilegeGroupIdentification: string, isComplete: boolean): Observable<User[]> {
+    this.initMocks();
+    let result: User[] = [];
+    let userIdsAtPrivilegeGroup: string[] = [];
+    this.getUserIdRolesAtPrivilegeFromMock(privilegeGroupIdentification).forEach(ur => userIdsAtPrivilegeGroup.push(ur.userIdentification));
+    for (let u of this.getAllUsersAtSelectedCommonGroupFromMock()) {
+      if (!userIdsAtPrivilegeGroup.includes(u.identification)) {
+        let entry = this.mapUserForMock(u, isComplete);
+        result.push(entry);
+      }
+    }
+    return of(result);
   }
 
 

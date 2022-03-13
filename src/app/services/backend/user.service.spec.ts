@@ -3534,6 +3534,279 @@ describe('UserService', () => {
   }));
 
 
+
+
+
+  /**
+   * getAvailableUsersForPrivilegeGroup
+   */
+  it('getAvailableUsersForPrivilegeGroup - all ok', fakeAsync(() => {
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockIUser],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAvailableUsersForPrivilegeGroup(privilegeGroupId, undefined, undefined).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].identification).toEqual(userId);
+      expect(data[0].isGlobalAdmin).toBeFalse();
+      expect(data[0].isComplete).toBeTrue();
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/user/getAvailableUsersForPrivilegeGroup/${privilegeGroupId}`);
+    expect(req.request.method).toEqual("GET");
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/user/getAvailableUsersForPrivilegeGroup/${privilegeGroupId}`);
+
+    tick();
+  }));
+
+  it('getAvailableUsersForPrivilegeGroup - with pageing', fakeAsync(() => {
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockIUser],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAvailableUsersForPrivilegeGroup(privilegeGroupId, 1, 50).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].identification).toEqual(userId);
+      expect(data[0].isGlobalAdmin).toBeFalse();
+      expect(data[0].isComplete).toBeTrue();
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/user/getAvailableUsersForPrivilegeGroup/${privilegeGroupId}?page=1&size=50`);
+    expect(req.request.method).toEqual("GET");
+    expect(req.request.params.get('page')).toEqual('1');
+    expect(req.request.params.get('size')).toEqual('50');
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/user/getAvailableUsersForPrivilegeGroup/${privilegeGroupId}?page=1&size=50`);
+
+    tick();
+  }));
+
+  it('getAvailableUsersForPrivilegeGroup - with error status', fakeAsync(() => {
+    service.getAvailableUsersForPrivilegeGroup(privilegeGroupId, undefined, undefined).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/user/getAvailableUsersForPrivilegeGroup/${privilegeGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockErrorResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/user/getAvailableUsersForPrivilegeGroup/${privilegeGroupId}`);
+
+    tick();
+  }));
+
+  it('getAvailableUsersForPrivilegeGroup - with fatal status', fakeAsync(() => {
+    service.getAvailableUsersForPrivilegeGroup(privilegeGroupId, undefined, undefined).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/user/getAvailableUsersForPrivilegeGroup/${privilegeGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockFatalResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/user/getAvailableUsersForPrivilegeGroup/${privilegeGroupId}`);
+
+    tick();
+  }));
+
+  it('getAvailableUsersForPrivilegeGroup - mock', fakeAsync(() => {
+    service.useMock = true;
+    service.getAvailableUsersForPrivilegeGroup(privilegeGroupId, undefined, undefined).subscribe(
+      getAllData => {
+        expect(getAllData).toBeTruthy();
+        expect(getAllData.length).toEqual(1);
+        expect(getAllData[0].identification).toEqual(userId);
+        expect(getAllData[0].isGlobalAdmin).toBeFalse();
+        expect(getAllData[0].isComplete).toBeTrue();
+      },
+      e => expect(e).toBeFalsy()
+    );
+
+    service.addUserToMock(secondUser, commonGroupId);
+
+    service.getAvailableUsersForPrivilegeGroup(privilegeGroupId, undefined, undefined).subscribe(
+      getAllData => {
+        expect(getAllData).toBeTruthy();
+        expect(getAllData.length).toEqual(2);
+        expect(getAllData[0].identification).toEqual(userId);
+        expect(getAllData[0].isGlobalAdmin).toBeFalse();
+        expect(getAllData[0].isComplete).toBeTrue();
+        expect(getAllData[1].identification).toEqual(secondUserId);
+        expect(getAllData[1].isGlobalAdmin).toBeFalse();
+        expect(getAllData[1].isComplete).toBeTrue();
+      },
+      e => expect(e).toBeFalsy()
+    );
+
+    httpMock.expectNone(`//localhost:8080/user/getAvailableUsersForPrivilegeGroup/${privilegeGroupId}`);
+
+    tick();
+  }));
+
+
+
+
+  /**
+   * getAvailableUserPartsForPrivilegeGroup
+   */
+  it('getAvailableUserPartsForPrivilegeGroup - all ok', fakeAsync(() => {
+    mockIUser.image = undefined;
+    mockIUser.smallImage = undefined;
+    mockIUser.lastLogin = undefined;
+    mockIUser.validFrom = undefined;
+    mockIUser.validTo = undefined;
+
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockIUser],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAvailableUserPartsForPrivilegeGroup(baseGroupId, undefined, undefined).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      checkUserPart(data[0], userId);
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/user/getAvailableUserPartsForPrivilegeGroup/${baseGroupId}`);
+    expect(req.request.method).toEqual("GET");
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/user/getAvailableUserPartsForPrivilegeGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+  it('getAvailableUserPartsForPrivilegeGroup - with pageing', fakeAsync(() => {
+    mockIUser.image = undefined;
+    mockIUser.smallImage = undefined;
+    mockIUser.lastLogin = undefined;
+    mockIUser.validFrom = undefined;
+    mockIUser.validTo = undefined;
+
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockIUser],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAvailableUserPartsForPrivilegeGroup(baseGroupId, 1, 50).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      checkUserPart(data[0], userId);
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/user/getAvailableUserPartsForPrivilegeGroup/${baseGroupId}?page=1&size=50`);
+    expect(req.request.method).toEqual("GET");
+    expect(req.request.params.get('page')).toEqual('1');
+    expect(req.request.params.get('size')).toEqual('50');
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/user/getAvailableUserPartsForPrivilegeGroup/${baseGroupId}?page=1&size=50`);
+
+    tick();
+  }));
+
+  it('getAvailableUserPartsForPrivilegeGroup - with error status', fakeAsync(() => {
+    service.getAvailableUserPartsForPrivilegeGroup(baseGroupId, undefined, undefined).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/user/getAvailableUserPartsForPrivilegeGroup/${baseGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockErrorResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/user/getAvailableUserPartsForPrivilegeGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+  it('getAvailableUserPartsForPrivilegeGroup - with fatal status', fakeAsync(() => {
+    service.getAvailableUserPartsForPrivilegeGroup(baseGroupId, undefined, undefined).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/user/getAvailableUserPartsForPrivilegeGroup/${baseGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockFatalResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/user/getAvailableUserPartsForPrivilegeGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+  it('getAvailableUserPartsForPrivilegeGroup - mock', fakeAsync(() => {
+    service.useMock = true;
+    service.getAvailableUserPartsForPrivilegeGroup(baseGroupId, undefined, undefined).subscribe(
+      getAllData => {
+        expect(getAllData).toBeTruthy();
+        expect(getAllData.length).toEqual(1);
+        expect(getAllData[0].identification).toEqual(userId);
+        expect(getAllData[0].isGlobalAdmin).toBeFalse();
+        expect(getAllData[0].isComplete).toBeFalse();
+      },
+      e => expect(e).toBeFalsy()
+    );
+
+    service.addUserToMock(secondUser, commonGroupId);
+
+    service.getAvailableUserPartsForPrivilegeGroup(baseGroupId, undefined, undefined).subscribe(
+      getAllData => {
+        expect(getAllData).toBeTruthy();
+        expect(getAllData.length).toEqual(2);
+        expect(getAllData[0].identification).toEqual(userId);
+        expect(getAllData[0].isGlobalAdmin).toBeFalse();
+        expect(getAllData[0].isComplete).toBeFalse();
+        expect(getAllData[1].identification).toEqual(secondUserId);
+        expect(getAllData[1].isGlobalAdmin).toBeFalse();
+        expect(getAllData[1].isComplete).toBeFalse();
+      },
+      e => expect(e).toBeFalsy()
+    );
+    httpMock.expectNone(`//localhost:8080/user/getAvailableUserPartsForPrivilegeGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
+
+
 });
 
 
