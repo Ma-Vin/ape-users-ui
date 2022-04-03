@@ -289,7 +289,6 @@ export class BaseGroupService extends BaseBackendService {
    * Get all base group or group parts with reduced data from the backend
    * @param page zero-based page index, must not be negative.
    * @param size the size of the page to be returned, must be greater than 0.
-   * @param url the url where to get the data from backend
    * @param isComplete indicator if the url points to the endpoint which return the complete entity or the one with reduced data
    * @returns the base groups
    */
@@ -298,7 +297,12 @@ export class BaseGroupService extends BaseBackendService {
       return this.getAllBaseGroupsMock(isComplete);
     }
 
-    return this.http.get<ResponseWrapper>(url, {
+    let commonGroup = this.selectionService.getSelectedCommonGroup();
+    if (commonGroup == undefined) {
+      return throwError(new Error(`${Status.ERROR} occurs while creating base group at backend`));
+    }
+
+    return this.http.get<ResponseWrapper>(`${url}/${commonGroup.identification}`, {
       headers: HTTP_URL_OPTIONS.headers,
       params: this.createPageingParams(page, size)
     }).pipe(
@@ -385,12 +389,16 @@ export class BaseGroupService extends BaseBackendService {
    */
   public createBaseGroup(groupName: string): Observable<BaseGroup> {
     this.init();
+    let commonGroup = this.selectionService.getSelectedCommonGroup();
+    if (commonGroup == undefined) {
+      return throwError(new Error(`${Status.ERROR} occurs while creating base group at backend`));
+    }
     if (this.useMock) {
-      return this.createBaseGroupMock(groupName);
+      return this.createBaseGroupMock(groupName, commonGroup.identification);
     }
 
     let url = `${this.createBaseGroupUrl}`;
-    let body = `groupName=${groupName}`;
+    let body = `groupName=${groupName}&commonGroupIdentification=${commonGroup.identification}`;
 
     return this.http.post<ResponseWrapper>(url, body, HTTP_URL_OPTIONS).pipe(
       map(data => {
@@ -407,13 +415,10 @@ export class BaseGroupService extends BaseBackendService {
   /**
    * creates a new base group at mock
    * @param groupName name of the group
+   * @param commonGroupIdentification identifcation of the common group
    * @returns the mocked observable of the new base group
    */
-  private createBaseGroupMock(groupName: string): Observable<BaseGroup> {
-    let commonGroup = this.selectionService.getSelectedCommonGroup();
-    if (commonGroup == undefined) {
-      return throwError(new Error(`${Status.ERROR} occurs while creating base group at backend`));
-    }
+  private createBaseGroupMock(groupName: string, commonGroupIdentification: string): Observable<BaseGroup> {
     this.initMocks();
     let idBase = 'BGAA';
     let nextBaseGroupIdMock = BaseBackendService.mockData.get(NEXT_BASE_GOUP_ID_MOCK_KEY);
@@ -434,7 +439,7 @@ export class BaseGroupService extends BaseBackendService {
       } as IBaseGroup);
 
     this.getAllBaseGroupsFromMock().push(addedBaseGroup);
-    BaseGroupService.getBaseGroupIdsFromMock(commonGroup.identification).push(addedBaseGroup.identification);
+    BaseGroupService.getBaseGroupIdsFromMock(commonGroupIdentification).push(addedBaseGroup.identification);
 
     return of(addedBaseGroup);
   }

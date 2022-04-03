@@ -269,12 +269,12 @@ describe('BaseGroupService', () => {
       expect(data[0].isComplete).toBeTrue();
     });
 
-    const req = httpMock.expectOne(`//localhost:8080/group/base/getAllBaseGroups`);
+    const req = httpMock.expectOne(`//localhost:8080/group/base/getAllBaseGroups/${commonGroupId}`);
     expect(req.request.method).toEqual("GET");
     req.flush(mockResponseWrapper);
 
     // No retry after success
-    httpMock.expectNone(`//localhost:8080/group/base/getAllBaseGroups`);
+    httpMock.expectNone(`//localhost:8080/group/base/getAllBaseGroups/${commonGroupId}`);
 
     tick();
   }));
@@ -297,14 +297,14 @@ describe('BaseGroupService', () => {
       expect(data[0].isComplete).toBeTrue();
     });
 
-    const req = httpMock.expectOne(`//localhost:8080/group/base/getAllBaseGroups?page=1&size=50`);
+    const req = httpMock.expectOne(`//localhost:8080/group/base/getAllBaseGroups/${commonGroupId}?page=1&size=50`);
     expect(req.request.method).toEqual("GET");
     expect(req.request.params.get('page')).toEqual('1');
     expect(req.request.params.get('size')).toEqual('50');
     req.flush(mockResponseWrapper);
 
     // No retry after success
-    httpMock.expectNone(`//localhost:8080/group/base/getAllBaseGroups?page=1&size=50`);
+    httpMock.expectNone(`//localhost:8080/group/base/getAllBaseGroups/${commonGroupId}?page=1&size=50`);
 
     tick();
   }));
@@ -318,13 +318,13 @@ describe('BaseGroupService', () => {
       });
 
     for (let i = 0; i < RETRIES + 1; i++) {
-      let req = httpMock.expectOne(`//localhost:8080/group/base/getAllBaseGroups`);
+      let req = httpMock.expectOne(`//localhost:8080/group/base/getAllBaseGroups/${commonGroupId}`);
       expect(req.request.method).toEqual("GET");
       req.flush(mockErrorResponseWrapper);
     }
 
     // No retry anymore
-    httpMock.expectNone(`//localhost:8080/group/base/getAllBaseGroups`);
+    httpMock.expectNone(`//localhost:8080/group/base/getAllBaseGroups/${commonGroupId}`);
 
     tick();
   }));
@@ -338,13 +338,13 @@ describe('BaseGroupService', () => {
       });
 
     for (let i = 0; i < RETRIES + 1; i++) {
-      let req = httpMock.expectOne(`//localhost:8080/group/base/getAllBaseGroups`);
+      let req = httpMock.expectOne(`//localhost:8080/group/base/getAllBaseGroups/${commonGroupId}`);
       expect(req.request.method).toEqual("GET");
       req.flush(mockFatalResponseWrapper);
     }
 
     // No retry anymore
-    httpMock.expectNone(`//localhost:8080/group/base/getAllBaseGroups`);
+    httpMock.expectNone(`//localhost:8080/group/base/getAllBaseGroups/${commonGroupId}`);
 
     tick();
   }));
@@ -358,7 +358,7 @@ describe('BaseGroupService', () => {
       expect(data[0].isComplete).toBeTrue();
     });
 
-    httpMock.expectNone(`//localhost:8080/group/base/getAllBaseGroups`);
+    httpMock.expectNone(`//localhost:8080/group/base/getAllBaseGroups/${commonGroupId}`);
 
     tick();
   }));
@@ -387,12 +387,12 @@ describe('BaseGroupService', () => {
       checkBaseGroupPartWithName(data[0], mockIBaseGroup.identification, mockIBaseGroup.groupName);
     });
 
-    const req = httpMock.expectOne(`//localhost:8080/group/base/getAllBaseGroupParts`);
+    const req = httpMock.expectOne(`//localhost:8080/group/base/getAllBaseGroupParts/${commonGroupId}`);
     expect(req.request.method).toEqual("GET");
     req.flush(mockResponseWrapper);
 
     // No retry after success
-    httpMock.expectNone(`//localhost:8080/group/base/getAllBaseGroupParts`);
+    httpMock.expectNone(`//localhost:8080/group/base/getAllBaseGroupParts/${commonGroupId}`);
 
     tick();
   }));
@@ -414,14 +414,14 @@ describe('BaseGroupService', () => {
       checkBaseGroupPartWithName(data[0], mockIBaseGroup.identification, mockIBaseGroup.groupName);
     });
 
-    const req = httpMock.expectOne(`//localhost:8080/group/base/getAllBaseGroupParts?page=1&size=50`);
+    const req = httpMock.expectOne(`//localhost:8080/group/base/getAllBaseGroupParts/${commonGroupId}?page=1&size=50`);
     expect(req.request.method).toEqual("GET");
     expect(req.request.params.get('page')).toEqual('1');
     expect(req.request.params.get('size')).toEqual('50');
     req.flush(mockResponseWrapper);
 
     // No retry after success
-    httpMock.expectNone(`//localhost:8080/group/base/getAllBaseGroupParts?page=1&size=50`);
+    httpMock.expectNone(`//localhost:8080/group/base/getAllBaseGroupParts/${commonGroupId}?page=1&size=50`);
 
     tick();
   }));
@@ -435,13 +435,13 @@ describe('BaseGroupService', () => {
       });
 
     for (let i = 0; i < RETRIES + 1; i++) {
-      let req = httpMock.expectOne(`//localhost:8080/group/base/getAllBaseGroupParts`);
+      let req = httpMock.expectOne(`//localhost:8080/group/base/getAllBaseGroupParts/${commonGroupId}`);
       expect(req.request.method).toEqual("GET");
       req.flush(mockErrorResponseWrapper);
     }
 
     // No retry anymore
-    httpMock.expectNone(`//localhost:8080/group/base/getAllBaseGroupParts`);
+    httpMock.expectNone(`//localhost:8080/group/base/getAllBaseGroupParts/${commonGroupId}`);
 
     tick();
   }));
@@ -455,13 +455,13 @@ describe('BaseGroupService', () => {
       });
 
     for (let i = 0; i < RETRIES + 1; i++) {
-      let req = httpMock.expectOne(`//localhost:8080/group/base/getAllBaseGroupParts`);
+      let req = httpMock.expectOne(`//localhost:8080/group/base/getAllBaseGroupParts/${commonGroupId}`);
       expect(req.request.method).toEqual("GET");
       req.flush(mockFatalResponseWrapper);
     }
 
     // No retry anymore
-    httpMock.expectNone(`//localhost:8080/group/base/getAllBaseGroupParts`);
+    httpMock.expectNone(`//localhost:8080/group/base/getAllBaseGroupParts/${commonGroupId}`);
 
     tick();
   }));
@@ -474,7 +474,7 @@ describe('BaseGroupService', () => {
       checkBaseGroupPart(data[0], baseGroupId);
     });
 
-    httpMock.expectNone(`//localhost:8080/group/base/getAllBaseGroupParts`);
+    httpMock.expectNone(`//localhost:8080/group/base/getAllBaseGroupParts/${commonGroupId}`);
 
     tick();
   }));
@@ -584,7 +584,7 @@ describe('BaseGroupService', () => {
 
     const req = httpMock.expectOne(`//localhost:8080/group/base/createBaseGroup`);
     expect(req.request.method).toEqual("POST");
-    expect(req.request.body).toEqual(`groupName=${baseGroupName}`)
+    expect(req.request.body).toEqual(`groupName=${baseGroupName}&commonGroupIdentification=${commonGroupId}`)
     req.flush(mockResponseWrapper);
 
     // No retry after success
@@ -604,7 +604,7 @@ describe('BaseGroupService', () => {
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/createBaseGroup`);
       expect(req.request.method).toEqual("POST");
-      expect(req.request.body).toEqual(`groupName=${baseGroupName}`)
+      expect(req.request.body).toEqual(`groupName=${baseGroupName}&commonGroupIdentification=${commonGroupId}`)
       req.flush(mockErrorResponseWrapper);
     }
 
@@ -625,7 +625,7 @@ describe('BaseGroupService', () => {
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/createBaseGroup`);
       expect(req.request.method).toEqual("POST");
-      expect(req.request.body).toEqual(`groupName=${baseGroupName}`)
+      expect(req.request.body).toEqual(`groupName=${baseGroupName}&commonGroupIdentification=${commonGroupId}`)
       req.flush(mockFatalResponseWrapper);
     }
 
