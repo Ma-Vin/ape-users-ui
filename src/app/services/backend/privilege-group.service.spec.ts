@@ -256,12 +256,12 @@ describe('PrivilegeGroupService', () => {
       expect(data[0].isComplete).toBeTrue();
     });
 
-    const req = httpMock.expectOne(`//localhost:8080/group/privilege/getAllPrivilegeGroups`);
+    const req = httpMock.expectOne(`//localhost:8080/group/privilege/getAllPrivilegeGroups/${commonGroupId}`);
     expect(req.request.method).toEqual("GET");
     req.flush(mockResponseWrapper);
 
     // No retry after success
-    httpMock.expectNone(`//localhost:8080/group/privilege/getAllPrivilegeGroups`);
+    httpMock.expectNone(`//localhost:8080/group/privilege/getAllPrivilegeGroups/${commonGroupId}`);
 
     tick();
   }));
@@ -284,14 +284,14 @@ describe('PrivilegeGroupService', () => {
       expect(data[0].isComplete).toBeTrue();
     });
 
-    const req = httpMock.expectOne(`//localhost:8080/group/privilege/getAllPrivilegeGroups?page=1&size=50`);
+    const req = httpMock.expectOne(`//localhost:8080/group/privilege/getAllPrivilegeGroups/${commonGroupId}?page=1&size=50`);
     expect(req.request.method).toEqual("GET");
     expect(req.request.params.get('page')).toEqual('1');
     expect(req.request.params.get('size')).toEqual('50');
     req.flush(mockResponseWrapper);
 
     // No retry after success
-    httpMock.expectNone(`//localhost:8080/group/privilege/getAllPrivilegeGroups?page=1&size=50`);
+    httpMock.expectNone(`//localhost:8080/group/privilege/getAllPrivilegeGroups/${commonGroupId}?page=1&size=50`);
 
     tick();
   }));
@@ -305,13 +305,13 @@ describe('PrivilegeGroupService', () => {
       });
 
     for (let i = 0; i < RETRIES + 1; i++) {
-      let req = httpMock.expectOne(`//localhost:8080/group/privilege/getAllPrivilegeGroups`);
+      let req = httpMock.expectOne(`//localhost:8080/group/privilege/getAllPrivilegeGroups/${commonGroupId}`);
       expect(req.request.method).toEqual("GET");
       req.flush(mockErrorResponseWrapper);
     }
 
     // No retry anymore
-    httpMock.expectNone(`//localhost:8080/group/privilege/getAllPrivilegeGroups`);
+    httpMock.expectNone(`//localhost:8080/group/privilege/getAllPrivilegeGroups/${commonGroupId}`);
 
     tick();
   }));
@@ -325,13 +325,13 @@ describe('PrivilegeGroupService', () => {
       });
 
     for (let i = 0; i < RETRIES + 1; i++) {
-      let req = httpMock.expectOne(`//localhost:8080/group/privilege/getAllPrivilegeGroups`);
+      let req = httpMock.expectOne(`//localhost:8080/group/privilege/getAllPrivilegeGroups/${commonGroupId}`);
       expect(req.request.method).toEqual("GET");
       req.flush(mockFatalResponseWrapper);
     }
 
     // No retry anymore
-    httpMock.expectNone(`//localhost:8080/group/privilege/getAllPrivilegeGroups`);
+    httpMock.expectNone(`//localhost:8080/group/privilege/getAllPrivilegeGroups/${commonGroupId}`);
 
     tick();
   }));
@@ -345,7 +345,7 @@ describe('PrivilegeGroupService', () => {
       expect(data[0].isComplete).toBeTrue();
     });
 
-    httpMock.expectNone(`//localhost:8080/group/privilege/getAllPrivilegeGroups`);
+    httpMock.expectNone(`//localhost:8080/group/privilege/getAllPrivilegeGroups/${commonGroupId}`);
 
     tick();
   }));
@@ -379,12 +379,12 @@ describe('PrivilegeGroupService', () => {
       expect(data[0].isComplete).toBeFalse();
     });
 
-    const req = httpMock.expectOne(`//localhost:8080/group/privilege/getAllPrivilegeGroupParts`);
+    const req = httpMock.expectOne(`//localhost:8080/group/privilege/getAllPrivilegeGroupParts/${commonGroupId}`);
     expect(req.request.method).toEqual("GET");
     req.flush(mockResponseWrapper);
 
     // No retry after success
-    httpMock.expectNone(`//localhost:8080/group/privilege/getAllPrivilegeGroupParts`);
+    httpMock.expectNone(`//localhost:8080/group/privilege/getAllPrivilegeGroupParts/${commonGroupId}`);
 
     tick();
   }));
@@ -393,7 +393,7 @@ describe('PrivilegeGroupService', () => {
     mockIPrivilegeGroup.description = undefined;
     mockIPrivilegeGroup.validFrom = undefined;
     mockIPrivilegeGroup.validTo = undefined;
-    
+
     let mockResponseWrapper: ResponseWrapper = {
       response: [mockIPrivilegeGroup],
       status: Status.OK,
@@ -411,14 +411,14 @@ describe('PrivilegeGroupService', () => {
       expect(data[0].isComplete).toBeFalse();
     });
 
-    const req = httpMock.expectOne(`//localhost:8080/group/privilege/getAllPrivilegeGroupParts?page=1&size=50`);
+    const req = httpMock.expectOne(`//localhost:8080/group/privilege/getAllPrivilegeGroupParts/${commonGroupId}?page=1&size=50`);
     expect(req.request.method).toEqual("GET");
     expect(req.request.params.get('page')).toEqual('1');
     expect(req.request.params.get('size')).toEqual('50');
     req.flush(mockResponseWrapper);
 
     // No retry after success
-    httpMock.expectNone(`//localhost:8080/group/privilege/getAllPrivilegeGroupParts?page=1&size=50`);
+    httpMock.expectNone(`//localhost:8080/group/privilege/getAllPrivilegeGroupParts/${commonGroupId}?page=1&size=50`);
 
     tick();
   }));
@@ -432,13 +432,13 @@ describe('PrivilegeGroupService', () => {
       });
 
     for (let i = 0; i < RETRIES + 1; i++) {
-      let req = httpMock.expectOne(`//localhost:8080/group/privilege/getAllPrivilegeGroupParts`);
+      let req = httpMock.expectOne(`//localhost:8080/group/privilege/getAllPrivilegeGroupParts/${commonGroupId}`);
       expect(req.request.method).toEqual("GET");
       req.flush(mockErrorResponseWrapper);
     }
 
     // No retry anymore
-    httpMock.expectNone(`//localhost:8080/group/privilege/getAllPrivilegeGroupParts`);
+    httpMock.expectNone(`//localhost:8080/group/privilege/getAllPrivilegeGroupParts/${commonGroupId}`);
 
     tick();
   }));
@@ -452,13 +452,13 @@ describe('PrivilegeGroupService', () => {
       });
 
     for (let i = 0; i < RETRIES + 1; i++) {
-      let req = httpMock.expectOne(`//localhost:8080/group/privilege/getAllPrivilegeGroupParts`);
+      let req = httpMock.expectOne(`//localhost:8080/group/privilege/getAllPrivilegeGroupParts/${commonGroupId}`);
       expect(req.request.method).toEqual("GET");
       req.flush(mockFatalResponseWrapper);
     }
 
     // No retry anymore
-    httpMock.expectNone(`//localhost:8080/group/privilege/getAllPrivilegeGroupParts`);
+    httpMock.expectNone(`//localhost:8080/group/privilege/getAllPrivilegeGroupParts/${commonGroupId}`);
 
     tick();
   }));
@@ -475,7 +475,7 @@ describe('PrivilegeGroupService', () => {
       expect(data[0].isComplete).toBeFalse();
     });
 
-    httpMock.expectNone(`//localhost:8080/group/privilege/getAllPrivilegeGroupParts`);
+    httpMock.expectNone(`//localhost:8080/group/privilege/getAllPrivilegeGroupParts/${commonGroupId}`);
 
     tick();
   }));
@@ -585,7 +585,7 @@ describe('PrivilegeGroupService', () => {
 
     const req = httpMock.expectOne(`//localhost:8080/group/privilege/createPrivilegeGroup`);
     expect(req.request.method).toEqual("POST");
-    expect(req.request.body).toEqual(`groupName=${privilegeGroupName}`)
+    expect(req.request.body).toEqual(`groupName=${privilegeGroupName}&commonGroupIdentification=${commonGroupId}`)
     req.flush(mockResponseWrapper);
 
     // No retry after success
@@ -605,7 +605,7 @@ describe('PrivilegeGroupService', () => {
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/privilege/createPrivilegeGroup`);
       expect(req.request.method).toEqual("POST");
-      expect(req.request.body).toEqual(`groupName=${privilegeGroupName}`)
+      expect(req.request.body).toEqual(`groupName=${privilegeGroupName}&commonGroupIdentification=${commonGroupId}`)
       req.flush(mockErrorResponseWrapper);
     }
 
@@ -626,7 +626,7 @@ describe('PrivilegeGroupService', () => {
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/privilege/createPrivilegeGroup`);
       expect(req.request.method).toEqual("POST");
-      expect(req.request.body).toEqual(`groupName=${privilegeGroupName}`)
+      expect(req.request.body).toEqual(`groupName=${privilegeGroupName}&commonGroupIdentification=${commonGroupId}`)
       req.flush(mockFatalResponseWrapper);
     }
 

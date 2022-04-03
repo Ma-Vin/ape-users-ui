@@ -205,7 +205,12 @@ export class PrivilegeGroupService extends BaseBackendService {
       return this.getAllPrivilegeGroupsMock(isComplete);
     }
 
-    return this.http.get<ResponseWrapper>(url, {
+    let commonGroup = this.selectionService.getSelectedCommonGroup();
+    if (commonGroup == undefined) {
+      return throwError(new Error(`${Status.ERROR} occurs while privilege base group at backend`));
+    }
+
+    return this.http.get<ResponseWrapper>(`${url}/${commonGroup.identification}`, {
       headers: HTTP_URL_OPTIONS.headers,
       params: this.createPageingParams(page, size)
     }).pipe(
@@ -288,12 +293,16 @@ export class PrivilegeGroupService extends BaseBackendService {
    */
   public createPrivilegeGroup(groupName: string): Observable<PrivilegeGroup> {
     this.init();
+    let commonGroup = this.selectionService.getSelectedCommonGroup();
+    if (commonGroup == undefined) {
+      return throwError(new Error(`${Status.ERROR} occurs while creating privilege group at backend`));
+    }
     if (this.useMock) {
-      return this.createPrivilegeGroupMock(groupName);
+      return this.createPrivilegeGroupMock(groupName, commonGroup.identification);
     }
 
     let url = `${this.createPrivilegeGroupUrl}`;
-    let body = `groupName=${groupName}`;
+    let body = `groupName=${groupName}&commonGroupIdentification=${commonGroup.identification}`;
 
     return this.http.post<ResponseWrapper>(url, body, HTTP_URL_OPTIONS).pipe(
       map(data => {
@@ -310,9 +319,10 @@ export class PrivilegeGroupService extends BaseBackendService {
   /**
    * creates a new privilege group at mock
    * @param groupName name of the group
+   * @param commonGroupIdentification identification of the common group
    * @returns the mocked observable of the new privilege group
    */
-  private createPrivilegeGroupMock(groupName: string): Observable<PrivilegeGroup> {
+  private createPrivilegeGroupMock(groupName: string, commonGroupIdentification: string): Observable<PrivilegeGroup> {
     let commonGroup = this.selectionService.getSelectedCommonGroup();
     if (commonGroup == undefined) {
       return throwError(new Error(`${Status.ERROR} occurs while creating privilege group at backend`));
@@ -337,7 +347,7 @@ export class PrivilegeGroupService extends BaseBackendService {
       } as IPrivilegeGroup);
 
     this.getAllPrivilegeGroupsFromMock().push(addedPrivilegeGroup);
-    PrivilegeGroupService.getPrivilegeGroupIdsFromMock(commonGroup.identification).push(addedPrivilegeGroup.identification);
+    PrivilegeGroupService.getPrivilegeGroupIdsFromMock(commonGroupIdentification).push(addedPrivilegeGroup.identification);
 
     return of(addedPrivilegeGroup);
   }
