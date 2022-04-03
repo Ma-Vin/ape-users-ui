@@ -26,6 +26,7 @@ interface RoleWithText {
 })
 export class AllCommonGroupsComponent extends ListDetailComponent<CommonGroup>{
   allowedRoles: Role[] = [Role.ADMIN, Role.MANAGER, Role.CONTRIBUTOR, Role.VISITOR, Role.BLOCKED];
+  public allowedRoleTexts: string[] = ['Admin', 'Manager', 'Contributor', 'Vistor', 'Blocked'];
   roles: RoleWithText[] = [];
   public toolbarSite = ToolbarSite.COMMON_GROUPS;
 
@@ -34,8 +35,8 @@ export class AllCommonGroupsComponent extends ListDetailComponent<CommonGroup>{
     , private commonGroupPermissionsService: CommonGroupPermissionsService, route: ActivatedRoute, location: Location, snackBar: MatSnackBar) {
 
     super(route, location, snackBar);
-    for (let r of this.allowedRoles) {
-      this.roles.push({ value: r, text: `${r}` } as RoleWithText);
+    for (let i = 0; i < this.allowedRoles.length; i++) {
+      this.roles.push({ value: this.allowedRoles[i], text: this.allowedRoleTexts[i] } as RoleWithText);
     }
   }
 

@@ -1,8 +1,8 @@
 export enum Role {
-    ADMIN = 'Admin',
-    MANAGER = 'Manager',
-    CONTRIBUTOR = 'Contributor',
-    VISITOR = 'Visitor',
-    BLOCKED = 'Blocked',
-    NOT_RELEVANT = "not relevant"
+    ADMIN = 'ADMIN',
+    MANAGER = 'MANAGER',
+    CONTRIBUTOR = 'CONTRIBUTOR',
+    VISITOR = 'VISITOR',
+    BLOCKED = 'BLOCKED',
+    NOT_RELEVANT = "NOT_RELEVANT"
 }

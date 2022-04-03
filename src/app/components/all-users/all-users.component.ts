@@ -25,6 +25,7 @@ interface RoleWithText {
 })
 export class AllUsersComponent extends ListDetailComponent<User> {
   public allowedRoles: Role[] = [Role.ADMIN, Role.MANAGER, Role.CONTRIBUTOR, Role.VISITOR, Role.BLOCKED];
+  public allowedRoleTexts: string[] = ['Admin', 'Manager', 'Contributor', 'Vistor', 'Blocked'];
   public roles: RoleWithText[] = [];
   public toolbarSite = ToolbarSite.USERS;
   public disableUpdateCreationRequired = false;
@@ -36,8 +37,8 @@ export class AllUsersComponent extends ListDetailComponent<User> {
   constructor(private selectionService: SelectionService, private userService: UserService
     , route: ActivatedRoute, location: Location, snackBar: MatSnackBar, private userPermissionSerivce: UserPermissionsService) {
     super(route, location, snackBar);
-    for (let r of this.allowedRoles) {
-      this.roles.push({ value: r, text: `${r}` } as RoleWithText);
+    for (let i = 0; i < this.allowedRoles.length; i++) {
+      this.roles.push({ value: this.allowedRoles[i], text: this.allowedRoleTexts[i] } as RoleWithText);
     }
   }
 
