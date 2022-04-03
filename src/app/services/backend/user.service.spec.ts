@@ -1075,7 +1075,7 @@ describe('UserService', () => {
 
     const req = httpMock.expectOne(`//localhost:8080/user/setUserRole/${userId}`);
     expect(req.request.method).toEqual("PATCH");
-    expect(req.request.body).toEqual({ role: newRole });
+    expect(req.request.body).toEqual(`"${newRole}"`);
     req.flush(mockResponseWrapper);
 
     // No retry after success
@@ -1097,7 +1097,7 @@ describe('UserService', () => {
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/setUserRole/${userId}`);
       expect(req.request.method).toEqual("PATCH");
-      expect(req.request.body).toEqual({ role: newRole });
+      expect(req.request.body).toEqual(`"${newRole}"`);
       req.flush(mockErrorResponseWrapper);
     }
 
@@ -1120,7 +1120,7 @@ describe('UserService', () => {
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/setUserRole/${userId}`);
       expect(req.request.method).toEqual("PATCH");
-      expect(req.request.body).toEqual({ role: newRole });
+      expect(req.request.body).toEqual(`"${newRole}"`);
       req.flush(mockFatalResponseWrapper);
     }
 

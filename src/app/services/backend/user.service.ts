@@ -647,9 +647,7 @@ export class UserService extends BaseBackendService {
     }
     let url = `${this.setUserRoleUrl}/${identification}`;
 
-    return this.http.patch<ResponseWrapper>(url, {
-      role: role
-    }, HTTP_JSON_OPTIONS).pipe(
+    return this.http.patch<ResponseWrapper>(url, `"${role}"`, HTTP_JSON_OPTIONS).pipe(
       map(data => {
         return this.checkErrorAndGetResponse<boolean>(data, `occurs while setting role of user ${identification} at backend`);
       }),
