@@ -1196,7 +1196,7 @@ describe('UserService', () => {
 
     const req = httpMock.expectOne(`//localhost:8080/user/addUserToBaseGroup/${baseGroupId}`);
     expect(req.request.method).toEqual("PATCH");
-    expect(req.request.body).toEqual({ userIdentification: userId });
+    expect(req.request.body).toEqual(userId);
     req.flush(mockResponseWrapper);
 
     // No retry after success
@@ -1216,7 +1216,7 @@ describe('UserService', () => {
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/addUserToBaseGroup/${baseGroupId}`);
       expect(req.request.method).toEqual("PATCH");
-      expect(req.request.body).toEqual({ userIdentification: userId });
+      expect(req.request.body).toEqual(userId);
       req.flush(mockErrorResponseWrapper);
     }
 
@@ -1237,7 +1237,7 @@ describe('UserService', () => {
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/addUserToBaseGroup/${baseGroupId}`);
       expect(req.request.method).toEqual("PATCH");
-      expect(req.request.body).toEqual({ userIdentification: userId });
+      expect(req.request.body).toEqual(userId);
       req.flush(mockFatalResponseWrapper);
     }
 
@@ -1324,7 +1324,7 @@ describe('UserService', () => {
 
     const req = httpMock.expectOne(`//localhost:8080/user/removeUserFromBaseGroup/${baseGroupId}`);
     expect(req.request.method).toEqual("PATCH");
-    expect(req.request.body).toEqual({ userIdentification: userId });
+    expect(req.request.body).toEqual(userId);
     req.flush(mockResponseWrapper);
 
     // No retry after success
@@ -1344,7 +1344,7 @@ describe('UserService', () => {
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/removeUserFromBaseGroup/${baseGroupId}`);
       expect(req.request.method).toEqual("PATCH");
-      expect(req.request.body).toEqual({ userIdentification: userId });
+      expect(req.request.body).toEqual(userId);
       req.flush(mockErrorResponseWrapper);
     }
 
@@ -1365,7 +1365,7 @@ describe('UserService', () => {
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/removeUserFromBaseGroup/${baseGroupId}`);
       expect(req.request.method).toEqual("PATCH");
-      expect(req.request.body).toEqual({ userIdentification: userId });
+      expect(req.request.body).toEqual(userId);
       req.flush(mockFatalResponseWrapper);
     }
 
@@ -2117,7 +2117,7 @@ describe('UserService', () => {
 
     const req = httpMock.expectOne(`//localhost:8080/user/addUserToPrivilegeGroup/${privilegeGroupId}`);
     expect(req.request.method).toEqual("PATCH");
-    expect(req.request.body).toEqual({ userRole: userIdRole });
+    expect(req.request.body).toEqual(userIdRole);
     req.flush(mockResponseWrapper);
 
     // No retry after success
@@ -2139,7 +2139,7 @@ describe('UserService', () => {
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/addUserToPrivilegeGroup/${privilegeGroupId}`);
       expect(req.request.method).toEqual("PATCH");
-      expect(req.request.body).toEqual({ userRole: userIdRole });
+      expect(req.request.body).toEqual(userIdRole);
       req.flush(mockErrorResponseWrapper);
     }
 
@@ -2162,7 +2162,7 @@ describe('UserService', () => {
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/addUserToPrivilegeGroup/${privilegeGroupId}`);
       expect(req.request.method).toEqual("PATCH");
-      expect(req.request.body).toEqual({ userRole: userIdRole });
+      expect(req.request.body).toEqual(userIdRole);
       req.flush(mockFatalResponseWrapper);
     }
 
@@ -2252,7 +2252,7 @@ describe('UserService', () => {
 
     const req = httpMock.expectOne(`//localhost:8080/user/removeUserFromPrivilegeGroup/${privilegeGroupId}`);
     expect(req.request.method).toEqual("PATCH");
-    expect(req.request.body).toEqual({ userIdentification: userId });
+    expect(req.request.body).toEqual(userId);
     req.flush(mockResponseWrapper);
 
     // No retry after success
@@ -2272,7 +2272,7 @@ describe('UserService', () => {
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/removeUserFromPrivilegeGroup/${privilegeGroupId}`);
       expect(req.request.method).toEqual("PATCH");
-      expect(req.request.body).toEqual({ userIdentification: userId });
+      expect(req.request.body).toEqual(userId);
       req.flush(mockErrorResponseWrapper);
     }
 
@@ -2293,7 +2293,7 @@ describe('UserService', () => {
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/removeUserFromPrivilegeGroup/${privilegeGroupId}`);
       expect(req.request.method).toEqual("PATCH");
-      expect(req.request.body).toEqual({ userIdentification: userId });
+      expect(req.request.body).toEqual(userId);
       req.flush(mockFatalResponseWrapper);
     }
 

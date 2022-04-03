@@ -691,15 +691,14 @@ export class UserService extends BaseBackendService {
     }
     let url = `${this.addUserToBaseGroupUrl}/${baseGroupIdentification}`;
 
-    return this.http.patch<ResponseWrapper>(url, {
-      userIdentification: userIdentification
-    }, HTTP_JSON_OPTIONS).pipe(
-      map(data => {
-        return this.checkErrorAndGetResponse<boolean>(data, `occurs while adding user ${userIdentification} to base group ${baseGroupIdentification} at backend`);
-      }),
-      retry(RETRIES),
-      catchError(this.handleError)
-    );
+    return this.http.patch<ResponseWrapper>(url, `${userIdentification}`, HTTP_JSON_OPTIONS)
+      .pipe(
+        map(data => {
+          return this.checkErrorAndGetResponse<boolean>(data, `occurs while adding user ${userIdentification} to base group ${baseGroupIdentification} at backend`);
+        }),
+        retry(RETRIES),
+        catchError(this.handleError)
+      );
   }
 
 
@@ -743,15 +742,14 @@ export class UserService extends BaseBackendService {
     }
     let url = `${this.removeUserFromBaseGroupUrl}/${baseGroupIdentification}`;
 
-    return this.http.patch<ResponseWrapper>(url, {
-      userIdentification: userIdentification
-    }, HTTP_JSON_OPTIONS).pipe(
-      map(data => {
-        return this.checkErrorAndGetResponse<boolean>(data, `occurs while removing user ${userIdentification} from base group ${baseGroupIdentification} at backend`);
-      }),
-      retry(RETRIES),
-      catchError(this.handleError)
-    );
+    return this.http.patch<ResponseWrapper>(url, `${userIdentification}`, HTTP_JSON_OPTIONS)
+      .pipe(
+        map(data => {
+          return this.checkErrorAndGetResponse<boolean>(data, `occurs while removing user ${userIdentification} from base group ${baseGroupIdentification} at backend`);
+        }),
+        retry(RETRIES),
+        catchError(this.handleError)
+      );
   }
 
 
@@ -980,15 +978,14 @@ export class UserService extends BaseBackendService {
     }
     let url = `${this.addUserToPrivilegeGroupUrl}/${privilegeGroupIdentification}`;
     let userIdRole = new UserIdRole(userIdentification, role);
-    return this.http.patch<ResponseWrapper>(url, {
-      userRole: userIdRole
-    }, HTTP_JSON_OPTIONS).pipe(
-      map(data => {
-        return this.checkErrorAndGetResponse<boolean>(data, `occurs while adding user ${userIdentification} to privilege group ${privilegeGroupIdentification} with role ${role} at backend`);
-      }),
-      retry(RETRIES),
-      catchError(this.handleError)
-    );
+    return this.http.patch<ResponseWrapper>(url, userIdRole, HTTP_JSON_OPTIONS)
+      .pipe(
+        map(data => {
+          return this.checkErrorAndGetResponse<boolean>(data, `occurs while adding user ${userIdentification} to privilege group ${privilegeGroupIdentification} with role ${role} at backend`);
+        }),
+        retry(RETRIES),
+        catchError(this.handleError)
+      );
   }
 
 
@@ -1037,15 +1034,14 @@ export class UserService extends BaseBackendService {
     }
     let url = `${this.removeUserFromPrivilegeGroupUrl}/${privilegeGroupIdentification}`;
 
-    return this.http.patch<ResponseWrapper>(url, {
-      userIdentification: userIdentification
-    }, HTTP_JSON_OPTIONS).pipe(
-      map(data => {
-        return this.checkErrorAndGetResponse<boolean>(data, `occurs while removing user ${userIdentification} from privilege group ${privilegeGroupIdentification} at backend`);
-      }),
-      retry(RETRIES),
-      catchError(this.handleError)
-    );
+    return this.http.patch<ResponseWrapper>(url, `${userIdentification}`, HTTP_JSON_OPTIONS)
+      .pipe(
+        map(data => {
+          return this.checkErrorAndGetResponse<boolean>(data, `occurs while removing user ${userIdentification} from privilege group ${privilegeGroupIdentification} at backend`);
+        }),
+        retry(RETRIES),
+        catchError(this.handleError)
+      );
   }
 
 
