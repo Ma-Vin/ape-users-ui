@@ -28,6 +28,7 @@ export const REFRESH_TOKENS_MOCK_KEY = 'refreshTokens'
 })
 export class AuthService extends BaseBackendService {
   private isRefreshing = false;
+  private isActiveUserCheck = false;
   private retrieveTokenUrl: string;
   private refreshTokenUrl: string;
   private refreshOberserable = new Observable<boolean>();
@@ -228,6 +229,10 @@ export class AuthService extends BaseBackendService {
       this.setActiveUserAtSelectionServiceMock(userId);
       return
     }
+    if (this.isActiveUserCheck) {
+      return;
+    }
+    this.isActiveUserCheck = true;
     this.userService.getUser(userId).pipe(
       catchError((err, caugth) => {
         if (err instanceof Error && err.message == `There is not any User with identification "${userId}"`) {
@@ -238,9 +243,9 @@ export class AuthService extends BaseBackendService {
         this.selectionService.setActiveUser(undefined);
         return NEVER;
       })
-    ).subscribe(data => {
-      this.selectionService.setActiveUser(data);
-    });
+    )
+      .subscribe(data => this.selectionService.setActiveUser(data))
+      .add(() => this.isActiveUserCheck = false);
   }
 
   private setActiveUserAtSelectionServiceMock(userId: string): void {

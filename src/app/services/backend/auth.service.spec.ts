@@ -504,6 +504,33 @@ describe('AuthService', () => {
     tick();
   }));
 
+  it('hasValidUser - already setting active user', fakeAsync(() => {
+    createFakeCryptoServiceGetDecrypted(undefined, [ACCESS_TOKEN, ACCESS_TOKEN_EXPIRE, REFRESH_TOKEN], [accessToken, `${baseTime.getTime() + 50}`, refreshToken]);
+
+    service = new AuthService(http, fakeConfig as ConfigService, fakeCryptoModifiable as CryptoService, router, selectionService, userService, adminService);
+
+    let numCalled = 0;
+    getUserSpy.and.callFake(userId => {
+      if (numCalled == 0) {
+        numCalled++;
+        service.hasValidUser();
+      }
+      return of(spyUser)
+    })
+
+    jasmine.clock().withMock(() => {
+      jasmine.clock().mockDate(baseTime);
+      service.hasValidUser().subscribe(data => expect(data).toBeTrue())
+    });
+
+    httpMock.expectNone('//localhost:8080/oauth/token');
+
+    expect(selectionServiceSetActiveUserSpy).toHaveBeenCalledTimes(1);
+
+    tick();
+  }));
+
+
 
   it('clearTokensAndLogin - all ok', () => {
     let spyRouter = spyOn(router, 'navigate').and.callFake(() => new Promise<boolean>((resolve, reject) => resolve(true)));
