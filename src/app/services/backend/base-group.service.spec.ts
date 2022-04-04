@@ -915,7 +915,7 @@ describe('BaseGroupService', () => {
 
     const req = httpMock.expectOne(`//localhost:8080/group/base/addBaseToBaseGroup/${baseGroupId}`);
     expect(req.request.method).toEqual("PATCH");
-    expect(req.request.body).toEqual({ baseGroupIdentification: otherBaseGroupId });
+    expect(req.request.body).toEqual(otherBaseGroupId);
     req.flush(mockResponseWrapper);
 
     // No retry after success
@@ -935,7 +935,7 @@ describe('BaseGroupService', () => {
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/addBaseToBaseGroup/${baseGroupId}`);
       expect(req.request.method).toEqual("PATCH");
-      expect(req.request.body).toEqual({ baseGroupIdentification: otherBaseGroupId });
+      expect(req.request.body).toEqual(otherBaseGroupId);
       req.flush(mockErrorResponseWrapper);
     }
 
@@ -956,7 +956,7 @@ describe('BaseGroupService', () => {
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/addBaseToBaseGroup/${baseGroupId}`);
       expect(req.request.method).toEqual("PATCH");
-      expect(req.request.body).toEqual({ baseGroupIdentification: otherBaseGroupId });
+      expect(req.request.body).toEqual(otherBaseGroupId);
       req.flush(mockFatalResponseWrapper);
     }
 
@@ -1046,7 +1046,7 @@ describe('BaseGroupService', () => {
 
     const req = httpMock.expectOne(`//localhost:8080/group/base/removeBaseFromBaseGroup/${baseGroupId}`);
     expect(req.request.method).toEqual("PATCH");
-    expect(req.request.body).toEqual({ baseGroupIdentification: otherBaseGroupId });
+    expect(req.request.body).toEqual(otherBaseGroupId);
     req.flush(mockResponseWrapper);
 
     // No retry after success
@@ -1066,7 +1066,7 @@ describe('BaseGroupService', () => {
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/removeBaseFromBaseGroup/${baseGroupId}`);
       expect(req.request.method).toEqual("PATCH");
-      expect(req.request.body).toEqual({ baseGroupIdentification: otherBaseGroupId });
+      expect(req.request.body).toEqual(otherBaseGroupId);
       req.flush(mockErrorResponseWrapper);
     }
 
@@ -1087,7 +1087,7 @@ describe('BaseGroupService', () => {
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/removeBaseFromBaseGroup/${baseGroupId}`);
       expect(req.request.method).toEqual("PATCH");
-      expect(req.request.body).toEqual({ baseGroupIdentification: otherBaseGroupId });
+      expect(req.request.body).toEqual(otherBaseGroupId);
       req.flush(mockFatalResponseWrapper);
     }
 
@@ -1870,7 +1870,7 @@ describe('BaseGroupService', () => {
 
     const req = httpMock.expectOne(`//localhost:8080/group/base/addBaseToPrivilegeGroup/${privilegeGroupId}`);
     expect(req.request.method).toEqual("PATCH");
-    expect(req.request.body).toEqual({ baseGroupRole: baseGroupIdRole });
+    expect(req.request.body).toEqual(baseGroupIdRole);
     req.flush(mockResponseWrapper);
 
     // No retry after success
@@ -1892,7 +1892,7 @@ describe('BaseGroupService', () => {
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/addBaseToPrivilegeGroup/${privilegeGroupId}`);
       expect(req.request.method).toEqual("PATCH");
-      expect(req.request.body).toEqual({ baseGroupRole: baseGroupIdRole });
+      expect(req.request.body).toEqual(baseGroupIdRole);
       req.flush(mockErrorResponseWrapper);
     }
 
@@ -1915,7 +1915,7 @@ describe('BaseGroupService', () => {
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/addBaseToPrivilegeGroup/${privilegeGroupId}`);
       expect(req.request.method).toEqual("PATCH");
-      expect(req.request.body).toEqual({ baseGroupRole: baseGroupIdRole });
+      expect(req.request.body).toEqual(baseGroupIdRole);
       req.flush(mockFatalResponseWrapper);
     }
 
@@ -2000,7 +2000,7 @@ describe('BaseGroupService', () => {
 
     const req = httpMock.expectOne(`//localhost:8080/group/base/removeBaseFromPrivilegeGroup/${privilegeGroupId}`);
     expect(req.request.method).toEqual("PATCH");
-    expect(req.request.body).toEqual({ baseGroupIdentification: baseGroupId });
+    expect(req.request.body).toEqual(baseGroupId);
     req.flush(mockResponseWrapper);
 
     // No retry after success
@@ -2020,7 +2020,7 @@ describe('BaseGroupService', () => {
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/removeBaseFromPrivilegeGroup/${privilegeGroupId}`);
       expect(req.request.method).toEqual("PATCH");
-      expect(req.request.body).toEqual({ baseGroupIdentification: baseGroupId });
+      expect(req.request.body).toEqual(baseGroupId);
       req.flush(mockErrorResponseWrapper);
     }
 
@@ -2041,7 +2041,7 @@ describe('BaseGroupService', () => {
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/removeBaseFromPrivilegeGroup/${privilegeGroupId}`);
       expect(req.request.method).toEqual("PATCH");
-      expect(req.request.body).toEqual({ baseGroupIdentification: baseGroupId });
+      expect(req.request.body).toEqual(baseGroupId);
       req.flush(mockFatalResponseWrapper);
     }
 

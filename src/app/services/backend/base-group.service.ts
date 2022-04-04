@@ -562,15 +562,14 @@ export class BaseGroupService extends BaseBackendService {
     }
     let url = `${this.addBaseToBaseGroupUrl}/${parentIdentification}`;
 
-    return this.http.patch<ResponseWrapper>(url, {
-      baseGroupIdentification: childIdentification
-    }, HTTP_JSON_OPTIONS).pipe(
-      map(data => {
-        return this.checkErrorAndGetResponse<boolean>(data, `occurs while adding base group ${childIdentification} to base group ${parentIdentification} at backend`);
-      }),
-      retry(RETRIES),
-      catchError(this.handleError)
-    );
+    return this.http.patch<ResponseWrapper>(url, childIdentification, HTTP_JSON_OPTIONS)
+      .pipe(
+        map(data => {
+          return this.checkErrorAndGetResponse<boolean>(data, `occurs while adding base group ${childIdentification} to base group ${parentIdentification} at backend`);
+        }),
+        retry(RETRIES),
+        catchError(this.handleError)
+      );
   }
 
 
@@ -615,15 +614,14 @@ export class BaseGroupService extends BaseBackendService {
     }
     let url = `${this.removeBaseFromBaseGroupUrl}/${parentIdentification}`;
 
-    return this.http.patch<ResponseWrapper>(url, {
-      baseGroupIdentification: childIdentification
-    }, HTTP_JSON_OPTIONS).pipe(
-      map(data => {
-        return this.checkErrorAndGetResponse<boolean>(data, `occurs while removing base group ${childIdentification} from base group ${parentIdentification} at backend`);
-      }),
-      retry(RETRIES),
-      catchError(this.handleError)
-    );
+    return this.http.patch<ResponseWrapper>(url, childIdentification, HTTP_JSON_OPTIONS)
+      .pipe(
+        map(data => {
+          return this.checkErrorAndGetResponse<boolean>(data, `occurs while removing base group ${childIdentification} from base group ${parentIdentification} at backend`);
+        }),
+        retry(RETRIES),
+        catchError(this.handleError)
+      );
   }
 
 
@@ -851,15 +849,14 @@ export class BaseGroupService extends BaseBackendService {
 
     let baseGroupIdRole = new BaseGroupIdRole(childIdentification, role);
 
-    return this.http.patch<ResponseWrapper>(url, {
-      baseGroupRole: baseGroupIdRole
-    }, HTTP_JSON_OPTIONS).pipe(
-      map(data => {
-        return this.checkErrorAndGetResponse<boolean>(data, `occurs while adding base group ${childIdentification} to privilege group ${parentIdentification} at backend`);
-      }),
-      retry(RETRIES),
-      catchError(this.handleError)
-    );
+    return this.http.patch<ResponseWrapper>(url, baseGroupIdRole, HTTP_JSON_OPTIONS)
+      .pipe(
+        map(data => {
+          return this.checkErrorAndGetResponse<boolean>(data, `occurs while adding base group ${childIdentification} to privilege group ${parentIdentification} at backend`);
+        }),
+        retry(RETRIES),
+        catchError(this.handleError)
+      );
   }
 
 
@@ -908,15 +905,14 @@ export class BaseGroupService extends BaseBackendService {
     }
     let url = `${this.removeBaseFromPrivilegeGroupUrl}/${parentIdentification}`;
 
-    return this.http.patch<ResponseWrapper>(url, {
-      baseGroupIdentification: childIdentification
-    }, HTTP_JSON_OPTIONS).pipe(
-      map(data => {
-        return this.checkErrorAndGetResponse<boolean>(data, `occurs while removing base group ${childIdentification} from privilege group ${parentIdentification} at backend`);
-      }),
-      retry(RETRIES),
-      catchError(this.handleError)
-    );
+    return this.http.patch<ResponseWrapper>(url, childIdentification, HTTP_JSON_OPTIONS)
+      .pipe(
+        map(data => {
+          return this.checkErrorAndGetResponse<boolean>(data, `occurs while removing base group ${childIdentification} from privilege group ${parentIdentification} at backend`);
+        }),
+        retry(RETRIES),
+        catchError(this.handleError)
+      );
   }
 
 
