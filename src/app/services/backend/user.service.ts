@@ -13,6 +13,7 @@ import { SelectionService } from '../util/selection.service';
 import { BaseGroupService, INITIAL_BASE_GROUP_ID_AT_MOCK, BASES_AT_COMMON_GROUP } from './base-group.service';
 import { INITIAL_COMMON_GROUP_ID_AT_MOCK } from './common-group.service';
 import { INITIAL_PRIVILEGE_GROUP_ID_AT_MOCK, PrivilegeGroupService, PRIVILEGES_AT_COMMON_GROUP } from './privilege-group.service';
+import { IUserRole } from 'src/app/model/user-role.model';
 
 
 export const USERS_AT_COMMON_GROUP = 'usersAtCommonGroup'
@@ -1181,10 +1182,10 @@ export class UserService extends BaseBackendService {
       params: this.createParams(dissolveSubgroups, role, page, size)
     }).pipe(
       map(data => {
-        let baseGroups = this.checkErrorAndGetResponse<IUser[]>(data, `occurs while getting all users of ${privilegeGroupIdentification} with role ${role} from backend`);
-        let result: User[] = new Array(baseGroups.length);
-        for (let i = 0; i < baseGroups.length; i++) {
-          result[i] = User.map(baseGroups[i]);
+        let userRole = this.checkErrorAndGetResponse<IUserRole[]>(data, `occurs while getting all users of ${privilegeGroupIdentification} with role ${role} from backend`);
+        let result: User[] = new Array(userRole.length);
+        for (let i = 0; i < userRole.length; i++) {
+          result[i] = User.map(userRole[i].user);
           result[i].isGlobalAdmin = false;
           result[i].isComplete = isComplete;
         }

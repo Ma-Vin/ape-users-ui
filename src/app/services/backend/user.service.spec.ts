@@ -15,6 +15,7 @@ import { BaseGroupService, INITIAL_BASE_GROUP_ID_AT_MOCK } from './base-group.se
 import { INITIAL_USER_ID_AT_MOCK, UserService, USERS_AT_COMMON_GROUP } from './user.service';
 import { UserIdRole } from '../../model/user-id-role.model';
 import { INITIAL_PRIVILEGE_GROUP_ID_AT_MOCK } from './privilege-group.service';
+import { IUserRole } from 'src/app/model/user-role.model';
 
 describe('UserService', () => {
   let service: UserService;
@@ -45,6 +46,7 @@ describe('UserService', () => {
   };
 
   let mockIUser: IUser;
+  let mockIUserRole: IUserRole;
   let modifiedUser: User;
   let secondUser: User;
   let mockCommonGroup: CommonGroup;
@@ -92,6 +94,11 @@ describe('UserService', () => {
       role: Role.VISITOR,
       isComplete: true
     } as IUser;
+
+    mockIUserRole = {
+      user: mockIUser,
+      role: Role.CONTRIBUTOR
+    } as IUserRole
 
     modifiedUser = User.map({
       identification: userId,
@@ -2489,7 +2496,7 @@ describe('UserService', () => {
    */
   it('getAllUsersFromPrivilegeGroup - all ok', fakeAsync(() => {
     let mockResponseWrapper: ResponseWrapper = {
-      response: [mockIUser],
+      response: [mockIUserRole],
       status: Status.OK,
       messages: []
     }
@@ -2520,7 +2527,7 @@ describe('UserService', () => {
 
   it('getAllUsersFromPrivilegeGroup - dissolve subgroups', fakeAsync(() => {
     let mockResponseWrapper: ResponseWrapper = {
-      response: [mockIUser],
+      response: [mockIUserRole],
       status: Status.OK,
       messages: []
     }
@@ -2550,7 +2557,7 @@ describe('UserService', () => {
 
   it('getAllUsersFromPrivilegeGroup - with pageing', fakeAsync(() => {
     let mockResponseWrapper: ResponseWrapper = {
-      response: [mockIUser],
+      response: [mockIUserRole],
       status: Status.OK,
       messages: []
     }
@@ -2579,7 +2586,7 @@ describe('UserService', () => {
 
   it('getAllUsersFromPrivilegeGroup - with pageing and dissolve subgroups', fakeAsync(() => {
     let mockResponseWrapper: ResponseWrapper = {
-      response: [mockIUser],
+      response: [mockIUserRole],
       status: Status.OK,
       messages: []
     }
@@ -2607,7 +2614,7 @@ describe('UserService', () => {
 
   it('getAllUsersFromPrivilegeGroup - with pageing and role', fakeAsync(() => {
     let mockResponseWrapper: ResponseWrapper = {
-      response: [mockIUser],
+      response: [mockIUserRole],
       status: Status.OK,
       messages: []
     }
@@ -2636,7 +2643,7 @@ describe('UserService', () => {
 
   it('getAllUsersFromPrivilegeGroup - with pageing, role and dissolve subgroups', fakeAsync(() => {
     let mockResponseWrapper: ResponseWrapper = {
-      response: [mockIUser],
+      response: [mockIUserRole],
       status: Status.OK,
       messages: []
     }
@@ -2666,7 +2673,7 @@ describe('UserService', () => {
 
   it('getAllUsersFromPrivilegeGroup - with role', fakeAsync(() => {
     let mockResponseWrapper: ResponseWrapper = {
-      response: [mockIUser],
+      response: [mockIUserRole],
       status: Status.OK,
       messages: []
     }
@@ -2695,7 +2702,7 @@ describe('UserService', () => {
 
   it('getAllUsersFromPrivilegeGroup - with role and dissolve subgroups', fakeAsync(() => {
     let mockResponseWrapper: ResponseWrapper = {
-      response: [mockIUser],
+      response: [mockIUserRole],
       status: Status.OK,
       messages: []
     }
@@ -2972,7 +2979,7 @@ describe('UserService', () => {
    */
   it('getAllUserPartsFromPrivilegeGroup - all ok', fakeAsync(() => {
     let mockResponseWrapper: ResponseWrapper = {
-      response: [mockIUser],
+      response: [mockIUserRole],
       status: Status.OK,
       messages: []
     }
@@ -3003,7 +3010,7 @@ describe('UserService', () => {
 
   it('getAllUserPartsFromPrivilegeGroup - dissolve subgroups', fakeAsync(() => {
     let mockResponseWrapper: ResponseWrapper = {
-      response: [mockIUser],
+      response: [mockIUserRole],
       status: Status.OK,
       messages: []
     }
@@ -3033,7 +3040,7 @@ describe('UserService', () => {
 
   it('getAllUserPartsFromPrivilegeGroup - with pageing', fakeAsync(() => {
     let mockResponseWrapper: ResponseWrapper = {
-      response: [mockIUser],
+      response: [mockIUserRole],
       status: Status.OK,
       messages: []
     }
@@ -3062,7 +3069,7 @@ describe('UserService', () => {
 
   it('getAllUserPartsFromPrivilegeGroup - with pageing and dissolve subgroups', fakeAsync(() => {
     let mockResponseWrapper: ResponseWrapper = {
-      response: [mockIUser],
+      response: [mockIUserRole],
       status: Status.OK,
       messages: []
     }
@@ -3090,7 +3097,7 @@ describe('UserService', () => {
 
   it('getAllUserPartsFromPrivilegeGroup - with pageing and role', fakeAsync(() => {
     let mockResponseWrapper: ResponseWrapper = {
-      response: [mockIUser],
+      response: [mockIUserRole],
       status: Status.OK,
       messages: []
     }
@@ -3119,7 +3126,7 @@ describe('UserService', () => {
 
   it('getAllUserPartsFromPrivilegeGroup - with pageing, role and dissolve subgroups', fakeAsync(() => {
     let mockResponseWrapper: ResponseWrapper = {
-      response: [mockIUser],
+      response: [mockIUserRole],
       status: Status.OK,
       messages: []
     }
@@ -3149,7 +3156,7 @@ describe('UserService', () => {
 
   it('getAllUserPartsFromPrivilegeGroup - with role', fakeAsync(() => {
     let mockResponseWrapper: ResponseWrapper = {
-      response: [mockIUser],
+      response: [mockIUserRole],
       status: Status.OK,
       messages: []
     }
@@ -3177,7 +3184,7 @@ describe('UserService', () => {
 
   it('getAllUserPartsFromPrivilegeGroup - with role and dissolve subgroups', fakeAsync(() => {
     let mockResponseWrapper: ResponseWrapper = {
-      response: [mockIUser],
+      response: [mockIUserRole],
       status: Status.OK,
       messages: []
     }
