@@ -7,6 +7,9 @@ import { ConfigService } from '../../config/config.service';
 })
 export class CryptoService {
 
+  // is only used to store the tokens in such a way that they cannot be used directly
+  private phrase = btoa(window.navigator.userAgent);
+
   constructor(private configService: ConfigService) { }
 
   encrypt(plaintext: string): string | null {
@@ -14,7 +17,7 @@ export class CryptoService {
     if (config === undefined) {
       return null;
     }
-    let result = AES.encrypt(plaintext, config.clientSecret);
+    let result = AES.encrypt(plaintext, this.phrase);
     return result.toString();
   }
 
@@ -23,7 +26,7 @@ export class CryptoService {
     if (config === undefined) {
       return undefined;
     }
-    let result = AES.decrypt(encryptedText, config.clientSecret);
+    let result = AES.decrypt(encryptedText, this.phrase);
     return result.toString(enc.Utf8);
   }
 

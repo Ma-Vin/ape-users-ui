@@ -28,13 +28,11 @@ describe('ConfigService', () => {
     const mockResponse =
     {
       clientId: 'ape.user.ui',
-      clientSecret: 'changeIt',
       backendBaseUrl: '//localhost:8080/'
     };
 
     service.load().then(() => {
       expect(service.getConfig()?.clientId).toBe(mockResponse.clientId);
-      expect(service.getConfig()?.clientSecret).toBe(mockResponse.clientSecret);
       expect(service.getConfig()?.backendBaseUrl).toBe(mockResponse.backendBaseUrl);
     });
 

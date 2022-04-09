@@ -40,7 +40,6 @@ describe('AuthService', () => {
   const mockConfig =
   {
     clientId: 'ape.user.ui',
-    clientSecret: 'changeIt',
     backendBaseUrl: '//localhost:8080',
     adminGroupId: 'AGAA00001'
   };

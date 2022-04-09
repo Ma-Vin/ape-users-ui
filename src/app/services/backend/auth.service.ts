@@ -9,7 +9,7 @@ import { NEVER, Observable, of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { LOGIN_PATH } from '../../app-routing.module';
 import { SelectionService } from '../util/selection.service';
-import { ALL_USERS_MOCK_KEY, BaseBackendService } from '../base/base-backend.service';
+import { ALL_USERS_MOCK_KEY, BaseBackendService, HTTP_URL_OPTIONS } from '../base/base-backend.service';
 import { User } from '../../model/user.model';
 import { UserService } from './user.service';
 import { AdminService } from './admin.service';
@@ -84,10 +84,9 @@ export class AuthService extends BaseBackendService {
     params.append('username', username);
     params.append('password', btoa(password));
     params.append('client_id', config.clientId);
-    params.append('client_secret', btoa(config.clientSecret));
 
     console.debug('AuthService: get Access token');
-    return this.http.post<TokenResponse>(this.retrieveTokenUrl, params.toString(), this.getHttpUrlWithClientBasicAuthOptions())
+    return this.http.post<TokenResponse>(this.retrieveTokenUrl, params.toString(), HTTP_URL_OPTIONS)
       .pipe(
         map(
           data => this.saveToken(data),
@@ -156,14 +155,13 @@ export class AuthService extends BaseBackendService {
     params.append('grant_type', 'refresh_token');
     params.append('refresh_token', decodedRefreshToken);
     params.append('client_id', config.clientId);
-    params.append('client_secret', btoa(config.clientSecret));
     if (this.isRefreshing) {
       return this.refreshOberserable;
     }
 
     console.debug('AuthService: call backend to refresh access token');
     this.isRefreshing = true;
-    this.refreshOberserable = this.http.post<TokenResponse>(this.refreshTokenUrl, params.toString(), this.getHttpUrlWithClientBasicAuthOptions())
+    this.refreshOberserable = this.http.post<TokenResponse>(this.refreshTokenUrl, params.toString(), HTTP_URL_OPTIONS)
       .pipe(
         map(
           data => {

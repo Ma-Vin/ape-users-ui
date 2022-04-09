@@ -116,16 +116,7 @@ export abstract class BaseBackendService extends BaseService {
    * Initialize the service specific data at mock
    */
   protected abstract initServiceMocks(): void;
-
-
-  protected getHttpUrlWithClientBasicAuthOptions() {
-    return {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': `Basic ${btoa(this.clientId + ":" + this.clientSecret)}`
-      })
-    };
-  }
+  
 
   protected getFirstMessageText(messages: Message[], status: Status, defaultMessageText: string): string {
     let result: Message | undefined;

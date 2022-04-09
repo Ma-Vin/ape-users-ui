@@ -26,7 +26,6 @@ describe('CommonGroupService', () => {
   const mockConfig: Config =
   {
     clientId: 'ape.user.ui',
-    clientSecret: 'changeIt',
     backendBaseUrl: '//localhost:8080',
     adminGroupId: 'AGAA00001'
   };

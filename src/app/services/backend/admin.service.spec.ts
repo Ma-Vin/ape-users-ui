@@ -26,7 +26,6 @@ describe('AdminService', () => {
   const mockConfig: Config =
   {
     clientId: 'ape.user.ui',
-    clientSecret: 'changeIt',
     backendBaseUrl: '//localhost:8080',
     adminGroupId: adminGroupId
   };

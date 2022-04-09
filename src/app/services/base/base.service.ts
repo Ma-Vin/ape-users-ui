@@ -9,7 +9,6 @@ export abstract class BaseService {
   protected isInit = false;
   protected config: Config | undefined;
   public clientId: string | undefined;
-  public clientSecret: string | undefined;
 
   constructor(protected serviceName: string, protected configService: ConfigService) { }
 
@@ -19,7 +18,6 @@ export abstract class BaseService {
     }
     this.config = this.configService.getConfig();
     this.clientId = this.config?.clientId;
-    this.clientSecret = this.config?.clientSecret;
     this.isInit = this.initService();
   }
 

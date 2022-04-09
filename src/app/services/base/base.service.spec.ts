@@ -11,7 +11,6 @@ describe('BaseService', () => {
     const mockConfig =
     {
       clientId: 'ape.user.ui',
-      clientSecret: 'changeIt',
       backendBaseUrl: '//localhost:8080/',
       adminGroupId: 'AGAA00001'
     };
@@ -27,7 +26,6 @@ describe('BaseService', () => {
   it('init should set client info', () => {
     service.init()
     expect(service.clientId).toEqual('ape.user.ui');
-    expect(service.clientSecret).toEqual('changeIt');
   });
 
 });
