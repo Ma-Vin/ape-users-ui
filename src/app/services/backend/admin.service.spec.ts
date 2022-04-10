@@ -10,6 +10,7 @@ import { IUser, User } from '../../model/user.model';
 
 import { AdminService } from './admin.service';
 import { BaseBackendService, RETRIES } from '../base/base-backend.service';
+import { ChangeType, IHistoryChange } from 'src/app/model/history-change.model';
 
 describe('AdminService', () => {
   let service: AdminService;
@@ -34,6 +35,8 @@ describe('AdminService', () => {
   let modifiedAdminGroup: AdminGroup;
   let mockIUserAdmin: IUser;
   let modifiedUserAdmin: User;
+  let historyChange: IHistoryChange;
+  let groupHistoryChange: IHistoryChange;
 
   const mockErrorResponseWrapper: ResponseWrapper = {
     response: undefined,
@@ -105,6 +108,23 @@ describe('AdminService', () => {
       role: undefined
     } as User);
 
+    historyChange = {
+      action: undefined,
+      changeTime: new Date(2022, 4, 10, 11, 8, 1),
+      changeType: ChangeType.CREATE,
+      editor: adminId,
+      subjectIdentification: adminId,
+      targetIdentification: undefined
+    } as IHistoryChange;
+
+    groupHistoryChange = {
+      action: undefined,
+      changeTime: new Date(2022, 4, 10, 11, 8, 1),
+      changeType: ChangeType.CREATE,
+      editor: adminId,
+      subjectIdentification: adminGroupId,
+      targetIdentification: undefined
+    } as IHistoryChange;
 
     BaseBackendService.clearMockData();
 
@@ -447,11 +467,11 @@ describe('AdminService', () => {
 
 
 
-  
+
   /**
    * getAllAdminParts
    */
-   it('getAllAdminParts - all ok', fakeAsync(() => {
+  it('getAllAdminParts - all ok', fakeAsync(() => {
     mockIUserAdmin.image = undefined;
     mockIUserAdmin.smallImage = undefined;
     mockIUserAdmin.lastLogin = undefined;
@@ -1177,6 +1197,186 @@ describe('AdminService', () => {
       });
 
     httpMock.expectNone(`//localhost:8080/admin/setAdminPassword/someId`);
+
+    tick();
+  }));
+
+
+
+
+  /**
+   * getAdminGroupHistory
+   */
+  it('getAdminGroupHistory - all ok', fakeAsync(() => {
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [groupHistoryChange],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAdminGroupHistory(adminGroupId).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].action).toBeUndefined;
+      expect(data[0].changeTime).toEqual(new Date(2022, 4, 10, 11, 8, 1));
+      expect(data[0].changeType).toEqual(ChangeType.CREATE);
+      expect(data[0].editor).toEqual(adminId);
+      expect(data[0].subjectIdentification).toEqual(adminGroupId);
+      expect(data[0].targetIdentification).toBeUndefined;
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/admin/getAdminGroupHistory/${adminGroupId}`);
+    expect(req.request.method).toEqual("GET");
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/admin/getAdminGroupHistory/${adminGroupId}`);
+
+    tick();
+  }));
+
+  it('getAdminGroupHistory - with error status', fakeAsync(() => {
+    service.getAdminGroupHistory(adminGroupId).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/admin/getAdminGroupHistory/${adminGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockErrorResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/admin/getAdminGroupHistory/${adminGroupId}`);
+
+    tick();
+  }));
+
+  it('getAdminGroupHistory - with fatal status', fakeAsync(() => {
+    service.getAdminGroupHistory(adminGroupId).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/admin/getAdminGroupHistory/${adminGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockFatalResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/admin/getAdminGroupHistory/${adminGroupId}`);
+
+    tick();
+  }));
+
+  it('getAdminGroupHistory - mock', fakeAsync(() => {
+    service.useMock = true;
+    service.getAdminGroupHistory(adminGroupId).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(2);
+      expect(data[0].subjectIdentification).toEqual(adminGroupId);
+      expect(data[0].changeType).toEqual(ChangeType.CREATE);
+      expect(data[1].subjectIdentification).toEqual(adminGroupId);
+      expect(data[1].changeType).toEqual(ChangeType.MODIFY);
+    });
+
+    httpMock.expectNone(`//localhost:8080/admin/getAdminGroupHistory/${adminGroupId}`);
+
+    tick();
+  }));
+
+
+
+
+  /**
+   * getAdminHistory
+   */
+  it('getAdminHistory - all ok', fakeAsync(() => {
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [historyChange],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAdminHistory(adminId).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].action).toBeUndefined;
+      expect(data[0].changeTime).toEqual(new Date(2022, 4, 10, 11, 8, 1));
+      expect(data[0].changeType).toEqual(ChangeType.CREATE);
+      expect(data[0].editor).toEqual(adminId);
+      expect(data[0].subjectIdentification).toEqual(adminId);
+      expect(data[0].targetIdentification).toBeUndefined;
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/admin/getAdminHistory/${adminId}`);
+    expect(req.request.method).toEqual("GET");
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/admin/getAdminHistory/${adminId}`);
+
+    tick();
+  }));
+
+  it('getAdminHistory - with error status', fakeAsync(() => {
+    service.getAdminHistory(adminId).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/admin/getAdminHistory/${adminId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockErrorResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/admin/getAdminHistory/${adminId}`);
+
+    tick();
+  }));
+
+  it('getAdminHistory - with fatal status', fakeAsync(() => {
+    service.getAdminHistory(adminId).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/admin/getAdminHistory/${adminId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockFatalResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/admin/getAdminHistory/${adminId}`);
+
+    tick();
+  }));
+
+  it('getAdminHistory - mock', fakeAsync(() => {
+    service.useMock = true;
+    service.getAdminHistory(adminId).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(2);
+      expect(data[0].subjectIdentification).toEqual(adminId);
+      expect(data[0].changeType).toEqual(ChangeType.CREATE);
+      expect(data[1].subjectIdentification).toEqual(adminId);
+      expect(data[1].changeType).toEqual(ChangeType.MODIFY);
+    });
+
+    httpMock.expectNone(`//localhost:8080/admin/getAdminHistory/${adminId}`);
 
     tick();
   }));

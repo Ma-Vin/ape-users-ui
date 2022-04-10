@@ -14,6 +14,7 @@ import { BaseGroupService, INITIAL_BASE_GROUP_ID_AT_MOCK, BASES_AT_COMMON_GROUP 
 import { INITIAL_COMMON_GROUP_ID_AT_MOCK } from './common-group.service';
 import { INITIAL_PRIVILEGE_GROUP_ID_AT_MOCK, PrivilegeGroupService, PRIVILEGES_AT_COMMON_GROUP } from './privilege-group.service';
 import { IUserRole } from 'src/app/model/user-role.model';
+import { HistoryChange } from 'src/app/model/history-change.model';
 
 
 export const USERS_AT_COMMON_GROUP = 'usersAtCommonGroup'
@@ -34,6 +35,7 @@ export class UserService extends BaseBackendService {
   private countUsersUrl: string | undefined;
   private setUserPasswordUrl: string | undefined;
   private setUserRoleUrl: string | undefined;
+  private getUserHistoryUrl: string | undefined;
   private addUserToBaseGroupUrl: string | undefined;
   private removeUserFromBaseGroupUrl: string | undefined;
   private countUsersAtBaseGroupUrl: string | undefined;
@@ -51,8 +53,8 @@ export class UserService extends BaseBackendService {
   private getAvailableUsersForPrivilegeGroupUrl: string | undefined;
   private getAvailableUserPartsForPrivilegeGroupUrl: string | undefined;
 
-  constructor(private http: HttpClient, configService: ConfigService, private selectionService: SelectionService) {
-    super('UserService', configService);
+  constructor(protected http: HttpClient, configService: ConfigService, private selectionService: SelectionService) {
+    super(http, 'UserService', configService);
   }
 
   protected initServiceUrls(): boolean {
@@ -71,6 +73,7 @@ export class UserService extends BaseBackendService {
     this.countUsersUrl = userControllerUrl.concat('/countUsers');
     this.setUserPasswordUrl = userControllerUrl.concat('/setUserPassword');
     this.setUserRoleUrl = userControllerUrl.concat('/setUserRole');
+    this.getUserHistoryUrl = userControllerUrl.concat('/getUserHistory');
     this.addUserToBaseGroupUrl = userControllerUrl.concat('/addUserToBaseGroup');
     this.removeUserFromBaseGroupUrl = userControllerUrl.concat('/removeUserFromBaseGroup');
     this.countUsersAtBaseGroupUrl = userControllerUrl.concat('/countUsersAtBaseGroup');
@@ -1371,6 +1374,16 @@ export class UserService extends BaseBackendService {
     return of(result);
   }
 
+
+  /**
+   * Get all changes of a given user
+   * @param userIdentification the identification of the user whose changes are asked for
+   * @returns An array with changes
+   */
+  public getUserHistory(userIdentification: string): Observable<HistoryChange[]> {
+    this.init();
+    return this.getObjectHistory(userIdentification, this.getUserHistoryUrl, 'user');
+  }
 
 
   private mapUserForMock(userToMap: User, isComplete: boolean) {

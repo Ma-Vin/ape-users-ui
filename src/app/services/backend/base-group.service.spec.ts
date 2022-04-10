@@ -13,10 +13,11 @@ import { CommonGroup, ICommonGroup } from '../../model/common-group.model';
 import { Role } from '../../model/role.model';
 import { CommonGroupService, INITIAL_COMMON_GROUP_ID_AT_MOCK } from './common-group.service';
 import { AdminService } from './admin.service';
-import { UserService } from './user.service';
+import { INITIAL_USER_ID_AT_MOCK, UserService } from './user.service';
 import { SelectionService } from '../util/selection.service';
 
 import { BaseGroupService } from './base-group.service';
+import { ChangeType, IHistoryChange } from 'src/app/model/history-change.model';
 
 
 describe('BaseGroupService', () => {
@@ -37,6 +38,7 @@ describe('BaseGroupService', () => {
   const otherBaseGroupId = 'BGAA00002';
   const commonGroupId = INITIAL_COMMON_GROUP_ID_AT_MOCK;
   const privilegeGroupId = INITIAL_PRIVILEGE_GROUP_ID_AT_MOCK;
+  const userId = INITIAL_USER_ID_AT_MOCK;
 
   const mockConfig: Config =
   {
@@ -49,6 +51,7 @@ describe('BaseGroupService', () => {
   let modifiedBaseGroup: BaseGroup;
   let otherBaseGroup: BaseGroup;
   let mockCommonGroup: CommonGroup;
+  let historyChange: IHistoryChange;
 
   const mockErrorResponseWrapper: ResponseWrapper = {
     response: undefined,
@@ -116,6 +119,14 @@ describe('BaseGroupService', () => {
       defaultRole: Role.VISITOR
     } as ICommonGroup);
 
+    historyChange = {
+      action: undefined,
+      changeTime: new Date(2022, 4, 10, 11, 8, 1),
+      changeType: ChangeType.CREATE,
+      editor: userId,
+      subjectIdentification: baseGroupId,
+      targetIdentification: undefined
+    } as IHistoryChange;
 
     spyOn(configService, 'getConfig').and.returnValue(mockConfig);
     getSelectedCommonGroupSpy = spyOn(selectionService, 'getSelectedCommonGroup').and.returnValue(mockCommonGroup);
@@ -3003,6 +3014,94 @@ describe('BaseGroupService', () => {
     tick();
   }));
 
+
+  
+  /**
+   * getBaseGroupHistory
+   */
+   it('getBaseGroupHistory - all ok', fakeAsync(() => {
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [historyChange],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getBaseGroupHistory(baseGroupId).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].action).toBeUndefined;
+      expect(data[0].changeTime).toEqual(new Date(2022, 4, 10, 11, 8, 1));
+      expect(data[0].changeType).toEqual(ChangeType.CREATE);
+      expect(data[0].editor).toEqual(userId);
+      expect(data[0].subjectIdentification).toEqual(baseGroupId);
+      expect(data[0].targetIdentification).toBeUndefined;
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/group/base/getBaseGroupHistory/${baseGroupId}`);
+    expect(req.request.method).toEqual("GET");
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/group/base/getBaseGroupHistory/${baseGroupId}`);
+
+    tick();
+  }));
+
+  it('getBaseGroupHistory - with error status', fakeAsync(() => {
+    service.getBaseGroupHistory(baseGroupId).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/group/base/getBaseGroupHistory/${baseGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockErrorResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/group/base/getBaseGroupHistory/${baseGroupId}`);
+
+    tick();
+  }));
+
+  it('getBaseGroupHistory - with fatal status', fakeAsync(() => {
+    service.getBaseGroupHistory(baseGroupId).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/group/base/getBaseGroupHistory/${baseGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockFatalResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/group/base/getBaseGroupHistory/${baseGroupId}`);
+
+    tick();
+  }));
+
+  it('getBaseGroupHistory - mock', fakeAsync(() => {
+    service.useMock = true;
+    service.getBaseGroupHistory(baseGroupId).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(2);
+      expect(data[0].subjectIdentification).toEqual(baseGroupId);
+      expect(data[0].changeType).toEqual(ChangeType.CREATE);
+      expect(data[1].subjectIdentification).toEqual(baseGroupId);
+      expect(data[1].changeType).toEqual(ChangeType.MODIFY);
+    });
+
+    httpMock.expectNone(`//localhost:8080/group/base/getBaseGroupHistory/${baseGroupId}`);
+
+    tick();
+  }));
 });
 
 

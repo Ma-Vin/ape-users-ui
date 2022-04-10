@@ -12,6 +12,7 @@ import { BaseBackendService, HTTP_JSON_OPTIONS, HTTP_URL_OPTIONS, RETRIES } from
 import { INITIAL_COMMON_GROUP_ID_AT_MOCK } from './common-group.service';
 import { SelectionService } from '../util/selection.service';
 import { INITIAL_PRIVILEGE_GROUP_ID_AT_MOCK, PrivilegeGroupService, PRIVILEGES_AT_COMMON_GROUP } from './privilege-group.service';
+import { HistoryChange } from 'src/app/model/history-change.model';
 
 
 const ALL_BASE_GOUPS_MOCK_KEY = 'baseGroups'
@@ -29,6 +30,7 @@ export class BaseGroupService extends BaseBackendService {
   private getBaseGroupUrl: string | undefined;
   private getAllBaseGroupsUrl: string | undefined;
   private getAllBaseGroupPartsUrl: string | undefined;
+  private getBaseGroupHistoryUrl: string | undefined;
   private updateBaseGroupUrl: string | undefined;
   private createBaseGroupUrl: string | undefined;
   private deleteBaseGroupUrl: string | undefined;
@@ -52,8 +54,8 @@ export class BaseGroupService extends BaseBackendService {
 
 
 
-  constructor(private http: HttpClient, configService: ConfigService, private selectionService: SelectionService) {
-    super('BaseGroupService', configService);
+  constructor(protected http: HttpClient, configService: ConfigService, private selectionService: SelectionService) {
+    super(http, 'BaseGroupService', configService);
   }
 
 
@@ -68,6 +70,7 @@ export class BaseGroupService extends BaseBackendService {
     this.getBaseGroupUrl = baseGroupControllerUrl.concat('/getBaseGroup');
     this.getAllBaseGroupsUrl = baseGroupControllerUrl.concat('/getAllBaseGroups');
     this.getAllBaseGroupPartsUrl = baseGroupControllerUrl.concat('/getAllBaseGroupParts');
+    this.getBaseGroupHistoryUrl = baseGroupControllerUrl.concat('/getBaseGroupHistory');
     this.updateBaseGroupUrl = baseGroupControllerUrl.concat('/updateBaseGroup');
     this.createBaseGroupUrl = baseGroupControllerUrl.concat('/createBaseGroup');
     this.deleteBaseGroupUrl = baseGroupControllerUrl.concat('/deleteBaseGroup');
@@ -1202,5 +1205,16 @@ export class BaseGroupService extends BaseBackendService {
     }
 
     return of(result);
+  }
+
+
+  /**
+   * Get all changes of a given base group
+   * @param baseGroupIdentification the identification of the base group whose changes are asked for
+   * @returns An array with changes
+   */
+  public getBaseGroupHistory(baseGroupIdentification: string): Observable<HistoryChange[]> {
+    this.init();
+    return this.getObjectHistory(baseGroupIdentification, this.getBaseGroupHistoryUrl, 'base group');
   }
 }

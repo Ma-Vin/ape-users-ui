@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, map, retry } from 'rxjs/operators';
+import { HistoryChange } from 'src/app/model/history-change.model';
 import { ConfigService } from '../../config/config.service';
 import { CommonGroup, ICommonGroup } from '../../model/common-group.model';
 import { ResponseWrapper } from '../../model/response-wrapper';
@@ -25,11 +26,12 @@ export class CommonGroupService extends BaseBackendService {
   private getParentCommonGroupOfUserUrl: string | undefined;
   private getAllCommonGroupUrl: string | undefined;
   private getAllCommonGroupPartsUrl: string | undefined;
+  private getCommonGroupHistoryUrl: string | undefined;
   private updateCommonGroupUrl: string | undefined;
 
 
-  constructor(private http: HttpClient, configService: ConfigService) {
-    super('CommonGroupService', configService);
+  constructor(protected http: HttpClient, configService: ConfigService) {
+    super(http, 'CommonGroupService', configService);
   }
 
 
@@ -45,6 +47,7 @@ export class CommonGroupService extends BaseBackendService {
     this.getParentCommonGroupOfUserUrl = commonGroupControllerUrl.concat('/getParentCommonGroupOfUser');
     this.getAllCommonGroupUrl = commonGroupControllerUrl.concat('/getAllCommonGroups');
     this.getAllCommonGroupPartsUrl = commonGroupControllerUrl.concat('/getAllCommonGroupParts');
+    this.getCommonGroupHistoryUrl= commonGroupControllerUrl.concat('/getCommonGroupHistory');
     this.updateCommonGroupUrl = commonGroupControllerUrl.concat('/updateCommonGroup');
 
     return true;
@@ -373,4 +376,14 @@ export class CommonGroupService extends BaseBackendService {
     return throwError(new Error(`${Status.ERROR} occurs while updating common group ${modifiedCommonGroup.identification} at backend`));
   }
 
+
+  /**
+   * Get all changes of a given common group
+   * @param commonGroupIdentification the identification of the common group whose changes are asked for
+   * @returns An array with changes
+   */
+  public getCommonGroupHistory(commonGroupIdentification: string): Observable<HistoryChange[]> {
+    this.init();
+    return this.getObjectHistory(commonGroupIdentification, this.getCommonGroupHistoryUrl, 'common group');
+  }
 }

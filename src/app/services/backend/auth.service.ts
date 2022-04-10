@@ -48,7 +48,7 @@ export class AuthService extends BaseBackendService {
   constructor(protected http: HttpClient, protected configService: ConfigService, private cryptoService: CryptoService
     , private router: Router, private selectionService: SelectionService, private userService: UserService, private adminService: AdminService) {
 
-    super('AuthService', configService);
+    super(http, 'AuthService', configService);
     this.retrieveTokenUrl = '';
     this.refreshTokenUrl = '';
   }

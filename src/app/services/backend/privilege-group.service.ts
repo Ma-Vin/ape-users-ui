@@ -9,6 +9,7 @@ import { ConfigService } from '../../config/config.service';
 import { BaseBackendService, HTTP_JSON_OPTIONS, HTTP_URL_OPTIONS, RETRIES } from '../base/base-backend.service';
 import { INITIAL_COMMON_GROUP_ID_AT_MOCK } from './common-group.service';
 import { SelectionService } from '../util/selection.service';
+import { HistoryChange } from 'src/app/model/history-change.model';
 
 
 const ALL_PRIVILEGE_GOUPS_MOCK_KEY = 'privilegeGroups'
@@ -24,6 +25,7 @@ export class PrivilegeGroupService extends BaseBackendService {
   private getPrivilegeGroupUrl: string | undefined;
   private getAllPrivilegeGroupsUrl: string | undefined;
   private getAllPrivilegeGroupPartsUrl: string | undefined;
+  private getPrivilegeGroupHistoryUrl: string | undefined;
   private updatePrivilegeGroupUrl: string | undefined;
   private createPrivilegeGroupUrl: string | undefined;
   private deletePrivilegeGroupUrl: string | undefined;
@@ -31,8 +33,8 @@ export class PrivilegeGroupService extends BaseBackendService {
 
 
 
-  constructor(private http: HttpClient, configService: ConfigService, private selectionService: SelectionService) {
-    super('PrivilegeGroupService', configService);
+  constructor(protected http: HttpClient, configService: ConfigService, private selectionService: SelectionService) {
+    super(http, 'PrivilegeGroupService', configService);
   }
 
 
@@ -47,6 +49,7 @@ export class PrivilegeGroupService extends BaseBackendService {
     this.getPrivilegeGroupUrl = privilegeGroupControllerUrl.concat('/getPrivilegeGroup');
     this.getAllPrivilegeGroupsUrl = privilegeGroupControllerUrl.concat('/getAllPrivilegeGroups');
     this.getAllPrivilegeGroupPartsUrl = privilegeGroupControllerUrl.concat('/getAllPrivilegeGroupParts');
+    this.getPrivilegeGroupHistoryUrl = privilegeGroupControllerUrl.concat('/getPrivilegeGroupHistory');
     this.updatePrivilegeGroupUrl = privilegeGroupControllerUrl.concat('/updatePrivilegeGroup');
     this.createPrivilegeGroupUrl = privilegeGroupControllerUrl.concat('/createPrivilegeGroup');
     this.deletePrivilegeGroupUrl = privilegeGroupControllerUrl.concat('/deletePrivilegeGroup');
@@ -453,6 +456,18 @@ export class PrivilegeGroupService extends BaseBackendService {
       }
     }
     return throwError(new Error(`${Status.ERROR} occurs while updating privilege group ${modifiedPrivilegeGroup.identification} at backend`));
+  }
+
+
+
+  /**
+   * Get all changes of a given privilege group
+   * @param privilegeGroupIdentification the identification of the privilege group whose changes are asked for
+   * @returns An array with changes
+   */
+  public getPrivilegeGroupHistory(privilegeGroupIdentification: string): Observable<HistoryChange[]> {
+    this.init();
+    return this.getObjectHistory(privilegeGroupIdentification, this.getPrivilegeGroupHistoryUrl, 'privilege group');
   }
 
 }

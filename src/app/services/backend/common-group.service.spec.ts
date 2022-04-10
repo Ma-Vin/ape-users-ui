@@ -11,6 +11,7 @@ import { BaseBackendService, RETRIES } from '../base/base-backend.service';
 import { INITIAL_USER_ID_AT_MOCK } from './user.service';
 
 import { CommonGroupService, INITIAL_COMMON_GROUP_ID_AT_MOCK } from './common-group.service';
+import { ChangeType, IHistoryChange } from 'src/app/model/history-change.model';
 
 describe('CommonGroupService', () => {
   let service: CommonGroupService;
@@ -32,6 +33,7 @@ describe('CommonGroupService', () => {
 
   let mockICommonGroup: ICommonGroup;
   let modifiedCommonGroup: CommonGroup;
+  let historyChange: IHistoryChange;
 
   const mockErrorResponseWrapper: ResponseWrapper = {
     response: undefined,
@@ -78,6 +80,14 @@ describe('CommonGroupService', () => {
       defaultRole: Role.VISITOR
     } as ICommonGroup);
 
+    historyChange = {
+      action: undefined,
+      changeTime: new Date(2022, 4, 10, 11, 8, 1),
+      changeType: ChangeType.CREATE,
+      editor: userId,
+      subjectIdentification: commonGroupId,
+      targetIdentification: undefined
+    } as IHistoryChange;
 
     BaseBackendService.clearMockData();
 
@@ -829,4 +839,93 @@ describe('CommonGroupService', () => {
     tick();
   }));
 
+
+
+  
+  /**
+   * getCommonGroupHistory
+   */
+  it('getCommonGroupHistory - all ok', fakeAsync(() => {
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [historyChange],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getCommonGroupHistory(commonGroupId).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].action).toBeUndefined;
+      expect(data[0].changeTime).toEqual(new Date(2022, 4, 10, 11, 8, 1));
+      expect(data[0].changeType).toEqual(ChangeType.CREATE);
+      expect(data[0].editor).toEqual(userId);
+      expect(data[0].subjectIdentification).toEqual(commonGroupId);
+      expect(data[0].targetIdentification).toBeUndefined;
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/group/common/getCommonGroupHistory/${commonGroupId}`);
+    expect(req.request.method).toEqual("GET");
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/group/common/getCommonGroupHistory/${commonGroupId}`);
+
+    tick();
+  }));
+
+  it('getCommonGroupHistory - with error status', fakeAsync(() => {
+    service.getCommonGroupHistory(commonGroupId).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/group/common/getCommonGroupHistory/${commonGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockErrorResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/group/common/getCommonGroupHistory/${commonGroupId}`);
+
+    tick();
+  }));
+
+  it('getCommonGroupHistory - with fatal status', fakeAsync(() => {
+    service.getCommonGroupHistory(commonGroupId).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/group/common/getCommonGroupHistory/${commonGroupId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockFatalResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/group/common/getCommonGroupHistory/${commonGroupId}`);
+
+    tick();
+  }));
+
+  it('getCommonGroupHistory - mock', fakeAsync(() => {
+    service.useMock = true;
+    service.getCommonGroupHistory(commonGroupId).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(2);
+      expect(data[0].subjectIdentification).toEqual(commonGroupId);
+      expect(data[0].changeType).toEqual(ChangeType.CREATE);
+      expect(data[1].subjectIdentification).toEqual(commonGroupId);
+      expect(data[1].changeType).toEqual(ChangeType.MODIFY);
+    });
+
+    httpMock.expectNone(`//localhost:8080/group/common/getCommonGroupHistory/${commonGroupId}`);
+
+    tick();
+  }));
 });

@@ -16,6 +16,7 @@ import { INITIAL_USER_ID_AT_MOCK, UserService, USERS_AT_COMMON_GROUP } from './u
 import { UserIdRole } from '../../model/user-id-role.model';
 import { INITIAL_PRIVILEGE_GROUP_ID_AT_MOCK } from './privilege-group.service';
 import { IUserRole } from 'src/app/model/user-role.model';
+import { ChangeType, IHistoryChange } from 'src/app/model/history-change.model';
 
 describe('UserService', () => {
   let service: UserService;
@@ -49,6 +50,7 @@ describe('UserService', () => {
   let modifiedUser: User;
   let secondUser: User;
   let mockCommonGroup: CommonGroup;
+  let historyChange: IHistoryChange;
 
   const mockErrorResponseWrapper: ResponseWrapper = {
     response: undefined,
@@ -135,6 +137,15 @@ describe('UserService', () => {
       validTo: undefined,
       defaultRole: Role.VISITOR
     } as ICommonGroup);
+
+    historyChange = {
+      action: undefined,
+      changeTime: new Date(2022, 4, 10, 11, 8, 1),
+      changeType: ChangeType.CREATE,
+      editor: userId,
+      subjectIdentification: secondUserId,
+      targetIdentification: undefined
+    } as IHistoryChange;
 
     BaseBackendService.clearMockData();
 
@@ -3813,6 +3824,92 @@ describe('UserService', () => {
 
 
 
+  /**
+   * getUserHistory
+   */
+  it('getUserHistory - all ok', fakeAsync(() => {
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [historyChange],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getUserHistory(secondUserId).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].action).toBeUndefined;
+      expect(data[0].changeTime).toEqual(new Date(2022, 4, 10, 11, 8, 1));
+      expect(data[0].changeType).toEqual(ChangeType.CREATE);
+      expect(data[0].editor).toEqual(userId);
+      expect(data[0].subjectIdentification).toEqual(secondUserId);
+      expect(data[0].targetIdentification).toBeUndefined;
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/user/getUserHistory/${secondUserId}`);
+    expect(req.request.method).toEqual("GET");
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/user/getUserHistory/${secondUserId}`);
+
+    tick();
+  }));
+
+  it('getUserHistory - with error status', fakeAsync(() => {
+    service.getUserHistory(secondUserId).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/user/getUserHistory/${secondUserId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockErrorResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/user/getUserHistory/${secondUserId}`);
+
+    tick();
+  }));
+
+  it('getUserHistory - with fatal status', fakeAsync(() => {
+    service.getUserHistory(secondUserId).subscribe(
+      data => { expect(data).toBeFalsy(); }
+      , e => {
+        expect(e).toBeTruthy();
+        expect(e.message).toEqual('Some error text');
+      });
+
+    for (let i = 0; i < RETRIES + 1; i++) {
+      let req = httpMock.expectOne(`//localhost:8080/user/getUserHistory/${secondUserId}`);
+      expect(req.request.method).toEqual("GET");
+      req.flush(mockFatalResponseWrapper);
+    }
+
+    // No retry anymore
+    httpMock.expectNone(`//localhost:8080/user/getUserHistory/${secondUserId}`);
+
+    tick();
+  }));
+
+  it('getUserHistory - mock', fakeAsync(() => {
+    service.useMock = true;
+    service.getUserHistory(secondUserId).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(2);
+      expect(data[0].subjectIdentification).toEqual(secondUserId);
+      expect(data[0].changeType).toEqual(ChangeType.CREATE);
+      expect(data[1].subjectIdentification).toEqual(secondUserId);
+      expect(data[1].changeType).toEqual(ChangeType.MODIFY);
+    });
+
+    httpMock.expectNone(`//localhost:8080/user/getUserHistory/${secondUserId}`);
+
+    tick();
+  }));
 });
 
 

@@ -1,4 +1,4 @@
-import { HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Message } from '../../model/message';
 import { ResponseWrapper } from '../../model/response-wrapper';
 import { Status } from '../../model/status.model';
@@ -7,6 +7,9 @@ import { ConfigService } from '../../config/config.service';
 import { User } from '../../model/user.model';
 import { BaseService } from './base.service';
 import { Role } from 'src/app/model/role.model';
+import { Observable, of } from 'rxjs';
+import { ChangeType, HistoryChange, IHistoryChange } from 'src/app/model/history-change.model';
+import { catchError, map, retry } from 'rxjs/operators';
 
 export const ALL_USERS_MOCK_KEY = 'users';
 export const NEXT_USER_ID_MOCK_KEY = 'nextUserId';
@@ -29,7 +32,7 @@ export abstract class BaseBackendService extends BaseService {
 
   public useMock;
 
-  constructor(protected serviceName: string, protected configService: ConfigService) {
+  constructor(protected http: HttpClient, protected serviceName: string, protected configService: ConfigService) {
     super(serviceName, configService);
     this.useMock = environment.useMock;
     this.initMocks();
@@ -116,7 +119,7 @@ export abstract class BaseBackendService extends BaseService {
    * Initialize the service specific data at mock
    */
   protected abstract initServiceMocks(): void;
-  
+
 
   protected getFirstMessageText(messages: Message[], status: Status, defaultMessageText: string): string {
     let result: Message | undefined;
@@ -167,7 +170,7 @@ export abstract class BaseBackendService extends BaseService {
    * @param size the size of the page to be returned, must be greater than 0. 
    * @returns the params
    */
-   protected createPageingRoleParams(role: Role | undefined, page: number | undefined, size: number | undefined): HttpParams | {
+  protected createPageingRoleParams(role: Role | undefined, page: number | undefined, size: number | undefined): HttpParams | {
     [param: string]: string | number | boolean | readonly (string | number | boolean)[];
   } | undefined {
     if (role == undefined) {
@@ -182,4 +185,48 @@ export abstract class BaseBackendService extends BaseService {
       role: `${role}`
     };
   }
+
+
+  /**
+   * Get all changes of an given object
+   * init needs to call by parent class
+   * @param identification the identification of the object whose changes are asked for
+   * @param baseUrl the url which is to call
+   * @param objectText the text of the object
+   * @returns An array with changes
+   */
+  protected getObjectHistory(identification: string, baseUrl: string | undefined, objectText: string): Observable<HistoryChange[]> {
+    if (this.useMock) {
+      return this.getObjectHistoryMock(identification);
+    }
+
+    let url = `${baseUrl}/${identification}`;
+
+    return this.http.get<ResponseWrapper>(url, HTTP_URL_OPTIONS).pipe(
+      map(data => {
+        let changes = this.checkErrorAndGetResponse<IHistoryChange[]>(data, `occurs while getting histroy of ${objectText} ${identification} from backend`);
+        let result: HistoryChange[] = new Array(changes.length);
+        for (let i = 0; i < changes.length; i++) {
+          result[i] = HistoryChange.map(changes[i]);
+        }
+        return result;
+      }),
+      retry(RETRIES),
+      catchError(this.handleError)
+    );
+  }
+
+  /**
+   * Creates a mock response for the object history
+   * @param identification  the identification of the object whose changes are asked for
+   * @returns An array with mock changes
+   */
+  protected getObjectHistoryMock(identification: string): Observable<HistoryChange[]> {
+    let result: HistoryChange[] = [];
+    result.push(new HistoryChange(new Date(2022, 4, 9, 22, 15), ChangeType.CREATE, identification));
+    result.push(new HistoryChange(new Date(2022, 4, 9, 22, 20), ChangeType.MODIFY, identification));
+    result[1].action = 'Property: "null" -> "anythingNew"'
+    return of(result);
+  }
+
 }

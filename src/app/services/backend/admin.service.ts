@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, map, retry } from 'rxjs/operators';
+import { HistoryChange } from 'src/app/model/history-change.model';
 import { ConfigService } from '../../config/config.service';
 import { AdminGroup, IAdminGroup } from '../../model/admin-group.model';
 import { ResponseWrapper } from '../../model/response-wrapper';
@@ -18,10 +19,12 @@ import { ALL_USERS_MOCK_KEY, BaseBackendService, NEXT_USER_ID_MOCK_KEY, HTTP_JSO
 })
 export class AdminService extends BaseBackendService {
   private getAdminGroupUrl: string | undefined;
+  private getAdminGroupHistoryUrl: string | undefined;
   private updateAdminGroupUrl: string | undefined;
   private createAdminUrl: string | undefined;
   private deleteAdminUrl: string | undefined;
   private getAdminUrl: string | undefined;
+  private getAdminHistoryUrl: string | undefined;
   private countAdminUrl: string | undefined;
   private getAllAdminsUrl: string | undefined;
   private getAllAdminPartsUrl: string | undefined;
@@ -37,8 +40,8 @@ export class AdminService extends BaseBackendService {
   } as IAdminGroup);
 
 
-  constructor(private http: HttpClient, configService: ConfigService) {
-    super('AdminService', configService);
+  constructor(protected http: HttpClient, configService: ConfigService) {
+    super(http, 'AdminService', configService);
   }
 
 
@@ -50,10 +53,12 @@ export class AdminService extends BaseBackendService {
     let adminControllerUrl = this.config.backendBaseUrl.concat('/admin');
 
     this.getAdminGroupUrl = adminControllerUrl.concat('/getAdminGroup');
+    this.getAdminGroupHistoryUrl = adminControllerUrl.concat('/getAdminGroupHistory');
     this.updateAdminGroupUrl = adminControllerUrl.concat('/updateAdminGroup');
     this.createAdminUrl = adminControllerUrl.concat('/createAdmin');
     this.deleteAdminUrl = adminControllerUrl.concat('/deleteAdmin');
     this.getAdminUrl = adminControllerUrl.concat('/getAdmin');
+    this.getAdminHistoryUrl = adminControllerUrl.concat('/getAdminHistory');
     this.countAdminUrl = adminControllerUrl.concat('/countAdmins');
     this.getAllAdminsUrl = adminControllerUrl.concat('/getAllAdmins');
     this.getAllAdminPartsUrl = adminControllerUrl.concat('/getAllAdminParts');
@@ -511,5 +516,29 @@ export class AdminService extends BaseBackendService {
       }
     }
     return throwError(new Error(`${Status.ERROR} occurs while setting password of admin ${identification} at backend`));
+  }
+
+
+
+  /**
+   * Get all changes of an given admin group
+   * @param adminGroupIdentification the identification of the admin group whose changes are asked for
+   * @returns An array with changes
+   */
+  public getAdminGroupHistory(adminGroupIdentification: string): Observable<HistoryChange[]> {
+    this.init();
+    return this.getObjectHistory(adminGroupIdentification, this.getAdminGroupHistoryUrl, 'admin group');
+  }
+
+
+
+  /**
+   * Get all changes of an given admin
+   * @param adminGroupIdentification the identification of the admin whose changes are asked for
+   * @returns An array with changes
+   */
+  public getAdminHistory(adminGroupIdentification: string): Observable<HistoryChange[]> {
+    this.init();
+    return this.getObjectHistory(adminGroupIdentification, this.getAdminHistoryUrl, 'admin');
   }
 }
