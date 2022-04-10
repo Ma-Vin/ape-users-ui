@@ -73,13 +73,13 @@ export abstract class BaseBackendService extends BaseService {
    */
   public static addEntryToStringToStringArrayMap(mockProperty: string, key: string, valueToAdd: string): void {
     BaseBackendService.createStringToStringArrayMapIfNotExists(mockProperty);
-    let map: Map<string, string[]> = BaseBackendService.mockData.get(mockProperty);
-    if (map.has(key)) {
-      if (!map.get(key)?.includes(valueToAdd)) {
-        map.get(key)?.push(valueToAdd);
+    let propertyMap: Map<string, string[]> = BaseBackendService.mockData.get(mockProperty);
+    if (propertyMap.has(key)) {
+      if (!propertyMap.get(key)?.includes(valueToAdd)) {
+        propertyMap.get(key)?.push(valueToAdd);
       }
     } else {
-      map.set(key, [valueToAdd]);
+      propertyMap.set(key, [valueToAdd]);
     }
   }
 
