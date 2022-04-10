@@ -1,4 +1,3 @@
-import { map } from "rxjs/operators";
 import { UserResource } from "./user-resource.model";
 import { User } from "./user.model";
 
