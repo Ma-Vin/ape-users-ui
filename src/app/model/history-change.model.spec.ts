@@ -1,4 +1,5 @@
 import { ChangeType, HistoryChange } from "./history-change.model";
+import { ModelType } from "./model-type.model";
 
 describe('HistoryChange', () => {
     const editorId = 'UAA00001';
@@ -15,11 +16,13 @@ describe('HistoryChange', () => {
         change.editor = editorId;
         change.action = action;
         change.targetIdentification = targetId;
+        change.targetType = ModelType.BASE_GROUP;
 
         otherChange = new HistoryChange(changeTime, ChangeType.CREATE, subjectId);
         otherChange.editor = editorId;
         otherChange.action = action;
         otherChange.targetIdentification = targetId;
+        otherChange.targetType = ModelType.BASE_GROUP;
     });
 
     it('should be created', () => {
@@ -74,6 +77,11 @@ describe('HistoryChange', () => {
         expect(change.equals(otherChange)).toBeFalse();
     });
 
+    it('equal - HistoryChange not equal editorIsAdmin', () => {
+        otherChange.isEditorAdmin = !otherChange.isEditorAdmin;
+        expect(change.equals(otherChange)).toBeFalse();
+    });
+
     it('equal - HistoryChange not equal action', () => {
         otherChange.action = otherChange.action!.concat('_');
         expect(change.equals(otherChange)).toBeFalse();
@@ -81,6 +89,11 @@ describe('HistoryChange', () => {
 
     it('equal - HistoryChange not equal targetIdentification', () => {
         otherChange.targetIdentification = otherChange.targetIdentification!.concat('_');
+        expect(change.equals(otherChange)).toBeFalse();
+    });
+
+    it('equal - HistoryChange not equal targetType', () => {
+        otherChange.targetType = ModelType.UNKNOWN;
         expect(change.equals(otherChange)).toBeFalse();
     });
 
@@ -93,8 +106,10 @@ describe('HistoryChange', () => {
         expect(mappedChange.changeType).toEqual(change.changeType);
         expect(mappedChange.subjectIdentification).toEqual(change.subjectIdentification);
         expect(mappedChange.editor).toEqual(change.editor);
+        expect(mappedChange.isEditorAdmin).toEqual(change.isEditorAdmin);
         expect(mappedChange.action).toEqual(change.action);
         expect(mappedChange.targetIdentification).toEqual(change.targetIdentification);
+        expect(mappedChange.targetType).toEqual(change.targetType);
 
         expect(change.equals(mappedChange)).toBeTrue();
     });

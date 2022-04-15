@@ -1,4 +1,5 @@
 import { IEqualsAndIdentifiable } from "./equals-identifiable";
+import { ModelType } from "./model-type.model";
 
 /**
  * Interface of change events of entities during history
@@ -26,6 +27,11 @@ export interface IHistoryChange {
     editor: string | undefined;
 
     /**
+     * Indicator whether the editor is an admin or not
+     */
+    isEditorAdmin: boolean;
+
+    /**
      * The subject which is affected
      */
     subjectIdentification: string;
@@ -34,6 +40,11 @@ export interface IHistoryChange {
      * The target which is affected
      */
     targetIdentification: string | undefined;
+
+    /**
+     * Type of the target
+     */
+    targetType: ModelType | undefined;
 }
 
 /**
@@ -45,13 +56,16 @@ export class HistoryChange implements IHistoryChange, IEqualsAndIdentifiable {
     changeTime: Date;
     changeType: ChangeType;
     editor: string | undefined;
+    isEditorAdmin: boolean;
     subjectIdentification: string;
     targetIdentification: string | undefined;
+    targetType: ModelType | undefined;
 
     constructor(changeTime: Date, changeType: ChangeType, subjectIdentification: string) {
         this.changeTime = changeTime;
         this.changeType = changeType;
         this.subjectIdentification = subjectIdentification;
+        this.isEditorAdmin = false;
     }
 
     /**
@@ -64,7 +78,9 @@ export class HistoryChange implements IHistoryChange, IEqualsAndIdentifiable {
 
         result.action = change.action;
         result.editor = change.editor;
+        result.isEditorAdmin = change.isEditorAdmin;
         result.targetIdentification = change.targetIdentification;
+        result.targetType = change.targetType;
 
         return result;
     }
@@ -84,8 +100,10 @@ export class HistoryChange implements IHistoryChange, IEqualsAndIdentifiable {
             && this.changeTime == other.changeTime
             && this.changeType == other.changeType
             && this.editor == other.editor
+            && this.isEditorAdmin == other.isEditorAdmin
             && this.subjectIdentification == other.subjectIdentification
-            && this.targetIdentification == other.targetIdentification;
+            && this.targetIdentification == other.targetIdentification
+            && this.targetType == other.targetType;
     }
     getIdentification(): string {
         return 'null';
