@@ -166,7 +166,7 @@ export class AdminGroupComponent extends ListDetailComponent<User> {
   /**
    * Opens a sub dialog to show the history of the selected admin group
    */
-  protected openHistoryDialog(): void {
+  public openHistoryDialog(): void {
     this.dialog.open(AdminGroupHistoryComponent, {
       width: HISTORY_DIALOG_WIDTH,
       maxHeight: HISTORY_DIALOG_MAX_HEIGHT,

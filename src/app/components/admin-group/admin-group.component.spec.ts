@@ -772,16 +772,31 @@ describe('AdminGroupComponent', () => {
     expect(component.disableDelete()).toBeTrue();
     expect(component.disableDeleteCallBack()).toBeTrue();
   });
-  
+
+
+
+  /**
+   * openHistoryDialog
+   */
+  it('openHistoryDialog - all ok', () => {
+    spyOn(selectionService, 'getSelectedAdminGroup').and.returnValue(adminGroup);
+
+    let openSpy = spyOn(dialog, 'open');
+
+    component.openHistoryDialog();
+
+    expect(openSpy).toHaveBeenCalled;
+  });
+
 
 
   /**
    * openHistoryDialogCallBack
    */
-   it('openHistoryDialogCallBack - all ok', () => {
+  it('openHistoryDialogCallBack - all ok', () => {
     spyOn(selectionService, 'getSelectedAdminGroup').and.returnValue(adminGroup);
 
-    let openSpy = spyOn(dialog,'open');
+    let openSpy = spyOn(dialog, 'open');
 
     component.openHistoryDialogCallBack();
 
