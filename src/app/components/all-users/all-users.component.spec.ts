@@ -13,7 +13,7 @@ import localeDe from '@angular/common/locales/de';
 
 import { AllUsersComponent } from './all-users.component';
 import { RouterTestingModule } from '@angular/router/testing';
-import { USERS_PATH } from '../../app-routing.module';
+import { USERS_PATH } from '../../app-constants';
 import { MaterialModule } from '../../material/material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
@@ -23,6 +23,7 @@ import { Role } from '../../model/role.model';
 import { CommonGroup, ICommonGroup } from '../../model/common-group.model';
 import { UserPermissionsService } from '../../services/permissions/user-permissions.service';
 import { ToolbarComponent } from '../toolbar/toolbar.component';
+import { MatDialog } from '@angular/material/dialog';
 
 registerLocaleData(localeDe);
 
@@ -39,6 +40,7 @@ describe('AllUsersComponent', () => {
   let route: ActivatedRoute;
   let location: Location;
   let snackBar: MatSnackBar;
+  let dialog: MatDialog;
 
   let fixture: ComponentFixture<AllUsersComponent>;
 
@@ -77,6 +79,7 @@ describe('AllUsersComponent', () => {
     route = TestBed.inject(ActivatedRoute);
     location = TestBed.inject(Location);
     snackBar = TestBed.inject(MatSnackBar);
+    dialog = TestBed.inject(MatDialog);
 
     fixture = TestBed.createComponent(AllUsersComponent);
 
@@ -944,6 +947,20 @@ describe('AllUsersComponent', () => {
 
   it('lastLogin - get undefined', () => {
     expect(component.lastLogin).toEqual('');
+  });
+
+
+
+  /**
+  * openHistoryDialogCallBack
+  */
+  it('openHistoryDialogCallBack - all ok', () => {
+    component.selectedObject = user;
+    let openSpy = spyOn(dialog, 'open');
+
+    component.openHistoryDialogCallBack();
+
+    expect(openSpy).toHaveBeenCalled;
   });
 
 

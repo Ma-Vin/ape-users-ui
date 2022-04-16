@@ -6,9 +6,11 @@ import { BaseGroup } from 'src/app/model/base-group.model';
 import { BaseGroupService } from 'src/app/services/backend/base-group.service';
 import { ListDetailComponent } from '../list-detail/list-detail.component';
 import { BaseGroupPermissionsService } from 'src/app/services/permissions/base-group-permissions.service';
-import { BASE_GROUPS_PATH } from 'src/app/app-routing.module';
+import { BASE_GROUPS_PATH, HISTORY_DIALOG_MAX_HEIGHT, HISTORY_DIALOG_WIDTH } from 'src/app/app-constants';
 import { ToolbarSite } from '../toolbar/toolbar-site';
 import { Observable } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { BaseGroupHistoryComponent } from '../history/base-group-history/base-group-history.component';
 
 @Component({
   selector: 'app-all-base-groups',
@@ -19,7 +21,7 @@ export class AllBaseGroupsComponent extends ListDetailComponent<BaseGroup> {
   public toolbarSite = ToolbarSite.BASE_GROUPS;
 
   constructor(private baseGroupService: BaseGroupService, private baseGroupPermissionsService: BaseGroupPermissionsService
-    , route: ActivatedRoute, location: Location, snackBar: MatSnackBar) {
+    , route: ActivatedRoute, location: Location, snackBar: MatSnackBar, public dialog: MatDialog) {
 
     super(route, location, snackBar);
 
@@ -119,6 +121,14 @@ export class AllBaseGroupsComponent extends ListDetailComponent<BaseGroup> {
   protected onDeleteExistingObject(): void {
     this.baseGroupService.deleteBaseGroup(this.selectedObject.identification).subscribe(deletedBaseGroup => {
       this.removeDeltedObject(deletedBaseGroup);
+    });
+  }
+
+  protected openHistoryDialog(): void {
+    this.dialog.open(BaseGroupHistoryComponent, {
+      width: HISTORY_DIALOG_WIDTH,
+      maxHeight: HISTORY_DIALOG_MAX_HEIGHT,
+      data: this.selectedObject
     });
   }
 

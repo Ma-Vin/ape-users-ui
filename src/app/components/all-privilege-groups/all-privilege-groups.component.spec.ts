@@ -11,13 +11,14 @@ import { ConfigService } from '../../config/config.service';
 import { PrivilegeGroupService } from '../../services/backend/privilege-group.service';
 import { PrivilegeGroupPermissionsService } from '../../services/permissions/privilege-group-permissions.service';
 import { IPrivilegeGroup, PrivilegeGroup } from '../../model/privilege-group.model';
-import { PRIVILEGE_GROUPS_PATH } from '../../app-routing.module';
+import { PRIVILEGE_GROUPS_PATH } from '../../app-constants';
 import { MaterialModule } from '../../material/material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ToolbarComponent } from '../toolbar/toolbar.component';
 import { of } from 'rxjs';
 import { Role } from 'src/app/model/role.model';
+import { MatDialog } from '@angular/material/dialog';
 
 describe('AllPrivilegeGroupsComponent', () => {
   let component: AllPrivilegeGroupsComponent;
@@ -30,6 +31,7 @@ describe('AllPrivilegeGroupsComponent', () => {
   let route: ActivatedRoute;
   let location: Location;
   let snackBar: MatSnackBar;
+  let dialog: MatDialog;
   let commonGroupService: CommonGroupService;
   let privilegeGroupService: PrivilegeGroupService;
   let privilegeGroupPermissionsService: PrivilegeGroupPermissionsService;
@@ -70,6 +72,7 @@ describe('AllPrivilegeGroupsComponent', () => {
     route = TestBed.inject(ActivatedRoute);
     location = TestBed.inject(Location);
     snackBar = TestBed.inject(MatSnackBar);
+    dialog = TestBed.inject(MatDialog);
     commonGroupService = TestBed.inject(CommonGroupService);
     privilegeGroupService = TestBed.inject(PrivilegeGroupService);
     privilegeGroupPermissionsService = TestBed.inject(PrivilegeGroupPermissionsService);
@@ -704,5 +707,19 @@ describe('AllPrivilegeGroupsComponent', () => {
 
     component.onCleanFlattenedGroups();
     expect(component.cleanFlattenSubGroupsTrigger).toBeFalse();
+  });
+
+
+
+  /**
+  * openHistoryDialogCallBack
+  */
+  it('openHistoryDialogCallBack - all ok', () => {
+    component.selectedObject = privilegeGroup;
+    let openSpy = spyOn(dialog, 'open');
+
+    component.openHistoryDialogCallBack();
+
+    expect(openSpy).toHaveBeenCalled;
   });
 });

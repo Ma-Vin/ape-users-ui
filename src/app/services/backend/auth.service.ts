@@ -7,7 +7,7 @@ import { catchError, map, share, switchMap } from 'rxjs/operators';
 import { CryptoService } from '../util/crypto.service';
 import { NEVER, Observable, of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
-import { LOGIN_PATH } from '../../app-routing.module';
+import { LOGIN_PATH } from '../../app-constants';
 import { SelectionService } from '../util/selection.service';
 import { ALL_USERS_MOCK_KEY, BaseBackendService, HTTP_URL_OPTIONS } from '../base/base-backend.service';
 import { User } from '../../model/user.model';

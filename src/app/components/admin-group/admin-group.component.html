@@ -51,6 +51,9 @@
         </ng-template>
         <ng-template #adminNotSelectedBlock>
             <h1>Please select an admin</h1>
+            <div class="admin-group-buttons">
+                <button mat-flat-button color="primary" (click)="openHistoryDialog()">Show Admin Group History</button>
+            </div>
         </ng-template>
     </div>
 </div>

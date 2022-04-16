@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { ADMIN_GROUP_PATH, USERS_PATH } from '../../app-routing.module';
+import { ADMIN_GROUP_PATH, USERS_PATH } from '../../app-constants';
 import { SelectionService } from '../../services/util/selection.service';
 import { ToolbarSite } from './toolbar-site';
 

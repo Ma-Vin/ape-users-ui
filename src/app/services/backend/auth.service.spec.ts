@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { AppRoutingModule, LOGIN_PATH } from '../../app-routing.module';
+import { AppRoutingModule } from '../../app-routing.module';
 import { ConfigService } from '../../config/config.service';
 import { User } from '../../model/user.model';
 import { ACCESS_TOKEN, ACCESS_TOKEN_EXPIRE, AuthService, REFRESH_TOKEN, REFRESH_TOKENS_MOCK_KEY } from './auth.service';
@@ -12,6 +12,7 @@ import { SelectionService } from '../util/selection.service';
 import { UserService } from './user.service';
 import { AdminService } from './admin.service';
 import { Observable, of, throwError } from 'rxjs';
+import { LOGIN_PATH } from 'src/app/app-constants';
 
 
 describe('AuthService', () => {

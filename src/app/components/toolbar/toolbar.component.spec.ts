@@ -14,7 +14,7 @@ import { ToolbarComponent } from './toolbar.component';
 import { CommonGroup, ICommonGroup } from 'src/app/model/common-group.model';
 import { Role } from 'src/app/model/role.model';
 import { SimpleChanges } from '@angular/core';
-import { ADMIN_GROUP_PATH, USERS_PATH } from 'src/app/app-routing.module';
+import { ADMIN_GROUP_PATH, USERS_PATH } from 'src/app/app-constants';
 
 describe('ToolbarComponent', () => {
   let component: ToolbarComponent;

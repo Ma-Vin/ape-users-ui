@@ -6,11 +6,13 @@ import { User } from '../../model/user.model';
 import { SelectionService } from '../../services/util/selection.service';
 import { UserService } from '../../services/backend/user.service';
 import { ListDetailComponent } from '../list-detail/list-detail.component';
-import { USERS_PATH } from '../../app-routing.module';
+import { HISTORY_DIALOG_MAX_HEIGHT, HISTORY_DIALOG_WIDTH, USERS_PATH } from '../../app-constants';
 import { Role } from '../../model/role.model';
 import { ToolbarSite } from '../toolbar/toolbar-site';
 import { UserPermissionsService } from '../../services/permissions/user-permissions.service';
 import { Observable } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { UserHistoryComponent } from '../history/user-history/user-history.component';
 
 
 interface RoleWithText {
@@ -35,7 +37,7 @@ export class AllUsersComponent extends ListDetailComponent<User> {
   private defaultRole = Role.NOT_RELEVANT;
 
   constructor(private selectionService: SelectionService, private userService: UserService
-    , route: ActivatedRoute, location: Location, snackBar: MatSnackBar, private userPermissionSerivce: UserPermissionsService) {
+    , route: ActivatedRoute, location: Location, snackBar: MatSnackBar, private userPermissionSerivce: UserPermissionsService, public dialog: MatDialog) {
     super(route, location, snackBar);
     for (let i = 0; i < this.allowedRoles.length; i++) {
       this.roles.push({ value: this.allowedRoles[i], text: this.allowedRoleTexts[i] } as RoleWithText);
@@ -177,6 +179,14 @@ export class AllUsersComponent extends ListDetailComponent<User> {
 
   set lastLogin(vaule: string) {
     throw new Error(`lastLogin was tried to be set: value=${vaule}`);
+  }
+
+  protected openHistoryDialog(): void {
+    this.dialog.open(UserHistoryComponent, {
+      width: HISTORY_DIALOG_WIDTH,
+      maxHeight: HISTORY_DIALOG_MAX_HEIGHT,
+      data: this.selectedObject
+    });
   }
 
 }

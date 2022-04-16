@@ -1,0 +1,37 @@
+<h1 mat-dialog-title>History of base group {{data.identification}}</h1>
+<div class="table-container">
+    <table #elementTableSort="matSort" mat-table [dataSource]="elementsDataSource" matSort>
+        <ng-container matColumnDef="changeTime">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Time </th>
+            <td mat-cell *matCellDef="let element"> {{element.changeTime | date:'dd.MM.yyyy EE HH:mm:ss'}} </td>
+        </ng-container>
+        <ng-container matColumnDef="changeType">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
+            <td mat-cell *matCellDef="let element"> {{element.changeType}} </td>
+        </ng-container>
+        <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Change </th>
+            <td mat-cell *matCellDef="let element"> {{element.action}} </td>
+        </ng-container>
+        <ng-container matColumnDef="editor">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Editor </th>
+            <td mat-cell *matCellDef="let element"><button *ngIf="element.editor!=undefined" mat-flat-button
+                    routerLink="{{element.editorUrl}}" (click)="onClose()"> {{element.editor}} </button></td>
+        </ng-container>
+        <ng-container matColumnDef="targetIdentification">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Affected Base Group/User </th>
+            <td mat-cell *matCellDef="let element"><button *ngIf="element.targetIdentification!=undefined"
+                    mat-flat-button routerLink="{{element.targetUrl}}" (click)="onClose()"> {{element.targetTypeText}}
+                    {{element.targetIdentification}} </button></td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <mat-paginator #elementTableMatPaginator="matPaginator" [pageSizeOptions]="[10]" showFirstLastButtons>
+    </mat-paginator>
+</div>
+<div class="button-row">
+    <button mat-raised-button color="primary" (click)="onClose()">
+        Close
+    </button>
+</div>

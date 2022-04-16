@@ -7,9 +7,11 @@ import { ListDetailComponent } from '../list-detail/list-detail.component';
 import { ToolbarSite } from '../toolbar/toolbar-site';
 import { PrivilegeGroupService } from '../../services/backend/privilege-group.service';
 import { PrivilegeGroupPermissionsService } from '../../services/permissions/privilege-group-permissions.service';
-import { PRIVILEGE_GROUPS_PATH } from '../../app-routing.module';
+import { HISTORY_DIALOG_MAX_HEIGHT, HISTORY_DIALOG_WIDTH, PRIVILEGE_GROUPS_PATH } from '../../app-constants';
 import { Role } from '../../model/role.model';
 import { Observable } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { PrivilegeGroupHistoryComponent } from '../history/privilege-group-history/privilege-group-history.component';
 
 @Component({
   selector: 'app-all-privilege-groups',
@@ -21,7 +23,7 @@ export class AllPrivilegeGroupsComponent extends ListDetailComponent<PrivilegeGr
   public cleanFlattenSubGroupsTrigger = false;
 
   constructor(private privilegeGroupService: PrivilegeGroupService, private privilegeGroupPermissionsService: PrivilegeGroupPermissionsService
-    , route: ActivatedRoute, location: Location, snackBar: MatSnackBar) {
+    , route: ActivatedRoute, location: Location, snackBar: MatSnackBar, public dialog: MatDialog) {
 
     super(route, location, snackBar);
   }
@@ -138,4 +140,11 @@ export class AllPrivilegeGroupsComponent extends ListDetailComponent<PrivilegeGr
     this.cleanFlattenSubGroupsTrigger = !this.cleanFlattenSubGroupsTrigger;
   }
 
+  protected openHistoryDialog(): void {
+    this.dialog.open(PrivilegeGroupHistoryComponent, {
+      width: HISTORY_DIALOG_WIDTH,
+      maxHeight: HISTORY_DIALOG_MAX_HEIGHT,
+      data: this.selectedObject
+    });
+  }
 }

@@ -12,4 +12,5 @@ export class DetailButtonRowComponent {
   @Input() onDelete!: () => void;
   @Input() disableDelete!: () => boolean;
   @Input() isNewObject!: boolean;
+  @Input() openHistoryDialog!: () => void;
 }

@@ -6,11 +6,13 @@ import { Role } from '../../model/role.model';
 import { Location } from '@angular/common';
 import { CommonGroupService } from '../../services/backend/common-group.service';
 import { SelectionService } from '../../services/util/selection.service';
-import { COMMON_GROUPS_PATH } from '../../app-routing.module';
+import { COMMON_GROUPS_PATH, HISTORY_DIALOG_MAX_HEIGHT, HISTORY_DIALOG_WIDTH } from '../../app-constants';
 import { ListDetailComponent } from '../list-detail/list-detail.component';
 import { ToolbarSite } from '../toolbar/toolbar-site';
 import { CommonGroupPermissionsService } from '../../services/permissions/common-group-permissions.service';
 import { Observable } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { CommonGroupHistoryComponent } from '../history/common-group-history/common-group-history.component';
 
 
 interface RoleWithText {
@@ -32,7 +34,7 @@ export class AllCommonGroupsComponent extends ListDetailComponent<CommonGroup>{
 
 
   constructor(private selectionService: SelectionService, private commonGroupService: CommonGroupService
-    , private commonGroupPermissionsService: CommonGroupPermissionsService, route: ActivatedRoute, location: Location, snackBar: MatSnackBar) {
+    , private commonGroupPermissionsService: CommonGroupPermissionsService, route: ActivatedRoute, location: Location, snackBar: MatSnackBar, public dialog: MatDialog) {
 
     super(route, location, snackBar);
     for (let i = 0; i < this.allowedRoles.length; i++) {
@@ -133,4 +135,12 @@ export class AllCommonGroupsComponent extends ListDetailComponent<CommonGroup>{
 
 
   disableUpdateSelectedObject(): boolean { return !this.commonGroupPermissionsService.isAllowedToUpdateCommonGroup(this.selectedObject.identification); }
+
+  protected openHistoryDialog(): void {
+    this.dialog.open(CommonGroupHistoryComponent, {
+      width: HISTORY_DIALOG_WIDTH,
+      maxHeight: HISTORY_DIALOG_MAX_HEIGHT,
+      data: this.selectedObject
+    });
+  }
 }

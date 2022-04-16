@@ -27,6 +27,11 @@ import { AddBaseGroupDialogComponent } from './components/add-base-group-dialog/
 import { UsersAtGroupComponent } from './components/users-at-group/users-at-group.component';
 import { AddUserDialogComponent } from './components/add-user-dialog/add-user-dialog.component';
 import { AllPrivilegeGroupsComponent } from './components/all-privilege-groups/all-privilege-groups.component';
+import { UserHistoryComponent } from './components/history/user-history/user-history.component';
+import { BaseGroupHistoryComponent } from './components/history/base-group-history/base-group-history.component';
+import { CommonGroupHistoryComponent } from './components/history/common-group-history/common-group-history.component';
+import { PrivilegeGroupHistoryComponent } from './components/history/privilege-group-history/privilege-group-history.component';
+import { AdminGroupHistoryComponent } from './components/history/admin-group-history/admin-group-history.component';
 
 registerLocaleData(localeDE);
 
@@ -46,7 +51,12 @@ registerLocaleData(localeDE);
     AddBaseGroupDialogComponent,
     UsersAtGroupComponent,
     AddUserDialogComponent,
-    AllPrivilegeGroupsComponent
+    AllPrivilegeGroupsComponent,
+    UserHistoryComponent,
+    BaseGroupHistoryComponent,
+    CommonGroupHistoryComponent,
+    PrivilegeGroupHistoryComponent,
+    AdminGroupHistoryComponent
   ],
   imports: [
     BrowserModule,

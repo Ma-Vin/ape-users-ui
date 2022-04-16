@@ -1,0 +1,31 @@
+@import "../../../app-constants.less";
+
+.div {
+    margin: @base-margin;
+}
+
+.mat-table {
+    width           : 100%;
+}
+
+.table-container {
+    height  : 600px;
+    overflow: auto;
+}
+
+.mat-cell {
+    background-color: inherit;
+    color           : inherit;
+    font-weight     : inherit;
+}
+
+.button-row {
+    display        : flex;
+    flex-wrap      : wrap;
+    justify-content: center;
+
+    .mat-button-base {
+        margin: @base-margin;
+        min-width: @button-min-width;
+    }
+}

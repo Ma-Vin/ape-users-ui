@@ -6,7 +6,7 @@ import { MatSnackBar, MatSnackBarRef, TextOnlySnackBar } from '@angular/material
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { COMMON_GROUPS_PATH } from '../../app-routing.module';
+import { COMMON_GROUPS_PATH } from '../../app-constants'
 import { ConfigService } from '../../config/config.service';
 import { MaterialModule } from '../../material/material.module';
 import { SelectionService } from '../../services/util/selection.service';
@@ -18,6 +18,7 @@ import { Role } from '../../model/role.model';
 import { of } from 'rxjs';
 import { ToolbarComponent } from '../toolbar/toolbar.component';
 import { CommonGroupPermissionsService } from 'src/app/services/permissions/common-group-permissions.service';
+import { MatDialog } from '@angular/material/dialog';
 
 describe('CommonGroupComponent', () => {
   let component: AllCommonGroupsComponent;
@@ -30,6 +31,7 @@ describe('CommonGroupComponent', () => {
   let route: ActivatedRoute;
   let location: Location;
   let snackBar: MatSnackBar;
+  let dialog: MatDialog;
   let commonGroupService: CommonGroupService;
   let commonGroupPermissionsService: CommonGroupPermissionsService;
 
@@ -73,6 +75,7 @@ describe('CommonGroupComponent', () => {
     route = TestBed.inject(ActivatedRoute);
     location = TestBed.inject(Location);
     snackBar = TestBed.inject(MatSnackBar);
+    dialog = TestBed.inject(MatDialog);
     commonGroupService = TestBed.inject(CommonGroupService);
     commonGroupPermissionsService = TestBed.inject(CommonGroupPermissionsService);
 
@@ -669,5 +672,19 @@ describe('CommonGroupComponent', () => {
 
     expect(component.disableDelete()).toBeTrue();
     expect(component.disableDeleteCallBack()).toBeTrue();
+  });
+
+
+
+  /**
+  * openHistoryDialogCallBack
+  */
+  it('openHistoryDialogCallBack - all ok', () => {
+    component.selectedObject = commonGroup;
+    let openSpy = spyOn(dialog, 'open');
+
+    component.openHistoryDialogCallBack();
+
+    expect(openSpy).toHaveBeenCalled;
   });
 });

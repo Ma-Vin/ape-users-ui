@@ -345,4 +345,16 @@ export abstract class ListDetailComponent<T extends IEqualsAndIdentifiable> impl
     onCancelCallBack = (): void => {
         this.onCancel();
     }
+
+    /**
+     * Callback to open the dialog for history entries
+     */
+    openHistoryDialogCallBack = (): void => {
+        this.openHistoryDialog();
+    }
+
+    /**
+     * Opens the dialog for history entries
+     */
+    protected abstract openHistoryDialog(): void
 }

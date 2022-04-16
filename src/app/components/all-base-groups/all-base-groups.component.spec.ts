@@ -12,11 +12,12 @@ import { SelectionService } from '../../services/util/selection.service';
 import { AllBaseGroupsComponent } from './all-base-groups.component';
 import { ToolbarComponent } from '../toolbar/toolbar.component';
 import { RouterTestingModule } from '@angular/router/testing';
-import { BASE_GROUPS_PATH } from '../../app-routing.module';
+import { BASE_GROUPS_PATH } from '../../app-constants';
 import { MaterialModule } from '../../material/material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { BaseGroup, IBaseGroup } from 'src/app/model/base-group.model';
+import { MatDialog } from '@angular/material/dialog';
 
 describe('AllBaseGroupsComponent', () => {
   let component: AllBaseGroupsComponent;
@@ -29,6 +30,7 @@ describe('AllBaseGroupsComponent', () => {
   let route: ActivatedRoute;
   let location: Location;
   let snackBar: MatSnackBar;
+  let dialog: MatDialog;
   let commonGroupService: CommonGroupService;
   let baseGroupService: BaseGroupService;
   let baseGroupPermissionsService: BaseGroupPermissionsService;
@@ -59,6 +61,7 @@ describe('AllBaseGroupsComponent', () => {
     route = TestBed.inject(ActivatedRoute);
     location = TestBed.inject(Location);
     snackBar = TestBed.inject(MatSnackBar);
+    dialog = TestBed.inject(MatDialog);
     commonGroupService = TestBed.inject(CommonGroupService);
     baseGroupService = TestBed.inject(BaseGroupService);
     baseGroupPermissionsService = TestBed.inject(BaseGroupPermissionsService);
@@ -677,5 +680,19 @@ describe('AllBaseGroupsComponent', () => {
 
     expect(component.disableDelete()).toBeTrue();
     expect(component.disableDeleteCallBack()).toBeTrue();
+  });
+
+
+
+  /**
+   * openHistoryDialogCallBack
+   */
+  it('openHistoryDialogCallBack - all ok', () => {
+    component.selectedObject = baseGroup;
+    let openSpy = spyOn(dialog, 'open');
+
+    component.openHistoryDialogCallBack();
+
+    expect(openSpy).toHaveBeenCalled;
   });
 });

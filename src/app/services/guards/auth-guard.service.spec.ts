@@ -3,12 +3,13 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
-import { AppRoutingModule, LOGIN_PATH } from '../../app-routing.module';
+import { AppRoutingModule } from '../../app-routing.module';
 import { ConfigService } from '../../config/config.service';
 
 import { AuthGuardService } from './auth-guard.service';
 import { AuthService } from '../backend/auth.service';
 import { CryptoService } from '../util/crypto.service';
+import { LOGIN_PATH } from 'src/app/app-constants';
 
 describe('AuthGuardService', () => {
   let service: AuthGuardService;

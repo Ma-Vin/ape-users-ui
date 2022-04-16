@@ -1,3 +1,4 @@
+import { ADMIN_GROUP_ABS_PATH, BASE_GROUPS_ABS_PATH, PRIVILEGE_GROUPS_ABS_PATH, USERS_ABS_PATH } from "../app-constants";
 import { ChangeType, HistoryChange } from "./history-change.model";
 import { ModelType } from "./model-type.model";
 
@@ -112,6 +113,67 @@ describe('HistoryChange', () => {
         expect(mappedChange.targetType).toEqual(change.targetType);
 
         expect(change.equals(mappedChange)).toBeTrue();
+    });
+
+
+
+    it('initUrlsAndType - normal editor', () => {
+        change.initUrlsAndType();
+        expect(change.editorUrl).toEqual(`${USERS_ABS_PATH}/${editorId}`);
+    });
+
+    it('initUrlsAndType - admin editor', () => {
+        change.isEditorAdmin = true;
+        change.initUrlsAndType();
+        expect(change.editorUrl).toEqual(`${ADMIN_GROUP_ABS_PATH}/${editorId}`);
+    });
+
+    it('initUrlsAndType - undefined editor', () => {
+        change.editor = undefined;
+        change.initUrlsAndType();
+        expect(change.editorUrl).toBeUndefined();
+    });
+
+    it('initUrlsAndType - privilege group target', () => {
+        change.targetType = ModelType.PRIVILEGE_GROUP;
+        change.initUrlsAndType();
+        expect(change.targetUrl).toEqual(`${PRIVILEGE_GROUPS_ABS_PATH}/${targetId}`);
+        expect(change.targetTypeText).toEqual('Privilege Group');
+    });
+
+    it('initUrlsAndType - base group target', () => {
+        change.targetType = ModelType.BASE_GROUP;
+        change.initUrlsAndType();
+        expect(change.targetUrl).toEqual(`${BASE_GROUPS_ABS_PATH}/${targetId}`);
+        expect(change.targetTypeText).toEqual('Base Group');
+    });
+
+    it('initUrlsAndType - user target', () => {
+        change.targetType = ModelType.USER;
+        change.initUrlsAndType();
+        expect(change.targetUrl).toEqual(`${USERS_ABS_PATH}/${targetId}`);
+        expect(change.targetTypeText).toEqual('User');
+    });
+
+    it('initUrlsAndType - unknown target', () => {
+        change.targetType = ModelType.UNKNOWN;
+        change.initUrlsAndType();
+        expect(change.targetUrl).toBeUndefined();
+        expect(change.targetTypeText).toBeUndefined();
+    });
+
+    it('initUrlsAndType - undefined target', () => {
+        change.targetIdentification = undefined;
+        change.initUrlsAndType();
+        expect(change.targetUrl).toBeUndefined();
+        expect(change.targetTypeText).toBeUndefined();
+    });
+
+    it('initUrlsAndType - undefined target type', () => {
+        change.targetType = undefined;
+        change.initUrlsAndType();
+        expect(change.targetUrl).toBeUndefined();
+        expect(change.targetTypeText).toBeUndefined();
     });
 
 });

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DatePipe, Location } from '@angular/common';
-import { ADMIN_GROUP_PATH } from '../../app-routing.module';
+import { ADMIN_GROUP_PATH, HISTORY_DIALOG_MAX_HEIGHT, HISTORY_DIALOG_WIDTH } from '../../app-constants';
 import { ConfigService } from '../../config/config.service';
 import { User } from '../../model/user.model';
 import { AdminService } from '../../services/backend/admin.service';
@@ -10,6 +10,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ListDetailComponent } from '../list-detail/list-detail.component';
 import { ToolbarSite } from '../toolbar/toolbar-site';
 import { Observable } from 'rxjs';
+import { AdminGroupHistoryComponent } from '../history/admin-group-history/admin-group-history.component';
+import { MatDialog } from '@angular/material/dialog';
 
 
 const placeHolderAdmin = {
@@ -20,14 +22,14 @@ const placeHolderAdmin = {
 @Component({
   selector: 'app-admin-group',
   templateUrl: './admin-group.component.html',
-  styleUrls: ['../list-detail/list-detail.component.less']
+  styleUrls: ['./admin-group.component.less']
 })
 export class AdminGroupComponent extends ListDetailComponent<User> {
   private adminGroupId = '';
   public toolbarSite = ToolbarSite.ADMINS;
 
   constructor(private configService: ConfigService, private selectionService: SelectionService, private adminService: AdminService
-    , route: ActivatedRoute, location: Location, snackBar: MatSnackBar) {
+    , route: ActivatedRoute, location: Location, snackBar: MatSnackBar, public dialog: MatDialog) {
 
     super(route, location, snackBar);
   }
@@ -159,5 +161,18 @@ export class AdminGroupComponent extends ListDetailComponent<User> {
   }
 
   onSelectObjectTypeSpecific(objectToSelect: User): void { }
+
+
+  /**
+   * Opens a sub dialog to show the history of the selected admin group
+   */
+  protected openHistoryDialog(): void {
+    this.dialog.open(AdminGroupHistoryComponent, {
+      width: HISTORY_DIALOG_WIDTH,
+      maxHeight: HISTORY_DIALOG_MAX_HEIGHT,
+      data: this.selectionService.getSelectedAdminGroup()
+    });
+  }
+
 
 }

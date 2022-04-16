@@ -12,20 +12,8 @@ import { AllBaseGroupsComponent } from './components/all-base-groups/all-base-gr
 import { BaseGroupGuardService } from './services/guards/base-group-guard.service';
 import { AllPrivilegeGroupsComponent } from './components/all-privilege-groups/all-privilege-groups.component';
 import { PrivilegeGroupGuardService } from './services/guards/privilege-group-guard.service';
+import { ADMIN_GROUP_PATH, BASE_GROUPS_PATH, COMMON_GROUPS_PATH, LOGIN_ABS_PATH, LOGIN_PATH, PRIVILEGE_GROUPS_PATH, USERS_PATH } from './app-constants';
 
-
-export const LOGIN_PATH = 'login';
-export const ADMIN_GROUP_PATH = 'admins';
-export const COMMON_GROUPS_PATH = 'commongroups';
-export const BASE_GROUPS_PATH = 'basegroups';
-export const PRIVILEGE_GROUPS_PATH = 'privilegegroups';
-export const USERS_PATH = 'users';
-export const LOGIN_ABS_PATH = `/${LOGIN_PATH}`;
-export const ADMIN_GROUP_ABS_PATH = `/${ADMIN_GROUP_PATH}`;
-export const COMMON_GROUPS_ABS_PATH = `/${COMMON_GROUPS_PATH}`;
-export const BASE_GROUPS_ABS_PATH = `/${BASE_GROUPS_PATH}`;
-export const PRIVILEGE_GROUPS_ABS_PATH = `/${PRIVILEGE_GROUPS_PATH}`;
-export const USERS_ABS_PATH = `/${USERS_PATH}`;
 
 const routes: Routes = [
   { path: '', redirectTo: LOGIN_ABS_PATH, pathMatch: 'full' },
