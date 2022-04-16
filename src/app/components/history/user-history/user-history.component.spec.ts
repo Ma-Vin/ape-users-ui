@@ -73,6 +73,8 @@ describe('UserHistoryComponent', () => {
     selectionService = TestBed.inject(SelectionService);
     userService = TestBed.inject(UserService);
     adminService = TestBed.inject(AdminService);
+    
+    user.isGlobalAdmin = false;
 
     fixture = TestBed.createComponent(UserHistoryComponent);
     component = fixture.componentInstance;
