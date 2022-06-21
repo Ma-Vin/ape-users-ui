@@ -1,5 +1,5 @@
 {
     "clientId": "ape.user.ui",
-    "backendBaseUrl": "//localhost:8080",
+    "backendBaseUrl": "https://localhost:8443",
     "adminGroupId": "AGAA00001"
 }
