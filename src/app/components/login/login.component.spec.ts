@@ -1,6 +1,6 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { AppRoutingModule } from '../../app-routing.module';
@@ -15,7 +15,7 @@ describe('LoginComponent', () => {
   let httpMock: HttpTestingController;
   let router: Router;
   let authenticationService: AuthService;
-  let formBuilder: FormBuilder;
+  let formBuilder: UntypedFormBuilder;
 
 
   beforeEach(async () => {
@@ -34,7 +34,7 @@ describe('LoginComponent', () => {
     httpMock = TestBed.inject(HttpTestingController);
     router = TestBed.inject(Router);
     authenticationService = TestBed.inject(AuthService);
-    formBuilder = TestBed.inject(FormBuilder);
+    formBuilder = TestBed.inject(UntypedFormBuilder);
   });
 
 
