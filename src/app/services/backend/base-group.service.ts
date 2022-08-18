@@ -78,13 +78,13 @@ export class BaseGroupService extends BaseBackendService {
     this.addBaseToBaseGroupUrl = baseGroupControllerUrl.concat('/addBaseToBaseGroup');
     this.removeBaseFromBaseGroupUrl = baseGroupControllerUrl.concat('/removeBaseFromBaseGroup');
     this.countBasesAtBaseGroupUrl = baseGroupControllerUrl.concat('/countBaseAtBaseGroup');
-    this.getAllBasesAtBaseGroupUrl = baseGroupControllerUrl.concat('/findAllBaseAtBaseGroup');
-    this.getAllBasePartsAtBaseGroupUrl = baseGroupControllerUrl.concat('/findAllBasePartAtBaseGroup');
+    this.getAllBasesAtBaseGroupUrl = baseGroupControllerUrl.concat('/getAllBaseAtBaseGroup');
+    this.getAllBasePartsAtBaseGroupUrl = baseGroupControllerUrl.concat('/getAllBasePartAtBaseGroup');
     this.addBaseToPrivilegeGroupUrl = baseGroupControllerUrl.concat('/addBaseToPrivilegeGroup');
     this.removeBaseFromPrivilegeGroupUrl = baseGroupControllerUrl.concat('/removeBaseFromPrivilegeGroup');
     this.countBasesAtPrivilegeGroupUrl = baseGroupControllerUrl.concat('/countBaseAtPrivilegeGroup');
-    this.getAllBasesAtPrivilegeGroupUrl = baseGroupControllerUrl.concat('/findAllBaseAtPrivilegeGroup');
-    this.getAllBasePartsAtPrivilegeGroupUrl = baseGroupControllerUrl.concat('/findAllBasePartAtPrivilegeGroup');
+    this.getAllBasesAtPrivilegeGroupUrl = baseGroupControllerUrl.concat('/getAllBaseAtPrivilegeGroup');
+    this.getAllBasePartsAtPrivilegeGroupUrl = baseGroupControllerUrl.concat('/getAllBasePartAtPrivilegeGroup');
     this.countAvailableBasesForBaseGroupUrl = baseGroupControllerUrl.concat('/countAvailableBasesForBaseGroup');
     this.countAvailableBasesForPrivilegeGroupUrl = baseGroupControllerUrl.concat('/countAvailableBasesForPrivilegeGroup');
     this.getAvailableBasesForBaseGroupUrl = baseGroupControllerUrl.concat('/getAllAvailableBasesForBaseGroup');
