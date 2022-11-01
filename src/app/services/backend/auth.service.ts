@@ -88,12 +88,8 @@ export class AuthService extends BaseBackendService {
     console.debug('AuthService: get Access token');
     return this.http.post<TokenResponse>(this.retrieveTokenUrl, params.toString(), HTTP_URL_OPTIONS)
       .pipe(
-        map(
-          data => this.saveToken(data),
-          catchError(
-            this.handleError
-          )
-        )
+        map(data => this.saveToken(data)),
+        catchError(this.handleError.bind(this))
       );
   }
 
