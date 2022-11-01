@@ -107,7 +107,7 @@ export class AuthService extends BaseBackendService {
       }
     }
     if (user == undefined) {
-      return throwError('Backend returned code 401, error was: Unauthorized, message was: Bad credentials');
+      return throwError(() => new Error('Backend returned code 401, error was: Unauthorized, message was: Bad credentials'));
     }
 
     let tokenToSave = Object.assign({}, this.tokenResponseMock);
@@ -254,7 +254,7 @@ export class AuthService extends BaseBackendService {
         break;
       }
     }
-    throwError(new Error(`There is not any User with identification "${userId}"`));
+    throwError(() => new Error(`There is not any User with identification "${userId}"`));
   }
 
   loginAndRedirect(username: string, password: string, redirect: string): void {

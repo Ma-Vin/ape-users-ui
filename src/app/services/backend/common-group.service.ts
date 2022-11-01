@@ -116,7 +116,7 @@ export class CommonGroupService extends BaseBackendService {
       if (cg.identification == identification) {
         return of(cg);
       }
-    return throwError(new Error(`${Status.ERROR} occurs while getting common group ${identification} from backend`));
+    return throwError(() => new Error(`${Status.ERROR} occurs while getting common group ${identification} from backend`));
   }
 
 
@@ -236,7 +236,7 @@ export class CommonGroupService extends BaseBackendService {
         break;
       }
     }
-    return throwError(new Error(`${Status.ERROR} occurs while getting parent common group of user ${userIdentification} from backend`));
+    return throwError(() => new Error(`${Status.ERROR} occurs while getting parent common group of user ${userIdentification} from backend`));
   }
 
 
@@ -373,7 +373,7 @@ export class CommonGroupService extends BaseBackendService {
         return of(CommonGroup.map(modifiedCommonGroup));
       }
     }
-    return throwError(new Error(`${Status.ERROR} occurs while updating common group ${modifiedCommonGroup.identification} at backend`));
+    return throwError(() => new Error(`${Status.ERROR} occurs while updating common group ${modifiedCommonGroup.identification} at backend`));
   }
 
 

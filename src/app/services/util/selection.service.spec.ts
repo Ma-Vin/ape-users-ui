@@ -103,7 +103,7 @@ describe('SelectionService', () => {
 
 
   it('setActiveUser - admin', fakeAsync(() => {
-    let commonGroupServiceSpy = spyOn(commonGroupService, 'getParentCommonGroupOfUser').and.callFake(userId => throwError(new Error(`The parent common group of user "${userId}" was not found`)));
+    let commonGroupServiceSpy = spyOn(commonGroupService, 'getParentCommonGroupOfUser').and.callFake(userId => throwError(()=>new Error(`The parent common group of user "${userId}" was not found`)));
 
     service.setActiveUser(admin);
 
@@ -118,7 +118,7 @@ describe('SelectionService', () => {
 
 
   it('setActiveUser - undefined', fakeAsync(() => {
-    let commonGroupServiceSpy = spyOn(commonGroupService, 'getParentCommonGroupOfUser').and.callFake(userId => throwError(new Error(`The parent common group of user "${userId}" was not found`)));
+    let commonGroupServiceSpy = spyOn(commonGroupService, 'getParentCommonGroupOfUser').and.callFake(userId => throwError(() => new Error(`The parent common group of user "${userId}" was not found`)));
 
     service.setActiveUser(undefined);
 

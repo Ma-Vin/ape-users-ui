@@ -148,7 +148,7 @@ export class AdminService extends BaseBackendService {
     if (this.adminGroupMock.identification == identification) {
       return of(this.adminGroupMock);
     }
-    return throwError(new Error(`${Status.ERROR} occurs while getting admin group ${identification} from backend`));
+    return throwError(() => new Error(`${Status.ERROR} occurs while getting admin group ${identification} from backend`));
   }
 
 
@@ -188,7 +188,7 @@ export class AdminService extends BaseBackendService {
         return of(User.map(a));
       }
     }
-    return throwError(new Error(`There is not any User with identification "${identification}"`));
+    return throwError(() => new Error(`There is not any User with identification "${identification}"`));
   }
 
 
@@ -298,7 +298,7 @@ export class AdminService extends BaseBackendService {
       return of(modifiedGroup);
     }
 
-    return throwError(new Error(`${Status.ERROR} occurs while updating admin group ${modifiedGroup.identification} at backend`));
+    return throwError(() => new Error(`${Status.ERROR} occurs while updating admin group ${modifiedGroup.identification} at backend`));
   }
 
 
@@ -339,7 +339,7 @@ export class AdminService extends BaseBackendService {
         return of(User.map(modifiedAdmin));
       }
     }
-    return throwError(new Error(`${Status.ERROR} occurs while updating admin ${modifiedAdmin.identification} at backend`));
+    return throwError(() => new Error(`${Status.ERROR} occurs while updating admin ${modifiedAdmin.identification} at backend`));
   }
 
 
@@ -515,7 +515,7 @@ export class AdminService extends BaseBackendService {
         return of(true);
       }
     }
-    return throwError(new Error(`${Status.ERROR} occurs while setting password of admin ${identification} at backend`));
+    return throwError(() => new Error(`${Status.ERROR} occurs while setting password of admin ${identification} at backend`));
   }
 
 

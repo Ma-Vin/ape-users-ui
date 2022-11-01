@@ -101,7 +101,7 @@ describe('AuthService', () => {
 
     selectionServiceSetActiveUserSpy = spyOn(selectionService, 'setActiveUser');
     getUserSpy = spyOn(userService, 'getUser').and.returnValue(of(spyUser));
-    getAdminSpy = spyOn(adminService, 'getAdmin').and.returnValue(throwError(new Error(`There is not any Admin with identification "${userId}"`)));
+    getAdminSpy = spyOn(adminService, 'getAdmin').and.returnValue(throwError(() => new Error(`There is not any Admin with identification "${userId}"`)));
 
     service = new AuthService(http, fakeConfig as ConfigService, fakeCrypto as CryptoService, router, selectionService, userService, adminService);
 
@@ -152,7 +152,7 @@ describe('AuthService', () => {
     let pwd = 'pwd';
 
 
-    getUserSpy.and.returnValue(throwError(new Error(`There is not any User with identification "${userId}"`)));
+    getUserSpy.and.returnValue(throwError(() => new Error(`There is not any User with identification "${userId}"`)));
     getAdminSpy.and.returnValue(of(spyUser));
 
     //userService.getUser('dummy').subscribe(data=> {console.log("data dummy")}, e=>{ console.log(`isError ${e instanceof Error}`); let err = e as Error; console.log(err.message)})
@@ -236,7 +236,7 @@ describe('AuthService', () => {
         expect(encryptedMap.has(REFRESH_TOKEN)).toBeFalse();
       },
       error: e => {
-        expect(e).toEqual('Backend returned code 401, error was: Unauthorized, message was: Bad credentials');
+        expect(e.message).toEqual('Backend returned code 401, error was: Unauthorized, message was: Bad credentials');
       }
     });
 

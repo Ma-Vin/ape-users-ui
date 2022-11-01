@@ -276,7 +276,7 @@ export class UserService extends BaseBackendService {
   private getUserMock(identification: string): Observable<User> {
     let commonGroup = this.selectionService.getSelectedCommonGroup();
     if (commonGroup == undefined) {
-      return throwError(new Error(`${Status.ERROR} occurs while getting user ${identification} from backend`));
+      return throwError(() => new Error(`${Status.ERROR} occurs while getting user ${identification} from backend`));
     }
 
     this.initMocks();
@@ -288,7 +288,7 @@ export class UserService extends BaseBackendService {
         }
       }
     }
-    return throwError(new Error(`There is not any User with identification "${identification}"`));
+    return throwError(() => new Error(`There is not any User with identification "${identification}"`));
   }
 
 
@@ -418,7 +418,7 @@ export class UserService extends BaseBackendService {
     this.initMocks();
 
     if (commonGroup == undefined || !UserService.getUserIdsFromMock(commonGroup.identification).includes(modifiedUser.identification)) {
-      return throwError(new Error(`${Status.ERROR} occurs while updating user ${modifiedUser.identification} at backend`));
+      return throwError(() => new Error(`${Status.ERROR} occurs while updating user ${modifiedUser.identification} at backend`));
     }
 
 
@@ -433,7 +433,7 @@ export class UserService extends BaseBackendService {
         return of(result);
       }
     }
-    return throwError(new Error(`${Status.ERROR} occurs while updating user ${modifiedUser.identification} at backend`));
+    return throwError(() => new Error(`${Status.ERROR} occurs while updating user ${modifiedUser.identification} at backend`));
   }
 
 
@@ -474,7 +474,7 @@ export class UserService extends BaseBackendService {
   private createUserMock(firstName: string, lastName: string): Observable<User> {
     let commonGroup = this.selectionService.getSelectedCommonGroup();
     if (commonGroup == undefined) {
-      return throwError(new Error(`${Status.ERROR} occurs while creating user at backend`));
+      return throwError(() => new Error(`${Status.ERROR} occurs while creating user at backend`));
     }
     this.initMocks();
     let idBase = 'UAA';
@@ -538,7 +538,7 @@ export class UserService extends BaseBackendService {
   private deleteUserMock(identification: string): Observable<boolean> {
     let commonGroup = this.selectionService.getSelectedCommonGroup();
     if (commonGroup == undefined) {
-      return throwError(new Error(`${Status.ERROR} occurs while deleting user ${identification} at backend`));
+      return throwError(() => new Error(`${Status.ERROR} occurs while deleting user ${identification} at backend`));
     }
 
     this.initMocks();
@@ -634,7 +634,7 @@ export class UserService extends BaseBackendService {
     if (this.getAllUserIdsAtSelectedCommonGroupFromMock().includes(identification)) {
       return of(true);
     }
-    return throwError(new Error(`${Status.ERROR} occurs while setting password of user ${identification} at backend`));
+    return throwError(() => new Error(`${Status.ERROR} occurs while setting password of user ${identification} at backend`));
   }
 
 
@@ -677,7 +677,7 @@ export class UserService extends BaseBackendService {
         }
       }
     }
-    return throwError(new Error(`${Status.ERROR} occurs while setting role of user ${identification} at backend`));
+    return throwError(() => new Error(`${Status.ERROR} occurs while setting role of user ${identification} at backend`));
   }
 
 
@@ -719,7 +719,7 @@ export class UserService extends BaseBackendService {
     let allUserIds = this.getAllUserIdsAtSelectedCommonGroupFromMock();
     let allBaseGroupIds = this.getAllBaseIdsAtSelectedCommonGroupFromMock();
     if (!allUserIds.includes(userIdentification) || !allBaseGroupIds.includes(baseGroupIdentification)) {
-      return throwError(new Error(`${Status.ERROR} occurs while adding user ${userIdentification} to base group ${baseGroupIdentification} at backend`));
+      return throwError(() => new Error(`${Status.ERROR} occurs while adding user ${userIdentification} to base group ${baseGroupIdentification} at backend`));
     }
 
     let usersAtBaseGroup = UserService.getUserIdsAtBaseGroupFromMock(baseGroupIdentification);
@@ -769,7 +769,7 @@ export class UserService extends BaseBackendService {
     let allUserIds = this.getAllUserIdsAtSelectedCommonGroupFromMock();
     let allBaseGroupIds = this.getAllBaseIdsAtSelectedCommonGroupFromMock();
     if (!allUserIds.includes(userIdentification) || !allBaseGroupIds.includes(baseGroupIdentification)) {
-      return throwError(new Error(`${Status.ERROR} occurs while removing user ${userIdentification} from base group ${baseGroupIdentification} at backend`));
+      return throwError(() => new Error(`${Status.ERROR} occurs while removing user ${userIdentification} from base group ${baseGroupIdentification} at backend`));
     }
 
     let usersAtBaseGroup = UserService.getUserIdsAtBaseGroupFromMock(baseGroupIdentification);
@@ -1008,7 +1008,7 @@ export class UserService extends BaseBackendService {
     let allPrivilegeGroupIds = this.getAllPrivilegeIdsAtSelectedCommonGroupFromMock();
 
     if (!allUserIds.includes(userIdentification) || !allPrivilegeGroupIds.includes(privilegeGroupIdentification)) {
-      return throwError(new Error(`${Status.ERROR} occurs while adding user ${userIdentification} to privilege group ${privilegeGroupIdentification} with role ${role} at backend`));
+      return throwError(() => new Error(`${Status.ERROR} occurs while adding user ${userIdentification} to privilege group ${privilegeGroupIdentification} with role ${role} at backend`));
     }
 
     let userRoles = this.getUserIdRolesAtPrivilegeFromMock(privilegeGroupIdentification);
@@ -1063,7 +1063,7 @@ export class UserService extends BaseBackendService {
     let allPrivilegeGroupIds = this.getAllPrivilegeIdsAtSelectedCommonGroupFromMock();
 
     if (!allUserIds.includes(userIdentification) || !allPrivilegeGroupIds.includes(privilegeGroupIdentification)) {
-      return throwError(new Error(`${Status.ERROR} occurs while removing user ${userIdentification} from privilege group ${privilegeGroupIdentification} at backend`));
+      return throwError(() => new Error(`${Status.ERROR} occurs while removing user ${userIdentification} from privilege group ${privilegeGroupIdentification} at backend`));
     }
 
     let usersAtPrivilegeGroup = this.getUserIdRolesAtPrivilegeFromMock(privilegeGroupIdentification);

@@ -164,7 +164,7 @@ export class PrivilegeGroupService extends BaseBackendService {
       if (bg.identification == identification) {
         return of(bg);
       }
-    return throwError(new Error(`${Status.ERROR} occurs while getting privilege group ${identification} from backend`));
+    return throwError(() => new Error(`${Status.ERROR} occurs while getting privilege group ${identification} from backend`));
   }
 
 
@@ -210,7 +210,7 @@ export class PrivilegeGroupService extends BaseBackendService {
 
     let commonGroup = this.selectionService.getSelectedCommonGroup();
     if (commonGroup == undefined) {
-      return throwError(new Error(`${Status.ERROR} occurs while privilege base group at backend`));
+      return throwError(() => new Error(`${Status.ERROR} occurs while privilege base group at backend`));
     }
 
     return this.http.get<ResponseWrapper>(`${url}/${commonGroup.identification}`, {
@@ -298,7 +298,7 @@ export class PrivilegeGroupService extends BaseBackendService {
     this.init();
     let commonGroup = this.selectionService.getSelectedCommonGroup();
     if (commonGroup == undefined) {
-      return throwError(new Error(`${Status.ERROR} occurs while creating privilege group at backend`));
+      return throwError(() => new Error(`${Status.ERROR} occurs while creating privilege group at backend`));
     }
     if (this.useMock) {
       return this.createPrivilegeGroupMock(groupName, commonGroup.identification);
@@ -328,7 +328,7 @@ export class PrivilegeGroupService extends BaseBackendService {
   private createPrivilegeGroupMock(groupName: string, commonGroupIdentification: string): Observable<PrivilegeGroup> {
     let commonGroup = this.selectionService.getSelectedCommonGroup();
     if (commonGroup == undefined) {
-      return throwError(new Error(`${Status.ERROR} occurs while creating privilege group at backend`));
+      return throwError(() => new Error(`${Status.ERROR} occurs while creating privilege group at backend`));
     }
     this.initMocks();
     let idBase = 'PGAA';
@@ -388,7 +388,7 @@ export class PrivilegeGroupService extends BaseBackendService {
   private deletePrivilegeGroupMock(identification: string): Observable<boolean> {
     let commonGroup = this.selectionService.getSelectedCommonGroup();
     if (commonGroup == undefined) {
-      return throwError(new Error(`${Status.ERROR} occurs while deleting privilege group ${identification} at backend`));
+      return throwError(() => new Error(`${Status.ERROR} occurs while deleting privilege group ${identification} at backend`));
     }
 
     this.initMocks();
@@ -445,7 +445,7 @@ export class PrivilegeGroupService extends BaseBackendService {
     this.initMocks();
 
     if (commonGroup == undefined || !PrivilegeGroupService.getPrivilegeGroupIdsFromMock(commonGroup.identification).includes(modifiedPrivilegeGroup.identification)) {
-      return throwError(new Error(`${Status.ERROR} occurs while updating privilege group ${modifiedPrivilegeGroup.identification} at backend`));
+      return throwError(() => new Error(`${Status.ERROR} occurs while updating privilege group ${modifiedPrivilegeGroup.identification} at backend`));
     }
 
     let privilegeGroups = this.getAllPrivilegeGroupsFromMock()
@@ -455,7 +455,7 @@ export class PrivilegeGroupService extends BaseBackendService {
         return of(PrivilegeGroup.map(modifiedPrivilegeGroup));
       }
     }
-    return throwError(new Error(`${Status.ERROR} occurs while updating privilege group ${modifiedPrivilegeGroup.identification} at backend`));
+    return throwError(() => new Error(`${Status.ERROR} occurs while updating privilege group ${modifiedPrivilegeGroup.identification} at backend`));
   }
 
 

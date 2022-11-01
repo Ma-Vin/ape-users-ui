@@ -259,7 +259,7 @@ export class BaseGroupService extends BaseBackendService {
       if (bg.identification == identification) {
         return of(bg);
       }
-    return throwError(new Error(`${Status.ERROR} occurs while getting base group ${identification} from backend`));
+    return throwError(() => new Error(`${Status.ERROR} occurs while getting base group ${identification} from backend`));
   }
 
 
@@ -302,7 +302,7 @@ export class BaseGroupService extends BaseBackendService {
 
     let commonGroup = this.selectionService.getSelectedCommonGroup();
     if (commonGroup == undefined) {
-      return throwError(new Error(`${Status.ERROR} occurs while creating base group at backend`));
+      return throwError(() => new Error(`${Status.ERROR} occurs while creating base group at backend`));
     }
 
     return this.http.get<ResponseWrapper>(`${url}/${commonGroup.identification}`, {
@@ -394,7 +394,7 @@ export class BaseGroupService extends BaseBackendService {
     this.init();
     let commonGroup = this.selectionService.getSelectedCommonGroup();
     if (commonGroup == undefined) {
-      return throwError(new Error(`${Status.ERROR} occurs while creating base group at backend`));
+      return throwError(() => new Error(`${Status.ERROR} occurs while creating base group at backend`));
     }
     if (this.useMock) {
       return this.createBaseGroupMock(groupName, commonGroup.identification);
@@ -480,7 +480,7 @@ export class BaseGroupService extends BaseBackendService {
   private deleteBaseGroupMock(identification: string): Observable<boolean> {
     let commonGroup = this.selectionService.getSelectedCommonGroup();
     if (commonGroup == undefined) {
-      return throwError(new Error(`${Status.ERROR} occurs while deleting base group ${identification} at backend`));
+      return throwError(() => new Error(`${Status.ERROR} occurs while deleting base group ${identification} at backend`));
     }
 
     this.initMocks();
@@ -537,7 +537,7 @@ export class BaseGroupService extends BaseBackendService {
     this.initMocks();
 
     if (commonGroup == undefined || !BaseGroupService.getBaseGroupIdsFromMock(commonGroup.identification).includes(modifiedBaseGroup.identification)) {
-      return throwError(new Error(`${Status.ERROR} occurs while updating base group ${modifiedBaseGroup.identification} at backend`));
+      return throwError(() => new Error(`${Status.ERROR} occurs while updating base group ${modifiedBaseGroup.identification} at backend`));
     }
 
     let baseGroups = this.getAllBaseGroupsFromMock()
@@ -547,7 +547,7 @@ export class BaseGroupService extends BaseBackendService {
         return of(BaseGroup.map(modifiedBaseGroup));
       }
     }
-    return throwError(new Error(`${Status.ERROR} occurs while updating base group ${modifiedBaseGroup.identification} at backend`));
+    return throwError(() => new Error(`${Status.ERROR} occurs while updating base group ${modifiedBaseGroup.identification} at backend`));
   }
 
 
@@ -588,7 +588,7 @@ export class BaseGroupService extends BaseBackendService {
 
     let allBaseGroupIds = this.getAllBaseIdsAtSelectedCommonGroupFromMock();
     if (!allBaseGroupIds.includes(childIdentification) || !allBaseGroupIds.includes(parentIdentification)) {
-      return throwError(new Error(`${Status.ERROR} occurs while adding base group ${childIdentification} to base group ${parentIdentification} at backend`));
+      return throwError(() => new Error(`${Status.ERROR} occurs while adding base group ${childIdentification} to base group ${parentIdentification} at backend`));
     }
 
     let subBaseGroups = BaseGroupService.getSubBaseGroupIdsFromMock(parentIdentification);
@@ -639,7 +639,7 @@ export class BaseGroupService extends BaseBackendService {
 
     let allBaseGroupIds = this.getAllBaseIdsAtSelectedCommonGroupFromMock();
     if (!allBaseGroupIds.includes(childIdentification) || !allBaseGroupIds.includes(parentIdentification)) {
-      return throwError(new Error(`${Status.ERROR} occurs while removing base group ${childIdentification} from base group ${parentIdentification} at backend`));
+      return throwError(() => new Error(`${Status.ERROR} occurs while removing base group ${childIdentification} from base group ${parentIdentification} at backend`));
     }
 
     let subBaseGroups = BaseGroupService.getSubBaseGroupIdsFromMock(parentIdentification);
@@ -878,7 +878,7 @@ export class BaseGroupService extends BaseBackendService {
     let allPrivilegeGroupIds = this.getAllPrivielgeIdsAtSelectedCommonGroupFromMock();
 
     if (!allBaseGroupIds.includes(childIdentification) || !allPrivilegeGroupIds.includes(parentIdentification)) {
-      return throwError(new Error(`${Status.ERROR} occurs while adding base group ${childIdentification} to privilege group ${parentIdentification} at backend`));
+      return throwError(() => new Error(`${Status.ERROR} occurs while adding base group ${childIdentification} to privilege group ${parentIdentification} at backend`));
     }
 
     let subBaseGroups = BaseGroupService.getBaseGroupIdRolesAtPrivilegeFromMock(parentIdentification);
@@ -932,7 +932,7 @@ export class BaseGroupService extends BaseBackendService {
     let allPrivilegeGroupIds = this.getAllPrivielgeIdsAtSelectedCommonGroupFromMock();
 
     if (!allBaseGroupIds.includes(childIdentification) || !allPrivilegeGroupIds.includes(parentIdentification)) {
-      return throwError(new Error(`${Status.ERROR} occurs while removing base group ${childIdentification} from privilege group ${parentIdentification} at backend`));
+      return throwError(() => new Error(`${Status.ERROR} occurs while removing base group ${childIdentification} from privilege group ${parentIdentification} at backend`));
     }
 
     let subBaseGroups = BaseGroupService.getBaseGroupIdRolesAtPrivilegeFromMock(parentIdentification);
