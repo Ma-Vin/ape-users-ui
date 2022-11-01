@@ -148,13 +148,13 @@ describe('BearerTokenInterceptor', () => {
     let authServiceGetTokenSpy = spyOn(authService, 'getToken').and.callFake(() => 'someToken');
     let authServiceClearTokenSpy = spyOn(authService, 'clearTokensAndLogin').and.callFake(() => { });
 
-    interceptor.intercept(request, handler).subscribe(
-      data => { expect(data).toBeFalsy(); },
-      err => { expect(err).toBeFalsy(); },
-      () => {
+    interceptor.intercept(request, handler).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: err => { expect(err).toBeFalsy(); },
+      complete: () => {
         expect('const').toBeFalsy();
       }
-    );
+    });
 
     expect(authServiceValidUserSpy).toHaveBeenCalled();
     expect(authServiceGetTokenSpy).not.toHaveBeenCalled();

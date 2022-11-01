@@ -229,12 +229,15 @@ describe('AuthService', () => {
     let user = 'username';
     let pwd = 'pwd';
 
-    service.retrieveToken(user, pwd).subscribe(() => {
-      expect(encryptedMap.has(ACCESS_TOKEN)).toBeFalse();
-      expect(encryptedMap.has(ACCESS_TOKEN_EXPIRE)).toBeFalse();
-      expect(encryptedMap.has(REFRESH_TOKEN)).toBeFalse();
-    }, e => {
-      expect(e).toEqual('Backend returned code 401, error was: Unauthorized, message was: Bad credentials');
+    service.retrieveToken(user, pwd).subscribe({
+      next: () => {
+        expect(encryptedMap.has(ACCESS_TOKEN)).toBeFalse();
+        expect(encryptedMap.has(ACCESS_TOKEN_EXPIRE)).toBeFalse();
+        expect(encryptedMap.has(REFRESH_TOKEN)).toBeFalse();
+      },
+      error: e => {
+        expect(e).toEqual('Backend returned code 401, error was: Unauthorized, message was: Bad credentials');
+      }
     });
 
     httpMock.expectNone('//localhost:8080/oauth/token');

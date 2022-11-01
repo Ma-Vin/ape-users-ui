@@ -132,12 +132,13 @@ describe('CommonGroupService', () => {
   }));
 
   it('getCommonGroup - with error status', fakeAsync(() => {
-    service.getCommonGroup(commonGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getCommonGroup(commonGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/common/getCommonGroup/${commonGroupId}`);
@@ -152,12 +153,13 @@ describe('CommonGroupService', () => {
   }));
 
   it('getCommonGroup - with fatal status', fakeAsync(() => {
-    service.getCommonGroup(commonGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getCommonGroup(commonGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/common/getCommonGroup/${commonGroupId}`);
@@ -186,14 +188,13 @@ describe('CommonGroupService', () => {
 
   it('getCommonGroup - mock with error', fakeAsync(() => {
     service.useMock = true;
-    service.getCommonGroup('someId').subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.getCommonGroup('someId').subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while getting common group someId from backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/group/common/getCommonGroup/someId`);
 
@@ -266,12 +267,13 @@ describe('CommonGroupService', () => {
   }));
 
   it('getAllCommonGroups - with error status', fakeAsync(() => {
-    service.getAllCommonGroups(undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllCommonGroups(undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/common/getAllCommonGroups`);
@@ -286,12 +288,13 @@ describe('CommonGroupService', () => {
   }));
 
   it('getAllCommonGroups - with fatal status', fakeAsync(() => {
-    service.getAllCommonGroups(undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllCommonGroups(undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/common/getAllCommonGroups`);
@@ -392,12 +395,13 @@ describe('CommonGroupService', () => {
   }));
 
   it('getAllCommonGroupParts - with error status', fakeAsync(() => {
-    service.getAllCommonGroupParts(undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllCommonGroupParts(undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/common/getAllCommonGroupParts`);
@@ -412,12 +416,13 @@ describe('CommonGroupService', () => {
   }));
 
   it('getAllCommonGroupParts - with fatal status', fakeAsync(() => {
-    service.getAllCommonGroupParts(undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllCommonGroupParts(undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/common/getAllCommonGroupParts`);
@@ -482,12 +487,13 @@ describe('CommonGroupService', () => {
   }));
 
   it('getParentCommonGroupOfUser - with error status', fakeAsync(() => {
-    service.getParentCommonGroupOfUser(userId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getParentCommonGroupOfUser(userId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/common/getParentCommonGroupOfUser/${userId}`);
@@ -502,12 +508,13 @@ describe('CommonGroupService', () => {
   }));
 
   it('getParentCommonGroupOfUser - with fatal status', fakeAsync(() => {
-    service.getParentCommonGroupOfUser(userId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getParentCommonGroupOfUser(userId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/common/getParentCommonGroupOfUser/${userId}`);
@@ -536,14 +543,13 @@ describe('CommonGroupService', () => {
 
   it('getParentCommonGroupOfUser - mock with error', fakeAsync(() => {
     service.useMock = true;
-    service.getParentCommonGroupOfUser('someId').subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.getParentCommonGroupOfUser('someId').subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while getting parent common group of user someId from backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/group/common/getParentCommonGroupOfUser/someId`);
 
@@ -585,12 +591,13 @@ describe('CommonGroupService', () => {
   }));
 
   it('createCommonGroup - with error status', fakeAsync(() => {
-    service.createCommonGroup(commonGroupName).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.createCommonGroup(commonGroupName).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/common/createCommonGroup`);
@@ -606,12 +613,13 @@ describe('CommonGroupService', () => {
   }));
 
   it('createCommonGroup - with fatal status', fakeAsync(() => {
-    service.createCommonGroup(commonGroupName).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.createCommonGroup(commonGroupName).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/common/createCommonGroup`);
@@ -667,12 +675,13 @@ describe('CommonGroupService', () => {
   }));
 
   it('deleteCommonGroup - with error status', fakeAsync(() => {
-    service.deleteCommonGroup(commonGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.deleteCommonGroup(commonGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/common/deleteCommonGroup/${commonGroupId}`);
@@ -687,12 +696,13 @@ describe('CommonGroupService', () => {
   }));
 
   it('deleteCommonGroup - with fatal status', fakeAsync(() => {
-    service.deleteCommonGroup(commonGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.deleteCommonGroup(commonGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/common/deleteCommonGroup/${commonGroupId}`);
@@ -764,12 +774,13 @@ describe('CommonGroupService', () => {
   }));
 
   it('updateCommonGroup - with error status', fakeAsync(() => {
-    service.updateCommonGroup(modifiedCommonGroup).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.updateCommonGroup(modifiedCommonGroup).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/common/updateCommonGroup/${commonGroupId}`);
@@ -784,12 +795,13 @@ describe('CommonGroupService', () => {
   }));
 
   it('updateCommonGroup - with fatal status', fakeAsync(() => {
-    service.updateCommonGroup(modifiedCommonGroup).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.updateCommonGroup(modifiedCommonGroup).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/common/updateCommonGroup/${commonGroupId}`);
@@ -825,14 +837,13 @@ describe('CommonGroupService', () => {
     service.useMock = true;
     let othermodifiedCommonGroup: CommonGroup = Object.assign({}, modifiedCommonGroup);
     othermodifiedCommonGroup.identification = 'someId';
-    service.updateCommonGroup(othermodifiedCommonGroup).subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.updateCommonGroup(othermodifiedCommonGroup).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while updating common group someId at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/group/common/updateCommonGroup/someId`);
 
@@ -841,7 +852,7 @@ describe('CommonGroupService', () => {
 
 
 
-  
+
   /**
    * getCommonGroupHistory
    */

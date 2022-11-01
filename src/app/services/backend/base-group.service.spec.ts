@@ -169,12 +169,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('getBaseGroup - with error status', fakeAsync(() => {
-    service.getBaseGroup(baseGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getBaseGroup(baseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/getBaseGroup/${baseGroupId}`);
@@ -189,12 +190,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('getBaseGroup - with fatal status', fakeAsync(() => {
-    service.getBaseGroup(baseGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getBaseGroup(baseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/getBaseGroup/${baseGroupId}`);
@@ -224,14 +226,13 @@ describe('BaseGroupService', () => {
   it('getBaseGroup - mock, but no common group selected', fakeAsync(() => {
     service.useMock = true;
     getSelectedCommonGroupSpy.and.returnValue(undefined);
-    service.getBaseGroup(baseGroupId).subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.getBaseGroup(baseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while getting base group ${baseGroupId} from backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/group/base/getBaseGroup/someId`);
 
@@ -240,14 +241,13 @@ describe('BaseGroupService', () => {
 
   it('getBaseGroup - mock with error', fakeAsync(() => {
     service.useMock = true;
-    service.getBaseGroup('someId').subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.getBaseGroup('someId').subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while getting base group someId from backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/group/base/getBaseGroup/someId`);
 
@@ -320,12 +320,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('getAllBaseGroups - with error status', fakeAsync(() => {
-    service.getAllBaseGroups(undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllBaseGroups(undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/getAllBaseGroups/${commonGroupId}`);
@@ -340,12 +341,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('getAllBaseGroups - with fatal status', fakeAsync(() => {
-    service.getAllBaseGroups(undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllBaseGroups(undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/getAllBaseGroups/${commonGroupId}`);
@@ -437,12 +439,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('getAllBaseGroupParts - with error status', fakeAsync(() => {
-    service.getAllBaseGroupParts(undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllBaseGroupParts(undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/getAllBaseGroupParts/${commonGroupId}`);
@@ -457,12 +460,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('getAllBaseGroupParts - with fatal status', fakeAsync(() => {
-    service.getAllBaseGroupParts(undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllBaseGroupParts(undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/getAllBaseGroupParts/${commonGroupId}`);
@@ -518,12 +522,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('countBaseGroups - with error status', fakeAsync(() => {
-    service.countBaseGroups(commonGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.countBaseGroups(commonGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/countBaseGroups/${commonGroupId}`);
@@ -538,12 +543,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('countBaseGroups - with fatal status', fakeAsync(() => {
-    service.countBaseGroups(commonGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.countBaseGroups(commonGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/countBaseGroups/${commonGroupId}`);
@@ -604,12 +610,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('createBaseGroup - with error status', fakeAsync(() => {
-    service.createBaseGroup(baseGroupName).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.createBaseGroup(baseGroupName).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/createBaseGroup`);
@@ -625,12 +632,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('createBaseGroup - with fatal status', fakeAsync(() => {
-    service.createBaseGroup(baseGroupName).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.createBaseGroup(baseGroupName).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/createBaseGroup`);
@@ -661,12 +669,13 @@ describe('BaseGroupService', () => {
   it('createBaseGroup - mock, but no common group selected', fakeAsync(() => {
     service.useMock = true;
     getSelectedCommonGroupSpy.and.returnValue(undefined);
-    service.createBaseGroup(baseGroupName).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.createBaseGroup(baseGroupName).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while creating base group at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/group/base/createBaseGroup`);
 
@@ -702,12 +711,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('deleteBaseGroup - with error status', fakeAsync(() => {
-    service.deleteBaseGroup(baseGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.deleteBaseGroup(baseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/deleteBaseGroup/${baseGroupId}`);
@@ -722,12 +732,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('deleteBaseGroup - with fatal status', fakeAsync(() => {
-    service.deleteBaseGroup(baseGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.deleteBaseGroup(baseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/deleteBaseGroup/${baseGroupId}`);
@@ -767,12 +778,13 @@ describe('BaseGroupService', () => {
   it('deleteBaseGroup - mock, but no common group selected', fakeAsync(() => {
     service.useMock = true;
     getSelectedCommonGroupSpy.and.returnValue(undefined);
-    service.deleteBaseGroup(baseGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.deleteBaseGroup(baseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while deleting base group ${baseGroupId} at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/group/base/deleteBaseGroup/someId`);
 
@@ -814,12 +826,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('updateBaseGroup - with error status', fakeAsync(() => {
-    service.updateBaseGroup(modifiedBaseGroup).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.updateBaseGroup(modifiedBaseGroup).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/updateBaseGroup/${baseGroupId}`);
@@ -834,12 +847,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('updateBaseGroup - with fatal status', fakeAsync(() => {
-    service.updateBaseGroup(modifiedBaseGroup).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.updateBaseGroup(modifiedBaseGroup).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/updateBaseGroup/${baseGroupId}`);
@@ -874,14 +888,13 @@ describe('BaseGroupService', () => {
     service.useMock = true;
     let otherModifiedBaseGroup: BaseGroup = Object.assign({}, modifiedBaseGroup);
     otherModifiedBaseGroup.identification = 'someId';
-    service.updateBaseGroup(otherModifiedBaseGroup).subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.updateBaseGroup(otherModifiedBaseGroup).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while updating base group someId at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/group/base/updateBaseGroup/someId`);
 
@@ -892,12 +905,13 @@ describe('BaseGroupService', () => {
     service.useMock = true;
     getSelectedCommonGroupSpy.and.returnValue(undefined);
 
-    service.updateBaseGroup(modifiedBaseGroup).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.updateBaseGroup(modifiedBaseGroup).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while updating base group ${baseGroupId} at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/group/base/updateBaseGroup/someId`);
 
@@ -935,12 +949,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('addBaseToBaseGroup - with error status', fakeAsync(() => {
-    service.addBaseToBaseGroup(otherBaseGroupId, baseGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.addBaseToBaseGroup(otherBaseGroupId, baseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/addBaseToBaseGroup/${baseGroupId}`);
@@ -956,12 +971,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('addBaseToBaseGroup - with fatal status', fakeAsync(() => {
-    service.addBaseToBaseGroup(otherBaseGroupId, baseGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.addBaseToBaseGroup(otherBaseGroupId, baseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/addBaseToBaseGroup/${baseGroupId}`);
@@ -978,25 +994,28 @@ describe('BaseGroupService', () => {
 
   it('addBaseToBaseGroup - mock', fakeAsync(() => {
     service.useMock = true;
-    service.createBaseGroup('another group').subscribe(
-      createData => {
+    service.createBaseGroup('another group').subscribe({
+      next: createData => {
         expect(createData).toBeTruthy();
 
-        service.addBaseToBaseGroup(createData.identification, baseGroupId).subscribe(
-          firstAddData => {
+        service.addBaseToBaseGroup(createData.identification, baseGroupId).subscribe({
+          next: firstAddData => {
             expect(firstAddData).toBeTruthy();
             expect(firstAddData).toBeTrue();
 
-            service.addBaseToBaseGroup(createData.identification, baseGroupId).subscribe(
-              secondAddData => {
-                expect(secondAddData).toBeFalse();
-              },
-              e => expect(e).toBeFalsy());
+            service.addBaseToBaseGroup(createData.identification, baseGroupId).subscribe({
+              next:
+                secondAddData => {
+                  expect(secondAddData).toBeFalse();
+                },
+              error: e => expect(e).toBeFalsy()
+            });
           },
-          e => expect(e).toBeFalsy());
+          error: e => expect(e).toBeFalsy()
+        });
       },
-      e => expect(e).toBeFalsy()
-    );
+      error: e => expect(e).toBeFalsy()
+    });
 
     httpMock.expectNone(`//localhost:8080/group/base/addBaseToBaseGroup/${baseGroupId}`);
 
@@ -1005,14 +1024,13 @@ describe('BaseGroupService', () => {
 
   it('addBaseToBaseGroup - mock with error because unknown child', fakeAsync(() => {
     service.useMock = true;
-    service.addBaseToBaseGroup(otherBaseGroupId, baseGroupId).subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.addBaseToBaseGroup(otherBaseGroupId, baseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while adding base group ${otherBaseGroupId} to base group ${baseGroupId} at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/group/base/addBaseToBaseGroup/${baseGroupId}`);
 
@@ -1021,14 +1039,13 @@ describe('BaseGroupService', () => {
 
   it('addBaseToBaseGroup - mock with error because unknown parent', fakeAsync(() => {
     service.useMock = true;
-    service.addBaseToBaseGroup(baseGroupId, otherBaseGroupId).subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.addBaseToBaseGroup(baseGroupId, otherBaseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while adding base group ${baseGroupId} to base group ${otherBaseGroupId} at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/group/base/addBaseToBaseGroup/${baseGroupId}`);
 
@@ -1066,12 +1083,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('removeBaseFromBaseGroup - with error status', fakeAsync(() => {
-    service.removeBaseFromBaseGroup(otherBaseGroupId, baseGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.removeBaseFromBaseGroup(otherBaseGroupId, baseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/removeBaseFromBaseGroup/${baseGroupId}`);
@@ -1087,12 +1105,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('removeBaseFromBaseGroup - with fatal status', fakeAsync(() => {
-    service.removeBaseFromBaseGroup(otherBaseGroupId, baseGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.removeBaseFromBaseGroup(otherBaseGroupId, baseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/removeBaseFromBaseGroup/${baseGroupId}`);
@@ -1109,32 +1128,35 @@ describe('BaseGroupService', () => {
 
   it('removeBaseFromBaseGroup - mock', fakeAsync(() => {
     service.useMock = true;
-    service.createBaseGroup('another group').subscribe(
-      createData => {
+    service.createBaseGroup('another group').subscribe({
+      next: createData => {
         expect(createData).toBeTruthy();
 
-        service.addBaseToBaseGroup(createData.identification, baseGroupId).subscribe(
-          addData => {
+        service.addBaseToBaseGroup(createData.identification, baseGroupId).subscribe({
+          next: addData => {
             expect(addData).toBeTruthy();
             expect(addData).toBeTrue();
 
-            service.removeBaseFromBaseGroup(createData.identification, baseGroupId).subscribe(
-              firstRemoveData => {
+            service.removeBaseFromBaseGroup(createData.identification, baseGroupId).subscribe({
+              next: firstRemoveData => {
                 expect(firstRemoveData).toBeTruthy();
                 expect(firstRemoveData).toBeTrue();
 
-                service.removeBaseFromBaseGroup(createData.identification, baseGroupId).subscribe(
-                  secondRemoveData => {
+                service.removeBaseFromBaseGroup(createData.identification, baseGroupId).subscribe({
+                  next: secondRemoveData => {
                     expect(secondRemoveData).toBeFalse();
                   },
-                  e => expect(e).toBeFalsy());
+                  error: e => expect(e).toBeFalsy()
+                });
               },
-              e => expect(e).toBeFalsy());
+              error: e => expect(e).toBeFalsy()
+            });
           },
-          e => expect(e).toBeFalsy());
+          error: e => expect(e).toBeFalsy()
+        });
       },
-      e => expect(e).toBeFalsy()
-    );
+      error: e => expect(e).toBeFalsy()
+    });
 
     httpMock.expectNone(`//localhost:8080/group/base/removeBaseFromBaseGroup/${baseGroupId}`);
 
@@ -1143,14 +1165,13 @@ describe('BaseGroupService', () => {
 
   it('removeBaseFromBaseGroup - mock with error because unknown child', fakeAsync(() => {
     service.useMock = true;
-    service.removeBaseFromBaseGroup(otherBaseGroupId, baseGroupId).subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.removeBaseFromBaseGroup(otherBaseGroupId, baseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while removing base group ${otherBaseGroupId} from base group ${baseGroupId} at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/group/base/removeBaseFromBaseGroup/${baseGroupId}`);
 
@@ -1159,14 +1180,13 @@ describe('BaseGroupService', () => {
 
   it('removeBaseFromBaseGroup - mock with error because unknown parent', fakeAsync(() => {
     service.useMock = true;
-    service.removeBaseFromBaseGroup(baseGroupId, otherBaseGroupId).subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.removeBaseFromBaseGroup(baseGroupId, otherBaseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while removing base group ${baseGroupId} from base group ${otherBaseGroupId} at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/group/base/removeBaseFromBaseGroup/${baseGroupId}`);
 
@@ -1202,12 +1222,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('countBasesAtBaseGroup - with error status', fakeAsync(() => {
-    service.countBasesAtBaseGroup(baseGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.countBasesAtBaseGroup(baseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/countBaseAtBaseGroup/${baseGroupId}`);
@@ -1222,12 +1243,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('countBasesAtBaseGroup - with fatal status', fakeAsync(() => {
-    service.countBasesAtBaseGroup(baseGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.countBasesAtBaseGroup(baseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/countBaseAtBaseGroup/${baseGroupId}`);
@@ -1243,21 +1265,24 @@ describe('BaseGroupService', () => {
 
   it('countBasesAtBaseGroup - mock', fakeAsync(() => {
     service.useMock = true;
-    service.createBaseGroup('A new sub base group').subscribe(
-      createdData => {
+    service.createBaseGroup('A new sub base group').subscribe({
+      next: createdData => {
         expect(createdData).toBeTruthy();
 
-        service.addBaseToBaseGroup(createdData.identification, baseGroupId).subscribe(
-          addedData => {
-            service.countBasesAtBaseGroup(baseGroupId).subscribe(
-              data => {
+        service.addBaseToBaseGroup(createdData.identification, baseGroupId).subscribe({
+          next: addedData => {
+            service.countBasesAtBaseGroup(baseGroupId).subscribe({
+              next: data => {
                 expect(data).toEqual(1);
               },
-              e => expect(e).toBeFalsy());
+              error: e => expect(e).toBeFalsy()
+            });
           },
-          e => expect(e).toBeFalsy());
+          error: e => expect(e).toBeFalsy()
+        });
       },
-      e => expect(e).toBeFalsy());
+      error: e => expect(e).toBeFalsy()
+    });
 
     httpMock.expectNone(`//localhost:8080/group/base/countBaseAtBaseGroup/${baseGroupId}`);
 
@@ -1329,12 +1354,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('getAllBasesAtBaseGroup - with error status', fakeAsync(() => {
-    service.getAllBasesAtBaseGroup(otherBaseGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllBasesAtBaseGroup(otherBaseGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/getAllBaseAtBaseGroup/${otherBaseGroupId}`);
@@ -1349,12 +1375,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('getAllBasesAtBaseGroup - with fatal status', fakeAsync(() => {
-    service.getAllBasesAtBaseGroup(otherBaseGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllBasesAtBaseGroup(otherBaseGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/getAllBaseAtBaseGroup/${otherBaseGroupId}`);
@@ -1370,24 +1397,27 @@ describe('BaseGroupService', () => {
 
   it('getAllBasesAtBaseGroup - mock', fakeAsync(() => {
     service.useMock = true;
-    service.createBaseGroup('New sub base group').subscribe(
-      createdData => {
+    service.createBaseGroup('New sub base group').subscribe({
+      next: createdData => {
         expect(createdData).toBeTruthy();
-        service.addBaseToBaseGroup(createdData.identification, baseGroupId).subscribe(
-          addedData => {
+        service.addBaseToBaseGroup(createdData.identification, baseGroupId).subscribe({
+          next: addedData => {
             expect(addedData).toBeTruthy();
-            service.getAllBasesAtBaseGroup(baseGroupId, undefined, undefined).subscribe(
-              getAllData => {
+            service.getAllBasesAtBaseGroup(baseGroupId, undefined, undefined).subscribe({
+              next: getAllData => {
                 expect(getAllData).toBeTruthy();
                 expect(getAllData.length).toEqual(1);
                 expect(getAllData[0].identification).toEqual(createdData.identification);
                 expect(getAllData[0].isComplete).toBeTrue();
               },
-              e => expect(e).toBeFalsy());
+              error: e => expect(e).toBeFalsy()
+            });
           },
-          e => expect(e).toBeFalsy());
+          error: e => expect(e).toBeFalsy()
+        });
       },
-      e => expect(e).toBeFalsy());
+      error: e => expect(e).toBeFalsy()
+    });
 
     httpMock.expectNone(`//localhost:8080/group/base/getAllBaseAtBaseGroup/${baseGroupId}`);
 
@@ -1458,12 +1488,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('getAllBasePartsAtBaseGroup - with error status', fakeAsync(() => {
-    service.getAllBasePartsAtBaseGroup(otherBaseGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllBasePartsAtBaseGroup(otherBaseGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/getAllBasePartAtBaseGroup/${otherBaseGroupId}`);
@@ -1478,12 +1509,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('getAllBasePartsAtBaseGroup - with fatal status', fakeAsync(() => {
-    service.getAllBasePartsAtBaseGroup(otherBaseGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllBasePartsAtBaseGroup(otherBaseGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/getAllBasePartAtBaseGroup/${otherBaseGroupId}`);
@@ -1499,23 +1531,29 @@ describe('BaseGroupService', () => {
 
   it('getAllBasePartsAtBaseGroup - mock', fakeAsync(() => {
     service.useMock = true;
-    service.createBaseGroup('New sub base group').subscribe(
-      createdData => {
-        expect(createdData).toBeTruthy();
-        service.addBaseToBaseGroup(createdData.identification, baseGroupId).subscribe(
-          addedData => {
-            expect(addedData).toBeTruthy();
-            service.getAllBasePartsAtBaseGroup(baseGroupId, undefined, undefined).subscribe(
-              getAllData => {
-                expect(getAllData).toBeTruthy();
-                expect(getAllData.length).toEqual(1);
-                checkBaseGroupPart(getAllData[0], createdData.identification);
+    service.createBaseGroup('New sub base group').subscribe({
+      next:
+        createdData => {
+          expect(createdData).toBeTruthy();
+          service.addBaseToBaseGroup(createdData.identification, baseGroupId).subscribe({
+            next:
+              addedData => {
+                expect(addedData).toBeTruthy();
+                service.getAllBasePartsAtBaseGroup(baseGroupId, undefined, undefined).subscribe({
+                  next:
+                    getAllData => {
+                      expect(getAllData).toBeTruthy();
+                      expect(getAllData.length).toEqual(1);
+                      checkBaseGroupPart(getAllData[0], createdData.identification);
+                    },
+                  error: e => expect(e).toBeFalsy()
+                });
               },
-              e => expect(e).toBeFalsy());
-          },
-          e => expect(e).toBeFalsy());
-      },
-      e => expect(e).toBeFalsy());
+            error: e => expect(e).toBeFalsy()
+          });
+        },
+      error: e => expect(e).toBeFalsy()
+    });
 
     httpMock.expectNone(`//localhost:8080/group/base/getAllBasePartAtBaseGroup/${baseGroupId}`);
 
@@ -1551,12 +1589,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('countAvailableBasesForBaseGroup - with error status', fakeAsync(() => {
-    service.countAvailableBasesForBaseGroup(baseGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.countAvailableBasesForBaseGroup(baseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/countAvailableBasesForBaseGroup/${baseGroupId}`);
@@ -1571,12 +1610,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('countAvailableBasesForBaseGroup - with fatal status', fakeAsync(() => {
-    service.countAvailableBasesForBaseGroup(baseGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.countAvailableBasesForBaseGroup(baseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/countAvailableBasesForBaseGroup/${baseGroupId}`);
@@ -1677,12 +1717,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('getAvailableBasesForBaseGroup - with error status', fakeAsync(() => {
-    service.getAvailableBasesForBaseGroup(otherBaseGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAvailableBasesForBaseGroup(otherBaseGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/getAllAvailableBasesForBaseGroup/${otherBaseGroupId}`);
@@ -1697,12 +1738,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('getAvailableBasesForBaseGroup - with fatal status', fakeAsync(() => {
-    service.getAvailableBasesForBaseGroup(otherBaseGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAvailableBasesForBaseGroup(otherBaseGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/getAllAvailableBasesForBaseGroup/${otherBaseGroupId}`);
@@ -1718,19 +1760,23 @@ describe('BaseGroupService', () => {
 
   it('getAvailableBasesForBaseGroup - mock', fakeAsync(() => {
     service.useMock = true;
-    service.createBaseGroup('New sub base group').subscribe(
-      createdData => {
-        expect(createdData).toBeTruthy();
-        service.getAvailableBasesForBaseGroup(baseGroupId, undefined, undefined).subscribe(
-          getAllData => {
-            expect(getAllData).toBeTruthy();
-            expect(getAllData.length).toEqual(1);
-            expect(getAllData[0].identification).toEqual(createdData.identification);
-            expect(getAllData[0].isComplete).toBeTrue();
-          },
-          e => expect(e).toBeFalsy());
-      },
-      e => expect(e).toBeFalsy());
+    service.createBaseGroup('New sub base group').subscribe({
+      next:
+        createdData => {
+          expect(createdData).toBeTruthy();
+          service.getAvailableBasesForBaseGroup(baseGroupId, undefined, undefined).subscribe({
+            next:
+              getAllData => {
+                expect(getAllData).toBeTruthy();
+                expect(getAllData.length).toEqual(1);
+                expect(getAllData[0].identification).toEqual(createdData.identification);
+                expect(getAllData[0].isComplete).toBeTrue();
+              },
+            error: e => expect(e).toBeFalsy()
+          });
+        },
+      error: e => expect(e).toBeFalsy()
+    });
 
     httpMock.expectNone(`//localhost:8080/group/base/getAllAvailableBasesForBaseGroup/${baseGroupId}`);
 
@@ -1800,12 +1846,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('getAvailableBasePartsForBaseGroup - with error status', fakeAsync(() => {
-    service.getAvailableBasePartsForBaseGroup(otherBaseGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAvailableBasePartsForBaseGroup(otherBaseGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/getAllAvailableBasePartsForBaseGroup/${otherBaseGroupId}`);
@@ -1820,12 +1867,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('getAvailableBasePartsForBaseGroup - with fatal status', fakeAsync(() => {
-    service.getAvailableBasePartsForBaseGroup(otherBaseGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAvailableBasePartsForBaseGroup(otherBaseGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/getAllAvailableBasePartsForBaseGroup/${otherBaseGroupId}`);
@@ -1841,18 +1889,22 @@ describe('BaseGroupService', () => {
 
   it('getAvailableBasePartsForBaseGroup - mock', fakeAsync(() => {
     service.useMock = true;
-    service.createBaseGroup('New sub base group').subscribe(
-      createdData => {
-        expect(createdData).toBeTruthy();
-        service.getAvailableBasePartsForBaseGroup(baseGroupId, undefined, undefined).subscribe(
-          getAllData => {
-            expect(getAllData).toBeTruthy();
-            expect(getAllData.length).toEqual(1);
-            checkBaseGroupPart(getAllData[0], createdData.identification);
-          },
-          e => expect(e).toBeFalsy());
-      },
-      e => expect(e).toBeFalsy());
+    service.createBaseGroup('New sub base group').subscribe({
+      next:
+        createdData => {
+          expect(createdData).toBeTruthy();
+          service.getAvailableBasePartsForBaseGroup(baseGroupId, undefined, undefined).subscribe({
+            next:
+              getAllData => {
+                expect(getAllData).toBeTruthy();
+                expect(getAllData.length).toEqual(1);
+                checkBaseGroupPart(getAllData[0], createdData.identification);
+              },
+            error: e => expect(e).toBeFalsy()
+          });
+        },
+      error: e => expect(e).toBeFalsy()
+    });
 
     httpMock.expectNone(`//localhost:8080/group/base/getAllAvailableBasePartsForBaseGroup/${baseGroupId}`);
 
@@ -1892,12 +1944,13 @@ describe('BaseGroupService', () => {
   it('addBaseToPrivilegeGroup - with error status', fakeAsync(() => {
     let baseGroupIdRole = new BaseGroupIdRole(baseGroupId, Role.CONTRIBUTOR);
 
-    service.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/addBaseToPrivilegeGroup/${privilegeGroupId}`);
@@ -1915,12 +1968,13 @@ describe('BaseGroupService', () => {
   it('addBaseToPrivilegeGroup - with fatal status', fakeAsync(() => {
     let baseGroupIdRole = new BaseGroupIdRole(baseGroupId, Role.CONTRIBUTOR);
 
-    service.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/addBaseToPrivilegeGroup/${privilegeGroupId}`);
@@ -1938,19 +1992,20 @@ describe('BaseGroupService', () => {
   it('addBaseToPrivilegeGroup - mock', fakeAsync(() => {
     service.useMock = true;
 
-    service.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-      firstAddData => {
+    service.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+      next: firstAddData => {
         expect(firstAddData).toBeTruthy();
         expect(firstAddData).toBeTrue();
 
-        service.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-          secondAddData => {
+        service.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+          next: secondAddData => {
             expect(secondAddData).toBeFalse();
           },
-          e => expect(e).toBeFalsy());
+          error: e => expect(e).toBeFalsy()
+        });
       },
-      e => expect(e).toBeFalsy()
-    );
+      error: e => expect(e).toBeFalsy()
+    });
 
 
     httpMock.expectNone(`//localhost:8080/group/base/addBaseToPrivilegeGroup/${privilegeGroupId}`);
@@ -1960,14 +2015,13 @@ describe('BaseGroupService', () => {
 
   it('addBaseToPrivilegeGroup - mock with error because unknown child', fakeAsync(() => {
     service.useMock = true;
-    service.addBaseToPrivilegeGroup('anyId', privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.addBaseToPrivilegeGroup('anyId', privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while adding base group anyId to privilege group ${privilegeGroupId} at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/group/base/addBaseToPrivilegeGroup/${privilegeGroupId}`);
 
@@ -1976,14 +2030,13 @@ describe('BaseGroupService', () => {
 
   it('addBaseToPrivilegeGroup - mock with error because unknown parent', fakeAsync(() => {
     service.useMock = true;
-    service.addBaseToPrivilegeGroup(baseGroupId, 'anyId', Role.CONTRIBUTOR).subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.addBaseToPrivilegeGroup(baseGroupId, 'anyId', Role.CONTRIBUTOR).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while adding base group ${baseGroupId} to privilege group anyId at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/group/base/addBaseToPrivilegeGroup/anyId`);
 
@@ -2020,12 +2073,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('removeBaseFromPrivilegeGroup - with error status', fakeAsync(() => {
-    service.removeBaseFromPrivilegeGroup(baseGroupId, privilegeGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.removeBaseFromPrivilegeGroup(baseGroupId, privilegeGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/removeBaseFromPrivilegeGroup/${privilegeGroupId}`);
@@ -2041,12 +2095,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('removeBaseFromPrivilegeGroup - with fatal status', fakeAsync(() => {
-    service.removeBaseFromPrivilegeGroup(baseGroupId, privilegeGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.removeBaseFromPrivilegeGroup(baseGroupId, privilegeGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/removeBaseFromPrivilegeGroup/${privilegeGroupId}`);
@@ -2063,25 +2118,28 @@ describe('BaseGroupService', () => {
 
   it('removeBaseFromPrivilegeGroup - mock', fakeAsync(() => {
     service.useMock = true;
-    service.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.MANAGER).subscribe(
-      addData => {
+    service.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.MANAGER).subscribe({
+      next: addData => {
         expect(addData).toBeTruthy();
         expect(addData).toBeTrue();
 
-        service.removeBaseFromPrivilegeGroup(baseGroupId, privilegeGroupId).subscribe(
-          firstRemoveData => {
+        service.removeBaseFromPrivilegeGroup(baseGroupId, privilegeGroupId).subscribe({
+          next: firstRemoveData => {
             expect(firstRemoveData).toBeTruthy();
             expect(firstRemoveData).toBeTrue();
 
-            service.removeBaseFromPrivilegeGroup(baseGroupId, privilegeGroupId).subscribe(
-              secondRemoveData => {
+            service.removeBaseFromPrivilegeGroup(baseGroupId, privilegeGroupId).subscribe({
+              next: secondRemoveData => {
                 expect(secondRemoveData).toBeFalse();
               },
-              e => expect(e).toBeFalsy());
+              error: e => expect(e).toBeFalsy()
+            });
           },
-          e => expect(e).toBeFalsy());
+          error: e => expect(e).toBeFalsy()
+        });
       },
-      e => expect(e).toBeFalsy());
+      error: e => expect(e).toBeFalsy()
+    });
 
 
     httpMock.expectNone(`//localhost:8080/group/base/removeBaseFromPrivilegeGroup/${privilegeGroupId}`);
@@ -2091,14 +2149,15 @@ describe('BaseGroupService', () => {
 
   it('removeBaseFromPrivilegeGroup - mock with error because unknown child', fakeAsync(() => {
     service.useMock = true;
-    service.removeBaseFromPrivilegeGroup('anyId', privilegeGroupId).subscribe(
-      data => {
+    service.removeBaseFromPrivilegeGroup('anyId', privilegeGroupId).subscribe({
+      next: data => {
         expect(data).toBeFalsy();
       },
-      e => {
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while removing base group anyId from privilege group ${privilegeGroupId} at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/group/base/removeBaseFromPrivilegeGroup/${privilegeGroupId}`);
 
@@ -2107,14 +2166,13 @@ describe('BaseGroupService', () => {
 
   it('removeBaseFromPrivilegeGroup - mock with error because unknown parent', fakeAsync(() => {
     service.useMock = true;
-    service.removeBaseFromPrivilegeGroup(baseGroupId, 'anyId').subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.removeBaseFromPrivilegeGroup(baseGroupId, 'anyId').subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while removing base group ${baseGroupId} from privilege group anyId at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/group/base/removeBaseFromPrivilegeGroup/anyId`);
 
@@ -2151,12 +2209,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('countBasesAtPrivilegeGroup - with error status', fakeAsync(() => {
-    service.countBasesAtPrivilegeGroup(privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.countBasesAtPrivilegeGroup(privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/countBaseAtPrivilegeGroup/${privilegeGroupId}?role=${Role.CONTRIBUTOR}`);
@@ -2172,12 +2231,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('countBasesAtPrivilegeGroup - with fatal status', fakeAsync(() => {
-    service.countBasesAtPrivilegeGroup(privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.countBasesAtPrivilegeGroup(privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/countBaseAtPrivilegeGroup/${privilegeGroupId}?role=${Role.CONTRIBUTOR}`);
@@ -2195,24 +2255,22 @@ describe('BaseGroupService', () => {
   it('countBasesAtPrivilegeGroup - mock with role', fakeAsync(() => {
     service.useMock = true;
 
-    service.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-      addedData => {
+    service.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+      next: addedData => {
         expect(addedData).toBeTrue();
 
-        service.countBasesAtPrivilegeGroup(privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-          data => {
-            expect(data).toEqual(1);
-          },
-          e => expect(e).toBeFalsy());
+        service.countBasesAtPrivilegeGroup(privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+          next: data => { expect(data).toEqual(1); },
+          error: e => expect(e).toBeFalsy()
+        });
 
-        service.countBasesAtPrivilegeGroup(privilegeGroupId, Role.MANAGER).subscribe(
-          data => {
-            expect(data).toEqual(0);
-          },
-          e => expect(e).toBeFalsy());
+        service.countBasesAtPrivilegeGroup(privilegeGroupId, Role.MANAGER).subscribe({
+          next: data => { expect(data).toEqual(0); },
+          error: e => expect(e).toBeFalsy()
+        });
       },
-      e => expect(e).toBeFalsy()
-    );
+      error: e => expect(e).toBeFalsy()
+    });
 
 
     httpMock.expectNone(`//localhost:8080/group/base/countBaseAtPrivilegeGroup/${privilegeGroupId}?role=${Role.CONTRIBUTOR}`);
@@ -2224,17 +2282,16 @@ describe('BaseGroupService', () => {
   it('countBasesAtPrivilegeGroup - mock without role', fakeAsync(() => {
     service.useMock = true;
 
-    service.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-      addedData => {
+    service.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+      next: addedData => {
         expect(addedData).toBeTrue();
-        service.countBasesAtPrivilegeGroup(privilegeGroupId, undefined).subscribe(
-          data => {
-            expect(data).toEqual(1);
-          },
-          e => expect(e).toBeFalsy());
+        service.countBasesAtPrivilegeGroup(privilegeGroupId, undefined).subscribe({
+          next: data => { expect(data).toEqual(1); },
+          error: e => expect(e).toBeFalsy()
+        });
       },
-      e => expect(e).toBeFalsy()
-    );
+      error: e => expect(e).toBeFalsy()
+    });
 
 
     httpMock.expectNone(`//localhost:8080/group/base/countBaseAtPrivilegeGroup/${privilegeGroupId}`);
@@ -2364,12 +2421,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('getAllBasesAtPrivilegeGroup - with error status', fakeAsync(() => {
-    service.getAllBasesAtPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllBasesAtPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/getAllBaseAtPrivilegeGroup/${privilegeGroupId}`);
@@ -2384,12 +2442,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('getAllBasesAtPrivilegeGroup - with fatal status', fakeAsync(() => {
-    service.getAllBasesAtPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllBasesAtPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/getAllBaseAtPrivilegeGroup/${privilegeGroupId}`);
@@ -2406,27 +2465,29 @@ describe('BaseGroupService', () => {
   it('getAllBasesAtPrivilegeGroup - mock with role', fakeAsync(() => {
     service.useMock = true;
 
-    service.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-      addedData => {
+    service.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+      next: addedData => {
         expect(addedData).toBeTruthy();
 
-        service.getAllBasesAtPrivilegeGroup(privilegeGroupId, Role.CONTRIBUTOR, undefined, undefined).subscribe(
-          getAllData => {
+        service.getAllBasesAtPrivilegeGroup(privilegeGroupId, Role.CONTRIBUTOR, undefined, undefined).subscribe({
+          next: getAllData => {
             expect(getAllData).toBeTruthy();
             expect(getAllData.length).toEqual(1);
             expect(getAllData[0].identification).toEqual(baseGroupId);
           },
-          e => expect(e).toBeFalsy());
+          error: e => expect(e).toBeFalsy()
+        });
 
-        service.getAllBasesAtPrivilegeGroup(privilegeGroupId, Role.MANAGER, undefined, undefined).subscribe(
-          getAllData => {
+        service.getAllBasesAtPrivilegeGroup(privilegeGroupId, Role.MANAGER, undefined, undefined).subscribe({
+          next: getAllData => {
             expect(getAllData).toBeTruthy();
             expect(getAllData.length).toEqual(0);
           },
-          e => expect(e).toBeFalsy());
+          error: e => expect(e).toBeFalsy()
+        });
       },
-      e => expect(e).toBeFalsy()
-    );
+      error: e => expect(e).toBeFalsy()
+    });
 
     httpMock.expectNone(`//localhost:8080/group/base/getAllBaseAtPrivilegeGroup/${privilegeGroupId}?role=${Role.CONTRIBUTOR}`);
 
@@ -2436,19 +2497,20 @@ describe('BaseGroupService', () => {
   it('getAllBasesAtPrivilegeGroup - mock without role', fakeAsync(() => {
     service.useMock = true;
 
-    service.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-      addedData => {
+    service.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+      next: addedData => {
         expect(addedData).toBeTruthy();
-        service.getAllBasesAtPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined).subscribe(
-          getAllData => {
+        service.getAllBasesAtPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined).subscribe({
+          next: getAllData => {
             expect(getAllData).toBeTruthy();
             expect(getAllData.length).toEqual(1);
             expect(getAllData[0].identification).toEqual(baseGroupId);
           },
-          e => expect(e).toBeFalsy());
+          error: e => expect(e).toBeFalsy()
+        });
       },
-      e => expect(e).toBeFalsy()
-    );
+      error: e => expect(e).toBeFalsy()
+    });
 
     httpMock.expectNone(`//localhost:8080/group/base/getAllBaseAtPrivilegeGroup/${privilegeGroupId}`);
 
@@ -2577,12 +2639,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('getAllBasePartsAtPrivilegeGroup - with error status', fakeAsync(() => {
-    service.getAllBasePartsAtPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllBasePartsAtPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/getAllBasePartAtPrivilegeGroup/${privilegeGroupId}`);
@@ -2597,12 +2660,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('getAllBasePartsAtPrivilegeGroup - with fatal status', fakeAsync(() => {
-    service.getAllBasePartsAtPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllBasePartsAtPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/getAllBasePartAtPrivilegeGroup/${privilegeGroupId}`);
@@ -2619,27 +2683,29 @@ describe('BaseGroupService', () => {
   it('getAllBasePartsAtPrivilegeGroup - mock with role', fakeAsync(() => {
     service.useMock = true;
 
-    service.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-      addedData => {
+    service.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+      next: addedData => {
         expect(addedData).toBeTruthy();
 
-        service.getAllBasePartsAtPrivilegeGroup(privilegeGroupId, Role.CONTRIBUTOR, undefined, undefined).subscribe(
-          getAllData => {
+        service.getAllBasePartsAtPrivilegeGroup(privilegeGroupId, Role.CONTRIBUTOR, undefined, undefined).subscribe({
+          next: getAllData => {
             expect(getAllData).toBeTruthy();
             expect(getAllData.length).toEqual(1);
             checkBaseGroupPart(getAllData[0], baseGroupId);
           },
-          e => expect(e).toBeFalsy());
+          error: e => expect(e).toBeFalsy()
+        });
 
-        service.getAllBasePartsAtPrivilegeGroup(privilegeGroupId, Role.MANAGER, undefined, undefined).subscribe(
-          getAllData => {
+        service.getAllBasePartsAtPrivilegeGroup(privilegeGroupId, Role.MANAGER, undefined, undefined).subscribe({
+          next: getAllData => {
             expect(getAllData).toBeTruthy();
             expect(getAllData.length).toEqual(0);
           },
-          e => expect(e).toBeFalsy());
+          error: e => expect(e).toBeFalsy()
+        });
       },
-      e => expect(e).toBeFalsy()
-    );
+      error: e => expect(e).toBeFalsy()
+    });
 
     httpMock.expectNone(`//localhost:8080/group/base/getAllBasePartAtPrivilegeGroup/${privilegeGroupId}?role=${Role.CONTRIBUTOR}`);
 
@@ -2649,19 +2715,20 @@ describe('BaseGroupService', () => {
   it('getAllBasePartsAtPrivilegeGroup - mock without role', fakeAsync(() => {
     service.useMock = true;
 
-    service.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-      addedData => {
+    service.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+      next: addedData => {
         expect(addedData).toBeTruthy();
-        service.getAllBasePartsAtPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined).subscribe(
-          getAllData => {
+        service.getAllBasePartsAtPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined).subscribe({
+          next: getAllData => {
             expect(getAllData).toBeTruthy();
             expect(getAllData.length).toEqual(1);
             checkBaseGroupPart(getAllData[0], baseGroupId);
           },
-          e => expect(e).toBeFalsy());
+          error: e => expect(e).toBeFalsy()
+        });
       },
-      e => expect(e).toBeFalsy()
-    );
+      error: e => expect(e).toBeFalsy()
+    });
 
     httpMock.expectNone(`//localhost:8080/group/base/getAllBasePartAtPrivilegeGroup/${privilegeGroupId}`);
 
@@ -2697,12 +2764,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('countAvailableBasesForPrivilegeGroup - with error status', fakeAsync(() => {
-    service.countAvailableBasesForPrivilegeGroup(privilegeGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.countAvailableBasesForPrivilegeGroup(privilegeGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/countAvailableBasesForPrivilegeGroup/${privilegeGroupId}`);
@@ -2717,12 +2785,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('countAvailableBasesForPrivilegeGroup - with fatal status', fakeAsync(() => {
-    service.countAvailableBasesForPrivilegeGroup(privilegeGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.countAvailableBasesForPrivilegeGroup(privilegeGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/countAvailableBasesForPrivilegeGroup/${privilegeGroupId}`);
@@ -2823,12 +2892,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('getAvailableBasesForPrivilegeGroup - with error status', fakeAsync(() => {
-    service.getAvailableBasesForPrivilegeGroup(privilegeGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAvailableBasesForPrivilegeGroup(privilegeGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/getAllAvailableBasesForPrivilegeGroup/${privilegeGroupId}`);
@@ -2843,12 +2913,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('getAvailableBasesForPrivilegeGroup - with fatal status', fakeAsync(() => {
-    service.getAvailableBasesForPrivilegeGroup(privilegeGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAvailableBasesForPrivilegeGroup(privilegeGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/getAllAvailableBasesForPrivilegeGroup/${privilegeGroupId}`);
@@ -2864,23 +2935,26 @@ describe('BaseGroupService', () => {
 
   it('getAvailableBasesForPrivilegeGroup - mock', fakeAsync(() => {
     service.useMock = true;
-    service.createBaseGroup('New sub base group').subscribe(
-      createdData => {
+    service.createBaseGroup('New sub base group').subscribe({
+      next: createdData => {
         expect(createdData).toBeTruthy();
-        service.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-          addedData => {
-            service.getAvailableBasesForPrivilegeGroup(privilegeGroupId, undefined, undefined).subscribe(
-              getAllData => {
+        service.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+          next: addedData => {
+            service.getAvailableBasesForPrivilegeGroup(privilegeGroupId, undefined, undefined).subscribe({
+              next: getAllData => {
                 expect(getAllData).toBeTruthy();
                 expect(getAllData.length).toEqual(1);
                 expect(getAllData[0].identification).toEqual(createdData.identification);
                 expect(getAllData[0].isComplete).toBeTrue();
               },
-              e => expect(e).toBeFalsy());
+              error: e => expect(e).toBeFalsy()
+            });
           },
-          e => expect(e).toBeFalsy());
+          error: e => expect(e).toBeFalsy()
+        });
       },
-      e => expect(e).toBeFalsy());
+      error: e => expect(e).toBeFalsy()
+    });
 
     httpMock.expectNone(`//localhost:8080/group/base/getAllAvailableBasesForPrivilegeGroup/${privilegeGroupId}`);
 
@@ -2950,12 +3024,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('getAvailableBasePartsForPrivilegeGroup - with error status', fakeAsync(() => {
-    service.getAvailableBasePartsForPrivilegeGroup(privilegeGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAvailableBasePartsForPrivilegeGroup(privilegeGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/getAllAvailableBasePartsForPrivilegeGroup/${privilegeGroupId}`);
@@ -2970,12 +3045,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('getAvailableBasePartsForPrivilegeGroup - with fatal status', fakeAsync(() => {
-    service.getAvailableBasePartsForPrivilegeGroup(privilegeGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAvailableBasePartsForPrivilegeGroup(privilegeGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/getAllAvailableBasePartsForPrivilegeGroup/${privilegeGroupId}`);
@@ -2991,23 +3067,26 @@ describe('BaseGroupService', () => {
 
   it('getAvailableBasePartsForPrivilegeGroup - mock', fakeAsync(() => {
     service.useMock = true;
-    service.createBaseGroup('New sub base group').subscribe(
-      createdData => {
+    service.createBaseGroup('New sub base group').subscribe({
+      next: createdData => {
         expect(createdData).toBeTruthy();
-        service.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-          addedData => {
+        service.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+          next: addedData => {
             expect(addedData).toBeTruthy();
-            service.getAvailableBasePartsForPrivilegeGroup(privilegeGroupId, undefined, undefined).subscribe(
-              getAllData => {
+            service.getAvailableBasePartsForPrivilegeGroup(privilegeGroupId, undefined, undefined).subscribe({
+              next: getAllData => {
                 expect(getAllData).toBeTruthy();
                 expect(getAllData.length).toEqual(1);
                 checkBaseGroupPart(getAllData[0], createdData.identification);
               },
-              e => expect(e).toBeFalsy());
+              error: e => expect(e).toBeFalsy()
+            });
           },
-          e => expect(e).toBeFalsy());
+          error: e => expect(e).toBeFalsy()
+        });
       },
-      e => expect(e).toBeFalsy());
+      error: e => expect(e).toBeFalsy()
+    });
 
     httpMock.expectNone(`//localhost:8080/group/base/getAllAvailableBasePartsForPrivilegeGroup/${privilegeGroupId}`);
 
@@ -3015,11 +3094,11 @@ describe('BaseGroupService', () => {
   }));
 
 
-  
+
   /**
    * getBaseGroupHistory
    */
-   it('getBaseGroupHistory - all ok', fakeAsync(() => {
+  it('getBaseGroupHistory - all ok', fakeAsync(() => {
     let mockResponseWrapper: ResponseWrapper = {
       response: [historyChange],
       status: Status.OK,
@@ -3048,12 +3127,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('getBaseGroupHistory - with error status', fakeAsync(() => {
-    service.getBaseGroupHistory(baseGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getBaseGroupHistory(baseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/getBaseGroupHistory/${baseGroupId}`);
@@ -3068,12 +3148,13 @@ describe('BaseGroupService', () => {
   }));
 
   it('getBaseGroupHistory - with fatal status', fakeAsync(() => {
-    service.getBaseGroupHistory(baseGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getBaseGroupHistory(baseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/base/getBaseGroupHistory/${baseGroupId}`);

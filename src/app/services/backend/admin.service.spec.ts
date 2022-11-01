@@ -165,12 +165,13 @@ describe('AdminService', () => {
 
 
   it('getAdminGroup - with error status', fakeAsync(() => {
-    service.getAdminGroup(adminGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAdminGroup(adminGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/admin/getAdminGroup/${adminGroupId}`);
@@ -186,12 +187,13 @@ describe('AdminService', () => {
 
 
   it('getAdminGroup - with fatal status', fakeAsync(() => {
-    service.getAdminGroup(adminGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAdminGroup(adminGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/admin/getAdminGroup/${adminGroupId}`);
@@ -222,14 +224,13 @@ describe('AdminService', () => {
 
   it('getAdminGroup - mock with error', fakeAsync(() => {
     service.useMock = true;
-    service.getAdminGroup('someId').subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.getAdminGroup('someId').subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while getting admin group someId from backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/admin/getAdminGroup/someId`);
 
@@ -268,12 +269,13 @@ describe('AdminService', () => {
 
 
   it('getAdmin - with error status', fakeAsync(() => {
-    service.getAdmin(adminId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAdmin(adminId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/admin/getAdmin/${adminId}`);
@@ -289,12 +291,13 @@ describe('AdminService', () => {
 
 
   it('getAdmin - with fatal status', fakeAsync(() => {
-    service.getAdmin(adminId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAdmin(adminId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/admin/getAdmin/${adminId}`);
@@ -324,14 +327,13 @@ describe('AdminService', () => {
 
   it('getAdmin - mock with error', fakeAsync(() => {
     service.useMock = true;
-    service.getAdmin('someId').subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.getAdmin('someId').subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`There is not any User with identification "someId"`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/admin/getAdmin/someId`);
 
@@ -410,12 +412,13 @@ describe('AdminService', () => {
 
 
   it('getAllAdmins - with error status', fakeAsync(() => {
-    service.getAllAdmins(adminGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllAdmins(adminGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/admin/getAllAdmins/${adminGroupId}`);
@@ -431,12 +434,13 @@ describe('AdminService', () => {
 
 
   it('getAllAdmins - with fatal status', fakeAsync(() => {
-    service.getAllAdmins(adminGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllAdmins(adminGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/admin/getAllAdmins/${adminGroupId}`);
@@ -549,12 +553,13 @@ describe('AdminService', () => {
 
 
   it('getAllAdminParts - with error status', fakeAsync(() => {
-    service.getAllAdminParts(adminGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllAdminParts(adminGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/admin/getAllAdminParts/${adminGroupId}`);
@@ -570,12 +575,13 @@ describe('AdminService', () => {
 
 
   it('getAllAdminParts - with fatal status', fakeAsync(() => {
-    service.getAllAdminParts(adminGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllAdminParts(adminGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/admin/getAllAdminParts/${adminGroupId}`);
@@ -644,12 +650,13 @@ describe('AdminService', () => {
 
 
   it('updateAdminGroup - with error status', fakeAsync(() => {
-    service.updateAdminGroup(modifiedAdminGroup).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.updateAdminGroup(modifiedAdminGroup).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/admin/updateAdminGroup/${adminGroupId}`);
@@ -665,12 +672,13 @@ describe('AdminService', () => {
 
 
   it('updateAdminGroup - with fatal status', fakeAsync(() => {
-    service.updateAdminGroup(modifiedAdminGroup).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.updateAdminGroup(modifiedAdminGroup).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/admin/updateAdminGroup/${adminGroupId}`);
@@ -707,14 +715,13 @@ describe('AdminService', () => {
     service.useMock = true;
     let otherModifiedAdminGroup: AdminGroup = Object.assign({}, modifiedAdminGroup);
     otherModifiedAdminGroup.identification = 'someId';
-    service.updateAdminGroup(otherModifiedAdminGroup).subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.updateAdminGroup(otherModifiedAdminGroup).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while updating admin group someId at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/admin/updateAdminGroup/someId`);
 
@@ -755,12 +762,13 @@ describe('AdminService', () => {
 
 
   it('updateAdmin - with error status', fakeAsync(() => {
-    service.updateAdmin(modifiedUserAdmin).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.updateAdmin(modifiedUserAdmin).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/admin/updateAdmin/${adminId}`);
@@ -776,12 +784,13 @@ describe('AdminService', () => {
 
 
   it('updateAdmin - with fatal status', fakeAsync(() => {
-    service.updateAdmin(modifiedUserAdmin).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.updateAdmin(modifiedUserAdmin).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/admin/updateAdmin/${adminId}`);
@@ -821,14 +830,13 @@ describe('AdminService', () => {
     service.useMock = true;
     let otherModifiedUserAdmin: User = Object.assign({}, modifiedUserAdmin);
     otherModifiedUserAdmin.identification = 'someId';
-    service.updateAdmin(otherModifiedUserAdmin).subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.updateAdmin(otherModifiedUserAdmin).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while updating admin someId at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/admin/updateAdmin/someId`);
 
@@ -868,12 +876,13 @@ describe('AdminService', () => {
 
 
   it('createAdmin - with error status', fakeAsync(() => {
-    service.createAdmin(adminGroupId, firstName, lastName).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.createAdmin(adminGroupId, firstName, lastName).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/admin/createAdmin`);
@@ -890,12 +899,13 @@ describe('AdminService', () => {
 
 
   it('createAdmin - with fatal status', fakeAsync(() => {
-    service.createAdmin(adminGroupId, firstName, lastName).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.createAdmin(adminGroupId, firstName, lastName).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/admin/createAdmin`);
@@ -950,12 +960,13 @@ describe('AdminService', () => {
 
 
   it('deleteAdmin - with error status', fakeAsync(() => {
-    service.deleteAdmin(adminId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.deleteAdmin(adminId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/admin/deleteAdmin/${adminId}`);
@@ -971,12 +982,13 @@ describe('AdminService', () => {
 
 
   it('deleteAdmin - with fatal status', fakeAsync(() => {
-    service.deleteAdmin(adminId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.deleteAdmin(adminId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/admin/deleteAdmin/${adminId}`);
@@ -1040,12 +1052,13 @@ describe('AdminService', () => {
 
 
   it('countAdmins - with error status', fakeAsync(() => {
-    service.countAdmins(adminGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.countAdmins(adminGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/admin/countAdmins/${adminGroupId}`);
@@ -1061,12 +1074,13 @@ describe('AdminService', () => {
 
 
   it('countAdmins - with fatal status', fakeAsync(() => {
-    service.countAdmins(adminGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.countAdmins(adminGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/admin/countAdmins/${adminGroupId}`);
@@ -1123,12 +1137,13 @@ describe('AdminService', () => {
   it('setPassword - with error status', fakeAsync(() => {
     let newPwd = 'somePwd';
 
-    service.setPassword(adminId, newPwd).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.setPassword(adminId, newPwd).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/admin/setAdminPassword/${adminId}`);
@@ -1147,12 +1162,13 @@ describe('AdminService', () => {
   it('setPassword - with fatal status', fakeAsync(() => {
     let newPwd = 'somePwd';
 
-    service.setPassword(adminId, newPwd).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.setPassword(adminId, newPwd).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/admin/setAdminPassword/${adminId}`);
@@ -1187,14 +1203,13 @@ describe('AdminService', () => {
     let newPwd = 'somePwd';
 
     service.useMock = true;
-    service.setPassword('someId', newPwd).subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.setPassword('someId', newPwd).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while setting password of admin someId at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/admin/setAdminPassword/someId`);
 
@@ -1236,12 +1251,13 @@ describe('AdminService', () => {
   }));
 
   it('getAdminGroupHistory - with error status', fakeAsync(() => {
-    service.getAdminGroupHistory(adminGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAdminGroupHistory(adminGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/admin/getAdminGroupHistory/${adminGroupId}`);
@@ -1256,12 +1272,13 @@ describe('AdminService', () => {
   }));
 
   it('getAdminGroupHistory - with fatal status', fakeAsync(() => {
-    service.getAdminGroupHistory(adminGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAdminGroupHistory(adminGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/admin/getAdminGroupHistory/${adminGroupId}`);
@@ -1326,12 +1343,13 @@ describe('AdminService', () => {
   }));
 
   it('getAdminHistory - with error status', fakeAsync(() => {
-    service.getAdminHistory(adminId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAdminHistory(adminId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/admin/getAdminHistory/${adminId}`);
@@ -1346,12 +1364,13 @@ describe('AdminService', () => {
   }));
 
   it('getAdminHistory - with fatal status', fakeAsync(() => {
-    service.getAdminHistory(adminId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAdminHistory(adminId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/admin/getAdminHistory/${adminId}`);

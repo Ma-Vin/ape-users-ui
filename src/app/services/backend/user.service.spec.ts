@@ -194,12 +194,13 @@ describe('UserService', () => {
   }));
 
   it('getUser - with error status', fakeAsync(() => {
-    service.getUser(userId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getUser(userId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/getUser/${userId}`);
@@ -214,12 +215,13 @@ describe('UserService', () => {
   }));
 
   it('getUser - with fatal status', fakeAsync(() => {
-    service.getUser(userId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getUser(userId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/getUser/${userId}`);
@@ -249,15 +251,15 @@ describe('UserService', () => {
     service.useMock = true;
     getSelectedCommonGroupSpy.and.returnValue(undefined);
 
-    service.getUser(userId).subscribe(
-      data => {
+    service.getUser(userId).subscribe({
+      next: data => {
         expect(data).toBeFalsy();
       },
-      e => {
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`ERROR occurs while getting user ${userId} from backend`);
       }
-    );
+    });
 
     httpMock.expectNone(`//localhost:8080/user/getUser/${userId}`);
 
@@ -266,14 +268,15 @@ describe('UserService', () => {
 
   it('getUser - mock with error', fakeAsync(() => {
     service.useMock = true;
-    service.getUser('someId').subscribe(
-      data => {
+    service.getUser('someId').subscribe({
+      next: data => {
         expect(data).toBeFalsy();
       },
-      e => {
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`There is not any User with identification "someId"`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/user/getUser/someId`);
 
@@ -354,12 +357,13 @@ describe('UserService', () => {
 
 
   it('getAllUsers - with error status', fakeAsync(() => {
-    service.getAllUsers(commonGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllUsers(commonGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/getAllUsers/${commonGroupId}`);
@@ -375,12 +379,13 @@ describe('UserService', () => {
 
 
   it('getAllUsers - with fatal status', fakeAsync(() => {
-    service.getAllUsers(commonGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllUsers(commonGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/getAllUsers/${commonGroupId}`);
@@ -477,12 +482,13 @@ describe('UserService', () => {
 
 
   it('getAllUserParts - with error status', fakeAsync(() => {
-    service.getAllUserParts(commonGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllUserParts(commonGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/getAllUserParts/${commonGroupId}`);
@@ -498,12 +504,13 @@ describe('UserService', () => {
 
 
   it('getAllUserParts - with fatal status', fakeAsync(() => {
-    service.getAllUserParts(commonGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllUserParts(commonGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/getAllUserParts/${commonGroupId}`);
@@ -568,12 +575,13 @@ describe('UserService', () => {
   }));
 
   it('updateUser - with error status', fakeAsync(() => {
-    service.updateUser(modifiedUser).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.updateUser(modifiedUser).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/updateUser/${userId}`);
@@ -588,12 +596,13 @@ describe('UserService', () => {
   }));
 
   it('updateUser - with fatal status', fakeAsync(() => {
-    service.updateUser(modifiedUser).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.updateUser(modifiedUser).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/updateUser/${userId}`);
@@ -631,14 +640,13 @@ describe('UserService', () => {
     service.useMock = true;
     getSelectedCommonGroupSpy.and.returnValue(undefined);
 
-    service.updateUser(modifiedUser).subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.updateUser(modifiedUser).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while updating user ${userId} at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/user/updateUser/someId`);
 
@@ -650,14 +658,13 @@ describe('UserService', () => {
     service.useMock = true;
     let otherModifiedUser: User = Object.assign({}, modifiedUser);
     otherModifiedUser.identification = 'someId';
-    service.updateUser(otherModifiedUser).subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.updateUser(otherModifiedUser).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while updating user someId at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/user/updateUser/someId`);
 
@@ -700,12 +707,13 @@ describe('UserService', () => {
   }));
 
   it('createUser - with error status', fakeAsync(() => {
-    service.createUser(commonGroupId, firstName, lastName).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.createUser(commonGroupId, firstName, lastName).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/createUser`);
@@ -721,12 +729,13 @@ describe('UserService', () => {
   }));
 
   it('createUser - with fatal status', fakeAsync(() => {
-    service.createUser(commonGroupId, firstName, lastName).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.createUser(commonGroupId, firstName, lastName).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/createUser`);
@@ -759,15 +768,13 @@ describe('UserService', () => {
     service.useMock = true;
     getSelectedCommonGroupSpy.and.returnValue(undefined);
 
-    service.createUser(commonGroupId, firstName, lastName).subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.createUser(commonGroupId, firstName, lastName).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while creating user at backend`);
       }
-    );
+    });
 
     httpMock.expectNone(`//localhost:8080/user/createUser`);
 
@@ -802,12 +809,13 @@ describe('UserService', () => {
   }));
 
   it('deleteUser - with error status', fakeAsync(() => {
-    service.deleteUser(userId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.deleteUser(userId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/deleteUser/${userId}`);
@@ -822,12 +830,13 @@ describe('UserService', () => {
   }));
 
   it('deleteUser - with fatal status', fakeAsync(() => {
-    service.deleteUser(userId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.deleteUser(userId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/deleteUser/${userId}`);
@@ -857,15 +866,13 @@ describe('UserService', () => {
     service.useMock = true;
     getSelectedCommonGroupSpy.and.returnValue(undefined);
 
-    service.deleteUser(userId).subscribe(
-      data => {
-        expect(data).toBeFalse();
-      },
-      e => {
+    service.deleteUser(userId).subscribe({
+      next: data => { expect(data).toBeFalse(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while deleting user ${userId} at backend`);
       }
-    );
+    });
 
     httpMock.expectNone(`//localhost:8080/user/deleteUser/someId`);
 
@@ -912,12 +919,13 @@ describe('UserService', () => {
   }));
 
   it('countUsers - with error status', fakeAsync(() => {
-    service.countUsers(commonGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.countUsers(commonGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/countUsers/${commonGroupId}`);
@@ -932,12 +940,13 @@ describe('UserService', () => {
   }));
 
   it('countUsers - with fatal status', fakeAsync(() => {
-    service.countUsers(commonGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.countUsers(commonGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/countUsers/${commonGroupId}`);
@@ -996,12 +1005,13 @@ describe('UserService', () => {
   it('setPassword - with error status', fakeAsync(() => {
     let newPwd = 'somePwd';
 
-    service.setPassword(userId, newPwd).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.setPassword(userId, newPwd).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/setUserPassword/${userId}`);
@@ -1019,12 +1029,13 @@ describe('UserService', () => {
   it('setPassword - with fatal status', fakeAsync(() => {
     let newPwd = 'somePwd';
 
-    service.setPassword(userId, newPwd).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.setPassword(userId, newPwd).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/setUserPassword/${userId}`);
@@ -1057,14 +1068,13 @@ describe('UserService', () => {
     let newPwd = 'somePwd';
 
     service.useMock = true;
-    service.setPassword('someId', newPwd).subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.setPassword('someId', newPwd).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while setting password of user someId at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/user/setUserPassword/someId`);
 
@@ -1104,12 +1114,13 @@ describe('UserService', () => {
   it('setRole - with error status', fakeAsync(() => {
     let newRole = Role.MANAGER;
 
-    service.setRole(userId, newRole).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.setRole(userId, newRole).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/setUserRole/${userId}`);
@@ -1127,12 +1138,13 @@ describe('UserService', () => {
   it('setRole - with fatal status', fakeAsync(() => {
     let newRole = Role.MANAGER;
 
-    service.setRole(userId, newRole).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.setRole(userId, newRole).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/setUserRole/${userId}`);
@@ -1179,14 +1191,13 @@ describe('UserService', () => {
     let newRole = Role.MANAGER;
 
     service.useMock = true;
-    service.setRole('someId', newRole).subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.setRole('someId', newRole).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while setting role of user someId at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/user/setUserRole/someId`);
 
@@ -1223,12 +1234,13 @@ describe('UserService', () => {
   }));
 
   it('addUserToBaseGroup - with error status', fakeAsync(() => {
-    service.addUserToBaseGroup(userId, baseGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.addUserToBaseGroup(userId, baseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/addUserToBaseGroup/${baseGroupId}`);
@@ -1244,12 +1256,13 @@ describe('UserService', () => {
   }));
 
   it('addUserToBaseGroup - with fatal status', fakeAsync(() => {
-    service.addUserToBaseGroup(userId, baseGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.addUserToBaseGroup(userId, baseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/addUserToBaseGroup/${baseGroupId}`);
@@ -1267,23 +1280,22 @@ describe('UserService', () => {
   it('addUserToBaseGroup - mock', fakeAsync(() => {
     service.useMock = true;
 
-    service.createUser(commonGroupId, 'Some other user', lastName).subscribe(
-      createdUser => {
-        service.addUserToBaseGroup(createdUser.identification, baseGroupId).subscribe(
-          firstAddData => {
+    service.createUser(commonGroupId, 'Some other user', lastName).subscribe({
+      next: createdUser => {
+        service.addUserToBaseGroup(createdUser.identification, baseGroupId).subscribe({
+          next: firstAddData => {
             expect(firstAddData).toBeTruthy();
             expect(firstAddData).toBeTrue();
-
-            service.addUserToBaseGroup(createdUser.identification, baseGroupId).subscribe(
-              secondAddData => {
-                expect(secondAddData).toBeFalse();
-              },
-              e => expect(e).toBeFalsy());
+            service.addUserToBaseGroup(createdUser.identification, baseGroupId).subscribe({
+              next: secondAddData => { expect(secondAddData).toBeFalse(); },
+              error: e => expect(e).toBeFalsy()
+            });
           },
-          e => expect(e).toBeFalsy());
+          error: e => expect(e).toBeFalsy()
+        });
       },
-      e => expect(e).toBeFalsy()
-    );
+      error: e => expect(e).toBeFalsy()
+    });
     httpMock.expectNone(`//localhost:8080/user/addUserToBaseGroup/${baseGroupId}`);
 
     tick();
@@ -1291,14 +1303,13 @@ describe('UserService', () => {
 
   it('addUserToBaseGroup - mock with error because unknown child', fakeAsync(() => {
     service.useMock = true;
-    service.addUserToBaseGroup('anyId', baseGroupId).subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.addUserToBaseGroup('anyId', baseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while adding user anyId to base group ${baseGroupId} at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/user/addUserToBaseGroup/${baseGroupId}`);
 
@@ -1307,14 +1318,13 @@ describe('UserService', () => {
 
   it('addUserToBaseGroup - mock with error because unknown parent', fakeAsync(() => {
     service.useMock = true;
-    service.addUserToBaseGroup(userId, 'anyId').subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.addUserToBaseGroup(userId, 'anyId').subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while adding user ${userId} to base group anyId at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/user/addUserToBaseGroup/${baseGroupId}`);
 
@@ -1351,12 +1361,13 @@ describe('UserService', () => {
   }));
 
   it('removeUserFromBaseGroup - with error status', fakeAsync(() => {
-    service.removeUserFromBaseGroup(userId, baseGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.removeUserFromBaseGroup(userId, baseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/removeUserFromBaseGroup/${baseGroupId}`);
@@ -1372,12 +1383,13 @@ describe('UserService', () => {
   }));
 
   it('removeUserFromBaseGroup - with fatal status', fakeAsync(() => {
-    service.removeUserFromBaseGroup(userId, baseGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.removeUserFromBaseGroup(userId, baseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/removeUserFromBaseGroup/${baseGroupId}`);
@@ -1395,19 +1407,17 @@ describe('UserService', () => {
   it('removeUserFromBaseGroup - mock', fakeAsync(() => {
     service.useMock = true;
 
-    service.removeUserFromBaseGroup(userId, baseGroupId).subscribe(
-      firstRemoveData => {
+    service.removeUserFromBaseGroup(userId, baseGroupId).subscribe({
+      next: firstRemoveData => {
         expect(firstRemoveData).toBeTruthy();
         expect(firstRemoveData).toBeTrue();
-
-        service.removeUserFromBaseGroup(userId, baseGroupId).subscribe(
-          secondRemoveData => {
-            expect(secondRemoveData).toBeFalse();
-          },
-          e => expect(e).toBeFalsy());
+        service.removeUserFromBaseGroup(userId, baseGroupId).subscribe({
+          next: secondRemoveData => { expect(secondRemoveData).toBeFalse(); },
+          error: e => expect(e).toBeFalsy()
+        });
       },
-      e => expect(e).toBeFalsy()
-    );
+      error: e => expect(e).toBeFalsy()
+    });
 
     httpMock.expectNone(`//localhost:8080/user/removeUserFromBaseGroup/${baseGroupId}`);
 
@@ -1416,14 +1426,13 @@ describe('UserService', () => {
 
   it('removeUserFromBaseGroup - mock with error because unknown child', fakeAsync(() => {
     service.useMock = true;
-    service.removeUserFromBaseGroup('anyId', baseGroupId).subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.removeUserFromBaseGroup('anyId', baseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while removing user anyId from base group ${baseGroupId} at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/user/removeUserFromBaseGroup/${baseGroupId}`);
 
@@ -1432,14 +1441,13 @@ describe('UserService', () => {
 
   it('removeUserFromBaseGroup - mock with error because unknown parent', fakeAsync(() => {
     service.useMock = true;
-    service.removeUserFromBaseGroup(userId, 'anyId').subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.removeUserFromBaseGroup(userId, 'anyId').subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while removing user ${userId} from base group anyId at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/user/removeUserFromBaseGroup/anyId`);
 
@@ -1475,12 +1483,13 @@ describe('UserService', () => {
   }));
 
   it('countUsersAtBaseGroup - with error status', fakeAsync(() => {
-    service.countUsersAtBaseGroup(baseGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.countUsersAtBaseGroup(baseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/countUsersAtBaseGroup/${baseGroupId}`);
@@ -1495,12 +1504,13 @@ describe('UserService', () => {
   }));
 
   it('countUsersAtBaseGroup - with fatal status', fakeAsync(() => {
-    service.countUsersAtBaseGroup(baseGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.countUsersAtBaseGroup(baseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/countUsersAtBaseGroup/${baseGroupId}`);
@@ -1517,12 +1527,10 @@ describe('UserService', () => {
   it('countUsersAtBaseGroup - mock', fakeAsync(() => {
     service.useMock = true;
 
-    service.countUsersAtBaseGroup(baseGroupId).subscribe(
-      data => {
-        expect(data).toEqual(1);
-      },
-      e => expect(e).toBeFalsy()
-    );
+    service.countUsersAtBaseGroup(baseGroupId).subscribe({
+      next: data => { expect(data).toEqual(1); },
+      error: e => expect(e).toBeFalsy()
+    });
 
     httpMock.expectNone(`//localhost:8080/user/countUsersAtBaseGroup/${baseGroupId}`);
 
@@ -1589,12 +1597,13 @@ describe('UserService', () => {
   }));
 
   it('getAllUsersFromBaseGroup - with error status', fakeAsync(() => {
-    service.getAllUsersFromBaseGroup(baseGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllUsersFromBaseGroup(baseGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/getAllUsersFromBaseGroup/${baseGroupId}`);
@@ -1609,12 +1618,13 @@ describe('UserService', () => {
   }));
 
   it('getAllUsersFromBaseGroup - with fatal status', fakeAsync(() => {
-    service.getAllUsersFromBaseGroup(baseGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllUsersFromBaseGroup(baseGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/getAllUsersFromBaseGroup/${baseGroupId}`);
@@ -1630,16 +1640,16 @@ describe('UserService', () => {
 
   it('getAllUsersFromBaseGroup - mock', fakeAsync(() => {
     service.useMock = true;
-    service.getAllUsersFromBaseGroup(baseGroupId, undefined, undefined).subscribe(
-      getAllData => {
+    service.getAllUsersFromBaseGroup(baseGroupId, undefined, undefined).subscribe({
+      next: getAllData => {
         expect(getAllData).toBeTruthy();
         expect(getAllData.length).toEqual(1);
         expect(getAllData[0].identification).toEqual(userId);
         expect(getAllData[0].isGlobalAdmin).toBeFalse();
         expect(getAllData[0].isComplete).toBeTrue();
       },
-      e => expect(e).toBeFalsy()
-    );
+      error: e => expect(e).toBeFalsy()
+    });
 
     httpMock.expectNone(`//localhost:8080/user/getAllUsersFromBaseGroup/${baseGroupId}`);
 
@@ -1713,12 +1723,13 @@ describe('UserService', () => {
   }));
 
   it('getAllUserPartsFromBaseGroup - with error status', fakeAsync(() => {
-    service.getAllUserPartsFromBaseGroup(baseGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllUserPartsFromBaseGroup(baseGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/getAllUserPartsFromBaseGroup/${baseGroupId}`);
@@ -1733,12 +1744,13 @@ describe('UserService', () => {
   }));
 
   it('getAllUserPartsFromBaseGroup - with fatal status', fakeAsync(() => {
-    service.getAllUserPartsFromBaseGroup(baseGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllUserPartsFromBaseGroup(baseGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/getAllUserPartsFromBaseGroup/${baseGroupId}`);
@@ -1754,14 +1766,14 @@ describe('UserService', () => {
 
   it('getAllUserPartsFromBaseGroup - mock', fakeAsync(() => {
     service.useMock = true;
-    service.getAllUserPartsFromBaseGroup(baseGroupId, undefined, undefined).subscribe(
-      getAllData => {
+    service.getAllUserPartsFromBaseGroup(baseGroupId, undefined, undefined).subscribe({
+      next: getAllData => {
         expect(getAllData).toBeTruthy();
         expect(getAllData.length).toEqual(1);
         checkUserPart(getAllData[0], userId);
       },
-      e => expect(e).toBeFalsy()
-    );
+      error: e => expect(e).toBeFalsy()
+    });
 
     httpMock.expectNone(`//localhost:8080/user/getAllUserPartsFromBaseGroup/${baseGroupId}`);
 
@@ -1796,12 +1808,13 @@ describe('UserService', () => {
   }));
 
   it('countAvailableUsersForBaseGroup - with error status', fakeAsync(() => {
-    service.countAvailableUsersForBaseGroup(baseGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.countAvailableUsersForBaseGroup(baseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/countAvailableUsersForBaseGroup/${baseGroupId}`);
@@ -1816,12 +1829,13 @@ describe('UserService', () => {
   }));
 
   it('countAvailableUsersForBaseGroup - with fatal status', fakeAsync(() => {
-    service.countAvailableUsersForBaseGroup(baseGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.countAvailableUsersForBaseGroup(baseGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/countAvailableUsersForBaseGroup/${baseGroupId}`);
@@ -1913,12 +1927,13 @@ describe('UserService', () => {
   }));
 
   it('getAvailableUsersForBaseGroup - with error status', fakeAsync(() => {
-    service.getAvailableUsersForBaseGroup(baseGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAvailableUsersForBaseGroup(baseGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/getAvailableUsersForBaseGroup/${baseGroupId}`);
@@ -1933,12 +1948,13 @@ describe('UserService', () => {
   }));
 
   it('getAvailableUsersForBaseGroup - with fatal status', fakeAsync(() => {
-    service.getAvailableUsersForBaseGroup(baseGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAvailableUsersForBaseGroup(baseGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/getAvailableUsersForBaseGroup/${baseGroupId}`);
@@ -1954,26 +1970,26 @@ describe('UserService', () => {
 
   it('getAvailableUsersForBaseGroup - mock', fakeAsync(() => {
     service.useMock = true;
-    service.getAvailableUsersForBaseGroup(baseGroupId, undefined, undefined).subscribe(
-      getAllData => {
+    service.getAvailableUsersForBaseGroup(baseGroupId, undefined, undefined).subscribe({
+      next: getAllData => {
         expect(getAllData).toBeTruthy();
         expect(getAllData.length).toEqual(0);
       },
-      e => expect(e).toBeFalsy()
-    );
+      error: e => expect(e).toBeFalsy()
+    });
 
     service.addUserToMock(secondUser, commonGroupId);
 
-    service.getAvailableUsersForBaseGroup(baseGroupId, undefined, undefined).subscribe(
-      getAllData => {
+    service.getAvailableUsersForBaseGroup(baseGroupId, undefined, undefined).subscribe({
+      next: getAllData => {
         expect(getAllData).toBeTruthy();
         expect(getAllData.length).toEqual(1);
         expect(getAllData[0].identification).toEqual(secondUserId);
         expect(getAllData[0].isGlobalAdmin).toBeFalse();
         expect(getAllData[0].isComplete).toBeTrue();
       },
-      e => expect(e).toBeFalsy()
-    );
+      error: e => expect(e).toBeFalsy()
+    });
 
     httpMock.expectNone(`//localhost:8080/user/getAvailableUsersForBaseGroup/${baseGroupId}`);
 
@@ -2047,12 +2063,13 @@ describe('UserService', () => {
   }));
 
   it('getAvailableUserPartsForBaseGroup - with error status', fakeAsync(() => {
-    service.getAvailableUserPartsForBaseGroup(baseGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAvailableUserPartsForBaseGroup(baseGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/getAvailableUserPartsForBaseGroup/${baseGroupId}`);
@@ -2067,12 +2084,13 @@ describe('UserService', () => {
   }));
 
   it('getAvailableUserPartsForBaseGroup - with fatal status', fakeAsync(() => {
-    service.getAvailableUserPartsForBaseGroup(baseGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAvailableUserPartsForBaseGroup(baseGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/getAvailableUserPartsForBaseGroup/${baseGroupId}`);
@@ -2088,26 +2106,26 @@ describe('UserService', () => {
 
   it('getAvailableUserPartsForBaseGroup - mock', fakeAsync(() => {
     service.useMock = true;
-    service.getAvailableUserPartsForBaseGroup(baseGroupId, undefined, undefined).subscribe(
-      getAllData => {
+    service.getAvailableUserPartsForBaseGroup(baseGroupId, undefined, undefined).subscribe({
+      next: getAllData => {
         expect(getAllData).toBeTruthy();
         expect(getAllData.length).toEqual(0);
       },
-      e => expect(e).toBeFalsy()
-    );
+      error: e => expect(e).toBeFalsy()
+    });
 
     service.addUserToMock(secondUser, commonGroupId);
 
-    service.getAvailableUserPartsForBaseGroup(baseGroupId, undefined, undefined).subscribe(
-      getAllData => {
+    service.getAvailableUserPartsForBaseGroup(baseGroupId, undefined, undefined).subscribe({
+      next: getAllData => {
         expect(getAllData).toBeTruthy();
         expect(getAllData.length).toEqual(1);
         expect(getAllData[0].identification).toEqual(secondUserId);
         expect(getAllData[0].isGlobalAdmin).toBeFalse();
         expect(getAllData[0].isComplete).toBeFalse();
       },
-      e => expect(e).toBeFalsy()
-    );
+      error: e => expect(e).toBeFalsy()
+    });
     httpMock.expectNone(`//localhost:8080/user/getAvailableUserPartsForBaseGroup/${baseGroupId}`);
 
     tick();
@@ -2146,12 +2164,13 @@ describe('UserService', () => {
   it('addUserToPrivilegeGroup - with error status', fakeAsync(() => {
     let userIdRole = new UserIdRole(userId, Role.CONTRIBUTOR);
 
-    service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/addUserToPrivilegeGroup/${privilegeGroupId}`);
@@ -2169,12 +2188,13 @@ describe('UserService', () => {
   it('addUserToPrivilegeGroup - with fatal status', fakeAsync(() => {
     let userIdRole = new UserIdRole(userId, Role.CONTRIBUTOR);
 
-    service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/addUserToPrivilegeGroup/${privilegeGroupId}`);
@@ -2191,25 +2211,24 @@ describe('UserService', () => {
 
   it('addUserToPrivilegeGroup - mock', fakeAsync(() => {
     service.useMock = true;
-    service.createUser(commonGroupId, 'Another', 'User').subscribe(
-      addedUser => {
+    service.createUser(commonGroupId, 'Another', 'User').subscribe({
+      next: addedUser => {
         expect(addedUser).toBeTruthy();
-        service.addUserToPrivilegeGroup(addedUser.identification, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-          firstAddData => {
+        service.addUserToPrivilegeGroup(addedUser.identification, privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+          next: firstAddData => {
             expect(firstAddData).toBeTruthy();
             expect(firstAddData).toBeTrue();
 
-            service.addUserToPrivilegeGroup(addedUser.identification, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-              secondAddData => {
-                expect(secondAddData).toBeFalse();
-              },
-              e => expect(e).toBeFalsy());
+            service.addUserToPrivilegeGroup(addedUser.identification, privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+              next: secondAddData => { expect(secondAddData).toBeFalse(); },
+              error: e => expect(e).toBeFalsy()
+            });
           },
-          e => expect(e).toBeFalsy()
-        );
+          error: e => expect(e).toBeFalsy()
+        });
       },
-      e => expect(e).toBeFalsy()
-    );
+      error: e => expect(e).toBeFalsy()
+    });
 
 
     httpMock.expectNone(`//localhost:8080/user/addUserToPrivilegeGroup/${privilegeGroupId}`);
@@ -2219,14 +2238,13 @@ describe('UserService', () => {
 
   it('addUserToPrivilegeGroup - mock with error because unknown child', fakeAsync(() => {
     service.useMock = true;
-    service.addUserToPrivilegeGroup('anyId', privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.addUserToPrivilegeGroup('anyId', privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while adding user anyId to privilege group ${privilegeGroupId} with role ${Role.CONTRIBUTOR} at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/user/addUserToPrivilegeGroup/${privilegeGroupId}`);
 
@@ -2235,14 +2253,13 @@ describe('UserService', () => {
 
   it('addUserToPrivilegeGroup - mock with error because unknown parent', fakeAsync(() => {
     service.useMock = true;
-    service.addUserToPrivilegeGroup(userId, 'anyId', Role.CONTRIBUTOR).subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.addUserToPrivilegeGroup(userId, 'anyId', Role.CONTRIBUTOR).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while adding user ${userId} to privilege group anyId with role ${Role.CONTRIBUTOR} at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/user/addUserToPrivilegeGroup/anyId`);
 
@@ -2279,12 +2296,13 @@ describe('UserService', () => {
   }));
 
   it('removeUserFromPrivilegeGroup - with error status', fakeAsync(() => {
-    service.removeUserFromPrivilegeGroup(userId, privilegeGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.removeUserFromPrivilegeGroup(userId, privilegeGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/removeUserFromPrivilegeGroup/${privilegeGroupId}`);
@@ -2300,12 +2318,13 @@ describe('UserService', () => {
   }));
 
   it('removeUserFromPrivilegeGroup - with fatal status', fakeAsync(() => {
-    service.removeUserFromPrivilegeGroup(userId, privilegeGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.removeUserFromPrivilegeGroup(userId, privilegeGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/removeUserFromPrivilegeGroup/${privilegeGroupId}`);
@@ -2323,24 +2342,23 @@ describe('UserService', () => {
   it('removeUserFromPrivilegeGroup - mock', fakeAsync(() => {
     service.useMock = true;
 
-    service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.MANAGER).subscribe(
-      addedData => {
+    service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.MANAGER).subscribe({
+      next: addedData => {
         expect(addedData).toBeTruthy();
-        service.removeUserFromPrivilegeGroup(userId, privilegeGroupId).subscribe(
-          firstRemoveData => {
+        service.removeUserFromPrivilegeGroup(userId, privilegeGroupId).subscribe({
+          next: firstRemoveData => {
             expect(firstRemoveData).toBeTruthy();
             expect(firstRemoveData).toBeTrue();
-
-            service.removeUserFromPrivilegeGroup(userId, privilegeGroupId).subscribe(
-              secondRemoveData => {
-                expect(secondRemoveData).toBeFalse();
-              },
-              e => expect(e).toBeFalsy());
+            service.removeUserFromPrivilegeGroup(userId, privilegeGroupId).subscribe({
+              next: secondRemoveData => { expect(secondRemoveData).toBeFalse(); },
+              error: e => expect(e).toBeFalsy()
+            });
           },
-          e => expect(e).toBeFalsy());
+          error: e => expect(e).toBeFalsy()
+        });
       },
-      e => expect(e).toBeFalsy()
-    );
+      error: e => expect(e).toBeFalsy()
+    });
 
     httpMock.expectNone(`//localhost:8080/user/removeUserFromPrivilegeGroup/${privilegeGroupId}`);
 
@@ -2349,14 +2367,13 @@ describe('UserService', () => {
 
   it('removeUserFromPrivilegeGroup - mock with error because unknown child', fakeAsync(() => {
     service.useMock = true;
-    service.removeUserFromPrivilegeGroup('anyId', privilegeGroupId).subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.removeUserFromPrivilegeGroup('anyId', privilegeGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while removing user anyId from privilege group ${privilegeGroupId} at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/user/removeUserFromPrivilegeGroup/${privilegeGroupId}`);
 
@@ -2365,14 +2382,13 @@ describe('UserService', () => {
 
   it('removeUserFromPrivilegeGroup - mock with error because unknown parent', fakeAsync(() => {
     service.useMock = true;
-    service.removeUserFromPrivilegeGroup(userId, 'anyId').subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.removeUserFromPrivilegeGroup(userId, 'anyId').subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while removing user ${userId} from privilege group anyId at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/user/removeUserFromPrivilegeGroup/anyId`);
 
@@ -2408,12 +2424,13 @@ describe('UserService', () => {
   }));
 
   it('countUsersAtPrivilegeGroup - with error status', fakeAsync(() => {
-    service.countUsersAtPrivilegeGroup(privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.countUsersAtPrivilegeGroup(privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/countUsersAtPrivilegeGroup/${privilegeGroupId}?role=${Role.CONTRIBUTOR}`);
@@ -2429,12 +2446,13 @@ describe('UserService', () => {
   }));
 
   it('countUsersAtPrivilegeGroup - with fatal status', fakeAsync(() => {
-    service.countUsersAtPrivilegeGroup(privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.countUsersAtPrivilegeGroup(privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/countUsersAtPrivilegeGroup/${privilegeGroupId}?role=${Role.CONTRIBUTOR}`);
@@ -2452,24 +2470,20 @@ describe('UserService', () => {
   it('countUsersAtPrivilegeGroup - mock with role', fakeAsync(() => {
     service.useMock = true;
 
-    service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-      addedData => {
+    service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+      next: addedData => {
         expect(addedData).toBeTrue();
-
-        service.countUsersAtPrivilegeGroup(privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-          data => {
-            expect(data).toEqual(1);
-          },
-          e => expect(e).toBeFalsy());
-
-        service.countUsersAtPrivilegeGroup(privilegeGroupId, Role.MANAGER).subscribe(
-          data => {
-            expect(data).toEqual(0);
-          },
-          e => expect(e).toBeFalsy());
+        service.countUsersAtPrivilegeGroup(privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+          next: data => { expect(data).toEqual(1); },
+          error: e => expect(e).toBeFalsy()
+        });
+        service.countUsersAtPrivilegeGroup(privilegeGroupId, Role.MANAGER).subscribe({
+          next: data => { expect(data).toEqual(0); },
+          error: e => expect(e).toBeFalsy()
+        });
       },
-      e => expect(e).toBeFalsy()
-    );
+      error: e => expect(e).toBeFalsy()
+    });
 
 
     httpMock.expectNone(`//localhost:8080/user/countUsersAtPrivilegeGroup/${privilegeGroupId}?role=${Role.CONTRIBUTOR}`);
@@ -2481,17 +2495,16 @@ describe('UserService', () => {
   it('countUsersAtPrivilegeGroup - mock without role', fakeAsync(() => {
     service.useMock = true;
 
-    service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-      addedData => {
+    service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+      next: addedData => {
         expect(addedData).toBeTrue();
-        service.countUsersAtPrivilegeGroup(privilegeGroupId, undefined).subscribe(
-          data => {
-            expect(data).toEqual(1);
-          },
-          e => expect(e).toBeFalsy());
+        service.countUsersAtPrivilegeGroup(privilegeGroupId, undefined).subscribe({
+          next: data => { expect(data).toEqual(1); },
+          error: e => expect(e).toBeFalsy()
+        });
       },
-      e => expect(e).toBeFalsy()
-    );
+      error: e => expect(e).toBeFalsy()
+    });
 
 
     httpMock.expectNone(`//localhost:8080/user/countUsersAtPrivilegeGroup/${privilegeGroupId}`);
@@ -2741,12 +2754,13 @@ describe('UserService', () => {
 
 
   it('getAllUsersFromPrivilegeGroup - with error status', fakeAsync(() => {
-    service.getAllUsersFromPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllUsersFromPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/getAllUsersFromPrivilegeGroup/${privilegeGroupId}`);
@@ -2761,12 +2775,13 @@ describe('UserService', () => {
   }));
 
   it('getAllUsersFromPrivilegeGroup - with fatal status', fakeAsync(() => {
-    service.getAllUsersFromPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllUsersFromPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/getAllUsersFromPrivilegeGroup/${privilegeGroupId}`);
@@ -2785,46 +2800,54 @@ describe('UserService', () => {
     baseGroupService.useMock = true;
 
 
-    baseGroupService.createBaseGroup('subgroub').subscribe(
-      createdSubBaseGroup => {
-        baseGroupService.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.MANAGER).subscribe(
-          addBaseGroup => {
+    baseGroupService.createBaseGroup('subgroub').subscribe({
+      next: createdSubBaseGroup => {
+        baseGroupService.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.MANAGER).subscribe({
+          next: addBaseGroup => {
             expect(addBaseGroup).toBeTrue();
 
-            baseGroupService.addBaseToBaseGroup(createdSubBaseGroup.identification, baseGroupId).subscribe(
-              addSubBaseGroup => {
+            baseGroupService.addBaseToBaseGroup(createdSubBaseGroup.identification, baseGroupId).subscribe({
+              next: addSubBaseGroup => {
                 expect(addSubBaseGroup).toBeTrue();
 
-                service.createUser(commonGroupId, 'sub', 'user').subscribe(
-                  createdSubUser => {
-                    service.addUserToBaseGroup(createdSubUser.identification, createdSubBaseGroup.identification).subscribe(
-                      addSubUser => {
+                service.createUser(commonGroupId, 'sub', 'user').subscribe({
+                  next: createdSubUser => {
+                    service.addUserToBaseGroup(createdSubUser.identification, createdSubBaseGroup.identification).subscribe({
+                      next: addSubUser => {
                         expect(addSubUser).toBeTrue();
 
-                        service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-                          addUser => {
+                        service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+                          next: addUser => {
                             expect(addUser).toBeTrue();
 
-                            service.getAllUsersFromPrivilegeGroup(privilegeGroupId, false, Role.CONTRIBUTOR, undefined, undefined).subscribe(
-                              getAllData => {
+                            service.getAllUsersFromPrivilegeGroup(privilegeGroupId, false, Role.CONTRIBUTOR, undefined, undefined).subscribe({
+                              next: getAllData => {
                                 expect(getAllData).toBeTruthy();
                                 expect(getAllData.length).toEqual(1);
                                 expect(getAllData[0].identification).toEqual(userId);
                                 expect(getAllData[0].isComplete).toBeTrue();
                                 expect(getAllData[0].isGlobalAdmin).toBeFalse();
-                              }, e => expect(e).toBeFalsy());
+                              }, error: e => expect(e).toBeFalsy()
+                            });
 
-                            service.getAllUsersFromPrivilegeGroup(privilegeGroupId, false, Role.MANAGER, undefined, undefined).subscribe(
-                              getAllData => {
+                            service.getAllUsersFromPrivilegeGroup(privilegeGroupId, false, Role.MANAGER, undefined, undefined).subscribe({
+                              next: getAllData => {
                                 expect(getAllData).toBeTruthy();
                                 expect(getAllData.length).toEqual(0);
-                              }, e => expect(e).toBeFalsy());
-                          }, e => expect(e).toBeFalsy());
-                      }, e => expect(e).toBeFalsy());
-                  }, e => expect(e).toBeFalsy());
-              }, e => expect(e).toBeFalsy());
-          }, e => expect(e).toBeFalsy());
-      }, e => expect(e).toBeFalsy());
+                              }, error: e => expect(e).toBeFalsy()
+                            });
+                          }, error: e => expect(e).toBeFalsy()
+                        });
+                      }, error: e => expect(e).toBeFalsy()
+                    });
+                  }, error: e => expect(e).toBeFalsy()
+                });
+              }, error: e => expect(e).toBeFalsy()
+            });
+          }, error: e => expect(e).toBeFalsy()
+        });
+      }, error: e => expect(e).toBeFalsy()
+    });
 
     httpMock.expectNone(`//localhost:8080/user/getAllUsersFromPrivilegeGroup/${privilegeGroupId}?role=${Role.CONTRIBUTOR}&dissolveSubgroups=false`);
 
@@ -2835,41 +2858,48 @@ describe('UserService', () => {
     service.useMock = true;
     baseGroupService.useMock = true;
 
-    baseGroupService.createBaseGroup('subgroub').subscribe(
-      createdSubBaseGroup => {
-        baseGroupService.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.MANAGER).subscribe(
-          addBaseGroup => {
+    baseGroupService.createBaseGroup('subgroub').subscribe({
+      next: createdSubBaseGroup => {
+        baseGroupService.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.MANAGER).subscribe({
+          next: addBaseGroup => {
             expect(addBaseGroup).toBeTrue();
 
-            baseGroupService.addBaseToBaseGroup(createdSubBaseGroup.identification, baseGroupId).subscribe(
-              addSubBaseGroup => {
+            baseGroupService.addBaseToBaseGroup(createdSubBaseGroup.identification, baseGroupId).subscribe({
+              next: addSubBaseGroup => {
                 expect(addSubBaseGroup).toBeTrue();
 
-                service.createUser(commonGroupId, 'sub', 'user').subscribe(
-                  createdSubUser => {
-                    service.addUserToBaseGroup(createdSubUser.identification, createdSubBaseGroup.identification).subscribe(
-                      addSubUser => {
+                service.createUser(commonGroupId, 'sub', 'user').subscribe({
+                  next: createdSubUser => {
+                    service.addUserToBaseGroup(createdSubUser.identification, createdSubBaseGroup.identification).subscribe({
+                      next: addSubUser => {
                         expect(addSubUser).toBeTrue();
 
-                        service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-                          addUser => {
+                        service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+                          next: addUser => {
                             expect(addUser).toBeTrue();
 
-                            service.getAllUsersFromPrivilegeGroup(privilegeGroupId, false, undefined, undefined, undefined).subscribe(
-                              getAllData => {
+                            service.getAllUsersFromPrivilegeGroup(privilegeGroupId, false, undefined, undefined, undefined).subscribe({
+                              next: getAllData => {
                                 expect(getAllData).toBeTruthy();
                                 expect(getAllData.length).toEqual(1);
                                 expect(getAllData[0].identification).toEqual(userId);
                                 expect(getAllData[0].isComplete).toBeTrue();
                                 expect(getAllData[0].isGlobalAdmin).toBeFalse();
-                              }, e => expect(e).toBeFalsy());
+                              }, error: e => expect(e).toBeFalsy()
+                            });
 
-                          }, e => expect(e).toBeFalsy());
-                      }, e => expect(e).toBeFalsy());
-                  }, e => expect(e).toBeFalsy());
-              }, e => expect(e).toBeFalsy());
-          }, e => expect(e).toBeFalsy());
-      }, e => expect(e).toBeFalsy());
+                          }, error: e => expect(e).toBeFalsy()
+                        });
+                      }, error: e => expect(e).toBeFalsy()
+                    });
+                  }, error: e => expect(e).toBeFalsy()
+                });
+              }, error: e => expect(e).toBeFalsy()
+            });
+          }, error: e => expect(e).toBeFalsy()
+        });
+      }, error: e => expect(e).toBeFalsy()
+    });
 
 
     httpMock.expectNone(`//localhost:8080/user/getAllUsersFromPrivilegeGroup/${privilegeGroupId}&dissolveSubgroups=false`);
@@ -2882,28 +2912,28 @@ describe('UserService', () => {
     baseGroupService.useMock = true;
 
 
-    baseGroupService.createBaseGroup('subgroub').subscribe(
-      createdSubBaseGroup => {
-        baseGroupService.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-          addBaseGroup => {
+    baseGroupService.createBaseGroup('subgroub').subscribe({
+      next: createdSubBaseGroup => {
+        baseGroupService.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+          next: addBaseGroup => {
             expect(addBaseGroup).toBeTrue();
 
-            baseGroupService.addBaseToBaseGroup(createdSubBaseGroup.identification, baseGroupId).subscribe(
-              addSubBaseGroup => {
+            baseGroupService.addBaseToBaseGroup(createdSubBaseGroup.identification, baseGroupId).subscribe({
+              next: addSubBaseGroup => {
                 expect(addSubBaseGroup).toBeTrue();
 
-                service.createUser(commonGroupId, 'sub', 'user').subscribe(
-                  createdSubUser => {
-                    service.addUserToBaseGroup(createdSubUser.identification, createdSubBaseGroup.identification).subscribe(
-                      addSubUser => {
+                service.createUser(commonGroupId, 'sub', 'user').subscribe({
+                  next: createdSubUser => {
+                    service.addUserToBaseGroup(createdSubUser.identification, createdSubBaseGroup.identification).subscribe({
+                      next: addSubUser => {
                         expect(addSubUser).toBeTrue();
 
-                        service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-                          addUser => {
+                        service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+                          next: addUser => {
                             expect(addUser).toBeTrue();
 
-                            service.getAllUsersFromPrivilegeGroup(privilegeGroupId, true, Role.CONTRIBUTOR, undefined, undefined).subscribe(
-                              getAllData => {
+                            service.getAllUsersFromPrivilegeGroup(privilegeGroupId, true, Role.CONTRIBUTOR, undefined, undefined).subscribe({
+                              next: getAllData => {
                                 expect(getAllData).toBeTruthy();
                                 expect(getAllData.length).toEqual(2);
                                 expect(getAllData[0].identification).toEqual(userId);
@@ -2912,19 +2942,27 @@ describe('UserService', () => {
                                 expect(getAllData[1].identification).toEqual(createdSubUser.identification);
                                 expect(getAllData[1].isComplete).toBeTrue();
                                 expect(getAllData[1].isGlobalAdmin).toBeFalse();
-                              }, e => expect(e).toBeFalsy());
+                              }, error: e => expect(e).toBeFalsy()
+                            });
 
-                            service.getAllUsersFromPrivilegeGroup(privilegeGroupId, true, Role.MANAGER, undefined, undefined).subscribe(
-                              getAllData => {
+                            service.getAllUsersFromPrivilegeGroup(privilegeGroupId, true, Role.MANAGER, undefined, undefined).subscribe({
+                              next: getAllData => {
                                 expect(getAllData).toBeTruthy();
                                 expect(getAllData.length).toEqual(0);
-                              }, e => expect(e).toBeFalsy());
-                          }, e => expect(e).toBeFalsy());
-                      }, e => expect(e).toBeFalsy());
-                  }, e => expect(e).toBeFalsy());
-              }, e => expect(e).toBeFalsy());
-          }, e => expect(e).toBeFalsy());
-      }, e => expect(e).toBeFalsy());
+                              }, error: e => expect(e).toBeFalsy()
+                            });
+                          }, error: e => expect(e).toBeFalsy()
+                        });
+                      }, error: e => expect(e).toBeFalsy()
+                    });
+                  }, error: e => expect(e).toBeFalsy()
+                });
+              }, error: e => expect(e).toBeFalsy()
+            });
+          }, error: e => expect(e).toBeFalsy()
+        });
+      }, error: e => expect(e).toBeFalsy()
+    });
 
     httpMock.expectNone(`//localhost:8080/user/getAllUsersFromPrivilegeGroup/${privilegeGroupId}?role=${Role.CONTRIBUTOR}&dissolveSubgroups=true`);
 
@@ -2935,28 +2973,28 @@ describe('UserService', () => {
     service.useMock = true;
     baseGroupService.useMock = true;
 
-    baseGroupService.createBaseGroup('subgroub').subscribe(
-      createdSubBaseGroup => {
-        baseGroupService.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.MANAGER).subscribe(
-          addBaseGroup => {
+    baseGroupService.createBaseGroup('subgroub').subscribe({
+      next: createdSubBaseGroup => {
+        baseGroupService.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.MANAGER).subscribe({
+          next: addBaseGroup => {
             expect(addBaseGroup).toBeTrue();
 
-            baseGroupService.addBaseToBaseGroup(createdSubBaseGroup.identification, baseGroupId).subscribe(
-              addSubBaseGroup => {
+            baseGroupService.addBaseToBaseGroup(createdSubBaseGroup.identification, baseGroupId).subscribe({
+              next: addSubBaseGroup => {
                 expect(addSubBaseGroup).toBeTrue();
 
-                service.createUser(commonGroupId, 'sub', 'user').subscribe(
-                  createdSubUser => {
-                    service.addUserToBaseGroup(createdSubUser.identification, createdSubBaseGroup.identification).subscribe(
-                      addSubUser => {
+                service.createUser(commonGroupId, 'sub', 'user').subscribe({
+                  next: createdSubUser => {
+                    service.addUserToBaseGroup(createdSubUser.identification, createdSubBaseGroup.identification).subscribe({
+                      next: addSubUser => {
                         expect(addSubUser).toBeTrue();
 
-                        service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-                          addUser => {
+                        service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+                          next: addUser => {
                             expect(addUser).toBeTrue();
 
-                            service.getAllUsersFromPrivilegeGroup(privilegeGroupId, true, undefined, undefined, undefined).subscribe(
-                              getAllData => {
+                            service.getAllUsersFromPrivilegeGroup(privilegeGroupId, true, undefined, undefined, undefined).subscribe({
+                              next: getAllData => {
                                 expect(getAllData).toBeTruthy();
                                 expect(getAllData.length).toEqual(2);
                                 expect(getAllData[0].identification).toEqual(userId);
@@ -2965,14 +3003,21 @@ describe('UserService', () => {
                                 expect(getAllData[1].identification).toEqual(createdSubUser.identification);
                                 expect(getAllData[1].isComplete).toBeTrue();
                                 expect(getAllData[1].isGlobalAdmin).toBeFalse();
-                              }, e => expect(e).toBeFalsy());
+                              }, error: e => expect(e).toBeFalsy()
+                            });
 
-                          }, e => expect(e).toBeFalsy());
-                      }, e => expect(e).toBeFalsy());
-                  }, e => expect(e).toBeFalsy());
-              }, e => expect(e).toBeFalsy());
-          }, e => expect(e).toBeFalsy());
-      }, e => expect(e).toBeFalsy());
+                          }, error: e => expect(e).toBeFalsy()
+                        });
+                      }, error: e => expect(e).toBeFalsy()
+                    });
+                  }, error: e => expect(e).toBeFalsy()
+                });
+              }, error: e => expect(e).toBeFalsy()
+            });
+          }, error: e => expect(e).toBeFalsy()
+        });
+      }, error: e => expect(e).toBeFalsy()
+    });
 
 
     httpMock.expectNone(`//localhost:8080/user/getAllUsersFromPrivilegeGroup/${privilegeGroupId}&dissolveSubgroups=true`);
@@ -3223,12 +3268,13 @@ describe('UserService', () => {
 
 
   it('getAllUserPartsFromPrivilegeGroup - with error status', fakeAsync(() => {
-    service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}`);
@@ -3243,12 +3289,13 @@ describe('UserService', () => {
   }));
 
   it('getAllUserPartsFromPrivilegeGroup - with fatal status', fakeAsync(() => {
-    service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, undefined, undefined, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}`);
@@ -3267,46 +3314,54 @@ describe('UserService', () => {
     baseGroupService.useMock = true;
 
 
-    baseGroupService.createBaseGroup('subgroub').subscribe(
-      createdSubBaseGroup => {
-        baseGroupService.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.MANAGER).subscribe(
-          addBaseGroup => {
+    baseGroupService.createBaseGroup('subgroub').subscribe({
+      next: createdSubBaseGroup => {
+        baseGroupService.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.MANAGER).subscribe({
+          next: addBaseGroup => {
             expect(addBaseGroup).toBeTrue();
 
-            baseGroupService.addBaseToBaseGroup(createdSubBaseGroup.identification, baseGroupId).subscribe(
-              addSubBaseGroup => {
+            baseGroupService.addBaseToBaseGroup(createdSubBaseGroup.identification, baseGroupId).subscribe({
+              next: addSubBaseGroup => {
                 expect(addSubBaseGroup).toBeTrue();
 
-                service.createUser(commonGroupId, 'sub', 'user').subscribe(
-                  createdSubUser => {
-                    service.addUserToBaseGroup(createdSubUser.identification, createdSubBaseGroup.identification).subscribe(
-                      addSubUser => {
+                service.createUser(commonGroupId, 'sub', 'user').subscribe({
+                  next: createdSubUser => {
+                    service.addUserToBaseGroup(createdSubUser.identification, createdSubBaseGroup.identification).subscribe({
+                      next: addSubUser => {
                         expect(addSubUser).toBeTrue();
 
-                        service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-                          addUser => {
+                        service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+                          next: addUser => {
                             expect(addUser).toBeTrue();
 
-                            service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, false, Role.CONTRIBUTOR, undefined, undefined).subscribe(
-                              getAllData => {
+                            service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, false, Role.CONTRIBUTOR, undefined, undefined).subscribe({
+                              next: getAllData => {
                                 expect(getAllData).toBeTruthy();
                                 expect(getAllData.length).toEqual(1);
                                 expect(getAllData[0].identification).toEqual(userId);
                                 expect(getAllData[0].isComplete).toBeFalse();
                                 expect(getAllData[0].isGlobalAdmin).toBeFalse();
-                              }, e => expect(e).toBeFalsy());
+                              }, error: e => expect(e).toBeFalsy()
+                            });
 
-                            service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, false, Role.MANAGER, undefined, undefined).subscribe(
-                              getAllData => {
+                            service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, false, Role.MANAGER, undefined, undefined).subscribe({
+                              next: getAllData => {
                                 expect(getAllData).toBeTruthy();
                                 expect(getAllData.length).toEqual(0);
-                              }, e => expect(e).toBeFalsy());
-                          }, e => expect(e).toBeFalsy());
-                      }, e => expect(e).toBeFalsy());
-                  }, e => expect(e).toBeFalsy());
-              }, e => expect(e).toBeFalsy());
-          }, e => expect(e).toBeFalsy());
-      }, e => expect(e).toBeFalsy());
+                              }, error: e => expect(e).toBeFalsy()
+                            });
+                          }, error: e => expect(e).toBeFalsy()
+                        });
+                      }, error: e => expect(e).toBeFalsy()
+                    });
+                  }, error: e => expect(e).toBeFalsy()
+                });
+              }, error: e => expect(e).toBeFalsy()
+            });
+          }, error: e => expect(e).toBeFalsy()
+        });
+      }, error: e => expect(e).toBeFalsy()
+    });
 
     httpMock.expectNone(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}?role=${Role.CONTRIBUTOR}&dissolveSubgroups=false`);
 
@@ -3317,41 +3372,48 @@ describe('UserService', () => {
     service.useMock = true;
     baseGroupService.useMock = true;
 
-    baseGroupService.createBaseGroup('subgroub').subscribe(
-      createdSubBaseGroup => {
-        baseGroupService.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.MANAGER).subscribe(
-          addBaseGroup => {
+    baseGroupService.createBaseGroup('subgroub').subscribe({
+      next: createdSubBaseGroup => {
+        baseGroupService.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.MANAGER).subscribe({
+          next: addBaseGroup => {
             expect(addBaseGroup).toBeTrue();
 
-            baseGroupService.addBaseToBaseGroup(createdSubBaseGroup.identification, baseGroupId).subscribe(
-              addSubBaseGroup => {
+            baseGroupService.addBaseToBaseGroup(createdSubBaseGroup.identification, baseGroupId).subscribe({
+              next: addSubBaseGroup => {
                 expect(addSubBaseGroup).toBeTrue();
 
-                service.createUser(commonGroupId, 'sub', 'user').subscribe(
-                  createdSubUser => {
-                    service.addUserToBaseGroup(createdSubUser.identification, createdSubBaseGroup.identification).subscribe(
-                      addSubUser => {
+                service.createUser(commonGroupId, 'sub', 'user').subscribe({
+                  next: createdSubUser => {
+                    service.addUserToBaseGroup(createdSubUser.identification, createdSubBaseGroup.identification).subscribe({
+                      next: addSubUser => {
                         expect(addSubUser).toBeTrue();
 
-                        service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-                          addUser => {
+                        service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+                          next: addUser => {
                             expect(addUser).toBeTrue();
 
-                            service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, false, undefined, undefined, undefined).subscribe(
-                              getAllData => {
+                            service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, false, undefined, undefined, undefined).subscribe({
+                              next: getAllData => {
                                 expect(getAllData).toBeTruthy();
                                 expect(getAllData.length).toEqual(1);
                                 expect(getAllData[0].identification).toEqual(userId);
                                 expect(getAllData[0].isComplete).toBeFalse();
                                 expect(getAllData[0].isGlobalAdmin).toBeFalse();
-                              }, e => expect(e).toBeFalsy());
+                              }, error: e => expect(e).toBeFalsy()
+                            });
 
-                          }, e => expect(e).toBeFalsy());
-                      }, e => expect(e).toBeFalsy());
-                  }, e => expect(e).toBeFalsy());
-              }, e => expect(e).toBeFalsy());
-          }, e => expect(e).toBeFalsy());
-      }, e => expect(e).toBeFalsy());
+                          }, error: e => expect(e).toBeFalsy()
+                        });
+                      }, error: e => expect(e).toBeFalsy()
+                    });
+                  }, error: e => expect(e).toBeFalsy()
+                });
+              }, error: e => expect(e).toBeFalsy()
+            });
+          }, error: e => expect(e).toBeFalsy()
+        });
+      }, error: e => expect(e).toBeFalsy()
+    });
 
 
     httpMock.expectNone(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}&dissolveSubgroups=false`);
@@ -3364,28 +3426,28 @@ describe('UserService', () => {
     baseGroupService.useMock = true;
 
 
-    baseGroupService.createBaseGroup('subgroub').subscribe(
-      createdSubBaseGroup => {
-        baseGroupService.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-          addBaseGroup => {
+    baseGroupService.createBaseGroup('subgroub').subscribe({
+      next: createdSubBaseGroup => {
+        baseGroupService.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+          next: addBaseGroup => {
             expect(addBaseGroup).toBeTrue();
 
-            baseGroupService.addBaseToBaseGroup(createdSubBaseGroup.identification, baseGroupId).subscribe(
-              addSubBaseGroup => {
+            baseGroupService.addBaseToBaseGroup(createdSubBaseGroup.identification, baseGroupId).subscribe({
+              next: addSubBaseGroup => {
                 expect(addSubBaseGroup).toBeTrue();
 
-                service.createUser(commonGroupId, 'sub', 'user').subscribe(
-                  createdSubUser => {
-                    service.addUserToBaseGroup(createdSubUser.identification, createdSubBaseGroup.identification).subscribe(
-                      addSubUser => {
+                service.createUser(commonGroupId, 'sub', 'user').subscribe({
+                  next: createdSubUser => {
+                    service.addUserToBaseGroup(createdSubUser.identification, createdSubBaseGroup.identification).subscribe({
+                      next: addSubUser => {
                         expect(addSubUser).toBeTrue();
 
-                        service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-                          addUser => {
+                        service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+                          next: addUser => {
                             expect(addUser).toBeTrue();
 
-                            service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, true, Role.CONTRIBUTOR, undefined, undefined).subscribe(
-                              getAllData => {
+                            service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, true, Role.CONTRIBUTOR, undefined, undefined).subscribe({
+                              next: getAllData => {
                                 expect(getAllData).toBeTruthy();
                                 expect(getAllData.length).toEqual(2);
                                 expect(getAllData[0].identification).toEqual(userId);
@@ -3394,19 +3456,28 @@ describe('UserService', () => {
                                 expect(getAllData[1].identification).toEqual(createdSubUser.identification);
                                 expect(getAllData[1].isComplete).toBeFalse();
                                 expect(getAllData[1].isGlobalAdmin).toBeFalse();
-                              }, e => expect(e).toBeFalsy());
+                              }, error: e => expect(e).toBeFalsy()
+                            });
 
-                            service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, true, Role.MANAGER, undefined, undefined).subscribe(
-                              getAllData => {
-                                expect(getAllData).toBeTruthy();
-                                expect(getAllData.length).toEqual(0);
-                              }, e => expect(e).toBeFalsy());
-                          }, e => expect(e).toBeFalsy());
-                      }, e => expect(e).toBeFalsy());
-                  }, e => expect(e).toBeFalsy());
-              }, e => expect(e).toBeFalsy());
-          }, e => expect(e).toBeFalsy());
-      }, e => expect(e).toBeFalsy());
+                            service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, true, Role.MANAGER, undefined, undefined).subscribe({
+                              next:
+                                getAllData => {
+                                  expect(getAllData).toBeTruthy();
+                                  expect(getAllData.length).toEqual(0);
+                                }, error: e => expect(e).toBeFalsy()
+                            });
+                          }, error: e => expect(e).toBeFalsy()
+                        });
+                      }, error: e => expect(e).toBeFalsy()
+                    });
+                  }, error: e => expect(e).toBeFalsy()
+                });
+              }, error: e => expect(e).toBeFalsy()
+            });
+          }, error: e => expect(e).toBeFalsy()
+        });
+      }, error: e => expect(e).toBeFalsy()
+    });
 
     httpMock.expectNone(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}?role=${Role.CONTRIBUTOR}&dissolveSubgroups=true`);
 
@@ -3417,28 +3488,28 @@ describe('UserService', () => {
     service.useMock = true;
     baseGroupService.useMock = true;
 
-    baseGroupService.createBaseGroup('subgroub').subscribe(
-      createdSubBaseGroup => {
-        baseGroupService.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.MANAGER).subscribe(
-          addBaseGroup => {
+    baseGroupService.createBaseGroup('subgroub').subscribe({
+      next: createdSubBaseGroup => {
+        baseGroupService.addBaseToPrivilegeGroup(baseGroupId, privilegeGroupId, Role.MANAGER).subscribe({
+          next: addBaseGroup => {
             expect(addBaseGroup).toBeTrue();
 
-            baseGroupService.addBaseToBaseGroup(createdSubBaseGroup.identification, baseGroupId).subscribe(
-              addSubBaseGroup => {
+            baseGroupService.addBaseToBaseGroup(createdSubBaseGroup.identification, baseGroupId).subscribe({
+              next: addSubBaseGroup => {
                 expect(addSubBaseGroup).toBeTrue();
 
-                service.createUser(commonGroupId, 'sub', 'user').subscribe(
-                  createdSubUser => {
-                    service.addUserToBaseGroup(createdSubUser.identification, createdSubBaseGroup.identification).subscribe(
-                      addSubUser => {
+                service.createUser(commonGroupId, 'sub', 'user').subscribe({
+                  next: createdSubUser => {
+                    service.addUserToBaseGroup(createdSubUser.identification, createdSubBaseGroup.identification).subscribe({
+                      next: addSubUser => {
                         expect(addSubUser).toBeTrue();
 
-                        service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.CONTRIBUTOR).subscribe(
-                          addUser => {
+                        service.addUserToPrivilegeGroup(userId, privilegeGroupId, Role.CONTRIBUTOR).subscribe({
+                          next: addUser => {
                             expect(addUser).toBeTrue();
 
-                            service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, true, undefined, undefined, undefined).subscribe(
-                              getAllData => {
+                            service.getAllUserPartsFromPrivilegeGroup(privilegeGroupId, true, undefined, undefined, undefined).subscribe({
+                              next: getAllData => {
                                 expect(getAllData).toBeTruthy();
                                 expect(getAllData.length).toEqual(2);
                                 expect(getAllData[0].identification).toEqual(userId);
@@ -3447,14 +3518,21 @@ describe('UserService', () => {
                                 expect(getAllData[1].identification).toEqual(createdSubUser.identification);
                                 expect(getAllData[1].isComplete).toBeFalse();
                                 expect(getAllData[1].isGlobalAdmin).toBeFalse();
-                              }, e => expect(e).toBeFalsy());
+                              }, error: e => expect(e).toBeFalsy()
+                            });
 
-                          }, e => expect(e).toBeFalsy());
-                      }, e => expect(e).toBeFalsy());
-                  }, e => expect(e).toBeFalsy());
-              }, e => expect(e).toBeFalsy());
-          }, e => expect(e).toBeFalsy());
-      }, e => expect(e).toBeFalsy());
+                          }, error: e => expect(e).toBeFalsy()
+                        });
+                      }, error: e => expect(e).toBeFalsy()
+                    });
+                  }, error: e => expect(e).toBeFalsy()
+                });
+              }, error: e => expect(e).toBeFalsy()
+            });
+          }, error: e => expect(e).toBeFalsy()
+        });
+      }, error: e => expect(e).toBeFalsy()
+    });
 
 
     httpMock.expectNone(`//localhost:8080/user/getAllUserPartsFromPrivilegeGroup/${privilegeGroupId}&dissolveSubgroups=true`);
@@ -3492,12 +3570,13 @@ describe('UserService', () => {
   }));
 
   it('countAvailableUsersForPrivilegeGroup - with error status', fakeAsync(() => {
-    service.countAvailableUsersForPrivilegeGroup(privilegeGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.countAvailableUsersForPrivilegeGroup(privilegeGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/countAvailableUsersForPrivilegeGroup/${privilegeGroupId}`);
@@ -3512,12 +3591,13 @@ describe('UserService', () => {
   }));
 
   it('countAvailableUsersForPrivilegeGroup - with fatal status', fakeAsync(() => {
-    service.countAvailableUsersForPrivilegeGroup(privilegeGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.countAvailableUsersForPrivilegeGroup(privilegeGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/countAvailableUsersForPrivilegeGroup/${privilegeGroupId}`);
@@ -3610,12 +3690,13 @@ describe('UserService', () => {
   }));
 
   it('getAvailableUsersForPrivilegeGroup - with error status', fakeAsync(() => {
-    service.getAvailableUsersForPrivilegeGroup(privilegeGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAvailableUsersForPrivilegeGroup(privilegeGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/getAvailableUsersForPrivilegeGroup/${privilegeGroupId}`);
@@ -3630,12 +3711,13 @@ describe('UserService', () => {
   }));
 
   it('getAvailableUsersForPrivilegeGroup - with fatal status', fakeAsync(() => {
-    service.getAvailableUsersForPrivilegeGroup(privilegeGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAvailableUsersForPrivilegeGroup(privilegeGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/getAvailableUsersForPrivilegeGroup/${privilegeGroupId}`);
@@ -3651,21 +3733,21 @@ describe('UserService', () => {
 
   it('getAvailableUsersForPrivilegeGroup - mock', fakeAsync(() => {
     service.useMock = true;
-    service.getAvailableUsersForPrivilegeGroup(privilegeGroupId, undefined, undefined).subscribe(
-      getAllData => {
+    service.getAvailableUsersForPrivilegeGroup(privilegeGroupId, undefined, undefined).subscribe({
+      next: getAllData => {
         expect(getAllData).toBeTruthy();
         expect(getAllData.length).toEqual(1);
         expect(getAllData[0].identification).toEqual(userId);
         expect(getAllData[0].isGlobalAdmin).toBeFalse();
         expect(getAllData[0].isComplete).toBeTrue();
       },
-      e => expect(e).toBeFalsy()
-    );
+      error: e => expect(e).toBeFalsy()
+    });
 
     service.addUserToMock(secondUser, commonGroupId);
 
-    service.getAvailableUsersForPrivilegeGroup(privilegeGroupId, undefined, undefined).subscribe(
-      getAllData => {
+    service.getAvailableUsersForPrivilegeGroup(privilegeGroupId, undefined, undefined).subscribe({
+      next: getAllData => {
         expect(getAllData).toBeTruthy();
         expect(getAllData.length).toEqual(2);
         expect(getAllData[0].identification).toEqual(userId);
@@ -3675,8 +3757,8 @@ describe('UserService', () => {
         expect(getAllData[1].isGlobalAdmin).toBeFalse();
         expect(getAllData[1].isComplete).toBeTrue();
       },
-      e => expect(e).toBeFalsy()
-    );
+      error: e => expect(e).toBeFalsy()
+    });
 
     httpMock.expectNone(`//localhost:8080/user/getAvailableUsersForPrivilegeGroup/${privilegeGroupId}`);
 
@@ -3750,12 +3832,13 @@ describe('UserService', () => {
   }));
 
   it('getAvailableUserPartsForPrivilegeGroup - with error status', fakeAsync(() => {
-    service.getAvailableUserPartsForPrivilegeGroup(baseGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAvailableUserPartsForPrivilegeGroup(baseGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/getAvailableUserPartsForPrivilegeGroup/${baseGroupId}`);
@@ -3770,12 +3853,13 @@ describe('UserService', () => {
   }));
 
   it('getAvailableUserPartsForPrivilegeGroup - with fatal status', fakeAsync(() => {
-    service.getAvailableUserPartsForPrivilegeGroup(baseGroupId, undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAvailableUserPartsForPrivilegeGroup(baseGroupId, undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/getAvailableUserPartsForPrivilegeGroup/${baseGroupId}`);
@@ -3791,21 +3875,21 @@ describe('UserService', () => {
 
   it('getAvailableUserPartsForPrivilegeGroup - mock', fakeAsync(() => {
     service.useMock = true;
-    service.getAvailableUserPartsForPrivilegeGroup(baseGroupId, undefined, undefined).subscribe(
-      getAllData => {
+    service.getAvailableUserPartsForPrivilegeGroup(baseGroupId, undefined, undefined).subscribe({
+      next: getAllData => {
         expect(getAllData).toBeTruthy();
         expect(getAllData.length).toEqual(1);
         expect(getAllData[0].identification).toEqual(userId);
         expect(getAllData[0].isGlobalAdmin).toBeFalse();
         expect(getAllData[0].isComplete).toBeFalse();
       },
-      e => expect(e).toBeFalsy()
-    );
+      error: e => expect(e).toBeFalsy()
+    });
 
     service.addUserToMock(secondUser, commonGroupId);
 
-    service.getAvailableUserPartsForPrivilegeGroup(baseGroupId, undefined, undefined).subscribe(
-      getAllData => {
+    service.getAvailableUserPartsForPrivilegeGroup(baseGroupId, undefined, undefined).subscribe({
+      next: getAllData => {
         expect(getAllData).toBeTruthy();
         expect(getAllData.length).toEqual(2);
         expect(getAllData[0].identification).toEqual(userId);
@@ -3815,8 +3899,8 @@ describe('UserService', () => {
         expect(getAllData[1].isGlobalAdmin).toBeFalse();
         expect(getAllData[1].isComplete).toBeFalse();
       },
-      e => expect(e).toBeFalsy()
-    );
+      error: e => expect(e).toBeFalsy()
+    });
     httpMock.expectNone(`//localhost:8080/user/getAvailableUserPartsForPrivilegeGroup/${baseGroupId}`);
 
     tick();
@@ -3856,12 +3940,13 @@ describe('UserService', () => {
   }));
 
   it('getUserHistory - with error status', fakeAsync(() => {
-    service.getUserHistory(secondUserId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getUserHistory(secondUserId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/getUserHistory/${secondUserId}`);
@@ -3876,12 +3961,13 @@ describe('UserService', () => {
   }));
 
   it('getUserHistory - with fatal status', fakeAsync(() => {
-    service.getUserHistory(secondUserId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getUserHistory(secondUserId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/user/getUserHistory/${secondUserId}`);

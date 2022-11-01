@@ -157,12 +157,13 @@ describe('PrivilegeGroupService', () => {
   }));
 
   it('getPrivilegeGroup - with error status', fakeAsync(() => {
-    service.getPrivilegeGroup(privilegeGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getPrivilegeGroup(privilegeGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/privilege/getPrivilegeGroup/${privilegeGroupId}`);
@@ -177,12 +178,13 @@ describe('PrivilegeGroupService', () => {
   }));
 
   it('getPrivilegeGroup - with fatal status', fakeAsync(() => {
-    service.getPrivilegeGroup(privilegeGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getPrivilegeGroup(privilegeGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/privilege/getPrivilegeGroup/${privilegeGroupId}`);
@@ -212,14 +214,13 @@ describe('PrivilegeGroupService', () => {
   it('getPrivilegeGroup - mock, but no common group selected', fakeAsync(() => {
     service.useMock = true;
     getSelectedCommonGroupSpy.and.returnValue(undefined);
-    service.getPrivilegeGroup(privilegeGroupId).subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.getPrivilegeGroup(privilegeGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while getting privilege group ${privilegeGroupId} from backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/group/privilege/getPrivilegeGroup/someId`);
 
@@ -228,14 +229,13 @@ describe('PrivilegeGroupService', () => {
 
   it('getPrivilegeGroup - mock with error', fakeAsync(() => {
     service.useMock = true;
-    service.getPrivilegeGroup('someId').subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.getPrivilegeGroup('someId').subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while getting privilege group someId from backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/group/privilege/getPrivilegeGroup/someId`);
 
@@ -308,12 +308,13 @@ describe('PrivilegeGroupService', () => {
   }));
 
   it('getAllPrivilegeGroups - with error status', fakeAsync(() => {
-    service.getAllPrivilegeGroups(undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllPrivilegeGroups(undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/privilege/getAllPrivilegeGroups/${commonGroupId}`);
@@ -328,12 +329,13 @@ describe('PrivilegeGroupService', () => {
   }));
 
   it('getAllPrivilegeGroups - with fatal status', fakeAsync(() => {
-    service.getAllPrivilegeGroups(undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllPrivilegeGroups(undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/privilege/getAllPrivilegeGroups/${commonGroupId}`);
@@ -435,12 +437,13 @@ describe('PrivilegeGroupService', () => {
   }));
 
   it('getAllPrivilegeGroupParts - with error status', fakeAsync(() => {
-    service.getAllPrivilegeGroupParts(undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllPrivilegeGroupParts(undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/privilege/getAllPrivilegeGroupParts/${commonGroupId}`);
@@ -455,12 +458,13 @@ describe('PrivilegeGroupService', () => {
   }));
 
   it('getAllPrivilegeGroupParts - with fatal status', fakeAsync(() => {
-    service.getAllPrivilegeGroupParts(undefined, undefined).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getAllPrivilegeGroupParts(undefined, undefined).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/privilege/getAllPrivilegeGroupParts/${commonGroupId}`);
@@ -520,12 +524,13 @@ describe('PrivilegeGroupService', () => {
   }));
 
   it('countPrivilegeGroups - with error status', fakeAsync(() => {
-    service.countPrivilegeGroups(commonGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.countPrivilegeGroups(commonGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/privilege/countPrivilegeGroups/${commonGroupId}`);
@@ -540,12 +545,13 @@ describe('PrivilegeGroupService', () => {
   }));
 
   it('countPrivilegeGroups - with fatal status', fakeAsync(() => {
-    service.countPrivilegeGroups(commonGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.countPrivilegeGroups(commonGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/privilege/countPrivilegeGroups/${commonGroupId}`);
@@ -606,12 +612,13 @@ describe('PrivilegeGroupService', () => {
   }));
 
   it('createPrivilegeGroup - with error status', fakeAsync(() => {
-    service.createPrivilegeGroup(privilegeGroupName).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.createPrivilegeGroup(privilegeGroupName).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/privilege/createPrivilegeGroup`);
@@ -627,12 +634,13 @@ describe('PrivilegeGroupService', () => {
   }));
 
   it('createPrivilegeGroup - with fatal status', fakeAsync(() => {
-    service.createPrivilegeGroup(privilegeGroupName).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.createPrivilegeGroup(privilegeGroupName).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/privilege/createPrivilegeGroup`);
@@ -663,12 +671,13 @@ describe('PrivilegeGroupService', () => {
   it('createPrivilegeGroup - mock, but no common group selected', fakeAsync(() => {
     service.useMock = true;
     getSelectedCommonGroupSpy.and.returnValue(undefined);
-    service.createPrivilegeGroup(privilegeGroupName).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.createPrivilegeGroup(privilegeGroupName).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while creating privilege group at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/group/privilege/createPrivilegeGroup`);
 
@@ -704,12 +713,13 @@ describe('PrivilegeGroupService', () => {
   }));
 
   it('deletePrivilegeGroup - with error status', fakeAsync(() => {
-    service.deletePrivilegeGroup(privilegeGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.deletePrivilegeGroup(privilegeGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/privilege/deletePrivilegeGroup/${privilegeGroupId}`);
@@ -724,12 +734,13 @@ describe('PrivilegeGroupService', () => {
   }));
 
   it('deletePrivilegeGroup - with fatal status', fakeAsync(() => {
-    service.deletePrivilegeGroup(privilegeGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.deletePrivilegeGroup(privilegeGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/privilege/deletePrivilegeGroup/${privilegeGroupId}`);
@@ -769,12 +780,13 @@ describe('PrivilegeGroupService', () => {
   it('deletePrivilegeGroup - mock, but no common group selected', fakeAsync(() => {
     service.useMock = true;
     getSelectedCommonGroupSpy.and.returnValue(undefined);
-    service.deletePrivilegeGroup(privilegeGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.deletePrivilegeGroup(privilegeGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while deleting privilege group ${privilegeGroupId} at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/group/privilege/deletePrivilegeGroup/someId`);
 
@@ -816,12 +828,13 @@ describe('PrivilegeGroupService', () => {
   }));
 
   it('updatePrivilegeGroup - with error status', fakeAsync(() => {
-    service.updatePrivilegeGroup(modifiedPrivilegeGroup).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.updatePrivilegeGroup(modifiedPrivilegeGroup).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/privilege/updatePrivilegeGroup/${privilegeGroupId}`);
@@ -836,12 +849,13 @@ describe('PrivilegeGroupService', () => {
   }));
 
   it('updatePrivilegeGroup - with fatal status', fakeAsync(() => {
-    service.updatePrivilegeGroup(modifiedPrivilegeGroup).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.updatePrivilegeGroup(modifiedPrivilegeGroup).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/privilege/updatePrivilegeGroup/${privilegeGroupId}`);
@@ -876,14 +890,13 @@ describe('PrivilegeGroupService', () => {
     service.useMock = true;
     let otherModifiedPrivilegeGroup: PrivilegeGroup = Object.assign({}, modifiedPrivilegeGroup);
     otherModifiedPrivilegeGroup.identification = 'someId';
-    service.updatePrivilegeGroup(otherModifiedPrivilegeGroup).subscribe(
-      data => {
-        expect(data).toBeFalsy();
-      },
-      e => {
+    service.updatePrivilegeGroup(otherModifiedPrivilegeGroup).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while updating privilege group someId at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/group/privilege/updatePrivilegeGroup/someId`);
 
@@ -894,12 +907,13 @@ describe('PrivilegeGroupService', () => {
     service.useMock = true;
     getSelectedCommonGroupSpy.and.returnValue(undefined);
 
-    service.updatePrivilegeGroup(modifiedPrivilegeGroup).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.updatePrivilegeGroup(modifiedPrivilegeGroup).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual(`${Status.ERROR} occurs while updating privilege group ${privilegeGroupId} at backend`);
-      });
+      }
+    });
 
     httpMock.expectNone(`//localhost:8080/group/privilege/updatePrivilegeGroup/someId`);
 
@@ -940,12 +954,13 @@ describe('PrivilegeGroupService', () => {
   }));
 
   it('getPrivilegeGroupHistory - with error status', fakeAsync(() => {
-    service.getPrivilegeGroupHistory(privilegeGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getPrivilegeGroupHistory(privilegeGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/privilege/getPrivilegeGroupHistory/${privilegeGroupId}`);
@@ -960,12 +975,13 @@ describe('PrivilegeGroupService', () => {
   }));
 
   it('getPrivilegeGroupHistory - with fatal status', fakeAsync(() => {
-    service.getPrivilegeGroupHistory(privilegeGroupId).subscribe(
-      data => { expect(data).toBeFalsy(); }
-      , e => {
+    service.getPrivilegeGroupHistory(privilegeGroupId).subscribe({
+      next: data => { expect(data).toBeFalsy(); },
+      error: e => {
         expect(e).toBeTruthy();
         expect(e.message).toEqual('Some error text');
-      });
+      }
+    });
 
     for (let i = 0; i < RETRIES + 1; i++) {
       let req = httpMock.expectOne(`//localhost:8080/group/privilege/getPrivilegeGroupHistory/${privilegeGroupId}`);
