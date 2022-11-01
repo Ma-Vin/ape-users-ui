@@ -17,14 +17,14 @@
                 <mat-icon>person</mat-icon> Users
             </button>
         </nav>
-        <button *ngIf="showAdminItems" mat-flat-button color="primary" routerLink="/commongroups/{{commonGroupIdentification}}" [disabled]="commonGroupIdentification == undefined">
+        <button *ngIf="showAdminItems" mat-flat-button color="primary" routerLink="/commongroups/{{commonGroupIdentification}}" [disabled]="commonGroupIdentification === undefined">
             <mat-icon>domain</mat-icon> Common Group: {{commonGroupText}}
         </button>
         <button mat-raised-button color="primary" (click)="onCreateObject()" [disabled]="disableCreateButton">
             <mat-icon>{{iconName}}</mat-icon>
             Create new {{createObjectName}}
         </button>
-        <button class="account-button" mat-flat-button color="primary" routerLink="/{{activeUserParentUrl}}/{{activeUserIdentification}}" [disabled]="activeUserIdentification == undefined">
+        <button class="account-button" mat-flat-button color="primary" routerLink="/{{activeUserParentUrl}}/{{activeUserIdentification}}" [disabled]="activeUserIdentification === undefined">
             <mat-icon>account_box</mat-icon> {{activeUserText}}
         </button>
     </mat-toolbar-row>
