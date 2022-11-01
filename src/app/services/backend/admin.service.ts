@@ -135,7 +135,7 @@ export class AdminService extends BaseBackendService {
         return AdminGroup.map(adminGroup);
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -172,7 +172,7 @@ export class AdminService extends BaseBackendService {
         return result;
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -249,7 +249,7 @@ export class AdminService extends BaseBackendService {
         return result;
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -282,7 +282,7 @@ export class AdminService extends BaseBackendService {
         return AdminGroup.map(adminGroup);
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -321,7 +321,7 @@ export class AdminService extends BaseBackendService {
         return User.map(admin);
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -367,7 +367,7 @@ export class AdminService extends BaseBackendService {
         return result;
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -428,7 +428,7 @@ export class AdminService extends BaseBackendService {
         return this.checkErrorAndGetResponse<boolean>(data, `occurs while deleting admin ${identification} at backend`);
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -466,7 +466,7 @@ export class AdminService extends BaseBackendService {
         return this.checkErrorAndGetResponse<number>(data, `occurs while counting admins at group ${identification} at backend`);
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -499,7 +499,7 @@ export class AdminService extends BaseBackendService {
         return this.checkErrorAndGetResponse<boolean>(data, `occurs while setting password of admin ${identification} at backend`);
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 

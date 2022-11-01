@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Config } from './config';
+import { lastValueFrom } from 'rxjs';
 
 export const CONFIG_URL = 'assets/config.json';
 
@@ -20,7 +21,7 @@ export class ConfigService {
   load() {
     return new Promise<Config>((resolve, reject) => {
       this.config = undefined;
-      this.http.get<Config>(CONFIG_URL).toPromise().then((response: Config) => {
+      lastValueFrom(this.http.get<Config>(CONFIG_URL)).then((response: Config) => {
         this.config = response;
         resolve(this.config);
       }).catch((response: any) => {

@@ -47,7 +47,7 @@ export class CommonGroupService extends BaseBackendService {
     this.getParentCommonGroupOfUserUrl = commonGroupControllerUrl.concat('/getParentCommonGroupOfUser');
     this.getAllCommonGroupUrl = commonGroupControllerUrl.concat('/getAllCommonGroups');
     this.getAllCommonGroupPartsUrl = commonGroupControllerUrl.concat('/getAllCommonGroupParts');
-    this.getCommonGroupHistoryUrl= commonGroupControllerUrl.concat('/getCommonGroupHistory');
+    this.getCommonGroupHistoryUrl = commonGroupControllerUrl.concat('/getCommonGroupHistory');
     this.updateCommonGroupUrl = commonGroupControllerUrl.concat('/updateCommonGroup');
 
     return true;
@@ -101,7 +101,7 @@ export class CommonGroupService extends BaseBackendService {
         return CommonGroup.map(commonGroup);
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -170,7 +170,7 @@ export class CommonGroupService extends BaseBackendService {
         return result;
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -214,7 +214,7 @@ export class CommonGroupService extends BaseBackendService {
         return CommonGroup.map(commonGroup);
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -260,7 +260,7 @@ export class CommonGroupService extends BaseBackendService {
         return CommonGroup.map(commonGroup);
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -315,7 +315,7 @@ export class CommonGroupService extends BaseBackendService {
         return this.checkErrorAndGetResponse<boolean>(data, `occurs while deleting common group ${identification} at backend`);
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -355,7 +355,7 @@ export class CommonGroupService extends BaseBackendService {
         return CommonGroup.map(commonGroup);
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 

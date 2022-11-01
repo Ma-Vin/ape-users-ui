@@ -263,7 +263,7 @@ export class UserService extends BaseBackendService {
         return result;
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -363,7 +363,7 @@ export class UserService extends BaseBackendService {
         return result;
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -403,7 +403,7 @@ export class UserService extends BaseBackendService {
         return result;
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -461,7 +461,7 @@ export class UserService extends BaseBackendService {
         return result;
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -526,7 +526,7 @@ export class UserService extends BaseBackendService {
         return this.checkErrorAndGetResponse<boolean>(data, `occurs while deleting user ${identification} at backend`);
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -586,7 +586,7 @@ export class UserService extends BaseBackendService {
         return this.checkErrorAndGetResponse<number>(data, `occurs while counting users at group ${groupIdentification} at backend`);
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -620,7 +620,7 @@ export class UserService extends BaseBackendService {
         return this.checkErrorAndGetResponse<boolean>(data, `occurs while setting password of user ${identification} at backend`);
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -656,7 +656,7 @@ export class UserService extends BaseBackendService {
         return this.checkErrorAndGetResponse<boolean>(data, `occurs while setting role of user ${identification} at backend`);
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -701,7 +701,7 @@ export class UserService extends BaseBackendService {
           return this.checkErrorAndGetResponse<boolean>(data, `occurs while adding user ${userIdentification} to base group ${baseGroupIdentification} at backend`);
         }),
         retry(RETRIES),
-        catchError(this.handleError)
+        catchError(this.handleError.bind(this))
       );
   }
 
@@ -752,7 +752,7 @@ export class UserService extends BaseBackendService {
           return this.checkErrorAndGetResponse<boolean>(data, `occurs while removing user ${userIdentification} from base group ${baseGroupIdentification} at backend`);
         }),
         retry(RETRIES),
-        catchError(this.handleError)
+        catchError(this.handleError.bind(this))
       );
   }
 
@@ -988,7 +988,7 @@ export class UserService extends BaseBackendService {
           return this.checkErrorAndGetResponse<boolean>(data, `occurs while adding user ${userIdentification} to privilege group ${privilegeGroupIdentification} with role ${role} at backend`);
         }),
         retry(RETRIES),
-        catchError(this.handleError)
+        catchError(this.handleError.bind(this))
       );
   }
 
@@ -1044,7 +1044,7 @@ export class UserService extends BaseBackendService {
           return this.checkErrorAndGetResponse<boolean>(data, `occurs while removing user ${userIdentification} from privilege group ${privilegeGroupIdentification} at backend`);
         }),
         retry(RETRIES),
-        catchError(this.handleError)
+        catchError(this.handleError.bind(this))
       );
   }
 
@@ -1100,7 +1100,7 @@ export class UserService extends BaseBackendService {
         return this.checkErrorAndGetResponse<number>(data, `occurs while counting users at ${privilegeGroupIdentification} with role ${role} at backend`);
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -1195,7 +1195,7 @@ export class UserService extends BaseBackendService {
         return result;
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 

@@ -10,7 +10,8 @@ export abstract class BaseService {
   protected config: Config | undefined;
   public clientId: string | undefined;
 
-  constructor(protected serviceName: string, protected configService: ConfigService) { }
+  constructor(protected serviceName: string, protected configService: ConfigService) { 
+  }
 
   protected init(): void {
     if (this.isInit) {
@@ -31,20 +32,20 @@ export abstract class BaseService {
     if (error instanceof HttpErrorResponse) {
       if (error.error instanceof ErrorEvent) {
         console.error(`An error occurred at service ${this.serviceName}:`, error.error.message);
-        return throwError(`An error occurred: ${error.error.message}`);
+        return throwError(() => new Error(`An error occurred: ${error.error.message}`));
       } else {
         console.error(
           `An error occurred at service ${this.serviceName}, ` +
           `Backend returned code ${error.status}, ` +
           `error was: ${error.error}` +
           `message was: ${error.message}`);
-        return throwError(`Backend returned code ${error.status}, error was: ${error.error}, message was: ${error.message}`);
+        return throwError(() => new Error(`Backend returned code ${error.status}, error was: ${error.error}, message was: ${error.message}`));
       }
     }
     if (error instanceof Error) {
       console.error(`An error occurred at service ${this.serviceName}: ${error.message}`)
       throw error;
     }
-    return throwError('Something bad happened; please try again later.');
+    return throwError(() => new Error('Something bad happened; please try again later.'));
   }
 }

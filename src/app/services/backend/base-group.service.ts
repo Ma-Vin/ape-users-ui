@@ -243,7 +243,7 @@ export class BaseGroupService extends BaseBackendService {
         return BaseGroup.map(baseGroup);
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -319,7 +319,7 @@ export class BaseGroupService extends BaseBackendService {
         return result;
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -367,7 +367,7 @@ export class BaseGroupService extends BaseBackendService {
         return this.checkErrorAndGetResponse<number>(data, `occurs while counting base groups at/for group ${groupIdentification} at backend: ${url}`);
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -409,7 +409,7 @@ export class BaseGroupService extends BaseBackendService {
         return BaseGroup.map(baseGroup);
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -466,7 +466,7 @@ export class BaseGroupService extends BaseBackendService {
         return this.checkErrorAndGetResponse<boolean>(data, `occurs while deleting base group ${identification} at backend`);
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -521,7 +521,7 @@ export class BaseGroupService extends BaseBackendService {
         return BaseGroup.map(baseGroup);
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -571,7 +571,7 @@ export class BaseGroupService extends BaseBackendService {
           return this.checkErrorAndGetResponse<boolean>(data, `occurs while adding base group ${childIdentification} to base group ${parentIdentification} at backend`);
         }),
         retry(RETRIES),
-        catchError(this.handleError)
+        catchError(this.handleError.bind(this))
       );
   }
 
@@ -623,7 +623,7 @@ export class BaseGroupService extends BaseBackendService {
           return this.checkErrorAndGetResponse<boolean>(data, `occurs while removing base group ${childIdentification} from base group ${parentIdentification} at backend`);
         }),
         retry(RETRIES),
-        catchError(this.handleError)
+        catchError(this.handleError.bind(this))
       );
   }
 
@@ -858,7 +858,7 @@ export class BaseGroupService extends BaseBackendService {
           return this.checkErrorAndGetResponse<boolean>(data, `occurs while adding base group ${childIdentification} to privilege group ${parentIdentification} at backend`);
         }),
         retry(RETRIES),
-        catchError(this.handleError)
+        catchError(this.handleError.bind(this))
       );
   }
 
@@ -914,7 +914,7 @@ export class BaseGroupService extends BaseBackendService {
           return this.checkErrorAndGetResponse<boolean>(data, `occurs while removing base group ${childIdentification} from privilege group ${parentIdentification} at backend`);
         }),
         retry(RETRIES),
-        catchError(this.handleError)
+        catchError(this.handleError.bind(this))
       );
   }
 
@@ -969,7 +969,7 @@ export class BaseGroupService extends BaseBackendService {
         return this.checkErrorAndGetResponse<number>(data, `occurs while counting base groups at ${privilegeGroupIdentification} at backend`);
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -1163,7 +1163,7 @@ export class BaseGroupService extends BaseBackendService {
         return result;
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 

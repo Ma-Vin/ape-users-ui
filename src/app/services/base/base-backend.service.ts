@@ -212,7 +212,7 @@ export abstract class BaseBackendService extends BaseService {
         return result;
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 

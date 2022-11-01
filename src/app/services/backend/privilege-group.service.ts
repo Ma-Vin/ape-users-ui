@@ -148,7 +148,7 @@ export class PrivilegeGroupService extends BaseBackendService {
         return PrivilegeGroup.map(privilegeGroup);
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -227,7 +227,7 @@ export class PrivilegeGroupService extends BaseBackendService {
         return result;
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -271,7 +271,7 @@ export class PrivilegeGroupService extends BaseBackendService {
         return this.checkErrorAndGetResponse<number>(data, `occurs while counting privilege groups at ${commonGroupIdentification} at backend`);
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -313,7 +313,7 @@ export class PrivilegeGroupService extends BaseBackendService {
         return PrivilegeGroup.map(privilegeGroup);
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -374,7 +374,7 @@ export class PrivilegeGroupService extends BaseBackendService {
         return this.checkErrorAndGetResponse<boolean>(data, `occurs while deleting privilege group ${identification} at backend`);
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
@@ -429,7 +429,7 @@ export class PrivilegeGroupService extends BaseBackendService {
         return PrivilegeGroup.map(privilegeGroup);
       }),
       retry(RETRIES),
-      catchError(this.handleError)
+      catchError(this.handleError.bind(this))
     );
   }
 
