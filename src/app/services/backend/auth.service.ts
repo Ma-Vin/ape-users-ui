@@ -82,7 +82,7 @@ export class AuthService extends BaseBackendService {
 
     params.append('grant_type', 'password');
     params.append('username', username);
-    params.append('password', btoa(password));
+    params.append('password', Buffer.from(password).toString('base64'));
     params.append('client_id', config.clientId);
 
     console.debug('AuthService: get Access token');
@@ -132,8 +132,8 @@ export class AuthService extends BaseBackendService {
       jti: `refresh.${username}.${actualTime}`,
       timeZone: 'ECT'
     };
-    tokenToSave.access_token = `${this.jwtHeaderUrlEncodedMock}.${btoa(JSON.stringify(tokenPayload))}.${this.jwtSignatureUrlEncodedMock}`;
-    tokenToSave.refresh_token = `${this.jwtHeaderUrlEncodedMock}.${btoa(JSON.stringify(refreshPayload))}.${this.jwtSignatureUrlEncodedMock}`;
+    tokenToSave.access_token = `${this.jwtHeaderUrlEncodedMock}.${Buffer.from(JSON.stringify(tokenPayload)).toString('base64')}.${this.jwtSignatureUrlEncodedMock}`;
+    tokenToSave.refresh_token = `${this.jwtHeaderUrlEncodedMock}.${Buffer.from(JSON.stringify(refreshPayload)).toString('base64')}.${this.jwtSignatureUrlEncodedMock}`;
     (BaseBackendService.mockData.get(REFRESH_TOKENS_MOCK_KEY) as string[]).push(tokenToSave.refresh_token);
     return of(this.saveToken(tokenToSave));
   }
@@ -211,7 +211,7 @@ export class AuthService extends BaseBackendService {
     }
     let split = accessToken.split('.');
     if (split.length == 3) {
-      let payloadText = atob(split[1]);
+      let payloadText = Buffer.from(split[1], 'base64').toString();
       let parsedPayload = JSON.parse(payloadText) as JwtPayload;
       this.setActiveUserAtSelectionService(parsedPayload.sub);
     }

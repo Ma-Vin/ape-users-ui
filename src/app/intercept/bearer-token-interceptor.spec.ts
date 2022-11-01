@@ -61,7 +61,7 @@ describe('BearerTokenInterceptor', () => {
 
 
   it('intercept - basic authorization', fakeAsync(() => {
-    initHttpRequest('http://localhost:8080/anthing/anyId', `Basic :${btoa('someUser:somePwd')}`, undefined);
+    initHttpRequest('http://localhost:8080/anthing/anyId', `Basic :${Buffer.from('someUser:somePwd').toString('base64')}`, undefined);
     initHttpHandler('someReturn');
 
     let authServiceSpy = spyOn(authService, 'hasValidUser');
@@ -80,7 +80,7 @@ describe('BearerTokenInterceptor', () => {
 
 
   it('intercept - bearer authorization already exists', fakeAsync(() => {
-    initHttpRequest('http://localhost:8080/anthing/anyId', `${AUTH_BEARER_PREFIX} :${btoa('someToken123')}`, undefined);
+    initHttpRequest('http://localhost:8080/anthing/anyId', `${AUTH_BEARER_PREFIX} :${Buffer.from('someToken123').toString('base64')}`, undefined);
     initHttpHandler('someReturn');
 
     let authServiceSpy = spyOn(authService, 'hasValidUser');

@@ -8,7 +8,7 @@ import { ConfigService } from '../../config/config.service';
 export class CryptoService {
 
   // is only used to store the tokens in such a way that they cannot be used directly
-  private phrase = btoa(window.navigator.userAgent);
+  private phrase = Buffer.from(window.navigator.userAgent).toString('base64');
 
   constructor(private configService: ConfigService) { }
 
