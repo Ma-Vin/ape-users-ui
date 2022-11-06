@@ -60,24 +60,47 @@ export class AllCommonGroupsComponent extends ListDetailComponent<CommonGroup>{
 
   protected loadAllObjects(): void {
     console.debug("CommonGroupComponent: get all common groups from service");
-    this.commonGroupService.getAllCommonGroups(undefined, undefined).subscribe(
-      allCommonGroups => {
-        console.debug("CommonGroupComponent: store all common groups from service");
-        this.allObjectsfilterDataSource.data = allCommonGroups;
-        this.checkUrlId();
-      }
-    );
+    if (this.commonGroupPermissionsService.isAllowedToGetAllCommonGroup()) {
+      this.commonGroupService.getAllCommonGroups(undefined, undefined).subscribe(
+        allCommonGroups => {
+          console.debug("CommonGroupComponent: store all common groups from service");
+          this.allObjectsfilterDataSource.data = allCommonGroups;
+          this.checkUrlId();
+        }
+      );
+    } else {
+      this.addOnlySelectedCommonGroupToList();
+    }
   }
 
   protected loadAllObjectParts(): void {
     console.debug("CommonGroupComponent: get all common group parts from service");
-    this.commonGroupService.getAllCommonGroupParts(undefined, undefined).subscribe(
-      allCommonGroups => {
-        console.debug("CommonGroupComponent: store all common group parts from service");
-        this.allObjectsfilterDataSource.data = allCommonGroups;
-        this.checkUrlId();
-      }
-    );
+    if (this.commonGroupPermissionsService.isAllowedToGetAllCommonGroupParts()) {
+      this.commonGroupService.getAllCommonGroupParts(undefined, undefined).subscribe(
+        allCommonGroups => {
+          console.debug("CommonGroupComponent: store all common group parts from service");
+          this.allObjectsfilterDataSource.data = allCommonGroups;
+          this.checkUrlId();
+        }
+      );
+    } else {
+      this.addOnlySelectedCommonGroupToList();
+    }
+  }
+
+
+  /**
+   * Adds only a copy of the parent common group of active user to the list of all groups
+   */
+  private addOnlySelectedCommonGroupToList(): void {
+    let selectedCommonGroup = this.selectionService.getSelectedCommonGroup();
+    if (selectedCommonGroup !== undefined && this.commonGroupPermissionsService.isAllowedToGetCommonGroup(selectedCommonGroup.getIdentification())) {
+      this.allObjectsfilterDataSource.data = [CommonGroup.map(selectedCommonGroup)];
+      this.checkUrlId();
+    }
+    else {
+      this.allObjectsfilterDataSource.data = [];
+    }
   }
 
   protected loadObject(identification: string): Observable<CommonGroup> {

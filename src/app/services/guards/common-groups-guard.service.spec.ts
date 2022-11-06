@@ -5,10 +5,11 @@ import { ConfigService } from '../../config/config.service';
 import { AdminService } from '../backend/admin.service';
 import { SelectionService } from '../util/selection.service';
 import { UserService } from '../backend/user.service';
-
-
 import { CommonGroupsGuardService } from './common-groups-guard.service';
 import { CommonGroupPermissionsService } from '../permissions/common-group-permissions.service';
+import { CommonGroup, ICommonGroup } from 'src/app/model/common-group.model';
+import { Role } from 'src/app/model/role.model';
+import { INITIAL_COMMON_GROUP_ID_AT_MOCK } from '../backend/common-group.service';
 
 describe('CommonGroupGuardService', () => {
   let service: CommonGroupsGuardService;
@@ -19,6 +20,16 @@ describe('CommonGroupGuardService', () => {
   let configService: ConfigService;
   let httpMock: HttpTestingController;
   let http: HttpClient;
+
+
+  let commonGroup = CommonGroup.map({
+    description: 'some description',
+    groupName: 'commonGroupName',
+    identification: INITIAL_COMMON_GROUP_ID_AT_MOCK,
+    validFrom: new Date(2021, 9, 1),
+    validTo: undefined,
+    defaultRole: Role.VISITOR
+  } as ICommonGroup);
 
 
   beforeEach(() => {
@@ -49,11 +60,16 @@ describe('CommonGroupGuardService', () => {
   it('canActivate - allowed to get all common groups and parts', fakeAsync(() => {
     let isAllowedToGetAllCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetAllCommonGroup').and.returnValue(true);
     let isAllowedToGetAllCommonGroupPartsSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetAllCommonGroupParts').and.returnValue(true);
+    let isAllowedToGetCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetCommonGroup').and.returnValue(true);
+    let getSelectedCommonGroupSpy = spyOn(selectionService, 'getSelectedCommonGroup').and.returnValue(commonGroup);
+
 
     service.canActivate().subscribe(data => expect(data).toBeTrue());
 
     expect(isAllowedToGetAllCommonGroupSpy).toHaveBeenCalled();
     expect(isAllowedToGetAllCommonGroupPartsSpy).toHaveBeenCalled();
+    expect(isAllowedToGetCommonGroupSpy).not.toHaveBeenCalled();
+    expect(getSelectedCommonGroupSpy).toHaveBeenCalled();
 
     tick();
   }));
@@ -62,23 +78,31 @@ describe('CommonGroupGuardService', () => {
   it('canActivate - not allowed to get all common groups, but parts', fakeAsync(() => {
     let isAllowedToGetAllCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetAllCommonGroup').and.returnValue(false);
     let isAllowedToGetAllCommonGroupPartsSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetAllCommonGroupParts').and.returnValue(true);
+    let isAllowedToGetCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetCommonGroup').and.returnValue(true);
+    let getSelectedCommonGroupSpy = spyOn(selectionService, 'getSelectedCommonGroup').and.returnValue(commonGroup);
 
-    service.canActivate().subscribe(data => expect(data).toBeFalse());
+    service.canActivate().subscribe(data => expect(data).toBeTrue());
 
     expect(isAllowedToGetAllCommonGroupSpy).toHaveBeenCalled();
     expect(isAllowedToGetAllCommonGroupPartsSpy).not.toHaveBeenCalled();
+    expect(isAllowedToGetCommonGroupSpy).toHaveBeenCalled();
+    expect(getSelectedCommonGroupSpy).toHaveBeenCalled();
 
     tick();
   }));
 
-  it('canActivate - not allowed to get all common group parts, but base groups', fakeAsync(() => {
+  it('canActivate - allowed to get all common group parts, but not parts', fakeAsync(() => {
     let isAllowedToGetAllCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetAllCommonGroup').and.returnValue(true);
     let isAllowedToGetAllCommonGroupPartsSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetAllCommonGroupParts').and.returnValue(false);
+    let isAllowedToGetCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetCommonGroup').and.returnValue(true);
+    let getSelectedCommonGroupSpy = spyOn(selectionService, 'getSelectedCommonGroup').and.returnValue(commonGroup);
 
-    service.canActivate().subscribe(data => expect(data).toBeFalse());
+    service.canActivate().subscribe(data => expect(data).toBeTrue());
 
     expect(isAllowedToGetAllCommonGroupSpy).toHaveBeenCalled();
     expect(isAllowedToGetAllCommonGroupPartsSpy).toHaveBeenCalled();
+    expect(isAllowedToGetCommonGroupSpy).toHaveBeenCalled();
+    expect(getSelectedCommonGroupSpy).toHaveBeenCalled();
 
     tick();
   }));
@@ -87,11 +111,48 @@ describe('CommonGroupGuardService', () => {
   it('canActivate - not allowed to get all common group and parts', fakeAsync(() => {
     let isAllowedToGetAllCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetAllCommonGroup').and.returnValue(false);
     let isAllowedToGetAllCommonGroupPartsSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetAllCommonGroupParts').and.returnValue(false);
+    let isAllowedToGetCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetCommonGroup').and.returnValue(true);
+    let getSelectedCommonGroupSpy = spyOn(selectionService, 'getSelectedCommonGroup').and.returnValue(commonGroup);
+
+    service.canActivate().subscribe(data => expect(data).toBeTrue());
+
+    expect(isAllowedToGetAllCommonGroupSpy).toHaveBeenCalled();
+    expect(isAllowedToGetAllCommonGroupPartsSpy).not.toHaveBeenCalled();
+    expect(isAllowedToGetCommonGroupSpy).toHaveBeenCalled();
+    expect(getSelectedCommonGroupSpy).toHaveBeenCalled();
+
+    tick();
+  }));
+
+  it('canActivate - not allowed to get all common group and parts, no common group selected', fakeAsync(() => {
+    let isAllowedToGetAllCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetAllCommonGroup').and.returnValue(false);
+    let isAllowedToGetAllCommonGroupPartsSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetAllCommonGroupParts').and.returnValue(false);
+    let isAllowedToGetCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetCommonGroup').and.returnValue(true);
+    let getSelectedCommonGroupSpy = spyOn(selectionService, 'getSelectedCommonGroup').and.returnValue(undefined);
 
     service.canActivate().subscribe(data => expect(data).toBeFalse());
 
     expect(isAllowedToGetAllCommonGroupSpy).toHaveBeenCalled();
     expect(isAllowedToGetAllCommonGroupPartsSpy).not.toHaveBeenCalled();
+    expect(isAllowedToGetCommonGroupSpy).not.toHaveBeenCalled();
+    expect(getSelectedCommonGroupSpy).toHaveBeenCalled();
+
+    tick();
+  }));
+
+
+  it('canActivate - not allowed to get all common group, parts and select common group', fakeAsync(() => {
+    let isAllowedToGetAllCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetAllCommonGroup').and.returnValue(false);
+    let isAllowedToGetAllCommonGroupPartsSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetAllCommonGroupParts').and.returnValue(false);
+    let isAllowedToGetCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetCommonGroup').and.returnValue(false);
+    let getSelectedCommonGroupSpy = spyOn(selectionService, 'getSelectedCommonGroup').and.returnValue(commonGroup);
+
+    service.canActivate().subscribe(data => expect(data).toBeFalse());
+
+    expect(isAllowedToGetAllCommonGroupSpy).toHaveBeenCalled();
+    expect(isAllowedToGetAllCommonGroupPartsSpy).not.toHaveBeenCalled();
+    expect(isAllowedToGetCommonGroupSpy).toHaveBeenCalled();
+    expect(getSelectedCommonGroupSpy).toHaveBeenCalled();
 
     tick();
   }));

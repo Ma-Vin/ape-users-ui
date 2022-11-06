@@ -19,6 +19,7 @@ import { of } from 'rxjs';
 import { ToolbarComponent } from '../toolbar/toolbar.component';
 import { CommonGroupPermissionsService } from 'src/app/services/permissions/common-group-permissions.service';
 import { MatDialog } from '@angular/material/dialog';
+import { GroupNameListComponent } from '../list-detail/group-name-list/group-name-list.component';
 
 describe('CommonGroupComponent', () => {
   let component: AllCommonGroupsComponent;
@@ -94,15 +95,21 @@ describe('CommonGroupComponent', () => {
    */
   it('ngOnInit - without id at route', fakeAsync(() => {
     component.areOnlyPartsToLoadAtList = false;
+    let isAllowedToGetAllCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetAllCommonGroup').and.returnValue(true);
+    let isAllowedToGetCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetCommonGroup').and.returnValue(true);
     let getAllCommonGroupsSpy = spyOn(commonGroupService, 'getAllCommonGroups').and.returnValue(of([otherCommonGroup, commonGroup]));
     let getCommonGroupSpy = spyOn(commonGroupService, 'getCommonGroup').and.returnValue(of(commonGroup));
+    let getSelectedCommonGroupSpy = spyOn(selectionService, 'getSelectedCommonGroup').and.returnValue(commonGroup);
 
     component.ngOnInit();
 
     tick()
 
+    expect(isAllowedToGetAllCommonGroupSpy).toHaveBeenCalled();
+    expect(isAllowedToGetCommonGroupSpy).not.toHaveBeenCalled();
     expect(getAllCommonGroupsSpy).toHaveBeenCalled();
     expect(getCommonGroupSpy).not.toHaveBeenCalled();
+    expect(getSelectedCommonGroupSpy).not.toHaveBeenCalled();
     expect(component.selectedObject.identification).toEqual('');
     expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
     expect(component.allObjectsfilterDataSource.data.includes(commonGroup)).toBeTrue();
@@ -111,8 +118,11 @@ describe('CommonGroupComponent', () => {
 
   it('ngOnInit - with id at route', fakeAsync(() => {
     component.areOnlyPartsToLoadAtList = false;
+    let isAllowedToGetAllCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetAllCommonGroup').and.returnValue(true);
+    let isAllowedToGetCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetCommonGroup').and.returnValue(true);
     let getAllCommonGroupsSpy = spyOn(commonGroupService, 'getAllCommonGroups').and.returnValue(of([otherCommonGroup, commonGroup]));
     let getCommonGroupSpy = spyOn(commonGroupService, 'getCommonGroup').and.returnValue(of(commonGroup));
+    let getSelectedCommonGroupSpy = spyOn(selectionService, 'getSelectedCommonGroup').and.returnValue(commonGroup);
 
     spyOn(route.snapshot.paramMap, 'has').and.returnValue(true);
     spyOn(route.snapshot.paramMap, 'get').and.returnValue(commonGroupId);
@@ -121,8 +131,11 @@ describe('CommonGroupComponent', () => {
 
     tick()
 
+    expect(isAllowedToGetAllCommonGroupSpy).toHaveBeenCalled();
+    expect(isAllowedToGetCommonGroupSpy).not.toHaveBeenCalled();
     expect(getAllCommonGroupsSpy).toHaveBeenCalled();
     expect(getCommonGroupSpy).not.toHaveBeenCalled();
+    expect(getSelectedCommonGroupSpy).not.toHaveBeenCalled();
     expect(component.selectedObject.equals(commonGroup)).toBeTrue();
     expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
     expect(component.allObjectsfilterDataSource.data.includes(commonGroup)).toBeTrue();
@@ -130,8 +143,11 @@ describe('CommonGroupComponent', () => {
   }));
 
   it('ngOnInit - parts, with id at route', fakeAsync(() => {
+    let isAllowedToGetAllCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetAllCommonGroup').and.returnValue(true);
+    let isAllowedToGetCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetCommonGroup').and.returnValue(true);
     let getAllCommonGroupPartsSpy = spyOn(commonGroupService, 'getAllCommonGroupParts').and.returnValue(of([otherCommonGroup, commonGroup]));
     let getCommonGroupSpy = spyOn(commonGroupService, 'getCommonGroup').and.returnValue(of(commonGroup));
+    let getSelectedCommonGroupSpy = spyOn(selectionService, 'getSelectedCommonGroup').and.returnValue(commonGroup);
 
     spyOn(route.snapshot.paramMap, 'has').and.returnValue(true);
     spyOn(route.snapshot.paramMap, 'get').and.returnValue(commonGroupId);
@@ -140,14 +156,111 @@ describe('CommonGroupComponent', () => {
 
     tick()
 
+    expect(isAllowedToGetAllCommonGroupSpy).toHaveBeenCalled();
+    expect(isAllowedToGetCommonGroupSpy).not.toHaveBeenCalled();
     expect(getAllCommonGroupPartsSpy).toHaveBeenCalled();
     expect(getCommonGroupSpy).toHaveBeenCalled();
+    expect(getSelectedCommonGroupSpy).not.toHaveBeenCalled();
     expect(component.selectedObject.equals(commonGroup)).toBeTrue();
     expect(component.allObjectsfilterDataSource.data.length).toEqual(2);
     expect(component.allObjectsfilterDataSource.data.includes(commonGroup)).toBeTrue();
     expect(component.allObjectsfilterDataSource.data.includes(otherCommonGroup)).toBeTrue();
   }));
 
+  it('ngOnInit - with id at route, non admin', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
+    let isAllowedToGetAllCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetAllCommonGroup').and.returnValue(false);
+    let isAllowedToGetCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetCommonGroup').and.returnValue(true);
+    let getAllCommonGroupsSpy = spyOn(commonGroupService, 'getAllCommonGroups').and.returnValue(of([otherCommonGroup, commonGroup]));
+    let getCommonGroupSpy = spyOn(commonGroupService, 'getCommonGroup').and.returnValue(of(commonGroup));
+    let getSelectedCommonGroupSpy = spyOn(selectionService, 'getSelectedCommonGroup').and.returnValue(commonGroup);
+
+    spyOn(route.snapshot.paramMap, 'has').and.returnValue(true);
+    spyOn(route.snapshot.paramMap, 'get').and.returnValue(commonGroupId);
+
+    component.ngOnInit();
+
+    tick()
+
+    expect(isAllowedToGetAllCommonGroupSpy).toHaveBeenCalled();
+    expect(isAllowedToGetCommonGroupSpy).toHaveBeenCalled();
+    expect(getAllCommonGroupsSpy).not.toHaveBeenCalled();
+    expect(getCommonGroupSpy).not.toHaveBeenCalled();
+    expect(getSelectedCommonGroupSpy).toHaveBeenCalled();
+    expect(component.selectedObject.equals(commonGroup)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.length).toEqual(1);
+    expect(component.allObjectsfilterDataSource.data[0].equals(commonGroup)).toBeTrue();
+  }));
+
+  it('ngOnInit - parts, with id at route, non admin', fakeAsync(() => {
+    let isAllowedToGetAllCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetAllCommonGroup').and.returnValue(false);
+    let isAllowedToGetCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetCommonGroup').and.returnValue(true);
+    let getAllCommonGroupPartsSpy = spyOn(commonGroupService, 'getAllCommonGroupParts').and.returnValue(of([otherCommonGroup, commonGroup]));
+    let getCommonGroupSpy = spyOn(commonGroupService, 'getCommonGroup').and.returnValue(of(commonGroup));
+    let getSelectedCommonGroupSpy = spyOn(selectionService, 'getSelectedCommonGroup').and.returnValue(commonGroup);
+
+    spyOn(route.snapshot.paramMap, 'has').and.returnValue(true);
+    spyOn(route.snapshot.paramMap, 'get').and.returnValue(commonGroupId);
+
+    component.ngOnInit();
+
+    tick()
+
+    expect(isAllowedToGetAllCommonGroupSpy).toHaveBeenCalled();
+    expect(isAllowedToGetCommonGroupSpy).toHaveBeenCalled();
+    expect(getAllCommonGroupPartsSpy).not.toHaveBeenCalled();
+    expect(getCommonGroupSpy).toHaveBeenCalled();
+    expect(getSelectedCommonGroupSpy).toHaveBeenCalled();
+    expect(component.selectedObject.equals(commonGroup)).toBeTrue();
+    expect(component.allObjectsfilterDataSource.data.length).toEqual(1);
+    expect(component.allObjectsfilterDataSource.data[0].equals(commonGroup)).toBeTrue();
+  }));
+
+  it('ngOnInit - parts, with id at route, non admin, no parent common group', fakeAsync(() => {
+    let isAllowedToGetAllCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetAllCommonGroup').and.returnValue(false);
+    let isAllowedToGetCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetCommonGroup').and.returnValue(true);
+    let getAllCommonGroupPartsSpy = spyOn(commonGroupService, 'getAllCommonGroupParts').and.returnValue(of([otherCommonGroup, commonGroup]));
+    let getCommonGroupSpy = spyOn(commonGroupService, 'getCommonGroup').and.returnValue(of(commonGroup));
+    let getSelectedCommonGroupSpy = spyOn(selectionService, 'getSelectedCommonGroup').and.returnValue(undefined);
+
+    spyOn(route.snapshot.paramMap, 'has').and.returnValue(true);
+    spyOn(route.snapshot.paramMap, 'get').and.returnValue(commonGroupId);
+
+    component.ngOnInit();
+
+    tick()
+
+    expect(isAllowedToGetAllCommonGroupSpy).toHaveBeenCalled();
+    expect(isAllowedToGetCommonGroupSpy).not.toHaveBeenCalled();
+    expect(getAllCommonGroupPartsSpy).not.toHaveBeenCalled();
+    expect(getCommonGroupSpy).not.toHaveBeenCalled();
+    expect(getSelectedCommonGroupSpy).toHaveBeenCalled();
+    expect(component.selectedObject.identification).toEqual('');
+    expect(component.allObjectsfilterDataSource.data.length).toEqual(0);
+  }));
+
+  it('ngOnInit - parts, with id at route, non admin, not allowed', fakeAsync(() => {
+    let isAllowedToGetAllCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetAllCommonGroup').and.returnValue(false);
+    let isAllowedToGetCommonGroupSpy = spyOn(commonGroupPermissionsService, 'isAllowedToGetCommonGroup').and.returnValue(false);
+    let getAllCommonGroupPartsSpy = spyOn(commonGroupService, 'getAllCommonGroupParts').and.returnValue(of([otherCommonGroup, commonGroup]));
+    let getCommonGroupSpy = spyOn(commonGroupService, 'getCommonGroup').and.returnValue(of(commonGroup));
+    let getSelectedCommonGroupSpy = spyOn(selectionService, 'getSelectedCommonGroup').and.returnValue(commonGroup);
+
+    spyOn(route.snapshot.paramMap, 'has').and.returnValue(true);
+    spyOn(route.snapshot.paramMap, 'get').and.returnValue(commonGroupId);
+
+    component.ngOnInit();
+
+    tick()
+
+    expect(isAllowedToGetAllCommonGroupSpy).toHaveBeenCalled();
+    expect(isAllowedToGetCommonGroupSpy).toHaveBeenCalled();
+    expect(getAllCommonGroupPartsSpy).not.toHaveBeenCalled();
+    expect(getCommonGroupSpy).not.toHaveBeenCalled();
+    expect(getSelectedCommonGroupSpy).toHaveBeenCalled();
+    expect(component.selectedObject.identification).toEqual('');
+    expect(component.allObjectsfilterDataSource.data.length).toEqual(0);
+  }));
 
 
   /**
