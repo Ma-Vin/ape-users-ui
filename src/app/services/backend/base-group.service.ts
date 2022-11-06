@@ -13,6 +13,7 @@ import { INITIAL_COMMON_GROUP_ID_AT_MOCK } from './common-group.service';
 import { SelectionService } from '../util/selection.service';
 import { INITIAL_PRIVILEGE_GROUP_ID_AT_MOCK, PrivilegeGroupService, PRIVILEGES_AT_COMMON_GROUP } from './privilege-group.service';
 import { HistoryChange } from 'src/app/model/history-change.model';
+import { IBaseGroupRole } from 'src/app/model/base-group-role';
 
 
 const ALL_BASE_GOUPS_MOCK_KEY = 'baseGroups'
@@ -1041,7 +1042,22 @@ export class BaseGroupService extends BaseBackendService {
     if (this.useMock) {
       return this.getAllBasesAtPrivilegeGroupMock(parentIdentification, role, isComplete);
     }
-    return this.getAllBaseFromGroupWithUrlNoMock(url, parentIdentification, role, page, size, isComplete);
+    return this.http.get<ResponseWrapper>(`${url}/${parentIdentification}`, {
+      headers: HTTP_URL_OPTIONS.headers,
+      params: this.createPageingRoleParams(role, page, size)
+    }).pipe(
+      map(data => {
+        let baseGroupRoles = this.checkErrorAndGetResponse<IBaseGroupRole[]>(data, `occurs while getting all users of ${parentIdentification} with role ${role} from backend`);
+        let result: BaseGroup[] = new Array(baseGroupRoles.length);
+        for (let i = 0; i < baseGroupRoles.length; i++) {
+          result[i] = BaseGroup.map(baseGroupRoles[i].baseGroup);
+          result[i].isComplete = isComplete;
+        }
+        return result;
+      }),
+      retry(RETRIES),
+      catchError(this.handleError.bind(this))
+    );
   }
 
 

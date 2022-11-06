@@ -18,6 +18,7 @@ import { SelectionService } from '../util/selection.service';
 
 import { BaseGroupService } from './base-group.service';
 import { ChangeType, IHistoryChange } from 'src/app/model/history-change.model';
+import { IBaseGroupRole } from 'src/app/model/base-group-role';
 
 
 describe('BaseGroupService', () => {
@@ -2306,8 +2307,10 @@ describe('BaseGroupService', () => {
    * getAllBasesAtPrivilegeGroup
    */
   it('getAllBasesAtPrivilegeGroup - all ok', fakeAsync(() => {
+    let baseGroupRole: IBaseGroupRole = { baseGroup: mockIBaseGroup, role: Role.CONTRIBUTOR };
+
     let mockResponseWrapper: ResponseWrapper = {
-      response: [mockIBaseGroup],
+      response: [baseGroupRole],
       status: Status.OK,
       messages: []
     }
@@ -2333,8 +2336,10 @@ describe('BaseGroupService', () => {
   }));
 
   it('getAllBasesAtPrivilegeGroup - with pageing', fakeAsync(() => {
+    let baseGroupRole: IBaseGroupRole = { baseGroup: mockIBaseGroup, role: Role.CONTRIBUTOR };
+
     let mockResponseWrapper: ResponseWrapper = {
-      response: [mockIBaseGroup],
+      response: [baseGroupRole],
       status: Status.OK,
       messages: []
     }
@@ -2362,8 +2367,10 @@ describe('BaseGroupService', () => {
   }));
 
   it('getAllBasesAtPrivilegeGroup - with pageing and role', fakeAsync(() => {
+    let baseGroupRole: IBaseGroupRole = { baseGroup: mockIBaseGroup, role: Role.CONTRIBUTOR };
+
     let mockResponseWrapper: ResponseWrapper = {
-      response: [mockIBaseGroup],
+      response: [baseGroupRole],
       status: Status.OK,
       messages: []
     }
@@ -2393,8 +2400,10 @@ describe('BaseGroupService', () => {
 
 
   it('getAllBasesAtPrivilegeGroup - with role', fakeAsync(() => {
+    let baseGroupRole: IBaseGroupRole = { baseGroup: mockIBaseGroup, role: Role.CONTRIBUTOR };
+
     let mockResponseWrapper: ResponseWrapper = {
-      response: [mockIBaseGroup],
+      response: [baseGroupRole],
       status: Status.OK,
       messages: []
     }
@@ -2528,8 +2537,10 @@ describe('BaseGroupService', () => {
     mockIBaseGroup.validFrom = undefined;
     mockIBaseGroup.validTo = undefined;
 
+    let baseGroupRole: IBaseGroupRole = { baseGroup: mockIBaseGroup, role: Role.CONTRIBUTOR };
+
     let mockResponseWrapper: ResponseWrapper = {
-      response: [mockIBaseGroup],
+      response: [baseGroupRole],
       status: Status.OK,
       messages: []
     }
@@ -2555,8 +2566,10 @@ describe('BaseGroupService', () => {
     mockIBaseGroup.validFrom = undefined;
     mockIBaseGroup.validTo = undefined;
 
+    let baseGroupRole: IBaseGroupRole = { baseGroup: mockIBaseGroup, role: Role.CONTRIBUTOR };
+
     let mockResponseWrapper: ResponseWrapper = {
-      response: [mockIBaseGroup],
+      response: [baseGroupRole],
       status: Status.OK,
       messages: []
     }
@@ -2584,8 +2597,10 @@ describe('BaseGroupService', () => {
     mockIBaseGroup.validFrom = undefined;
     mockIBaseGroup.validTo = undefined;
 
+    let baseGroupRole: IBaseGroupRole = { baseGroup: mockIBaseGroup, role: Role.CONTRIBUTOR };
+
     let mockResponseWrapper: ResponseWrapper = {
-      response: [mockIBaseGroup],
+      response: [baseGroupRole],
       status: Status.OK,
       messages: []
     }
@@ -2615,8 +2630,10 @@ describe('BaseGroupService', () => {
     mockIBaseGroup.validFrom = undefined;
     mockIBaseGroup.validTo = undefined;
 
+    let baseGroupRole: IBaseGroupRole = { baseGroup: mockIBaseGroup, role: Role.CONTRIBUTOR };
+
     let mockResponseWrapper: ResponseWrapper = {
-      response: [mockIBaseGroup],
+      response: [baseGroupRole],
       status: Status.OK,
       messages: []
     }
