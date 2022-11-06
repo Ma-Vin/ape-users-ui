@@ -1,5 +1,4 @@
 ![npmBuild](https://github.com/Ma-Vin/ape-users-ui/actions/workflows/npm-build.yml/badge.svg)
-![CodeQL](https://github.com/Ma-Vin/ape-users-ui/workflows/CodeQL/badge.svg)
 
 # APE Users Ui
 APE angular frontend for user authentication and groupings
