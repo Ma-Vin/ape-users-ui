@@ -18,6 +18,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { BaseGroup, IBaseGroup } from 'src/app/model/base-group.model';
 import { MatDialog } from '@angular/material/dialog';
+import { GroupNameListComponent } from '../list-detail/group-name-list/group-name-list.component';
 
 describe('AllBaseGroupsComponent', () => {
   let component: AllBaseGroupsComponent;
@@ -48,7 +49,7 @@ describe('AllBaseGroupsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([{ path: BASE_GROUPS_PATH, component: AllBaseGroupsComponent }]), MaterialModule, BrowserAnimationsModule],
-      declarations: [AllBaseGroupsComponent, ToolbarComponent]
+      declarations: [AllBaseGroupsComponent, ToolbarComponent, GroupNameListComponent]
     })
       .compileComponents();
   });

@@ -19,6 +19,7 @@ import { ToolbarComponent } from '../toolbar/toolbar.component';
 import { of } from 'rxjs';
 import { Role } from 'src/app/model/role.model';
 import { MatDialog } from '@angular/material/dialog';
+import { GroupNameListComponent } from '../list-detail/group-name-list/group-name-list.component';
 
 describe('AllPrivilegeGroupsComponent', () => {
   let component: AllPrivilegeGroupsComponent;
@@ -59,7 +60,7 @@ describe('AllPrivilegeGroupsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([{ path: PRIVILEGE_GROUPS_PATH, component: AllPrivilegeGroupsComponent }]), MaterialModule, BrowserAnimationsModule],
-      declarations: [AllPrivilegeGroupsComponent, ToolbarComponent]
+      declarations: [AllPrivilegeGroupsComponent, ToolbarComponent, GroupNameListComponent]
     })
       .compileComponents();
   });

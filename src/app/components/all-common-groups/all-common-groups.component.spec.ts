@@ -63,7 +63,7 @@ describe('CommonGroupComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([{ path: COMMON_GROUPS_PATH, component: AllCommonGroupsComponent }]), MaterialModule, BrowserAnimationsModule],
-      declarations: [AllCommonGroupsComponent, ToolbarComponent]
+      declarations: [AllCommonGroupsComponent, ToolbarComponent, GroupNameListComponent]
     })
       .compileComponents();
   });

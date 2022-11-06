@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatIcon } from '@angular/material/icon';
 
 import { DetailButtonRowComponent } from './detail-button-row.component';
 
@@ -8,7 +9,7 @@ describe('DetailButtonRowComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [DetailButtonRowComponent]
+      declarations: [DetailButtonRowComponent, MatIcon]
     })
       .compileComponents();
   });

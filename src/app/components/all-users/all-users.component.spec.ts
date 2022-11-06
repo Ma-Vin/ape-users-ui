@@ -24,6 +24,7 @@ import { CommonGroup, ICommonGroup } from '../../model/common-group.model';
 import { UserPermissionsService } from '../../services/permissions/user-permissions.service';
 import { ToolbarComponent } from '../toolbar/toolbar.component';
 import { MatDialog } from '@angular/material/dialog';
+import { FirstLastNameListComponent } from '../list-detail/first-last-name-list/first-last-name-list.component';
 
 registerLocaleData(localeDe);
 
@@ -61,7 +62,7 @@ describe('AllUsersComponent', () => {
     await TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([{ path: USERS_PATH, component: AllUsersComponent }]), MaterialModule, BrowserAnimationsModule],
       providers: [{ provide: MAT_DATE_LOCALE, useValue: 'de' }],
-      declarations: [AllUsersComponent, ToolbarComponent]
+      declarations: [AllUsersComponent, ToolbarComponent, FirstLastNameListComponent]
     })
       .compileComponents();
   });
