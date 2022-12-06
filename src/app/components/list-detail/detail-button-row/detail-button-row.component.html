@@ -1,14 +1,13 @@
 <div class="button-row">
     <button mat-raised-button color="primary" (click)="onAccept()" [disabled]="disableAccept()">
+        <mat-icon>
+            <div *ngIf="isNewObject; then newIconBlock else changeIconBlock"></div>
+            <ng-template #newIconBlock>add_box</ng-template>
+            <ng-template #changeIconBlock>create</ng-template>
+        </mat-icon>
         <div *ngIf="isNewObject; then newBlock else changeBlock"></div>
-        <ng-template #newBlock>
-            <mat-icon>add_box</mat-icon>
-            Create
-        </ng-template>
-        <ng-template #changeBlock>
-            <mat-icon>create</mat-icon>
-            Accept
-        </ng-template>
+        <ng-template #newBlock>Create</ng-template>
+        <ng-template #changeBlock>Accept</ng-template>
     </button>
     <button mat-raised-button color="primary" (click)="onCancel()">
         <mat-icon>undo</mat-icon> Cancel
