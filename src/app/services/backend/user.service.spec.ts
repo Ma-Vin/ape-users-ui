@@ -17,6 +17,7 @@ import { UserIdRole } from '../../model/user-id-role.model';
 import { INITIAL_PRIVILEGE_GROUP_ID_AT_MOCK } from './privilege-group.service';
 import { IUserRole } from 'src/app/model/user-role.model';
 import { ChangeType, IHistoryChange } from 'src/app/model/history-change.model';
+import { BaseGroup, IBaseGroup } from 'src/app/model/base-group.model';
 
 describe('UserService', () => {
   let service: UserService;
@@ -77,11 +78,12 @@ describe('UserService', () => {
 
     initMockData();
 
-    BaseBackendService.clearMockData();
   });
 
 
   function initMockData() {
+    BaseBackendService.clearMockData();
+
     mockIUser = {
       identification: userId,
       firstName: firstName,
@@ -146,8 +148,6 @@ describe('UserService', () => {
       subjectIdentification: secondUserId,
       targetIdentification: undefined
     } as IHistoryChange;
-
-    BaseBackendService.clearMockData();
 
     spyOn(configService, 'getConfig').and.returnValue(mockConfig);
     getSelectedCommonGroupSpy = spyOn(selectionService, 'getSelectedCommonGroup').and.returnValue(mockCommonGroup);
@@ -1551,7 +1551,7 @@ describe('UserService', () => {
       messages: []
     }
 
-    service.getAllUsersFromBaseGroup(baseGroupId, undefined, undefined).subscribe(data => {
+    service.getAllUsersFromBaseGroup(baseGroupId, undefined, undefined, undefined).subscribe(data => {
       expect(data).toBeTruthy();
       expect(data.length).toEqual(1);
       expect(data[0].identification).toEqual(userId);
@@ -1576,7 +1576,7 @@ describe('UserService', () => {
       messages: []
     }
 
-    service.getAllUsersFromBaseGroup(baseGroupId, 1, 50).subscribe(data => {
+    service.getAllUsersFromBaseGroup(baseGroupId, undefined, 1, 50).subscribe(data => {
       expect(data).toBeTruthy();
       expect(data.length).toEqual(1);
       expect(data[0].identification).toEqual(userId);
@@ -1596,8 +1596,62 @@ describe('UserService', () => {
     tick();
   }));
 
+  it('getAllUsersFromBaseGroup - with dissolving', fakeAsync(() => {
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockIUser],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAllUsersFromBaseGroup(baseGroupId, true, undefined, undefined).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].identification).toEqual(userId);
+      expect(data[0].isGlobalAdmin).toBeFalse();
+      expect(data[0].isComplete).toBeTrue();
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/user/getAllUsersFromBaseGroup/${baseGroupId}?dissolveSubgroups=true`);
+    expect(req.request.method).toEqual("GET");
+    expect(req.request.params.get('dissolveSubgroups')).toEqual('true');
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/user/getAllUsersFromBaseGroup/${baseGroupId}?dissolveSubgroups=true`);
+
+    tick();
+  }));
+
+  it('getAllUsersFromBaseGroup - with pageing and dissolving', fakeAsync(() => {
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockIUser],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAllUsersFromBaseGroup(baseGroupId, true, 1, 50).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      expect(data[0].identification).toEqual(userId);
+      expect(data[0].isGlobalAdmin).toBeFalse();
+      expect(data[0].isComplete).toBeTrue();
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/user/getAllUsersFromBaseGroup/${baseGroupId}?page=1&size=50&dissolveSubgroups=true`);
+    expect(req.request.method).toEqual("GET");
+    expect(req.request.params.get('page')).toEqual('1');
+    expect(req.request.params.get('size')).toEqual('50');
+    expect(req.request.params.get('dissolveSubgroups')).toEqual('true');
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/user/getAllUsersFromBaseGroup/${baseGroupId}?page=1&size=50&dissolveSubgroups=true`);
+
+    tick();
+  }));
+
   it('getAllUsersFromBaseGroup - with error status', fakeAsync(() => {
-    service.getAllUsersFromBaseGroup(baseGroupId, undefined, undefined).subscribe({
+    service.getAllUsersFromBaseGroup(baseGroupId, undefined, undefined, undefined).subscribe({
       next: data => { expect(data).toBeFalsy(); },
       error: e => {
         expect(e).toBeTruthy();
@@ -1618,7 +1672,7 @@ describe('UserService', () => {
   }));
 
   it('getAllUsersFromBaseGroup - with fatal status', fakeAsync(() => {
-    service.getAllUsersFromBaseGroup(baseGroupId, undefined, undefined).subscribe({
+    service.getAllUsersFromBaseGroup(baseGroupId, undefined, undefined, undefined).subscribe({
       next: data => { expect(data).toBeFalsy(); },
       error: e => {
         expect(e).toBeTruthy();
@@ -1640,7 +1694,7 @@ describe('UserService', () => {
 
   it('getAllUsersFromBaseGroup - mock', fakeAsync(() => {
     service.useMock = true;
-    service.getAllUsersFromBaseGroup(baseGroupId, undefined, undefined).subscribe({
+    service.getAllUsersFromBaseGroup(baseGroupId, undefined, undefined, undefined).subscribe({
       next: getAllData => {
         expect(getAllData).toBeTruthy();
         expect(getAllData.length).toEqual(1);
@@ -1655,6 +1709,64 @@ describe('UserService', () => {
 
     tick();
   }));
+
+
+  it('getAllUsersFromBaseGroup - mock & dissolving', fakeAsync(() => {
+    service.useMock = true;
+    baseGroupService.useMock = true;
+
+    service.initMocks();
+    baseGroupService.initMocks();
+
+    let subBaseGroupId = "BGAA00002";
+    let subUserId = "UAA00003";
+
+    let subBaseGroup = BaseGroup.map({
+      description: 'some description',
+      groupName: 'sub',
+      identification: subBaseGroupId,
+      validFrom: new Date(2021, 9, 1),
+      validTo: undefined
+    } as IBaseGroup);
+
+    let subUser = User.map({
+      identification: subUserId,
+      firstName: firstName,
+      lastName: lastName,
+      mail: 'max.power@ma-vin.de',
+      image: undefined,
+      smallImage: undefined,
+      lastLogin: new Date(2021, 9, 25, 20, 15, 1),
+      validFrom: new Date(2021, 9, 1),
+      validTo: undefined,
+      isGlobalAdmin: false,
+      role: Role.VISITOR
+    } as User);
+
+    baseGroupService.addBaseGroupToMock(subBaseGroup, commonGroupId);
+    baseGroupService.addBaseToBaseGroupMock(subBaseGroupId, baseGroupId);
+    service.addUserToMock(subUser, commonGroupId);
+    service.addUserToBaseGroupMock(subUserId, subBaseGroupId);
+
+    service.getAllUsersFromBaseGroup(baseGroupId, true, undefined, undefined).subscribe({
+      next: getAllData => {
+        expect(getAllData).toBeTruthy();
+        expect(getAllData.length).toEqual(2);
+        expect(getAllData[0].identification).toEqual(userId);
+        expect(getAllData[0].isGlobalAdmin).toBeFalse();
+        expect(getAllData[0].isComplete).toBeTrue();
+        expect(getAllData[1].identification).toEqual(subUserId);
+        expect(getAllData[1].isGlobalAdmin).toBeFalse();
+        expect(getAllData[1].isComplete).toBeTrue();
+      },
+      error: e => expect(e).toBeFalsy()
+    });
+
+    httpMock.expectNone(`//localhost:8080/user/getAllUsersFromBaseGroup/${baseGroupId}`);
+
+    tick();
+  }));
+
 
 
 
@@ -1675,7 +1787,7 @@ describe('UserService', () => {
       messages: []
     }
 
-    service.getAllUserPartsFromBaseGroup(baseGroupId, undefined, undefined).subscribe(data => {
+    service.getAllUserPartsFromBaseGroup(baseGroupId, undefined, undefined, undefined).subscribe(data => {
       expect(data).toBeTruthy();
       expect(data.length).toEqual(1);
       checkUserPart(data[0], userId);
@@ -1704,7 +1816,7 @@ describe('UserService', () => {
       messages: []
     }
 
-    service.getAllUserPartsFromBaseGroup(baseGroupId, 1, 50).subscribe(data => {
+    service.getAllUserPartsFromBaseGroup(baseGroupId, undefined, 1, 50).subscribe(data => {
       expect(data).toBeTruthy();
       expect(data.length).toEqual(1);
       checkUserPart(data[0], userId);
@@ -1722,8 +1834,70 @@ describe('UserService', () => {
     tick();
   }));
 
+  it('getAllUserPartsFromBaseGroup - with dissolving', fakeAsync(() => {
+    mockIUser.image = undefined;
+    mockIUser.smallImage = undefined;
+    mockIUser.lastLogin = undefined;
+    mockIUser.validFrom = undefined;
+    mockIUser.validTo = undefined;
+
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockIUser],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAllUserPartsFromBaseGroup(baseGroupId, true, undefined, undefined).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      checkUserPart(data[0], userId);
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/user/getAllUserPartsFromBaseGroup/${baseGroupId}?dissolveSubgroups=true`);
+    expect(req.request.method).toEqual("GET");
+    expect(req.request.params.get('dissolveSubgroups')).toEqual('true');
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/user/getAllUserPartsFromBaseGroup/${baseGroupId}?dissolveSubgroups=true`);
+
+    tick();
+  }));
+
+  it('getAllUserPartsFromBaseGroup - with pageing and dissolving', fakeAsync(() => {
+    mockIUser.image = undefined;
+    mockIUser.smallImage = undefined;
+    mockIUser.lastLogin = undefined;
+    mockIUser.validFrom = undefined;
+    mockIUser.validTo = undefined;
+
+    let mockResponseWrapper: ResponseWrapper = {
+      response: [mockIUser],
+      status: Status.OK,
+      messages: []
+    }
+
+    service.getAllUserPartsFromBaseGroup(baseGroupId, true, 1, 50).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toEqual(1);
+      checkUserPart(data[0], userId);
+    });
+
+    const req = httpMock.expectOne(`//localhost:8080/user/getAllUserPartsFromBaseGroup/${baseGroupId}?page=1&size=50&dissolveSubgroups=true`);
+    expect(req.request.method).toEqual("GET");
+    expect(req.request.params.get('page')).toEqual('1');
+    expect(req.request.params.get('size')).toEqual('50');
+    expect(req.request.params.get('dissolveSubgroups')).toEqual('true');
+    req.flush(mockResponseWrapper);
+
+    // No retry after success
+    httpMock.expectNone(`//localhost:8080/user/getAllUserPartsFromBaseGroup/${baseGroupId}?page=1&size=50&dissolveSubgroups=true`);
+
+    tick();
+  }));
+
   it('getAllUserPartsFromBaseGroup - with error status', fakeAsync(() => {
-    service.getAllUserPartsFromBaseGroup(baseGroupId, undefined, undefined).subscribe({
+    service.getAllUserPartsFromBaseGroup(baseGroupId, undefined, undefined, undefined).subscribe({
       next: data => { expect(data).toBeFalsy(); },
       error: e => {
         expect(e).toBeTruthy();
@@ -1744,7 +1918,7 @@ describe('UserService', () => {
   }));
 
   it('getAllUserPartsFromBaseGroup - with fatal status', fakeAsync(() => {
-    service.getAllUserPartsFromBaseGroup(baseGroupId, undefined, undefined).subscribe({
+    service.getAllUserPartsFromBaseGroup(baseGroupId, undefined, undefined, undefined).subscribe({
       next: data => { expect(data).toBeFalsy(); },
       error: e => {
         expect(e).toBeTruthy();
@@ -1766,7 +1940,7 @@ describe('UserService', () => {
 
   it('getAllUserPartsFromBaseGroup - mock', fakeAsync(() => {
     service.useMock = true;
-    service.getAllUserPartsFromBaseGroup(baseGroupId, undefined, undefined).subscribe({
+    service.getAllUserPartsFromBaseGroup(baseGroupId, undefined, undefined, undefined).subscribe({
       next: getAllData => {
         expect(getAllData).toBeTruthy();
         expect(getAllData.length).toEqual(1);

@@ -46,8 +46,12 @@
             <app-detail-button-row [onAccept]="onAcceptCallBack" [disableAccept]="disableAcceptCallBack"
                 [onCancel]="onCancelCallBack" [onDelete]="onDeleteCallBack" [disableDelete]="disableDeleteCallBack"
                 [isNewObject]="isNewObject" [openHistoryDialog]="openHistoryDialogCallBack"></app-detail-button-row>
-            <app-sub-base-groups [selectedBaseGroup]="selectedObject"></app-sub-base-groups>
-            <app-users-at-group [selectedBaseGroup]="selectedObject"></app-users-at-group>
+            <app-sub-base-groups [selectedBaseGroup]="selectedObject"
+                (onListModifiedEventEmitter)="onCleanFlattenedGroups()"></app-sub-base-groups>
+            <app-users-at-group [selectedBaseGroup]="selectedObject"
+                (onListModifiedEventEmitter)="onCleanFlattenedGroups()"></app-users-at-group>
+            <app-users-at-group [selectedBaseGroup]="selectedObject" [flatSubgroupsView]="true"
+                [cleanFlattenSubGroupsTrigger]="cleanFlattenSubGroupsTrigger"></app-users-at-group>
         </ng-template>
         <ng-template #BaseGroupNotSelectedBlock>
             <h1>Please select a Base Group</h1>

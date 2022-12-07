@@ -584,7 +584,7 @@ export class BaseGroupService extends BaseBackendService {
    * @param parentIdentification id of the parent base group where to add at
    * @returns mocked reponse of adding the sub base group
    */
-  private addBaseToBaseGroupMock(childIdentification: string, parentIdentification: string): Observable<boolean> {
+  public addBaseToBaseGroupMock(childIdentification: string, parentIdentification: string): Observable<boolean> {
     this.initMocks();
 
     let allBaseGroupIds = this.getAllBaseIdsAtSelectedCommonGroupFromMock();

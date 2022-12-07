@@ -43,12 +43,18 @@ export class UsersAtGroupComponent extends ElementsAtGroupComponent<User, AddUse
   }
 
   protected loadAllElementsFromBaseGroup(identification: string): Observable<User[]> {
-    return this.userService.getAllUsersFromBaseGroup(identification, undefined, undefined);
+    if (!this.flatSubgroupsView || this.flattenSubgroups) {
+      return this.userService.getAllUsersFromBaseGroup(identification, this.flatSubgroupsView, undefined, undefined);
+    }
+    return of([]);
   }
 
 
   protected loadAllElementPartsFromBaseGroup(identification: string): Observable<User[]> {
-    return this.userService.getAllUserPartsFromBaseGroup(identification, undefined, undefined);
+    if (!this.flatSubgroupsView || this.flattenSubgroups) {
+      return this.userService.getAllUserPartsFromBaseGroup(identification, this.flatSubgroupsView, undefined, undefined);
+    }
+    return of([]);
   }
 
 

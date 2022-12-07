@@ -334,23 +334,26 @@ export class UserService extends BaseBackendService {
     if (this.useMock) {
       return this.getAllUsersMock(isComplete);
     }
-    return this.getAllUsersWithUrlNoMock(identification, page, size, url, isComplete);
+    return this.getAllUsersWithUrlNoMock(identification, undefined, page, size, url, isComplete);
   }
 
 
   /**
    * Get all users or user parts with reduced data from the backend
    * @param identification id of the common group
+   * @param dissolveSubgroups indicator if the users of subgroups should also be added
    * @param page zero-based page index, must not be negative.
    * @param size the size of the page to be returned, must be greater than 0.
    * @param url the url where to get the data from backend
    * @param isComplete indicator if the url points to the endpoint which return the complete entity or the one with reduced data
    * @returns the users
    */
-  private getAllUsersWithUrlNoMock(identification: string, page: number | undefined, size: number | undefined, url: string, isComplete: boolean): Observable<User[]> {
+  private getAllUsersWithUrlNoMock(identification: string, dissolveSubgroups: boolean | undefined
+    , page: number | undefined, size: number | undefined, url: string, isComplete: boolean): Observable<User[]> {
+
     return this.http.get<ResponseWrapper>(`${url}/${identification}`, {
       headers: HTTP_URL_OPTIONS.headers,
-      params: this.createPageingParams(page, size)
+      params: this.createDissolveSubgroupsParams(dissolveSubgroups, page, size)
     }).pipe(
       map(data => {
         let users = this.checkErrorAndGetResponse<IUser[]>(data, `occurs while getting users at/for ${identification} from backend ${url}`);
@@ -814,13 +817,14 @@ export class UserService extends BaseBackendService {
   /**
    * Get all users of a base group from the backend
    * @param baseGroupIdentification Id of the parent base group
+   * @param dissolveSubgroups indicator if the users of subgroups should also be added 
    * @param page zero-based page index, must not be negative.
    * @param size the size of the page to be returned, must be greater than 0.
    * @returns the users
    */
-  public getAllUsersFromBaseGroup(baseGroupIdentification: string, page: number | undefined, size: number | undefined): Observable<User[]> {
+  public getAllUsersFromBaseGroup(baseGroupIdentification: string, dissolveSubgroups: boolean | undefined, page: number | undefined, size: number | undefined): Observable<User[]> {
     this.init();
-    return this.getAllUsersFromBaseGroupWithUrl(baseGroupIdentification, page, size, `${this.getAllUsersFromBaseGroupUrl}`, true);
+    return this.getAllUsersFromBaseGroupWithUrl(baseGroupIdentification, dissolveSubgroups, page, size, `${this.getAllUsersFromBaseGroupUrl}`, true);
   }
 
 
@@ -828,13 +832,16 @@ export class UserService extends BaseBackendService {
   /**
    * Get all users of a base group from the backend
    * @param baseGroupIdentification Id of the parent base group
+   * @param dissolveSubgroups indicator if the users of subgroups should also be added 
    * @param page zero-based page index, must not be negative.
    * @param size the size of the page to be returned, must be greater than 0.
    * @returns the users
    */
-  public getAllUserPartsFromBaseGroup(baseGroupIdentification: string, page: number | undefined, size: number | undefined): Observable<User[]> {
+  public getAllUserPartsFromBaseGroup(baseGroupIdentification: string, dissolveSubgroups: boolean | undefined
+    , page: number | undefined, size: number | undefined): Observable<User[]> {
+
     this.init();
-    return this.getAllUsersFromBaseGroupWithUrl(baseGroupIdentification, page, size, `${this.getAllUserPartsFromBaseGroupUrl}`, false);
+    return this.getAllUsersFromBaseGroupWithUrl(baseGroupIdentification, dissolveSubgroups, page, size, `${this.getAllUserPartsFromBaseGroupUrl}`, false);
   }
 
 
@@ -842,18 +849,21 @@ export class UserService extends BaseBackendService {
   /**
    * Get all users of a base group from the backend
    * @param baseGroupIdentification Id of the parent base group
+   * @param dissolveSubgroups indicator if the users of subgroups should also be added
    * @param page zero-based page index, must not be negative.
    * @param size the size of the page to be returned, must be greater than 0.
    * @param url the url where to get the data from backend
    * @param isComplete indicator if the url points to the endpoint which return the complete entity or the one with reduced data
    * @returns the users
    */
-  public getAllUsersFromBaseGroupWithUrl(baseGroupIdentification: string, page: number | undefined, size: number | undefined, url: string, isComplete: boolean): Observable<User[]> {
+  public getAllUsersFromBaseGroupWithUrl(baseGroupIdentification: string, dissolveSubgroups: boolean | undefined
+    , page: number | undefined, size: number | undefined, url: string, isComplete: boolean): Observable<User[]> {
+
     this.init();
     if (this.useMock) {
-      return this.getAllUsersFromBaseGroupMock(baseGroupIdentification, isComplete);
+      return this.getAllUsersFromBaseGroupMock(baseGroupIdentification, dissolveSubgroups, isComplete);
     }
-    return this.getAllUsersWithUrlNoMock(baseGroupIdentification, page, size, url, isComplete);
+    return this.getAllUsersWithUrlNoMock(baseGroupIdentification, dissolveSubgroups, page, size, url, isComplete);
   }
 
 
@@ -861,19 +871,39 @@ export class UserService extends BaseBackendService {
   /**
    * Creates mock for getting all users of a base group
    * @param baseGroupIdentification Id of the parent base group
+   * @param dissolveSubgroups indicator if the users of subgroups should also be added
    * @param isComplete indicator if the url points to the endpoint which return the complete entity or the one with reduced data
    * @returns the mocked observable of all users
    */
-  private getAllUsersFromBaseGroupMock(baseGroupIdentification: string, isComplete: boolean): Observable<User[]> {
+  private getAllUsersFromBaseGroupMock(baseGroupIdentification: string, dissolveSubgroups: boolean | undefined, isComplete: boolean): Observable<User[]> {
     this.initMocks();
     let result: User[] = [];
+    let resultIds: string[] = [];
+    let allUsers = this.getAllUsersAtSelectedCommonGroupFromMock();
     let userIds = UserService.getUserIdsAtBaseGroupFromMock(baseGroupIdentification);
-    for (let u of this.getAllUsersAtSelectedCommonGroupFromMock()) {
+    for (let u of allUsers) {
       if (userIds.includes(u.identification)) {
         let entry = this.mapUserForMock(u, isComplete);
         result.push(entry);
+        resultIds.push(u.identification);
       }
     }
+    if (dissolveSubgroups) {
+      for (let userId of this.getDisolvedUsersAtBaseGroup(baseGroupIdentification)) {
+        if (resultIds.includes(userId)) {
+          continue;
+        }
+        for (let u of allUsers) {
+          if (u.identification == userId) {
+            let entry = this.mapUserForMock(u, isComplete);
+            result.push(entry);
+            resultIds.push(u.identification);
+            break;
+          }
+        }
+      }
+    }
+
     return of(result);
   }
 
@@ -944,7 +974,7 @@ export class UserService extends BaseBackendService {
     if (this.useMock) {
       return this.getAvailableUsersForBaseGroupMock(baseGroupIdentification, isComplete);
     }
-    return this.getAllUsersWithUrlNoMock(baseGroupIdentification, page, size, url, isComplete);
+    return this.getAllUsersWithUrlNoMock(baseGroupIdentification, undefined, page, size, url, isComplete);
   }
 
 
@@ -1350,7 +1380,7 @@ export class UserService extends BaseBackendService {
     if (this.useMock) {
       return this.getAvailableUsersForPrivilegeGroupMock(privilegeGroupIdentification, isComplete);
     }
-    return this.getAllUsersWithUrlNoMock(privilegeGroupIdentification, page, size, url, isComplete);
+    return this.getAllUsersWithUrlNoMock(privilegeGroupIdentification, undefined, page, size, url, isComplete);
   }
 
 
@@ -1402,8 +1432,34 @@ export class UserService extends BaseBackendService {
     return user;
   }
 
+
+  /**
+   * creates the pageing params with dissolving sub groups
+   * @param dissolveSubgroups indicator if the users of subgroups should also be added
+   * @param page zero-based page index, must not be negative.
+   * @param size the size of the page to be returned, must be greater than 0. 
+   * @returns the params
+   */
+  protected createDissolveSubgroupsParams(dissolveSubgroups: boolean | undefined, page: number | undefined, size: number | undefined)
+    : HttpParams | { [param: string]: string | number | boolean | readonly (string | number | boolean)[]; } | undefined {
+
+    if (dissolveSubgroups == undefined) {
+      return this.createPageingParams(page, size);
+    }
+    if (page == undefined || size == undefined) {
+      return { dissolveSubgroups: `${dissolveSubgroups}` };
+    }
+    return {
+      page: `${page}`,
+      size: `${size}`,
+      dissolveSubgroups: `${dissolveSubgroups}`
+    };
+  }
+
+
   /**
    * creates the pageing params with role
+   * @param dissolveSubgroups indicator if the users of subgroups should also be added
    * @param role role to add at params
    * @param page zero-based page index, must not be negative.
    * @param size the size of the page to be returned, must be greater than 0. 
@@ -1412,23 +1468,23 @@ export class UserService extends BaseBackendService {
   protected createParams(dissolveSubgroups: boolean | undefined, role: Role | undefined, page: number | undefined, size: number | undefined): HttpParams | {
     [param: string]: string | number | boolean | readonly (string | number | boolean)[];
   } | undefined {
-    if (dissolveSubgroups == undefined) {
-      return this.createPageingRoleParams(role, page, size);
+    if (role == undefined) {
+      return this.createDissolveSubgroupsParams(dissolveSubgroups, page, size);
     }
-    if ((page == undefined || size == undefined) && role == undefined) {
-      return { dissolveSubgroups: `${dissolveSubgroups}` };
+    if ((page == undefined || size == undefined) && dissolveSubgroups == undefined) {
+      return { role: `${role}` };
     }
-    if ((page == undefined || size == undefined) && role != undefined) {
+    if ((page == undefined || size == undefined) && dissolveSubgroups != undefined) {
       return {
         role: `${role}`,
         dissolveSubgroups: `${dissolveSubgroups}`
       };
     }
-    if ((page != undefined && size != undefined) && role == undefined) {
+    if ((page != undefined && size != undefined) && dissolveSubgroups == undefined) {
       return {
         page: `${page}`,
         size: `${size}`,
-        dissolveSubgroups: `${dissolveSubgroups}`
+        role: `${role}`
       };
     }
     return {

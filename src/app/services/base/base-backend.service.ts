@@ -101,7 +101,7 @@ export abstract class BaseBackendService extends BaseService {
   /**
    * Initialize the data at mock
    */
-  protected initMocks(): void {
+  public initMocks(): void {
     if (!this.useMock || BaseBackendService.mockData.has(`${this.serviceName}.initMocks`)) {
       return
     }

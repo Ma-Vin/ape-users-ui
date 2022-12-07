@@ -19,6 +19,7 @@ import { BaseGroupHistoryComponent } from '../history/base-group-history/base-gr
 })
 export class AllBaseGroupsComponent extends ListDetailComponent<BaseGroup> {
   public toolbarSite = ToolbarSite.BASE_GROUPS;
+  public cleanFlattenSubGroupsTrigger = false;
 
   constructor(private baseGroupService: BaseGroupService, private baseGroupPermissionsService: BaseGroupPermissionsService
     , route: ActivatedRoute, location: Location, snackBar: MatSnackBar, public dialog: MatDialog) {
@@ -122,6 +123,10 @@ export class AllBaseGroupsComponent extends ListDetailComponent<BaseGroup> {
     this.baseGroupService.deleteBaseGroup(this.selectedObject.identification).subscribe(deletedBaseGroup => {
       this.removeDeltedObject(deletedBaseGroup);
     });
+  }
+
+  onCleanFlattenedGroups(): void {
+    this.cleanFlattenSubGroupsTrigger = !this.cleanFlattenSubGroupsTrigger;
   }
 
   protected openHistoryDialog(): void {

@@ -1269,10 +1269,12 @@ describe('UsersAtGroupComponent', () => {
   /**
    * onFlattenSubgroups
    */
-  it('onFlattenSubgroups - not flatten before', fakeAsync(() => {
+  it('onFlattenSubgroups - not flatten before - privilege group', fakeAsync(() => {
     component.areOnlyPartsToLoadAtList = false;
     let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([secondUser]));
     let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([]));
+    let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([secondUser]));
+    let getAllUserPartsFromBaseGroupSpy = spyOn(userService, 'getAllUserPartsFromBaseGroup').and.returnValue(of([]));
 
     component.selectedBaseGroup = undefined;
     component.selectedPrivilegeGroup = privilegeGroup;
@@ -1290,11 +1292,15 @@ describe('UsersAtGroupComponent', () => {
 
     expect(getAllUsersFromPrivilegeGroupSpy).toHaveBeenCalled();
     expect(getAllUserPartsFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUsersFromBaseGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromBaseGroupSpy).not.toHaveBeenCalled();
   }));
 
-  it('onFlattenSubgroups - parts not flatten before', fakeAsync(() => {
+  it('onFlattenSubgroups - parts not flatten before - privilege group', fakeAsync(() => {
     let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([]));
     let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([secondUser]));
+    let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([secondUser]));
+    let getAllUserPartsFromBaseGroupSpy = spyOn(userService, 'getAllUserPartsFromBaseGroup').and.returnValue(of([]));
 
     component.selectedBaseGroup = undefined;
     component.selectedPrivilegeGroup = privilegeGroup;
@@ -1312,12 +1318,16 @@ describe('UsersAtGroupComponent', () => {
 
     expect(getAllUsersFromPrivilegeGroupSpy).not.toHaveBeenCalled();
     expect(getAllUserPartsFromPrivilegeGroupSpy).toHaveBeenCalled();
+    expect(getAllUsersFromBaseGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromBaseGroupSpy).not.toHaveBeenCalled();
   }));
 
-  it('onFlattenSubgroups - flattenn before', fakeAsync(() => {
+  it('onFlattenSubgroups - flattenn before - privilege group', fakeAsync(() => {
     component.areOnlyPartsToLoadAtList = false;
     let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([secondUser]));
     let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([]));
+    let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([secondUser]));
+    let getAllUserPartsFromBaseGroupSpy = spyOn(userService, 'getAllUserPartsFromBaseGroup').and.returnValue(of([]));
 
     component.selectedBaseGroup = undefined;
     component.selectedPrivilegeGroup = privilegeGroup;
@@ -1334,11 +1344,15 @@ describe('UsersAtGroupComponent', () => {
 
     expect(getAllUsersFromPrivilegeGroupSpy).not.toHaveBeenCalled();
     expect(getAllUserPartsFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUsersFromBaseGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromBaseGroupSpy).not.toHaveBeenCalled();
   }));
 
-  it('onFlattenSubgroups - parts, flattenn before', fakeAsync(() => {
+  it('onFlattenSubgroups - parts, flattenn before - privilege group', fakeAsync(() => {
     let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([]));
     let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([secondUser]));
+    let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([secondUser]));
+    let getAllUserPartsFromBaseGroupSpy = spyOn(userService, 'getAllUserPartsFromBaseGroup').and.returnValue(of([]));
 
     component.selectedBaseGroup = undefined;
     component.selectedPrivilegeGroup = privilegeGroup;
@@ -1355,5 +1369,111 @@ describe('UsersAtGroupComponent', () => {
 
     expect(getAllUsersFromPrivilegeGroupSpy).not.toHaveBeenCalled();
     expect(getAllUserPartsFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUsersFromBaseGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromBaseGroupSpy).not.toHaveBeenCalled();
+  }));
+
+  it('onFlattenSubgroups - not flatten before - base group', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
+    let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([]));
+    let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([]));
+    let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([secondUser]));
+    let getAllUserPartsFromBaseGroupSpy = spyOn(userService, 'getAllUserPartsFromBaseGroup').and.returnValue(of([]));
+
+    component.selectedBaseGroup = baseGroup;
+    component.selectedPrivilegeGroup = undefined;
+    component.role = undefined;
+    component.flatSubgroupsView = true;
+    component.flattenSubgroups = false;
+
+    component.onFlattenSubgroups()
+
+    tick();
+
+    expect(component.flattenSubgroups).toBeTrue();
+    expect(component.elementsDataSource.data.length).toEqual(1);
+    expect(component.elementsDataSource.data[0].identification).toEqual(secondUserId);
+
+    expect(getAllUsersFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUsersFromBaseGroupSpy).toHaveBeenCalled();
+    expect(getAllUserPartsFromBaseGroupSpy).not.toHaveBeenCalled();
+  }));
+
+  it('onFlattenSubgroups - parts not flatten before - base group', fakeAsync(() => {
+    let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([]));
+    let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([]));
+    let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([]));
+    let getAllUserPartsFromBaseGroupSpy = spyOn(userService, 'getAllUserPartsFromBaseGroup').and.returnValue(of([secondUser]));
+
+    component.selectedBaseGroup = baseGroup;
+    component.selectedPrivilegeGroup = undefined;
+    component.role =undefined;
+    component.flatSubgroupsView = true;
+    component.flattenSubgroups = false;
+
+    component.onFlattenSubgroups()
+
+    tick();
+
+    expect(component.flattenSubgroups).toBeTrue();
+    expect(component.elementsDataSource.data.length).toEqual(1);
+    expect(component.elementsDataSource.data[0].identification).toEqual(secondUserId);
+
+    expect(getAllUsersFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUsersFromBaseGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromBaseGroupSpy).toHaveBeenCalled();
+  }));
+
+  it('onFlattenSubgroups - flattenn before - base group', fakeAsync(() => {
+    component.areOnlyPartsToLoadAtList = false;
+    let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([]));
+    let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([]));
+    let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([secondUser]));
+    let getAllUserPartsFromBaseGroupSpy = spyOn(userService, 'getAllUserPartsFromBaseGroup').and.returnValue(of([]));
+
+    component.selectedBaseGroup = baseGroup;
+    component.selectedPrivilegeGroup = undefined;
+    component.role = undefined;
+    component.flatSubgroupsView = true;
+    component.flattenSubgroups = true;
+
+    component.onFlattenSubgroups()
+
+    tick();
+
+    expect(component.flattenSubgroups).toBeFalse();
+    expect(component.elementsDataSource.data.length).toEqual(0);
+
+    expect(getAllUsersFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUsersFromBaseGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromBaseGroupSpy).not.toHaveBeenCalled();
+  }));
+
+  it('onFlattenSubgroups - parts, flattenn before - base group', fakeAsync(() => {
+    let getAllUsersFromPrivilegeGroupSpy = spyOn(userService, 'getAllUsersFromPrivilegeGroup').and.returnValue(of([]));
+    let getAllUserPartsFromPrivilegeGroupSpy = spyOn(userService, 'getAllUserPartsFromPrivilegeGroup').and.returnValue(of([]));
+    let getAllUsersFromBaseGroupSpy = spyOn(userService, 'getAllUsersFromBaseGroup').and.returnValue(of([]));
+    let getAllUserPartsFromBaseGroupSpy = spyOn(userService, 'getAllUserPartsFromBaseGroup').and.returnValue(of([secondUser]));
+
+    component.selectedBaseGroup = baseGroup;
+    component.selectedPrivilegeGroup = undefined;
+    component.role = undefined;
+    component.flatSubgroupsView = true;
+    component.flattenSubgroups = true;
+
+    component.onFlattenSubgroups()
+
+    tick();
+
+    expect(component.flattenSubgroups).toBeFalse();
+    expect(component.elementsDataSource.data.length).toEqual(0);
+
+    expect(getAllUsersFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromPrivilegeGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUsersFromBaseGroupSpy).not.toHaveBeenCalled();
+    expect(getAllUserPartsFromBaseGroupSpy).not.toHaveBeenCalled();
   }));
 });
