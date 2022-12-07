@@ -24,9 +24,13 @@
             <mat-icon>{{iconName}}</mat-icon>
             Create new {{createObjectName}}
         </button>
-        <button class="account-button" mat-flat-button color="primary" routerLink="/{{activeUserParentUrl}}/{{activeUserIdentification}}" [disabled]="activeUserIdentification === undefined">
-            <mat-icon>account_box</mat-icon> {{activeUserText}}
-        </button>
+        <button mat-button [matMenuTriggerFor]="userMenu" class="menu-button">{{activeUserText}}</button>
+        <mat-menu #userMenu="matMenu">
+            <button mat-menu-item routerLink="/{{activeUserParentUrl}}/{{activeUserIdentification}}" [disabled]="activeUserIdentification === undefined">
+                <mat-icon>account_box</mat-icon> {{activeUserText}}
+            </button>
+            <button mat-menu-item (click)="onLogout()"><mat-icon>logout</mat-icon> Sign Out </button>
+        </mat-menu>
     </mat-toolbar-row>
 </mat-toolbar>
 <h3>{{activeSite}}</h3>

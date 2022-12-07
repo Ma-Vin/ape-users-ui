@@ -283,7 +283,7 @@ export class AuthService extends BaseBackendService {
     return of(true);
   }
 
-  clearTokensAndLogin(): void {
+  public clearTokensAndLogin(): void {
     localStorage.removeItem(ACCESS_TOKEN);
     localStorage.removeItem(ACCESS_TOKEN_EXPIRE);
     localStorage.removeItem(REFRESH_TOKEN);

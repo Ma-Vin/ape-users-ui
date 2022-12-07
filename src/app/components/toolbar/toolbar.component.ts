@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { ADMIN_GROUP_PATH, USERS_PATH } from '../../app-constants';
 import { SelectionService } from '../../services/util/selection.service';
+import { AuthService } from '../../services/backend/auth.service';
 import { ToolbarSite } from './toolbar-site';
 
 const NOT_SELECTED_TEXT = 'not selected';
@@ -25,7 +26,7 @@ export class ToolbarComponent implements OnInit, OnChanges {
 
   public showAdminItems!: boolean;
 
-  constructor(private selectionService: SelectionService) {
+  constructor(private selectionService: SelectionService, private authenticationService: AuthService) {
   }
 
   public ngOnInit(): void {
@@ -76,5 +77,9 @@ export class ToolbarComponent implements OnInit, OnChanges {
 
   public onCreateObject(): void {
     this.onCreateObjectEventEmitter.emit(this.createObjectName);
+  }
+
+  public onLogout(): void {
+    this.authenticationService.clearTokensAndLogin();
   }
 }

@@ -15,10 +15,12 @@ import { CommonGroup, ICommonGroup } from 'src/app/model/common-group.model';
 import { Role } from 'src/app/model/role.model';
 import { SimpleChanges } from '@angular/core';
 import { ADMIN_GROUP_PATH, USERS_PATH } from 'src/app/app-constants';
+import { AuthService } from 'src/app/services/backend/auth.service';
 
 describe('ToolbarComponent', () => {
   let component: ToolbarComponent;
   let selectionService: SelectionService;
+  let authenticationService: AuthService;
   let adminService: AdminService;
   let userService: UserService;
   let commonGroupService: CommonGroupService;
@@ -76,6 +78,7 @@ describe('ToolbarComponent', () => {
     userService = TestBed.inject(UserService);
     commonGroupService = TestBed.inject(CommonGroupService);
     selectionService = TestBed.inject(SelectionService);
+    authenticationService = TestBed.inject(AuthService);
 
     component = fixture.componentInstance;
   });
@@ -231,5 +234,18 @@ describe('ToolbarComponent', () => {
     component.onCreateObject();
 
     expect(emitSpy).toHaveBeenCalled();
+  });
+
+
+
+  /**
+   * onLogout
+   */
+  it('onLogout - auth service should clear tokens', () => {
+    let clearTokensAndLoginSpy = spyOn(authenticationService, 'clearTokensAndLogin');
+
+    component.onLogout();
+
+    expect(clearTokensAndLoginSpy).toHaveBeenCalled();
   });
 });
