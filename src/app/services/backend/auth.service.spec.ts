@@ -426,10 +426,8 @@ describe('AuthService', () => {
 
     service = new AuthService(http, fakeConfig as ConfigService, fakeCryptoModifiable as CryptoService, router, selectionService, userService, adminService);
 
-    jasmine.clock().withMock(() => {
-      jasmine.clock().mockDate(baseTime);
-      service.hasValidUser().subscribe(data => expect(data).toBeTrue())
-    });
+    jasmine.clock().mockDate(baseTime);
+    service.hasValidUser().subscribe(data => expect(data).toBeTrue())
 
     httpMock.expectNone('//localhost:8080/oauth/token');
 
@@ -444,10 +442,8 @@ describe('AuthService', () => {
 
     service = new AuthService(http, fakeConfig as ConfigService, fakeCryptoModifiable as CryptoService, router, selectionService, userService, adminService);
 
-    jasmine.clock().withMock(() => {
-      jasmine.clock().mockDate(baseTime);
-      service.hasValidUser().subscribe(data => expect(data).toBeFalse())
-    });
+    jasmine.clock().mockDate(baseTime);
+    service.hasValidUser().subscribe(data => expect(data).toBeFalse())
 
     httpMock.expectNone('//localhost:8080/oauth/token');
 
@@ -460,10 +456,8 @@ describe('AuthService', () => {
 
     service = new AuthService(http, fakeConfig as ConfigService, fakeCryptoModifiable as CryptoService, router, selectionService, userService, adminService);
 
-    jasmine.clock().withMock(() => {
-      jasmine.clock().mockDate(baseTime);
-      service.hasValidUser().subscribe(data => expect(data).toBeFalse())
-    });
+    jasmine.clock().mockDate(baseTime);
+    service.hasValidUser().subscribe(data => expect(data).toBeFalse())
 
     httpMock.expectNone('//localhost:8080/oauth/token');
 
@@ -476,10 +470,8 @@ describe('AuthService', () => {
 
     service = new AuthService(http, fakeConfig as ConfigService, fakeCryptoModifiable as CryptoService, router, selectionService, userService, adminService);
 
-    jasmine.clock().withMock(() => {
-      jasmine.clock().mockDate(baseTime);
-      service.hasValidUser().subscribe(data => expect(data).toBeFalse())
-    });
+    jasmine.clock().mockDate(baseTime);
+    service.hasValidUser().subscribe(data => expect(data).toBeFalse())
 
     httpMock.expectNone('//localhost:8080/oauth/token');
 
@@ -493,10 +485,8 @@ describe('AuthService', () => {
 
     service = new AuthService(http, fakeConfig as ConfigService, fakeCryptoModifiable as CryptoService, router, selectionService, userService, adminService);
 
-    jasmine.clock().withMock(() => {
-      jasmine.clock().mockDate(baseTime);
-      service.hasValidUser().subscribe(data => expect(data).toBeTrue())
-    });
+    jasmine.clock().mockDate(baseTime);
+    service.hasValidUser().subscribe(data => expect(data).toBeTrue())
 
     const req = httpMock.expectOne('//localhost:8080/oauth/token');
     expect(req.request.method).toEqual("POST");
@@ -521,10 +511,8 @@ describe('AuthService', () => {
       return of(spyUser)
     })
 
-    jasmine.clock().withMock(() => {
-      jasmine.clock().mockDate(baseTime);
-      service.hasValidUser().subscribe(data => expect(data).toBeTrue())
-    });
+    jasmine.clock().mockDate(baseTime);
+    service.hasValidUser().subscribe(data => expect(data).toBeTrue())
 
     httpMock.expectNone('//localhost:8080/oauth/token');
 
