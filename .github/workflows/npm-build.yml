@@ -37,6 +37,12 @@ jobs:
           npm run build
       - name: test
         run: npm run test -- --code-coverage --watch=false
+      - name: Set up JRE for sonar
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: adopt
+          java-package: jre
       - name: sonar analysis
         env:
           GITHUB_TOKEN: ${{ secrets.APE_DEPENDENCY_BUILD_PAT }}
