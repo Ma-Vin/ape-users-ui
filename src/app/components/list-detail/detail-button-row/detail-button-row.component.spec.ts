@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatIcon } from '@angular/material/icon';
+import { MaterialModule } from '../../../material/material.module';
 
 import { DetailButtonRowComponent } from './detail-button-row.component';
 
@@ -8,8 +8,9 @@ describe('DetailButtonRowComponent', () => {
   let fixture: ComponentFixture<DetailButtonRowComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [DetailButtonRowComponent, MatIcon]
+    await TestBed.configureTestingModule({  
+      imports: [MaterialModule],
+      declarations: [DetailButtonRowComponent]
     })
       .compileComponents();
   });
